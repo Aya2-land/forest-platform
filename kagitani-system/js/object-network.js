@@ -242,35 +242,45 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     }
 
     addReloadNode(node_id, node_label, node_type, node_x, node_y) {
-        console.log("これ動いてるんや");
+        console.log("Received node data:");
+        console.log("node_id:", node_id);
+        console.log("node_label:", node_label);
+        console.log("node_type:", node_type);
+        console.log("node_x:", node_x);
+        console.log("node_y:", node_y);
+
         let node_color = 'skyblue'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
         let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
+
         switch(node_type) {
-            case "material-content": // 議論資料に書かれた内容に関するノードの場合
-                break;
-            case "self-summary": // 自分で考えた要約に関するノードの場合
+            // case "material-content": // 議論資料に書かれた内容に関するノードの場合
+            //     break;
+            case "0": // 自分で考えた要約に関するノードの場合
                 node_color = 'green';
                 text_color = 'white';
                 break;
-            case "utterance": // 議論内での発言ノードの場合
-                node_color = 'pink';
-                break;
-            case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                node_color = 'blue';
-                node_shape = 'ellipse';
-                text_color = 'white';
-                position_fixed = true;
-                break;
+            // case "utterance": // 議論内での発言ノードの場合
+            //     node_color = 'pink';
+            //     break;
+            // case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
+            //     node_color = 'blue';
+            //     node_shape = 'ellipse';
+            //     text_color = 'white';
+            //     position_fixed = true;
+            //     break;
             default: // その他
                 break;
         }
+
         let result_label = '';
         for (let i = 0; i < node_label.length; i += 10) {
             result_label += node_label.substr(i, 10) + '\n';
         }
         result_label = result_label.trim(); // 末尾の不要な改行を除去
+
+        //実際にネットワークに追加するノードのデータを作成
         const newNode = {
             id: `${node_id}`, label: result_label,
             group: node_type,
@@ -279,10 +289,23 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             fixed: position_fixed,
             x: node_x, y: node_y, 
         };
+        // newNodeが作成された時点で確認
+        console.log("Created newNode:", newNode);
+
+        // ノードをthis.nodesに追加
         this.nodes.add(newNode);
+        //this.nodes.add(newNode) は、vis-network ライブラリのネットワークに新しいノード newNode を追加する処理
+
+        // ノードが追加された後に確認
+        console.log("Nodes after addition:", this.nodes);
+
+        //ノードの位置調整
         const boundingBox = this.ownNetwork.getBoundingBox(`${node_id}`);
         this.latest_selected_node_info.x = node_x;
         this.latest_selected_node_info.y = boundingBox.bottom+10;
+
+        //最後に、ノードが追加された後、現在のノードリスト（this.nodes）を返します。
+        //これにより、他の場所で追加されたノードを利用したり、管理したりすることができます。
         return this.nodes;
     }
 
@@ -1222,24 +1245,42 @@ const displayUtteranceNodeInList = (display_target_area_id, target_reflection_ti
 }
 
 //ロードする時
+//display_target_area_id: 表示するエリアのID。target_reflection_time: 表示したい時間帯のデータを取得するための引数。
 const displayDiscussionMapData = (display_target_area_id, target_reflection_time) => {
     // 指定した時間（指定なしなら最新）のマップに対応する発話ノードリストを取得して画面上に配置
     const target_area = $(`#${display_target_area_id}`); // 発話ノードリストのDOMエリア
     const timedisplay_area = $(`#timedisplay`); // 発話ノードの議論内での時間を表示するエリア
     let mousedownId = null;
     console.log("target_reflection_time:", target_reflection_time);
-    getDiscussionMapDataFromDB(target_reflection_time, null, (utterance_list_info) => {
-        console.log("utterance_list_info:", utterance_list_info);
+    
+    //データベースから指定時間の発話データを取得。
+    //データが存在する場合、dnode 内の各ノードを addReloadNode 関数でリロード。
+    getDiscussionMapDataFromDB(null, null, (utterance_list_info) => {
+        //console.log("utterance_list_info:", utterance_list_info);
         // もし utterance_list_info が正しい構造を持っていない場合に備えたチェック
-        if (utterance_list_info && Array.isArray(utterance_list_info.utterance)) {
-            utterance_list_info.utterance.map(u => {
-                const utter_dom = makeUtteranceNodeInList(u.area_id, u.content, u.sender, u.JPNtime, u.network_on);
-                target_area.append(utter_dom); // 挿入     
-                console.error("オッケーなのよ");       
+        // if (utterance_list_info && Array.isArray(utterance_list_info.utterance)) {
+        //     utterance_list_info.utterance.map(u => {
+        //         const utter_dom = makeUtteranceNodeInList(u.area_id, u.content, u.sender, u.JPNtime, u.network_on);
+        //         target_area.append(utter_dom); // 挿入        
+        //     });
+        // } else {
+        //     console.error("utterance_list_info.utterance が配列でないか存在しません");
+        // }
+        
+        // utterance_listチェック
+        if (utterance_list_info && Array.isArray(utterance_list_info.dnode)) {
+            utterance_list_info.dnode.forEach((n) => {
+                if (n.object_node_id) {
+                    // object_node_id を node_id として渡す
+                    defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y);
+                } else {
+                    console.warn("Node ID is undefined, skipping this node:", n);
+                }
             });
         } else {
-            console.error("utterance_list_info.utterance が配列でないか存在しません");
+            console.error("dnode is undefined or not an array:", utterance_list_info.dnode);
         }
+
         // データの取得と挿入
         utterance_list_info.utterance.map(u => {
             const utter_dom = makeUtteranceNodeInList(u.area_id, u.content, u.sender, u.JPNtime, u.network_on);

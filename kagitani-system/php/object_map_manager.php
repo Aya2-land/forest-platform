@@ -204,15 +204,17 @@ if($purpose === "select_meeting_utterance") { //こいつを取ってきてい�
     // $return_data = array_merge($return_data, ['utterance' => $utterance]);
     
     
-    if (empty($return_data)) {
-        echo json_encode(["error" => "not"]);
+    if (empty($return_data)) {  //$return_data が空（null、空の配列、空文字列など）かどうかを確認
+        echo json_encode(["error" => "not"]);  //["error" => "not"] という連想配列（キーが error、値が not）を json_encode 関数で JSON 形式に変換して出力
         return;
     } else {
-        // デバッグ用: $return_data の内容を確認
-        var_dump($return_data);  // ここでデータを確認
+        // $return_data にデータがある場合、この部分が実行
+        //var_dump($return_data);  // ここでデータを確認
         
+        //デバッグの後、$return_data を JSON 形式に変換して出力
+        //JSON（JavaScript Object Notation）とは、データをシンプルかつわかりやすく表現するフォーマットの1つ．
         echo json_encode($return_data);  // 最終的なデータをJSONとして返す
-        return;
+        exit;
     }
 }
 
