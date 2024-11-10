@@ -123,6 +123,7 @@ if($purpose === "select_meeting_utterance") { //こいつを取ってきてい�
 
     $result_discussionmap_node = $mysqli->query("SELECT `object_node_id`, `object_map_id`, `label`, `x`, `y`, `object_nodes_type_id`, `created_at`, `updated_at`, `deleted`
                 FROM `object_nodes`
+                WHERE `deleted` = 0
                 ORDER BY `updated_at` DESC
                 LIMIT 3;
                 ");
