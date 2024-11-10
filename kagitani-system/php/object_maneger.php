@@ -95,12 +95,12 @@
 			$node_update_thing2 = $_POST['node_update_thing2'];
 			if($select_update === 'point'){
 				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-				$mysqli->query("UPDATE c SET x = '$node_update_thing1', y = '$node_update_thing2', updated_at = '$timestamp' 
-				                WHERE user_id = '$user_id' AND object_map_id = '$sheet_id' AND object_node_id = '$node_id' ");
+				$mysqli->query("UPDATE object_nodes SET x = '$node_update_thing1', y = '$node_update_thing2', updated_at = '$timestamp' 
+				                WHERE object_map_id = '$sheet_id' AND object_node_id = '$node_id' ");
 			}else if($select_update === 'label'){
 				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 				$mysqli->query("UPDATE object_nodes SET label = '$node_update_thing1', updated_at = '$timestamp' 
-				WHERE user_id = '$user_id' AND object_map_id = '$sheet_id' AND object_node_id = '$node_id' ");
+				WHERE object_map_id = '$sheet_id' AND object_node_id = '$node_id' ");
 			}
 		}
 
@@ -131,25 +131,25 @@
 	//時間設定はいる
 	
 	//クエリ($sql)のエラー処理
-    if($sql == TRUE){
-		echo "true";
-		error_log('$sql成功しています！'.$timestamp, 0);
-	}else if($sql == FALSE){
-		error_log($sql.'$sql失敗です', 0);
-		// error_log('失敗しました。'.mysqli_error($link), 0);
-	}else{
-		error_log('$sql不明なエラーです', 0);
-	}
+//     if($sql == TRUE){
+// 		echo "true";
+// 		error_log('$sql成功しています！'.$timestamp, 0);
+// 	}else if($sql == FALSE){
+// 		error_log($sql.'$sql失敗です', 0);
+// 		// error_log('失敗しました。'.mysqli_error($link), 0);
+// 	}else{
+// 		error_log('$sql不明なエラーです', 0);
+// 	}
 
-    //php($result)のエラー処理
-    $result = $sql;
-    if($result == TRUE){
-		echo "true";
-		error_log('$result成功しています！'.$timestamp, 0);
-	}else if($result == FALSE){
-		error_log($result.'$result失敗です'.$mysqli->error, 0);
-		// error_log('失敗しました。'.mysqli_error($link), 0);
-	}else{
-		error_log('$result不明なエラーです', 0);
-	}
-?>
+//     //php($result)のエラー処理
+//     $result = $sql;
+//     if($result == TRUE){
+// 		echo "true";
+// 		error_log('$result成功しています！'.$timestamp, 0);
+// 	}else if($result == FALSE){
+// 		error_log($result.'$result失敗です'.$mysqli->error, 0);
+// 		// error_log('失敗しました。'.mysqli_error($link), 0);
+// 	}else{
+// 		error_log('$result不明なエラーです', 0);
+// 	}
+// ?>

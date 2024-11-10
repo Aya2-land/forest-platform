@@ -21,3 +21,11 @@ discussion_manager.phpを参考に，object_manager.phpを作成．
 network_nodes_activity→ocject_nodes
 sheet_id→object_map_id
 
+recora Node → recora goaunode
+editNode → editGoal
+updateNode → updateNooe
+
+‹script type="text/javascript" src="./js/meeting-reflection-network.js"></script>
+→object-network.js作成（未完成）
+
+discussion_map_manager.php - object_map_manager.php

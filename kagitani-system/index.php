@@ -83,7 +83,8 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/jsmind.screenshot.js"></script>
         <script type="text/javascript" src="js/change_tab.js"></script>
         <script type="text/javascript" src="./js/vis-network.min.js"></script>
-        <script type="text/javascript" src="./js/meeting-reflection-network.js"></script>
+        <!-- <script type="text/javascript" src="./js/meeting-reflection-network.js"></script> -->
+        <script type="text/javascript" src="./js/object-network.js"></script>
         <link rel="stylesheet" type="text/css" href="css/meeting-reflection-network.css" />
         <script type="text/javascript">
         window.onbeforeunload = function(e) {e.returnValue = "ページを離れようとしています。よろしいですか？";}
