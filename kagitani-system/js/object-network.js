@@ -181,7 +181,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     /*
      * 議論内省マップの表示・操作部分（Extend vis.js）
      */
-    //ここ怪しいねえ
     generateMeetingReflectionNetworkCanvas (canvas_dom_id, nodes, edges) {
         // マップを表示
 
@@ -242,65 +241,8 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         return this.nodes;
     }
 
-    //ノード追加(完了)
-    addNode(node_id, node_label, node_type, node_x, node_y) {
-        let node_color = 'skyblue'; // ノードの背景色
-        let node_shape = 'box';     // ノードの形状
-        let text_color = 'black';   // ノード内文字列の色
-        let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
-        switch(node_type) {
-            case "material-content": // 議論資料に書かれた内容に関するノードの場合
-                break;
-            case "self-summary": // 自分で考えた要約に関するノードの場合
-                node_color = 'green';
-                text_color = 'white';
-                break;
-            case "utterance": // 議論内での発言ノードの場合
-                node_color = 'pink';
-                break;
-            case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                node_color = 'blue';
-                node_shape = 'ellipse';
-                text_color = 'white';
-                position_fixed = true;
-                break;
-            default: // その他
-                break;
-        }
-        console.log("なんや動いてないんか");
-        let result_label = '';
-        for (let i = 0; i < node_label.length; i += 10) {
-            result_label += node_label.substr(i, 10) + '\n';
-        }
-        result_label = result_label.trim(); // 末尾の不要な改行を除去
-        const newNode = {
-            id: `${node_type}_${node_id}`, label: result_label,
-            group: node_type,
-            color: node_color, shape: node_shape,
-            font: { color: text_color },
-            fixed: position_fixed,
-            x: node_x, y: node_y, 
-        };
-        this.nodes.add(newNode);
-        const boundingBox = this.ownNetwork.getBoundingBox(`${node_type}_${node_id}`);
-        if(node_type !==  "topic-tag"){
-            node_y += Math.floor(((boundingBox.bottom)-(boundingBox.top))/2);
-        }
-        this.nodes.update({
-            id : `${node_type}_${node_id}`,
-            color: node_color, shape: node_shape,
-            font: { color: text_color },
-            y : node_y
-        });
-        const boundingBoxupdate = this.ownNetwork.getBoundingBox(`${node_type}_${node_id}`);
-        this.latest_selected_node_info.x = node_x;
-        this.latest_selected_node_info.y = boundingBoxupdate.bottom+10;
-        defaultRecordForestMRN.record_Node(`${node_type}_${node_id}`, node_label, node_type, node_x, node_y);
-        return this.nodes;
-    }
-
-
     addReloadNode(node_id, node_label, node_type, node_x, node_y) {
+        console.log("これ動いてるんや");
         let node_color = 'skyblue'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
@@ -435,33 +377,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         } 
     }
     
-    
-
-    //ノードのラベル編集(完了)
-    // editNode(node_id, node_content) {
-    //     //ノードのラベルの編集
-    //     const node = this.nodes.get(node_id);
-    //     if (node) { // IDに相当するノードがある場合の中身を編集
-    //         let result_label = '';
-    //         for (let i = 0; i < node_content.length; i += 10) {
-    //             result_label += node_content.substr(i, 10) + '\n';
-    //         }
-    //         result_label = result_label.trim(); // 末尾の不要な改行を除去
-    //         node.label = result_label;
-    //         // 編集を反映
-    //         this.nodes.update(node);
-    //         defaultRecordForestMRN.update_Node("label", node_id, node_content, "");
-    //         const ontology_index = this.OntologyConnectNodeId.indexOf(node_id);
-    //         if(ontology_index !== -1){
-    //             const nodeBoundingBox = this.ownNetwork.getBoundingBox(node_id);
-    //             const ontology_x = nodeBoundingBox.left;
-    //             const ontology_y = nodeBoundingBox.top;
-    //             this.nodes.update({ id: this.OntologyNodeId[ontology_index], x: ontology_x, y: ontology_y });
-    //             defaultRecordForestMRN.update_Node("point", this.OntologyNodeId[ontology_index], ontology_x, ontology_y);
-    //         }
-    //     }
-    // }
-    
     //kagitani--ダブルクリック時編集
     doubleclick (params) {
         const clickedNodeId = params.nodes[0];
@@ -475,19 +390,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             
         }
     }
-
-    //ダブルクリック時編集(完了)
-    // doubleclick (params) {
-    //     const clickedNodeId = params.nodes[0];
-    //     if (clickedNodeId !== undefined) {
-    //         // ユーザーに新しいラベルを尋ね、それをノードの中身に設定
-    //         const newLabel = prompt('新しいラベルを入力してください:', this.nodes.get(clickedNodeId).label.split('\n').join(''));
-    //         // 編集したラベルを反映
-    //         if (newLabel !== null) {
-    //             this.editNode(clickedNodeId, newLabel);
-    //         }
-    //     }
-    // }
 
     // kagitani--目標ノード削除
     deleteGoal (){
@@ -1196,42 +1098,51 @@ class RecordForestMRN{
 let utterance_list;
 const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
     let data;
-    // データベースから発話ノードリストにあるノードデータ一覧を取得
+
     if(target_time === null){
+        console.log("targt");
         data =  {
                 purpose: "select_meeting_utterance",
                 first_load_flag: true,
                 };
-    }else if(end_time === null){
+    } else if(end_time === null){
+        console.log("bbbbbbbbbbb");
         data =  {
                 purpose: "select_version_discussionmap",
                 first_load_flag: target_time,
                 };
-    }else{
+    } else {
+        console.log("ccccccccccc");
         data =  {
                 purpose: "select_past_discussionmap",
-                discussion_start_time : target_time,
-                discussion_end_time : end_time
-                };      
+                discussion_start_time: target_time,
+                discussion_end_time: end_time
+                };
     }
+    
+    console.log("Sending data:", data);
+
     return $.ajax({
         url: "php/object_map_manager.php",
         type: "POST",
         data: data,
-        success: function(r) {
-            console.log("サーバーからのレスポンス:", r); // 受け取ったデータを表示
+        success: (r) => {
+            console.log("Raw response:", r); 
             try {
-                const utterance_list = JSON.parse(r);
-                console.log("JSONにパースされたデータ:", utterance_list); // パース後のデータを表示
-                // 取得したデータを使用する処理
-            } catch (error) {
-                console.error("JSON パースエラー:", error);
-                console.log("サーバーからのレスポンス（パース失敗）:", r);  // パース失敗時のレスポンスを表示
+                utterance_list = JSON.parse(r);
+                console.log("Parsed utterance_list:", utterance_list);
+                callback(utterance_list);
+            } catch (e) {
+                console.error("Failed to parse JSON:", e, r);
             }
+        },
+        error: (xhr, status, error) => {
+            console.error("AJAX error:", status, error);
+            console.log("Response text:", xhr.responseText);
         }
     });
-    
 }
+
 
 
 // アップロードする時
@@ -1318,13 +1229,13 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
     let mousedownId = null;
     console.log("target_reflection_time:", target_reflection_time);
     getDiscussionMapDataFromDB(target_reflection_time, null, (utterance_list_info) => {
-        console.log("コールバックが実行されました");
         console.log("utterance_list_info:", utterance_list_info);
         // もし utterance_list_info が正しい構造を持っていない場合に備えたチェック
         if (utterance_list_info && Array.isArray(utterance_list_info.utterance)) {
             utterance_list_info.utterance.map(u => {
                 const utter_dom = makeUtteranceNodeInList(u.area_id, u.content, u.sender, u.JPNtime, u.network_on);
-                target_area.append(utter_dom); // 挿入            
+                target_area.append(utter_dom); // 挿入     
+                console.error("オッケーなのよ");       
             });
         } else {
             console.error("utterance_list_info.utterance が配列でないか存在しません");
@@ -1336,6 +1247,7 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
         });
         utterance_list_info.dnode.map((n) => {
             defaultForestMRN.addReloadNode(n.node_id, n.label, n.node_type, n.node_x, n.node_y);
+
         });
         utterance_list_info.dedge.map((n) => {
             defaultForestMRN.addReloadEdge(n.edge_start, n.edge_end, n.edge_label);
@@ -1479,7 +1391,6 @@ window.addEventListener('load', () => {
     displayDiscussionMapData("utterance_area2", null); // 最新の議論内省マップの発話リストを表示
     // 内省マップ編集ボタンにイベント付与
     $(`#mrnb_addNode`).on("click", e => {
-        console.log("aaa");
         defaultForestMRN.addNewNode();
     });
     $(`#mrnb_removeNode`).on("click", e => {
