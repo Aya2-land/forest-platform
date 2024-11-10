@@ -20,3 +20,4 @@ nodes_type→object_nodes_type_id
 discussion_manager.phpを参考に，object_manager.phpを作成．
 network_nodes_activity→ocject_nodes
 sheet_id→object_map_id
+
