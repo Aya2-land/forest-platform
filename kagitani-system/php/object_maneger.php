@@ -46,6 +46,25 @@
             // } else {
             //     echo "エラー: " . $mysqli->error; // エラーメッセージ
             // }
+		//手順ノードの記録
+		}else if($record_thing === 'step'){
+			$object_node_id = $_POST["node_id"]; //ノードID
+			//$label = $_POST["label"];    //ラベル
+			$x = $_POST["x"];  //x座標
+			$y = $_POST["y"];  //y座標
+			$object_nodes_type_id = 1;
+			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+			// SQL 文を文字列として定義
+			$sql = "INSERT INTO object_nodes(object_node_id, object_map_id, label, x, y, object_nodes_type_id, created_at, updated_at, deleted) 
+			VALUES ('$object_node_id', '$sheet_id', 'NewNodes', '$x', '$y', '$object_nodes_type_id', '$timestamp', '$timestamp', 0)";
+
+			// クエリを実行
+			if ($mysqli->query($sql)) {
+			echo "PHP, 手順ノード追加成功"; // 成功メッセージ
+			} else {
+			echo "エラー: " . $mysqli->error; // エラーメッセージ
+			}
+
 		}else if($record_thing === 'edge'){
 			//エッジの記録
 			$edge_start = $_POST["edge_start"];          //エッジ開始
@@ -106,9 +125,10 @@
 
 	}else if($purpose === 'delete'){
 		$delete_thing = $_POST['delete_thing'];
+		echo "Purpose is delete<br>";
 		if($delete_thing === 'node'){
 			$node_id = $_POST["node_id"];
-			$mysqli->query("DELETE FROM object_nodes WHERE user_id = '$user_id' AND object_map_id = '$sheet_id' AND object_node_id = '$node_id' ");
+			$mysqli->query("UPDATE object_nodes SET deleted = 1 WHERE object_node_id = '$node_id'");
 		}else if($delete_thing === 'edge'){
 			$edge_start = $_POST["edge_start"];          //エッジ開始
 			$edge_end = $_POST["edge_end"]; 

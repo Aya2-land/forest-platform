@@ -1621,7 +1621,7 @@ window.addEventListener('load', () => {
     });
     $(`#mrnb_addStep`).on("click", e => {
         console.log("step追加できた");
-        defaultForestMRN.addNewNode();
+        defaultForestMRN.addNewStep();
     });
     $(`#mrnb_removeNode`).on("click", e => {
         defaultForestMRN.deleteNode();

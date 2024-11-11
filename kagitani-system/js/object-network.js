@@ -241,6 +241,45 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         return this.nodes;
     }
 
+        //kagitani--目標追加
+    addStep(node_id, node_label, node_type, node_x, node_y) {
+        let node_color = 'skyblue'; // ノードの背景色
+        let node_shape = 'box';     // ノードの形状
+        let text_color = 'black';   // ノード内文字列の色
+        let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
+        let object_nodes_type_id = 0; 
+        let result_label = '';
+        for (let i = 0; i < node_label.length; i += 10) {
+            result_label += node_label.substr(i, 10) + '\n';
+        }
+        result_label = result_label.trim(); // 末尾の不要な改行を除去
+        const newNode = {
+            id: `${node_type}_${node_id}`, label: result_label,
+            group: node_type,
+            color: node_color, shape: node_shape,
+            font: { color: text_color },
+            fixed: position_fixed,
+            x: node_x, y: node_y, 
+        };
+        this.nodes.add(newNode);
+        const boundingBox = this.ownNetwork.getBoundingBox(`${node_type}_${node_id}`);
+        if(node_type !==  "topic-tag"){
+            node_y += Math.floor(((boundingBox.bottom)-(boundingBox.top))/2);
+        }
+        this.nodes.update({
+            id : `${node_type}_${node_id}`,
+            color: node_color, shape: node_shape,
+            font: { color: text_color },
+            y : node_y
+        });
+        const boundingBoxupdate = this.ownNetwork.getBoundingBox(`${node_type}_${node_id}`);
+        this.latest_selected_node_info.x = node_x;
+        this.latest_selected_node_info.y = boundingBoxupdate.bottom+10;
+        defaultRecordForestMRN.record_StepNode(`${node_type}_${node_id}`, node_label, node_type, node_x, node_y);
+        console.log("aaaaaaddstepppp");
+        return this.nodes;
+    }
+
     addReloadNode(node_id, node_label, node_type, node_x, node_y) {
         console.log("Received node data:");
         console.log("node_id:", node_id);
@@ -361,8 +400,13 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     //kagitani
     addNewGoal() {
-        this.addGoal(this.generateUniqueNumberText(), "newNode", "self-summary", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
+        this.addGoal(this.generateUniqueNumberText(), "newNode", "goal", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
         console.log("addGoalできた");
+    }
+
+    addNewStep() {
+        this.addStep(this.generateUniqueNumberText(), "newNode", "step", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
+        console.log("addStepできた");
     }
     //kagitani
 
@@ -416,53 +460,34 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     // kagitani--目標ノード削除
     deleteGoal (){
+        console.log("削除するよーーーーーーーーん");
+        //ユーザーが選択したノードのIDを取得しています。selectNodeIdがundefinedでなければ、削除処理を開始します。
         const selectNodeId = this.ownNetwork.getSelection().nodes[0];
-        if(selectNodeId !== undefined){
-            this.edges.remove(this.ownNetwork.getConnectedEdges(selectNodeId));
-            this.nodes.remove({id: selectNodeId});
-            console.log(selectNodeId)
-            defaultRecordForestMRN.delete_db_Node(selectNodeId);
-            defaultRecordForestMRN.delete_db_Edge(selectNodeId, "");
-            defaultRecordForestMRN.delete_db_Edge("", selectNodeId);
-            const ontology_index = this.OntologyConnectNodeId.indexOf(selectNodeId);
-            if(ontology_index !== -1){
-                this.nodes.remove({ id: this.OntologyNodeId[ontology_index]});
-                defaultRecordForestMRN.delete_db_Node(this.OntologyNodeId[ontology_index]);
-                this.OntologyNodeId.splice(ontology_index, 1);
-                this.OntologyConnectNodeId.splice(ontology_index, 1);
-            }
-            const connect_net_index = [];
-            this.ConnectNetworkNodeId.map((n_id, index) => {
-                if(n_id === selectNodeId){
-                    connect_net_index.push(index);
-                }
-            });
-            connect_net_index.sort((a, b) => b - a);
-            connect_net_index.forEach(index => {
-                this.ConnectNetworkNodeId.splice(index, 1);
-                this.ConnectMindMapNodeId.splice(index, 1);
-            });
-            defaultRecordForestMRN.delete_connection(selectNodeId);
-        }
-    }
 
-    // ノード削除(完了)
-    deleteNode (){
-        const selectNodeId = this.ownNetwork.getSelection().nodes[0];
         if(selectNodeId !== undefined){
+            //選択ノードに接続されているすべてのエッジを削除し、さらにそのノード自体も削除しています。
             this.edges.remove(this.ownNetwork.getConnectedEdges(selectNodeId));
             this.nodes.remove({id: selectNodeId});
-            console.log(selectNodeId)
+            console.log(selectNodeId) //ここが正しく表示されている
+
+            //データベースから選択ノードと、それに関連するエッジを削除しています。
+            //delete_db_Nodeは指定ノードを削除し、delete_db_Edgeは指定ノードが含まれるエッジを削除します。
             defaultRecordForestMRN.delete_db_Node(selectNodeId);
             defaultRecordForestMRN.delete_db_Edge(selectNodeId, "");
             defaultRecordForestMRN.delete_db_Edge("", selectNodeId);
-            const ontology_index = this.OntologyConnectNodeId.indexOf(selectNodeId);
-            if(ontology_index !== -1){
-                this.nodes.remove({ id: this.OntologyNodeId[ontology_index]});
-                defaultRecordForestMRN.delete_db_Node(this.OntologyNodeId[ontology_index]);
-                this.OntologyNodeId.splice(ontology_index, 1);
-                this.OntologyConnectNodeId.splice(ontology_index, 1);
-            }
+
+            //削除対象ノードがOntologyConnectNodeId配列に存在する場合、その「Ontology Node」を削除します。
+            //データベースからもOntology Nodeを削除し、OntologyNodeIdとOntologyConnectNodeIdの配列からそのIDを削除しています。
+            // const ontology_index = this.OntologyConnectNodeId.indexOf(selectNodeId);
+            // if(ontology_index !== -1){
+            //     this.nodes.remove({ id: this.OntologyNodeId[ontology_index]});
+            //     defaultRecordForestMRN.delete_db_Node(this.OntologyNodeId[ontology_index]);
+            //     this.OntologyNodeId.splice(ontology_index, 1);
+            //     this.OntologyConnectNodeId.splice(ontology_index, 1);
+            // }
+
+            //ConnectNetworkNodeId配列内の、削除対象ノードと関連するインデックスを取得し、それらを削除しています。
+            //ConnectNetworkNodeIdとConnectMindMapNodeIdからも、関連するインデックスの要素を削除しています。
             const connect_net_index = [];
             this.ConnectNetworkNodeId.map((n_id, index) => {
                 if(n_id === selectNodeId){
@@ -474,6 +499,8 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 this.ConnectNetworkNodeId.splice(index, 1);
                 this.ConnectMindMapNodeId.splice(index, 1);
             });
+
+            //データベースからこのノードの接続情報も削除しています。
             defaultRecordForestMRN.delete_connection(selectNodeId);
         }
     }
@@ -949,6 +976,27 @@ class RecordForestMRN{
             }
         });
     }
+    
+    record_StepNode (id, label, node_type, x, y){
+        $.ajax({
+            url: "php/object_maneger.php",
+            type: "POST",
+            data: {node_id : id,
+                label : label,
+                x : x,
+                y : y,
+                node_type : node_type,
+                purpose : 'record',
+                record_thing: 'step'
+            },
+            success: function(response) {
+                console.log("データが正常に送信されました:", response);
+            },
+            error: function(xhr, status, error) {
+                console.error("エラーが発生しました:", error);
+            }
+        });
+    }
 
     // ノードの削除
     delete_db_Node(id) {
@@ -1033,25 +1081,13 @@ class RecordForestMRN{
                 node_update_thing1 : node_update_thing1,
                 node_update_thing2: node_update_thing2},
             success: function(a){
-                console.log(a);
-                console.log("ノード更新できたよ");
+                console.log();
             },
             error: function(e){
                 console.log("ノード更新エラーだよ");
             }
         });
         
-    }
-
-    //ノードの削除(完了)
-    delete_db_Node (id){
-        $.ajax({
-            url: "php/discussion_edit_structmap_maneger.php",
-            type: "POST",
-            data: {node_id : id,
-                purpose : 'delete',
-                delete_thing : 'node'},
-        });
     }
     
     //エッジの削除(完了)
@@ -1409,11 +1445,11 @@ window.addEventListener('load', () => {
     });
     $(`#mrnb_addStep`).on("click", e => {
         console.log("step追加できた");
-        defaultForestMRN.addNewNode();
+        defaultForestMRN.addNewStep();
     });
-    $(`#mrnb_removeNode`).on("click", e => {
-        defaultForestMRN.deleteNode();
-    });
+    // $(`#mrnb_removeNode`).on("click", e => {
+    //     defaultForestMRN.deleteNode();
+    // });
     $(`#mrnb_removeNode`).on("click", e => {
         defaultForestMRN.deleteGoal();
     });
@@ -1434,8 +1470,11 @@ window.addEventListener('load', () => {
     $(`#mrnb_addNode`).on("click", e => {
         defaultForestMRN.addNewNode();
     });
+    // $(`#mrnb_removeNode`).on("click", e => {
+    //     defaultForestMRN.deleteNode();
+    // });
     $(`#mrnb_removeNode`).on("click", e => {
-        defaultForestMRN.deleteNode();
+        defaultForestMRN.deleteGoal();
     });
     $(`#mrnb_startEditEdge`).on("click", e => {
         defaultForestMRN.SelectEditEdge();
