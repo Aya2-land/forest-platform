@@ -132,32 +132,35 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     //エッジ編集できるか切り替え
     SelectEditEdge(){
+        console.log("切り替え - 現在のエッジ編集モード:", this.edgeEditMode);
         this.edgeEditMode = !this.edgeEditMode;
+        console.log("エッジ編集モード切り替え後:", this.edgeEditMode);
         if(this.edgeEditMode){
             this.enableEditEdge();
-        }else{
+        } else {
             this.disableEditEdge();
         }
     }
 
-    //エッジ編集できる場合の処理
     enableEditEdge() {
-        // エッジを編集するときは，ノードの動きを止める
+        console.log("ノード固定状態の更新前:", this.nodes);
         document.getElementById("mrnb_startEditEdge").value="エッジ追加終了";
         this.nodes.update(this.nodes.map(n => {
             return { ...n, fixed: true };
-        }));     
+        }));
+        console.log("ノード固定状態の更新後:", this.nodes);
     }
-
-    //エッジ編集できない場合の処理
+    
     disableEditEdge() {
+        console.log("ノード固定状態の更新前:", this.nodes);
         document.getElementById("mrnb_startEditEdge").value="エッジ追加";
-        // エッジの編集モードを抜けたときは，ノードの動きを再度始める（ただし，タグノードはFixedにしておく）
         this.edgeEditMode = false;
         this.nodes.update(this.nodes.map(n => {
             return n.type !== "topic-tag" ? { ...n, fixed: false } : { ...n, fixed: true };
-        }))
+        }));
+        console.log("ノード固定状態の更新後:", this.nodes);
     }
+    
 
     
     /*
@@ -237,7 +240,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.latest_selected_node_info.x = node_x;
         this.latest_selected_node_info.y = boundingBoxupdate.bottom+10;
         defaultRecordForestMRN.record_GoalNode(`${node_type}_${node_id}`, node_label, node_type, node_x, node_y);
-        console.log("check");
+        // console.log("check");
         return this.nodes;
     }
 
@@ -1444,7 +1447,6 @@ window.addEventListener('load', () => {
         defaultForestMRN.addNewGoal();
     });
     $(`#mrnb_addStep`).on("click", e => {
-        console.log("step追加できた");
         defaultForestMRN.addNewStep();
     });
     // $(`#mrnb_removeNode`).on("click", e => {
@@ -1455,6 +1457,7 @@ window.addEventListener('load', () => {
     });
     $(`#mrnb_startEditEdge`).on("click", e => {
         defaultForestMRN.SelectEditEdge();
+        console.log("エッジいくよ");
     });
     $(`#mrnb_removeEdge`).on("click", e => {
         defaultForestMRN.deleteEdge();
@@ -1476,9 +1479,9 @@ window.addEventListener('load', () => {
     $(`#mrnb_removeNode`).on("click", e => {
         defaultForestMRN.deleteGoal();
     });
-    $(`#mrnb_startEditEdge`).on("click", e => {
-        defaultForestMRN.SelectEditEdge();
-    });
+    // $(`#mrnb_startEditEdge`).on("click", e => {
+    //     defaultForestMRN.SelectEditEdge();
+    // });
     $(`#mrnb_removeEdge`).on("click", e => {
         defaultForestMRN.deleteEdge();
     });
