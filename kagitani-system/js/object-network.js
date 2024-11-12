@@ -396,11 +396,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.edges.add({ from: edge_start, to: edge_end ,label: edge_label});
     }
 
-    //未完成　要約ノード追加(一旦資料ノードにしてる)
-    addNewNode() {
-        this.addNode(this.generateUniqueNumberText(), "newNode", "self-summary", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
-    }
-
     //kagitani
     addNewGoal() {
         this.addGoal(this.generateUniqueNumberText(), "newNode", "goal", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
@@ -776,15 +771,19 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     //ドラッグ開始(完成)
     dragstart (params) {
+        //this.edgeEditMode が false の場合、エッジ編集モードでないためドラッグ操作を無効にします。
         if(!this.edgeEditMode){
-            params.event.preventDefault();
+            params.event.preventDefault();  //params.event.preventDefault(); でドラッグ操作をキャンセルしています。
+            //this.edgeEditMode が true であれば、ドラッグを許可し、this.dragStartNodeId にドラッグを開始したノードの ID を格納します。
         }else{
+            //this.ownNetwork.getNodeAt(params.pointer.DOM) で、ドラッグ開始時の位置にあるノードを取得しています。
             this.dragStartNodeId = this.ownNetwork.getNodeAt(params.pointer.DOM);
         }
     }
 
     //ドラッグ終了(完成)
     dragend (params) {
+        console.log("エッジを追加してほにゃほにゃほにゃほにゃー〜ー");
         if(this.edgeEditMode){
             this.dragEndNodeId = this.ownNetwork.getNodeAt(params.pointer.DOM);
             if(this.dragStartNodeId !== null && this.dragEndNodeId !== null && this.dragEndNodeId !== this.dragStartNodeId && this.dragEndNodeId !== undefined && this.nodes.get(this.dragStartNodeId).shape != "ellipse" && this.nodes.get(this.dragEndNodeId).shape != "ellipse"){
@@ -1037,16 +1036,36 @@ class RecordForestMRN{
     }
 
     //エッジの記録(完了)
-    record_Edge (edge_start, edge_end){
-        $.ajax({
-            url: "php/discussion_edit_structmap_maneger.php",
-            type: "POST",
-            data: {edge_start : edge_start,
-                edge_end : edge_end,
-                purpose : 'record',
-                record_thing: 'edge'},
+    record_Edge(edge_start, edge_end) {
+        console.log("エッジの記録を開始");
+        console.log("送信データ:", {
+            edge_start: edge_start,
+            edge_end: edge_end,
+            purpose: 'record',
+            record_thing: 'edge'
         });
+        
+        $.ajax({
+            url: "php/object_maneger.php",
+            type: "POST",
+            data: {
+                edge_start: edge_start,
+                edge_end: edge_end,
+                purpose: 'record',
+                record_thing: 'edge'
+            },
+            success: function(response) {
+                console.log("エッジの記録成功:", response);
+            },
+            error: function(xhr, status, error) {
+                console.error("エッジ記録エラー:", error);
+                console.log("ステータス:", status);
+                console.log("レスポンステキスト:", xhr.responseText);
+            }
+        });
+        console.log("エッジの記録をするぽよ");
     }
+    
 
     //フィードバックの記録
     record_Feedback (node_id, text){

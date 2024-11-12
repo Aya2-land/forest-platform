@@ -67,11 +67,13 @@
 
 		}else if($record_thing === 'edge'){
 			//エッジの記録
+			$object_edges_id = uniqid('edge_', true); // edge_で始まる一意のIDを生成
 			$edge_start = $_POST["edge_start"];          //エッジ開始
 			$edge_end = $_POST["edge_end"];              //エッジ終了
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-			$mysqli->query("INSERT INTO network_edges_activity (user_id, sheet_id, edge_start, edge_end, time)
-			                VALUES ('$user_id', '$sheet_id', '$edge_start', '$edge_end', '$timestamp')");
+			$mysqli->query("INSERT INTO object_edges(object_edges_id, edge_start, edge_end, time)
+			                VALUES ('$object_edges_id', '$edge_start', '$edge_end', '$timestamp')");
+
 		}else if($record_thing === 'connection'){
 			$networknodeid = $_POST["networknodeid"];   //ネットワークのID
 			$mindmapnodeid = $_POST["mindmapnodeid"];  //マインドマップのID
