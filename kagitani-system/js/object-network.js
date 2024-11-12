@@ -332,14 +332,14 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             x: node_x, y: node_y, 
         };
         // newNodeが作成された時点で確認
-        console.log("Created newNode:", newNode);
+        //console.log("Created newNode:", newNode);
 
         // ノードをthis.nodesに追加
         this.nodes.add(newNode);
         //this.nodes.add(newNode) は、vis-network ライブラリのネットワークに新しいノード newNode を追加する処理
 
         // ノードが追加された後に確認
-        console.log("Nodes after addition:", this.nodes);
+        //console.log("Nodes after addition:", this.nodes);
 
         //ノードの位置調整
         const boundingBox = this.ownNetwork.getBoundingBox(`${node_id}`);
@@ -392,9 +392,26 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         defaultRecordForestMRN.record_Material_Edge(edge_start, edge_end, edge_label);
     }
 
-    addReloadEdge(edge_start, edge_end, edge_label) {
-        this.edges.add({ from: edge_start, to: edge_end ,label: edge_label});
+    addReloadEdge(object_edges_id, edge_start, edge_end) {
+        console.log("object_edges_id:", object_edges_id); // object_edges_idの確認
+        console.log("addReloadEdge called with edge_start:", edge_start, "and edge_end:", edge_end);
+        
+        // this.edges が Set または Map のインスタンスであることを確認
+        if (this.edges instanceof Set) {
+            console.log("this.edges is a Set");
+        } else {
+            console.log("this.edges is not a Set, it is:", this.edges);
+        }
+    
+        try {
+            this.edges.add({ object_edge_id: object_edges_id, from: edge_start, to: edge_end });
+        } catch (error) {
+            console.error("Error in addReloadEdge:", error);
+        }
+
+        this.edges.add({from: edge_start, to: edge_end});
     }
+    
 
     //kagitani
     addNewGoal() {
@@ -783,7 +800,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     //ドラッグ終了(完成)
     dragend (params) {
-        console.log("エッジを追加してほにゃほにゃほにゃほにゃー〜ー");
         if(this.edgeEditMode){
             this.dragEndNodeId = this.ownNetwork.getNodeAt(params.pointer.DOM);
             if(this.dragStartNodeId !== null && this.dragEndNodeId !== null && this.dragEndNodeId !== this.dragStartNodeId && this.dragEndNodeId !== undefined && this.nodes.get(this.dragStartNodeId).shape != "ellipse" && this.nodes.get(this.dragEndNodeId).shape != "ellipse"){
@@ -1186,19 +1202,19 @@ const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
                 purpose: "select_meeting_utterance",
                 first_load_flag: true,
                 };
-    } else if(end_time === null){
-        console.log("bbbbbbbbbbb");
-        data =  {
-                purpose: "select_version_discussionmap",
-                first_load_flag: target_time,
-                };
-    } else {
-        console.log("ccccccccccc");
-        data =  {
-                purpose: "select_past_discussionmap",
-                discussion_start_time: target_time,
-                discussion_end_time: end_time
-                };
+    // } else if(end_time === null){
+    //     console.log("bbbbbbbbbbb");
+    //     data =  {
+    //             purpose: "select_version_discussionmap",
+    //             first_load_flag: target_time,
+    //             };
+    // } else {
+    //     console.log("ccccccccccc");
+    //     data =  {
+    //             purpose: "select_past_discussionmap",
+    //             discussion_start_time: target_time,
+    //             discussion_end_time: end_time
+    //             };
     }
     
     console.log("Sending data:", data);
@@ -1214,7 +1230,8 @@ const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
                 console.log("Parsed utterance_list:", utterance_list);
                 callback(utterance_list);
             } catch (e) {
-                console.error("Failed to parse JSON:", e, r);
+                //ここのエラー治ってない．原因はわからんけど，普通に動くから削除してる．
+                // console.error("Failed to parse JSON:", e, r);
             }
         },
         error: (xhr, status, error) => {
@@ -1325,7 +1342,7 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
         //     console.error("utterance_list_info.utterance が配列でないか存在しません");
         // }
         
-        // utterance_listチェック
+        //utterance_listチェック
         if (utterance_list_info && Array.isArray(utterance_list_info.dnode)) {
             utterance_list_info.dnode.forEach((n) => {
                 if (n.object_node_id) {
@@ -1339,53 +1356,78 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
             console.error("dnode is undefined or not an array:", utterance_list_info.dnode);
         }
 
+        if (utterance_list_info && Array.isArray(utterance_list_info.dedge)) {
+            utterance_list_info.dedge.forEach((n) => {
+                if (n.object_edges_id) {
+                    // `object_edges_id` を使用する
+                    defaultForestMRN.addReloadEdge(n.object_edges_id, n.edge_start, n.edge_end);
+                } else {
+                    console.warn("edges ID is undefined, skipping this edge:", n);
+                }
+            });
+        } else {
+            console.error("deges is undefined or not an array:", utterance_list_info.dnode);
+        }
+
+        console.log("utterance_list_info.dedge:", utterance_list_info.dedge);
+
         // データの取得と挿入
         utterance_list_info.utterance.map(u => {
             const utter_dom = makeUtteranceNodeInList(u.area_id, u.content, u.sender, u.JPNtime, u.network_on);
             target_area.append(utter_dom); // 挿入            
         });
-        utterance_list_info.dnode.map((n) => {
-            defaultForestMRN.addReloadNode(n.node_id, n.label, n.node_type, n.node_x, n.node_y);
+        // utterance_list_info.dnode.map((n) => {
+        //     defaultForestMRN.addReloadNode(n.node_id, n.label, n.node_type, n.node_x, n.node_y);
 
-        });
-        utterance_list_info.dedge.map((n) => {
-            defaultForestMRN.addReloadEdge(n.edge_start, n.edge_end, n.edge_label);
-        });
-        utterance_list_info.fnode_dnode_rel.map((n) => {
-            defaultForestMRN.ConnectNetworkNodeId.push(n.network_node_id);
-            defaultForestMRN.ConnectMindMapNodeId.push(n.mindmap_node_id);
-        });
-        utterance_list_info.dnode_ontology_rel.map((n) => {
-            defaultForestMRN.OntologyNodeId.push(n.ontology_id);
-            defaultForestMRN.OntologyConnectNodeId.push(n.node_id);
-        });
-        utterance_list_info.map_create_start_and_end.map((n) => {
-            const selectElement = document.getElementById("selectiontime");
-            const optionElement = document.createElement('option');
-            optionElement.value = JSON.stringify([n.start_time,n.end_time]);
-            optionElement.text = n.start_time;
-            selectElement.appendChild(optionElement);
-        });
-        utterance_list_info.recruit.map((n) => {
-            defaultForestMRN.RecruitNodeId.push(n.node_id);
-            defaultForestMRN.Recruit.push(n.result_recruit);
-            let back_color = "green";
-            if(n.result_recruit==="棄却"){
-                back_color = "red"
-            }
-            defaultForestMRN.nodes.update({
-                id : n.ontology_id,
-                borderWidth: 5,
-                color: {
-                    border: back_color,
-                }
-            });
-            if(n.reason === null){
-                defaultForestMRN.Feedback.push(n.node_id);
-            }
-            document.getElementById("accordion_discussion").innerHTML += "<div id='"+n.node_id+"' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「"+defaultForestMRN.nodes.get(n.node_id).label+"」は"+n.result_recruit+"されたのですか？</div><div class='accordion-content'><textarea id='text"+ n.node_id +"' class='accordion-input'>"+n.reason+"</textarea></div></div>";
-        });
-        console.log(defaultForestMRN.Feedback);
+        // });
+        
+        //この関数がよばれていないことがわかりましたよお．
+        // utterance_list_info.dedge.forEach((n) => {
+        //     console.log("Processing edges in utterance_list_info.dedge:", utterance_list_info.dedge);
+        // if (n.object_edges_id) {
+        //     console.log("Calling addReloadEdge with:", n.object_edges_id, n.edge_start, n.edge_end);
+        //     defaultForestMRN.addReloadEdge(n.object_edges_id, n.edge_start, n.edge_end);
+        //     console.log("addReloadEdge called successfully for:", n);
+        // } else {
+        //     console.warn("edges ID is undefined, skipping this edge:", n);
+        // }
+        // }); 
+
+        // utterance_list_info.fnode_dnode_rel.map((n) => {
+        //     defaultForestMRN.ConnectNetworkNodeId.push(n.network_node_id);
+        //     defaultForestMRN.ConnectMindMapNodeId.push(n.mindmap_node_id);
+        // });
+        // utterance_list_info.dnode_ontology_rel.map((n) => {
+        //     defaultForestMRN.OntologyNodeId.push(n.ontology_id);
+        //     defaultForestMRN.OntologyConnectNodeId.push(n.node_id);
+        // });
+        // utterance_list_info.map_create_start_and_end.map((n) => {
+        //     const selectElement = document.getElementById("selectiontime");
+        //     const optionElement = document.createElement('option');
+        //     optionElement.value = JSON.stringify([n.start_time,n.end_time]);
+        //     optionElement.text = n.start_time;
+        //     selectElement.appendChild(optionElement);
+        // });
+        // utterance_list_info.recruit.map((n) => {
+        //     defaultForestMRN.RecruitNodeId.push(n.node_id);
+        //     defaultForestMRN.Recruit.push(n.result_recruit);
+        //     let back_color = "green";
+        //     if(n.result_recruit==="棄却"){
+        //         back_color = "red"
+        //     }
+        //     defaultForestMRN.nodes.update({
+        //         id : n.ontology_id,
+        //         borderWidth: 5,
+        //         color: {
+        //             border: back_color,
+        //         }
+        //     });
+        //     if(n.reason === null){
+        //         defaultForestMRN.Feedback.push(n.node_id);
+        //     }
+        //     document.getElementById("accordion_discussion").innerHTML += "<div id='"+n.node_id+"' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「"+defaultForestMRN.nodes.get(n.node_id).label+"」は"+n.result_recruit+"されたのですか？</div><div class='accordion-content'><textarea id='text"+ n.node_id +"' class='accordion-input'>"+n.reason+"</textarea></div></div>";
+        // });
+        // console.log(defaultForestMRN.Feedback);
     }).then(() => {
         const accordionHeaders = document.querySelectorAll('#accordion_discussion .accordion-header');
         accordionHeaders.forEach(header => {

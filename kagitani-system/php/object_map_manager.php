@@ -140,14 +140,13 @@ if($purpose === "select_meeting_utterance") { //こいつを取ってきてい�
     /*
      * 議論内省マップのエッジデータの取得
      */
-    // $result_discussionmap_edge = $mysqli->query("SELECT edge_start, edge_end, edge_label FROM network_edges_activity
-    //           WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND time >= '$target_map_created_start_times'
-    //           ORDER BY time DESC ");
-    // $discussionmap_edge = [];
-    // while ($row = $result_discussionmap_edge->fetch_assoc()) {
-    //     array_push($discussionmap_edge, $row);
-    // }
-    // $return_data = array_merge($return_data, ['dedge' => $discussionmap_edge]);
+    $result_discussionmap_edge = $mysqli->query("SELECT object_edges_id, edge_start, edge_end FROM object_edges
+              ORDER BY time DESC ");
+    $discussionmap_edge = [];
+    while ($row = $result_discussionmap_edge->fetch_assoc()) {
+        array_push($discussionmap_edge, $row);
+    }
+    $return_data = array_merge($return_data, ['dedge' => $discussionmap_edge]);
 
     /*
      * 採用のデータの取得
