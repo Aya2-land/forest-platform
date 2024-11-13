@@ -132,15 +132,20 @@
 			$node_id = $_POST["node_id"];
 			$mysqli->query("UPDATE object_nodes SET deleted = 1 WHERE object_node_id = '$node_id'");
 		}else if($delete_thing === 'edge'){
+			// $object_edges_id = $_POST["object_edges_id"];
 			$edge_start = $_POST["edge_start"];          //エッジ開始
 			$edge_end = $_POST["edge_end"]; 
+			//$edge_start のみが空の場合：
 			if($edge_start === ""){
-				$mysqli->query("DELETE FROM network_edges_activity WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND edge_end = '$edge_end' AND time >= '$struct_start_time'");
+				$mysqli->query("DELETE FROM object_edges WHERE edge_end = '$edge_end' AND time >= '$struct_start_time'");
+			//$edge_end のみが空の場合：
 			}else if($edge_end === ""){
-				$mysqli->query("DELETE FROM network_edges_activity WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND edge_start = '$edge_start' AND time >= '$struct_start_time'");
+				$mysqli->query("DELETE FROM object_edges WHERE edge_start = '$edge_start' AND time >= '$struct_start_time'");
+			//$edge_start と $edge_end が両方指定されている場合
 			}else{
-				$mysqli->query("DELETE FROM network_edges_activity WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND edge_start = '$edge_start' AND edge_end = '$edge_end' AND time >= '$struct_start_time'");
+				$mysqli->query("DELETE FROM object_edges WHERE edge_start = '$edge_start' AND edge_end = '$edge_end'");
 			}
+			exit();
 		}else if($delete_thing === 'connection'){
 			$node_id = $_POST["node_id"];
 			$result1 = $mysqli->query("DELETE FROM network_ontology_activity WHERE node_id = '$node_id' AND time > '$struct_start_time'");

@@ -870,19 +870,41 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     
     // エッジの削除（完了）
     deleteEdge() {
+        //this.ownNetwork.getSelection().edges[0] によって、現在選択されているエッジのIDを取得し、selectEdgeId に代入
         const selectEdgeId = this.ownNetwork.getSelection().edges[0];
+        console.log("Selected Edge ID:", selectEdgeId); // 選択したエッジIDを表示
+
+        //選択されたエッジの開始ノードID（from）と終了ノードID（to）を取得し、startid と endid に格納します。
         const startid = this.edges.get(selectEdgeId).from;
         const endid = this.edges.get(selectEdgeId).to;
-        if(selectEdgeId !== undefined){
-            this.edges.remove({id: selectEdgeId});
-            defaultRecordForestMRN.delete_db_Edge(startid, endid);
-            const Edge_index = this.OntologyConnectNodeId.indexOf(startid);
-            if(Edge_index !== -1){
-                this.EdgeStartId.splice(Edge_index, 1);
-                this.EdgeEndId.splice(Edge_index, 1);
-            }
+        //const object_edges_id = edgeData.object_edge_id;
+        console.log("Edge Start ID:", startid);
+        console.log("Edge End ID:", endid);
+        //console.log("Object Edge ID:", object_edges_id);
+
+         // selectEdgeId が undefined でない場合（エッジが選択されている場合）、以下の削除処理を実行
+    if (selectEdgeId !== undefined) {
+        this.edges.remove({ id: selectEdgeId });  // this.edges から選択されたエッジを削除
+        console.log("Edge removed from visualization:", selectEdgeId);
+
+        // データベースからもエッジを削除するようにリクエスト
+       //defaultRecordForestMRN.delete_db_Edge(object_edges_id, startid, endid); 
+       defaultRecordForestMRN.delete_db_Edge(startid, endid); 
+        console.log("Database delete request sent with:",startid, endid);
+
+        // OntologyConnectNodeIdからstartidのインデックスを取得し、EdgeStartIdとEdgeEndIdのリストから削除
+        const Edge_index = this.OntologyConnectNodeId.indexOf(startid);
+        if (Edge_index !== -1) {
+            this.EdgeStartId.splice(Edge_index, 1);
+            this.EdgeEndId.splice(Edge_index, 1);
+            console.log("Edge removed from internal arrays:", Edge_index);
+        } else {
+            console.warn("Start ID not found in OntologyConnectNodeId:", startid);
         }
+    } else {
+        console.warn("No edge selected for deletion.");
     }
+}
 
     feedback(){
         defaultRecordForestMRN.record_Feedback(this.FeedbackNodeId,document.getElementById("text"+this.FeedbackNodeId).value);
@@ -1129,16 +1151,30 @@ class RecordForestMRN{
     }
     
     //エッジの削除(完了)
-    delete_db_Edge (edge_start,edge_end){
+    delete_db_Edge(edge_start, edge_end) {
         $.ajax({
-            url: "php/discussion_edit_structmap_maneger.php",
+            url: "php/object_maneger.php",
             type: "POST",
-            data: {edge_start : edge_start,
-                edge_end : edge_end,
-                purpose : 'delete',
-                delete_thing : 'edge'},
+            data: {
+                edge_start: edge_start,
+                edge_end: edge_end,
+                purpose: 'delete',
+                delete_thing: 'edge'
+            },
+            success: function(response) {
+                console.log("サーバーの応答:", response); // サーバーからの応答を表示
+                if (response === "success") {
+                    console.log("エッジ削除が成功しました");
+                } else {
+                    console.warn("エッジ削除の応答が予期しない形式です:", response);
+                }
+            },
+            error: function(error) {
+                console.error("エッジ削除のエラー:", error);
+            }
         });
     }
+    
 
     delete_connection (id){
         $.ajax({
@@ -1518,7 +1554,6 @@ window.addEventListener('load', () => {
     });
     $(`#mrnb_startEditEdge`).on("click", e => {
         defaultForestMRN.SelectEditEdge();
-        console.log("エッジいくよ");
     });
     $(`#mrnb_removeEdge`).on("click", e => {
         defaultForestMRN.deleteEdge();
