@@ -111,16 +111,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         </ul>
         <!-- タブメニュー　Finish -->
         
-        <div class="Menu">--Menu--
+        <div class="Menu">
             <!--サイドメニュー　start-->
             <div id="side_menu">
-                <!-- プレゼンモードのサイドメニュー -->
-                <div id="document">
-                    <div id="advice_frame" class="searchFrame">
-                        <p id=now_logic_relation> </p>
-                    </div>
-                </div><!--document fin -->
-
                 <!-- マインドマップ編集のサイドメニュー -->
                 <div id="mind">
                     <!--ここから大槻修正-->
@@ -138,30 +131,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <div id="uploaded_meeting_utterance_xml_concent_display_area" style="display: none"></div>
                     </div>
                     <!--ここまで大槻修正-->
-                    <!-- <div class="correct_reason">修正理由</div>
-                         <div id="reason" align="center"></div>
-                         <div class="toi_menu">問い一覧</div> -->
-
-                    <!--  hatakeyama  -->
-                    <div class="version_reason">
-                        <div class="correct_reason">バージョン更新理由</div>
-                        <div id="comment_balloon"class="comment balloon-under" hidden>
-                            <p>バージョンを更新した理由が<br/>あれば記述しましょう！</p>
-                        </div>
-                        <div id="reason" style="text-align:'center'"></div>
-                    </div>
-                    <div class="correct_reason">ノードバージョン履歴</div>
-                    <div id="node_version_log" class="node_version_log"></div>
-                    <!--  hatakeyama  -->
-
                     <div class="toi_list">
                         <div id="mind_all">
                             <input class="button5" type="button" onclick="showGeneration();" value="問い一覧">
-                            <b>マインドマップモード</b>
-                        </div>
-                        <div id="presen_all" hidden>
-                            <input class="button5" type="button" onclick="P_showGeneration();" value="問い一覧">
-                            <b>資料作成モード</b>
                         </div>
                     </div>
 
@@ -174,19 +146,8 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <div>【合理性】</div>
                         <div id="rationality"></div>
                     </div>
-                    <div id="ImageAddContent">
-                        <!-- <form id="ImageForm" method="POST" enctype="multipart/form-data"> -->
-                        <div class="deco-file">
-                            <label>
-                                画像追加
-                                <input id="myFile" type="file" name="ImageFile" onchange="handleFileSelect()" accept="image/*" required>
-                            </label>
-                            <p id="FilenameDisplay" class="file-names"></p>
-                        </div>
-                        <!-- <button id="ImageSaveButton" type="submit" class="btn btn-primary" name="myFileImage">画像保存</button> -->
-                        <button id="ImageSaveButton" name="myFileImage" hidden>画像保存</button>
-                        <!-- </form> -->
-                    </div>
+
+                    <!-- この部分を消したら，問い一覧が消えてしまう．不思議だなあ． -->
                     <div id='node_slide'>
                         <!-- <input id="finish_btn" class="presen-btn" type="button" value="資料作成終了" onclick="macrolevel_xmlLoad();"> -->
                         <input id="output_file" class="presen-btn" type="button" value="資料構成出力" onclick="OutputFile();">
@@ -247,34 +208,6 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             <button class="button3" id="zoom-out-button" onclick="zoomOut();">
                                 縮小
                             </button>
-                            <button class="button4" id="map-snapshot-button" onclick="MapSnapShot();RecordRelation();">
-                                マップver更新 <!--hatakeyama-->
-                            </button>
-                            <!-- 【Reason】
-                                 <button class="button4" onclick="add_edit_reason();">
-                                 修正理由の追加
-                                 </button> -->
-                            <!-- 【Screenshot】
-                                 <button class="button4" style="width:80px" onclick="screen_shot();">
-                                 screenshot
-                                 </button> -->
-                            <!-- <label><input type="checkbox" name="Difference" id="Difference" onClick="Difference();">以前のマップとの差分</label> -->
-                            <div id="comment_balloon2"class="comment two" hidden><!--hatakeyama -->
-                                <p>緑にハイライトされたノードは合理性を考えるべきノードです．<br/>このノードの考えを変えた際には，関連したノードも考え直す必要はないか考えてみましょう！</p>
-                            </div>
-                            <div id="comment_balloon3"class="comment three" hidden><!--hatakeyama-->
-                                <p>何度もバージョン更新を行っている重要なノードです．<br/>定期的に考えを確認しましょう！</p>
-                            </div>
-
-                            <!-- ここから清水さん１ -->
-                            <div id ="presen_menu">
-                                <button class="button4" onclick="NewContent_Append('問い')">問いノード追加</button>
-                                <button class="button4" onclick="NewContent_Append('答え')">答えノード追加</button>
-                                <button class="button4" onclick="add_Confirm();">マップ側へ反映</button>
-                                <button class="button4" onclick="Unreflected_node();">未反映ノード</button>
-                                <!-- <button class="button4" onclick="CheckNodeAllLogicRelation();">関係性の一覧</button> -->
-                                <button class="button4" onclick="DeleteLogicRelation();">関係性の解消</button>
-                            </div> <!-- presen_menu fin -->
                         </div>
                     </div><!--jsmind_nav fin-->
 
@@ -286,67 +219,6 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                 <li><a href="javascript:void(0);" onClick="VersionSpread();RecordRelation()">ノードの更新をマップ全体に波及させる</a></li><!--hatakeyama-->
                             </ul>
                         </div>
-                    </div>
-                    <div id="document_area" oncontextmenu="return false;">
-                        <div id="document_title">
-                            <div class="document_purpose">
-                                <textarea id="scenario_title" class="document_title_area" class="statement" onfocus='TextboxClick()' onblur='Edit_title(this);Record_rank();' placeholder="資料タイトル" style='width:90%;'></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 20221208 shimizu　資料構成作成エリアで右クリックしたときに項目出現 -->
-                    <div id="document_area_conmenu">
-                        <ul>
-                            <li><a href="javascript:void(0);" onClick="LogicRelationChecker()">設定した関係を確認する</a></li>
-                        </ul>
-                    </div>
-                    <div id="document_area_conmenu2" >
-                        <select  id="Slides" class='cp_ipselect cp_sl05'>
-                        </select><a id="SlideName">大枠</a><br>
-                        <select id="Sentences" class='cp_ipselect cp_sl05'>
-                        </select><a id="SelectNode">文章</a><br>
-                        <input id="ImageOntologyDecide"type="button" value="決定" onclick="AddOntologyInfo();">
-                        <input type="button" value="キャンセル" onclick="CancelButton_Click('document_area_conmenu2')">
-                    </div>
-                    
-                    <div id="document_area_conmenu3" >
-                        <div id="first_choice_node">
-                            <select id="first_logic_node" class='cp_ipselect cp_sl05'>
-                                <option value="主張">主張</option>
-                                <option value="論拠">論拠</option>
-                                <option value="根拠">根拠</option>
-                            </select>
-                            <select id="logic_intention1_node" class="cp_ipselect cp_sl04" >
-                            </select><a id="SelectContent1_node">スライドA</a><br>
-                        </div>
-                        <div id="second_choice_node">
-                            <select id="second_logic_node" class='cp_ipselect cp_sl05'>
-                            </select>
-                            <select id="logic_intention2_node" class="cp_ipselect cp_sl04">
-                            </select><a id="SelectContent2_node">スライドB</a><br>
-                        </div>
-                        <input id="DecideLogicRelationButton" type="button" value="決定" onclick="DecideNodeLogicRelation_Click();">
-                        <input id="DecideLogicRelationButton" type="button" value="キャンセル" onclick="CancelButton_Click('document_area_conmenu3')">
-                    </div>
-                    
-                    <div id="document_area_conmenu4" >
-                        <div id="first_choice">
-                            <select id="first_logic" class='cp_ipselect cp_sl05'>
-                                <option value="主張">主張</option>
-                                <option value="論拠">論拠</option>
-                                <option value="根拠">根拠</option>
-                            </select>
-                            <select id="logic_intention1" class="cp_ipselect cp_sl04" >
-                            </select><a id="SelectContent1">スライドA</a><br>
-                        </div>
-                        <div id="second_choice">
-                            <select id="second_logic" class='cp_ipselect cp_sl05'>
-                            </select>
-                            <select id="logic_intention2" class="cp_ipselect cp_sl04">
-                            </select><a id="SelectContent2">スライドB</a><br>
-                        </div>
-                        <input id="DecideLogicRelationButton" type="button" value="決定" onclick="DecideSlideLogicRelation_Click();">
-                        <input id="DecideLogicRelationButton" type="button" value="キャンセル" onclick="CancelButton_Click('document_area_conmenu4')">
                     </div>
                     <!--  kagitani　-->
                     <div id="object_container" oncontextmenu="return false;" >
@@ -504,30 +376,6 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                 </div>
             </div>
             <!--リフレクション終了 yoshioka -->
-
-            <!-- 履歴　yoshioka -->
-            <div id="record_tab">
-                <div id="layout">
-                    <div id="record_container">
-                        <form id ="reco_peri" class="ref_peri" method = "post" acion="">
-                            <p>確認したいリフレクション履歴期間を設定してください</p>
-                            <label><input id="reco_c2" type="radio" name="reco_per" value="today" onclick="record_period2();" checked/>本日分のリフレクション</label>
-                            <br>
-                            <br>
-                            <label><input id="reco_c" type="radio" name="reco_per" value="select" onclick="record_period();"/>リフレクション期間を指定する</label>
-                            <br>
-                            <input id="reco_period" name="start_date" type="date" disabled="disabled"/>から<input id="reco_period2" name="finish_date" type="date" disabled="disabled"/>
-                            <br>
-                            <br>
-                            <!-- ↓idがバッティングしていたため，とりあえずコメントアウトしている． -->
-                            <!-- <span><input id="reflection_btn" type="button" onclick="get_recordAAAA();" value="リフレクション履歴表示" /></span> -->
-                        </form>
-                        <div id ="record_table"></div>
-                    </div>
-                </div>
-            </div>
-            <!--履歴 yoshioka -->
-            
         </div>
         <!-- メインメニュー　Finish -->
 
