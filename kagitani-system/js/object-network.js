@@ -475,7 +475,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     // kagitani--目標ノード削除
     deleteGoal (){
-        console.log("削除するよーーーーーーーーん");
         //ユーザーが選択したノードのIDを取得しています。selectNodeIdがundefinedでなければ、削除処理を開始します。
         const selectNodeId = this.ownNetwork.getSelection().nodes[0];
 
@@ -525,21 +524,45 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.nodeConnectEnabled = false;
         if (params.nodes.length == 1) {
             const NetworkMenu = document.getElementById('network_conmenu');
-            this.selectId = params.nodes[0];
+            this.selectId = params.nodes[0];  // 右クリックされたノードのIDを選択
             const pointerX = params.pointer.DOM.x;
             const pointerY = params.pointer.DOM.y;
-            //const mynetPosition = document.getElementById("mynetwork2").getBoundingClientRect();
+    
             const mynetPosition = document.getElementById("myobject").getBoundingClientRect();
             this.BoxDisplay.x = pointerX + mynetPosition.left + 20;
             this.BoxDisplay.y = pointerY + mynetPosition.top + 20;
-            NetworkMenu.style.left = this.BoxDisplay.x;
-            NetworkMenu.style.top = this.BoxDisplay.y;
-            NetworkMenu.style.display = "block";//ここようわからん未完成かも
-            if(this.OntologyConnectNodeId.indexOf(this.selectId) !== -1){
+    
+            NetworkMenu.style.left = this.BoxDisplay.x + 'px';
+            NetworkMenu.style.top = this.BoxDisplay.y + 'px';
+            NetworkMenu.style.display = "block";  // メニューを表示
+    
+            // 「作業開始」ボタンをメニューに追加
+            const startWorkButton = document.createElement("button");
+            startWorkButton.innerHTML = "作業開始";
+            startWorkButton.id = "start-work-btn";
+            startWorkButton.addEventListener("click", this.startWork.bind(this));  // クリック時の処理
+    
+            // 既に「作業開始」ボタンがある場合は削除してから追加
+            const existingButton = document.getElementById("start-work-btn");
+            if (existingButton) {
+                existingButton.remove();
+            }
+    
+            NetworkMenu.appendChild(startWorkButton);  // メニューに追加
+    
+            // 「採用/棄却」メニューを表示する条件
+            if (this.OntologyConnectNodeId.indexOf(this.selectId) !== -1) {
                 document.getElementById("net_conmenu3").style.display = "block";
             }
         }
     }
+    // 「作業開始」ボタンが押された時の処理
+    startWork() {
+        console.log(`ノード ${this.selectId} の作業開始だよ！！`);  // コンソールにメッセージ表示
+        const NetworkMenu = document.getElementById('network_conmenu');
+        NetworkMenu.style.display = "none";  // メニューを非表示にする
+    }
+    
 
     //ラベルの選択（完了）
     show_select (){
@@ -640,34 +663,34 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     }
 
     //マインドマップとネットワークつなげる(今後動作確認はいる多分行けた)，(複雑なので何してるか聞きたいなら大槻まで)
+    //this.nodeConnectEnabled を true に設定し、接続モードが有効になったことを示します。
+    //これにより、マインドマップのノードをクリックした際に接続処理が実行されるようになります。
     connect_network (){
         document.getElementById('network_conmenu').style.display = "none";
         this.nodeConnectEnabled = true;
     }
 
     // マインドマップのノードがクリックされたときの処理
+    // マインドマップのノードがクリックされたときの処理
     connect_mindmap (e) {
-        const Jsmind = new jsMind({container:'jsmind_container',
-                                editable: false});
-        if (!this.nodeConnectEnabled) {
+        const Jsmind = new jsMind({container:'jsmind_container', editable: false});
+        const mm_nodeid = Jsmind.view.get_binded_nodeid(e.target);
+        if(mm_nodeid == null) {
+            alert('ノードのクリックがうまくできませんでした．もう一度試してみてください');
             return;
-        }else{
-            const mm_nodeid = Jsmind.view.get_binded_nodeid(e.target);
-            if(mm_nodeid == null){
-                alert('ノードのクリックがうまくできませんでした．もう一度試してみてください');
+        } else {
+            // 既に選択されているノードかどうかを確認
+            if(this.ConnectNetworkNodeId.indexOf(this.selectId) !== -1 && this.ConnectMindMapNodeId.indexOf(mm_nodeid) !== -1) {
+                alert('このノードはすでに選択されています');
                 return;
-            }else{
-                if(this.ConnectNetworkNodeId.indexOf(this.selectId) !== -1 && this.ConnectMindMapNodeId.indexOf(mm_nodeid) !== -1){
-                    alert('このノードはすでに選択されています');
-                    return;
-                }
-                defaultRecordForestMRN.record_connection(this.selectId,mm_nodeid);
-                this.ConnectNetworkNodeId.push(this.selectId);
-                this.ConnectMindMapNodeId.push(mm_nodeid);
-                this.nodeConnectEnabled = false;
             }
+            // ノード接続を記録
+            defaultRecordForestMRN.record_connection(this.selectId, mm_nodeid);
+            this.ConnectNetworkNodeId.push(this.selectId);
+            this.ConnectMindMapNodeId.push(mm_nodeid);
         }
     }
+
 
     //ノードがクリックされたときの処理
     networkClick (params){
