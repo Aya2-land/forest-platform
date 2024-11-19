@@ -249,7 +249,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             </div>
                             <div id="network_conmenu">
                                 <ul>
-                                    <!-- <li><a href="javascript:void(0);" id="net_conmenu1">作業開始</a></li> -->
+                                    <li><a href="javascript:void(0);" id="net_conmenu00">手順開始</a></li> 
+                                    <li><a href="javascript:void(0);" id="net_conmenu01">手順中断</a></li> 
+                                    <li><a href="javascript:void(0);" id="net_conmenu02">手順完了</a></li> 
                                     <!-- <li><a href="javascript:void(0);" id="net_conmenu1">概念をつける</a></li>
                                     <li><a href="javascript:void(0);" id="net_conmenu2">マインドマップと対応付ける</a></li>
                                     <li><a href="javascript:void(0);" id="net_conmenu3" style="display:none">採用/棄却をつける</a></li> -->

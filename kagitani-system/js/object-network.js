@@ -83,6 +83,9 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     addEventLister(){
         this.bindconnect_mindmap = this.connect_mindmap.bind(this);
+        this.bindstep_start = this.step_start.bind(this); //kagitani
+        this.bindstep_break = this.step_break.bind(this); //kagitani
+        this.bindstep_end = this.step_end.bind(this); //kagitani
         this.bindshow_select = this.show_select.bind(this);
         this.bindconnect_network = this.connect_network.bind(this);
         this.bindRecruit_Idea = this.Recruit_Idea.bind(this);
@@ -92,6 +95,9 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.bindfeedback = this.feedback.bind(this);
         this.bindNodeblinking = this.Nodeblinking.bind(this);
         $(`#jsmind_container`).on('click',this.bindconnect_mindmap);
+        $(`#net_conmenu00`).on('click',this.bindstep_start);
+        $(`#net_conmenu01`).on('click',this.bindstep_break);
+        $(`#net_conmenu02`).on('click',this.bindstep_end);
         $(`#net_conmenu1`).on('click',this.bindshow_select);
         $(`#net_conmenu2`).on('click',this.bindconnect_network);
         $(`#net_conmenu3`).on('click',this.bindRecruit_Idea);
@@ -104,6 +110,9 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     removeEventLister(){
         $(`#jsmind_container`).off('click',this.bindconnect_mindmap);
+        $(`#net_conmenu00`).off('click',this.bindstep_start);
+        $(`#net_conmenu01`).off('click',this.bindstep_break);
+        $(`#net_conmenu02`).off('click',this.bindstep_end);
         $(`#net_conmenu1`).off('click',this.bindshow_select);
         $(`#net_conmenu2`).off('click',this.bindconnect_network);
         $(`#net_conmenu3`).off('click',this.bindRecruit_Idea);
@@ -524,79 +533,101 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.nodeConnectEnabled = false;
         if (params.nodes.length == 1) {
             const NetworkMenu = document.getElementById('network_conmenu');
-            this.selectId = params.nodes[0];  // 右クリックされたノードのIDを選択
+            this.selectId = params.nodes[0];
             const pointerX = params.pointer.DOM.x;
             const pointerY = params.pointer.DOM.y;
-
+            //const mynetPosition = document.getElementById("mynetwork2").getBoundingClientRect();
             const mynetPosition = document.getElementById("myobject").getBoundingClientRect();
             this.BoxDisplay.x = pointerX + mynetPosition.left + 20;
             this.BoxDisplay.y = pointerY + mynetPosition.top + 20;
-
-            NetworkMenu.style.left = this.BoxDisplay.x + 'px';
-            NetworkMenu.style.top = this.BoxDisplay.y + 'px';
-            NetworkMenu.style.display = "block";  // メニューを表示
-
-            // 「作業開始」ボタンをメニューに追加
-            const startWorkButton = document.createElement("button");
-            startWorkButton.innerHTML = "作業開始";
-            startWorkButton.id = "start-work-btn";
-            
-            // ボタンをメニューに追加した後にイベントをバインド
-            startWorkButton.addEventListener("click", () => {
-                this.startWork(startWorkButton);  // アロー関数でこの関数を呼び出す
-            });
-
-            // 既に「作業開始」ボタンがある場合は削除してから追加
-            const existingButton = document.getElementById("start-work-btn");
-            if (existingButton) {
-                existingButton.remove();
-            }
-
-            // ボタンをメニューに追加
-            NetworkMenu.appendChild(startWorkButton);
-            
-            // 「採用/棄却」メニューを表示する条件
-            if (this.OntologyConnectNodeId.indexOf(this.selectId) !== -1) {
+            NetworkMenu.style.left = this.BoxDisplay.x;
+            NetworkMenu.style.top = this.BoxDisplay.y;
+            NetworkMenu.style.display = "block";//ここようわからん未完成かも
+            if(this.OntologyConnectNodeId.indexOf(this.selectId) !== -1){
                 document.getElementById("net_conmenu3").style.display = "block";
             }
         }
     }
 
-    // 「作業開始」ボタンが押された時の処理
-    startWork(startWorkButton) {
-        console.log(`ノード ${this.selectId} の作業開始だよ！！`);  // コンソールにメッセージ表示
-        const NetworkMenu = document.getElementById('network_conmenu');
+    // 右クリック時
+    // onContext(params) {
+    //     this.nodeConnectEnabled = false;
+    //     if (params.nodes.length == 1) {
+    //         const NetworkMenu = document.getElementById('network_conmenu');
+    //         this.selectId = params.nodes[0];  // 右クリックされたノードのIDを選択
+    //         const pointerX = params.pointer.DOM.x;
+    //         const pointerY = params.pointer.DOM.y;
+
+    //         const mynetPosition = document.getElementById("myobject").getBoundingClientRect();
+    //         this.BoxDisplay.x = pointerX + mynetPosition.left + 20;
+    //         this.BoxDisplay.y = pointerY + mynetPosition.top + 20;
+
+    //         NetworkMenu.style.left = this.BoxDisplay.x + 'px';
+    //         NetworkMenu.style.top = this.BoxDisplay.y + 'px';
+    //         NetworkMenu.style.display = "block";  // メニューを表示
+
+    //         // 「作業開始」ボタンをメニューに追加
+    //         const startWorkButton = document.createElement("button");
+    //         startWorkButton.innerHTML = "作業開始";
+    //         startWorkButton.id = "start-work-btn";
+            
+    //         // ボタンをメニューに追加した後にイベントをバインド
+    //         startWorkButton.addEventListener("click", () => {
+    //             this.startWork(startWorkButton);  // アロー関数でこの関数を呼び出す
+    //         });
+
+    //         // 既に「作業開始」ボタンがある場合は削除してから追加
+    //         const existingButton = document.getElementById("start-work-btn");
+    //         if (existingButton) {
+    //             existingButton.remove();
+    //         }
+
+    //         // ボタンをメニューに追加
+    //         NetworkMenu.appendChild(startWorkButton);
+            
+    //         // 「採用/棄却」メニューを表示する条件
+    //         if (this.OntologyConnectNodeId.indexOf(this.selectId) !== -1) {
+    //             document.getElementById("net_conmenu3").style.display = "block";
+    //         }
+    //     }
+    // }
+
+    // // 「作業開始」ボタンが押された時の処理
+    // startWork(startWorkButton) {
+    //     console.log(`ノード ${this.selectId} の作業開始だよ！！`);  // コンソールにメッセージ表示
+    //     const NetworkMenu = document.getElementById('network_conmenu');
         
-        // ボタンを「作業完了」に変更
-        console.log(`変更前！！`); 
-        startWorkButton.innerHTML = "作業完了";  // ボタンテキストを変更
-        console.log(`変更後！`); 
+    //     // ボタンを「作業完了」に変更
+    //     console.log(`変更前！！`); 
+    //     startWorkButton.innerHTML = "作業完了";  // ボタンテキストを変更
+    //     console.log(`変更後！`); 
         
-        // 新しいクリックイベントをバインド（作業完了の処理）
-        startWorkButton.removeEventListener("click", () => {
-            this.startWork(startWorkButton);
-        }); // 古いイベントを削除
-        console.log(`削除！`); 
-        startWorkButton.addEventListener("click", () => {
-            this.completeWork(startWorkButton);
-        }); // 新しいイベントを追加
-        console.log(`追加！`); 
+    //     // 新しいクリックイベントをバインド（作業完了の処理）
+    //     startWorkButton.removeEventListener("click", () => {
+    //         this.startWork(startWorkButton);
+    //     }); // 古いイベントを削除
+    //     console.log(`削除！`); 
+    //     startWorkButton.addEventListener("click", () => {
+    //         this.completeWork(startWorkButton);
+    //     }); // 新しいイベントを追加
+    //     console.log(`追加！`); 
 
-        // メニューを非表示にする
-        NetworkMenu.style.display = "none";
-    }
+    //     // メニューを非表示にする
+    //     NetworkMenu.style.display = "none";
+    // }
 
-    // 「作業完了」ボタンが押された時の処理
-    completeWork(startWorkButton) {
-        console.log(`ノード ${this.selectId} の作業完了だよ！！`);  // コンソールにメッセージ表示
-        const NetworkMenu = document.getElementById('network_conmenu');
-        NetworkMenu.style.display = "none";  // メニューを非表示にする
+    // // 「作業完了」ボタンが押された時の処理
+    // completeWork(startWorkButton) {
+    //     console.log(`ノード ${this.selectId} の作業完了だよ！！`);  // コンソールにメッセージ表示
+    //     const NetworkMenu = document.getElementById('network_conmenu');
+    //     NetworkMenu.style.display = "none";  // メニューを非表示にする
 
-        // ここで「作業完了」に関する他の処理を追加することができます
-    }
+    //     // ここで「作業完了」に関する他の処理を追加することができます
+    // }
 
 
     //ラベルの選択（完了）
+   
     show_select (){
         console.log(this.OntologyConnectNodeId.indexOf(this.selectId))
         document.getElementById('network_conmenu').style.display = "none";
@@ -608,6 +639,25 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         labelselect.style.display = "block";
         labelselect.style.left = this.BoxDisplay.x;
         labelselect.style.top = this.BoxDisplay.y;
+    }
+
+    //手段開始ボタン
+    step_start (){
+        console.log(`ノード ${this.selectId} の作業開始だよ！！`);  // コンソールにメッセージ表示
+        //DBに保存する
+        // 活動を記録
+        defaultRecordForestMRN.record_activity(this.selectId);
+    }
+
+    //手段中断ボタン
+    step_break (){
+        console.log(`ノード ${this.selectId} の作業中断だよ！！`);  // コンソールにメッセージ表示
+        //DBに保存するのをやめる．
+    }
+
+    //手段完了ボタン
+    step_end (){
+        console.log(`ノード ${this.selectId} の作業完了だよ！！`);  // コンソールにメッセージ表示
     }
 
     //概念をマップに追加（完了）
@@ -712,7 +762,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         const Jsmind = new jsMind({container:'jsmind_container', editable: false});
         const mm_nodeid = Jsmind.view.get_binded_nodeid(e.target);
         console.log("Clicked node ID:", mm_nodeid); //ここで，マインドマップのノードIDを取得してる．
-        
+
         //新たな接続を記録し、ConnectNetworkNodeId と ConnectMindMapNodeId に追加
         // ノード接続を記録
         defaultRecordForestMRN.record_connection(this.selectId, mm_nodeid);
@@ -1136,21 +1186,6 @@ class RecordForestMRN{
         });
     }
 
-    //ノードの記録(完了)
-    record_Node (id, label, node_type, x, y){
-        $.ajax({
-            url: "php/discussion_edit_structmap_maneger.php",
-            type: "POST",
-            data: {node_id : id,
-                label : label,
-                x : x,
-                y : y,
-                node_type : node_type,
-                purpose : 'record',
-                record_thing: 'node'},
-        });
-    }
-
     //エッジの記録(完了)
     record_Edge(edge_start, edge_end) {
         console.log("エッジの記録を開始");
@@ -1182,6 +1217,25 @@ class RecordForestMRN{
         console.log("エッジの記録をするぽよ");
     }
     
+    //作業開始が押された以降の活動をDBに記録する 
+    record_activity (id){
+         // 現在の時刻を取得（ISO 8601形式）
+          const timestamp = new Date().toISOString();
+          // コンソールに出力（詳細形式）
+        console.log("現在時刻:", timestamp);
+
+        // ISO 8601形式でも出力（オプション）
+        console.log("ISO 形式の現在時刻:", timestamp.toISOString());
+        $.ajax({
+            url: "php/object_maneger.php",
+            type: "POST",
+            data: {node_id : id,
+                purpose : 'record',
+                record_thing: 'activity',
+                timestamp: timestamp // 時刻を追加
+            }
+        });
+    }
 
     //フィードバックの記録
     record_Feedback (node_id, text){

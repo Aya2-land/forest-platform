@@ -30,3 +30,7 @@ updateNode → updateNooe
 
 discussion_edit_structmap_maneger.php を参考に，object_manager.phpを作成．
 discussion_map_manager.php - object_map_manager.php
+
+show_selectを使って，step_startを作成．
+
+record_activityで，作業開始以降のDBを保存．　

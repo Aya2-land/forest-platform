@@ -106,6 +106,16 @@
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 			$mysqli->query("UPDATE network_recruit SET reason = '$text'
 			WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND node_id = '$node_id' AND time >= '$struct_start_time'");
+		
+		//kagiatani
+		}else if($record_thing === 'activity'){
+			$object_node_id = $_POST["node_id"]; //ノードID
+			$object_activity_id = uniqid('activity_', true); // edge_で始まる一意のIDを生成
+			//activityを持ってくる．．
+			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+			$sql = $mysqli->query("INSERT INTO object_activities(object_activity_id, object_node_id, activity_id) 
+                    VALUES ('$object_activity_id', '$object_node_id', '$activity_id')");
+            
 		}
 	}else if($purpose === 'update'){
 		$update_thing = $_POST['update_thing'];
