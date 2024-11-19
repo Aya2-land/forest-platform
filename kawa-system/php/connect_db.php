@@ -23,7 +23,7 @@
 	// $db_password = "root";
 	// $db_dbname = "Kawa_experiment_1";
 
-	$db_host = "localhost";  // DBサーバのurl
+	$db_host = "localhost:8889";  // DBサーバのurl
 	$db_user = "root";
 	$db_password = "root";
 	$db_dbname = "forest";

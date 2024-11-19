@@ -1,7 +1,7 @@
 <?php
 
 //   各々のローカル
-	$db_host = "localhost";  // DBサーバのurl
+	$db_host = "localhost:8889";  // DBサーバのurl
 	$db_user = "root";
 	$db_password = "root";
 	$db_dbname = "kawa_experiment_2";
