@@ -34,3 +34,9 @@ discussion_map_manager.php - object_map_manager.php
 show_selectを使って，step_startを作成．
 
 record_activityで，作業開始以降のDBを保存．　
+
+record_activities.phpでactivityが保存されてるっぽい！！
+
+object_manager.phpで，else if($record_thing === 'activity')を追加．
+
+トリガーを使ったらいいのでは？

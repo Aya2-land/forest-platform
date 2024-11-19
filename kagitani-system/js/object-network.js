@@ -1218,24 +1218,32 @@ class RecordForestMRN{
     }
     
     //作業開始が押された以降の活動をDBに記録する 
-    record_activity (id){
-         // 現在の時刻を取得（ISO 8601形式）
-          const timestamp = new Date().toISOString();
-          // コンソールに出力（詳細形式）
-        console.log("現在時刻:", timestamp);
-
-        // ISO 8601形式でも出力（オプション）
-        console.log("ISO 形式の現在時刻:", timestamp.toISOString());
+    record_activity(id) {
+        // コンソールにログを出力
+        console.log("Sending data to PHP:", {
+            node_id: id,
+            purpose: 'record',
+            record_thing: 'activity'
+        });
+    
+        // 次はactivityをとってきて、object_node_idと結びつける
         $.ajax({
             url: "php/object_maneger.php",
             type: "POST",
-            data: {node_id : id,
-                purpose : 'record',
-                record_thing: 'activity',
-                timestamp: timestamp // 時刻を追加
+            data: {
+                node_id: id,
+                purpose: 'record',
+                record_thing: 'activity'
+            },
+            success: function(response) {
+                console.log("Response from server:", response);  // サーバーからのレスポンスをコンソールに出力
+            },
+            error: function(xhr, status, error) {
+                console.error("Error with AJAX request:", status, error);  // エラーメッセージをコンソールに出力
             }
         });
     }
+    
 
     //フィードバックの記録
     record_Feedback (node_id, text){
