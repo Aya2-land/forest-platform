@@ -72,5 +72,6 @@ async function loadNodesData() {
 
 window.addEventListener('load', () => {
 	// HTML本体の描画が完了したら．JSMINDのノード情報をデータベースから取得して表示
+	console.log("開始したよー");
 	loadNodesData();
 });

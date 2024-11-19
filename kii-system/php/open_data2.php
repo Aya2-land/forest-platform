@@ -10,7 +10,7 @@
 
 		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE map_id = ".$id."  ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -37,7 +37,7 @@
 
 		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE map_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -64,7 +64,7 @@
 
 		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE map_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -91,7 +91,7 @@
 
 		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE map_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -118,7 +118,7 @@
 
 		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE map_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -145,7 +145,7 @@
 
 		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE map_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -173,7 +173,7 @@
 
 		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE map_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -201,7 +201,7 @@
 
 		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE map_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -228,7 +228,7 @@
 
 		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE map_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();

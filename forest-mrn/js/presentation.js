@@ -1893,11 +1893,11 @@ async function CreateMindmapNodeXML(){
           // console.log(parse[i].concept_id);
           // console.log(parse[i].parent_id);
           console.log("node_type : "+parse[i].type)
-          xmlSource += '<Node node_id="'+parse[i].id+'" ';
+          xmlSource += '<Node node_id="'+parse[i].node_id+'" ';
           xmlSource += 'node_label="'+parse[i].content+'" ';
           xmlSource += 'node_concept_id="'+parse[i].concept_id+'" ';
           xmlSource += 'node_parent_id="'+parse[i].parent_id+'" ';
-          xmlSource += 'type="'+parse[i].type+'" />\n';
+          xmlSource += 'type="'+parse[i].type_id+'" />\n';
         }
       }
       xmlSource += '</Information>\n';

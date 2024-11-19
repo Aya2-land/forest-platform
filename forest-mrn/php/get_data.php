@@ -28,6 +28,8 @@
 		echo json_encode($node_id_array);
 
 	}else if($_POST["val"] == "edit_reason"){
+
+		//2024-11-19 使用されていない？
 		$map_id = $_SESSION["MAPID"];
 		$id = $_POST["id"];
 
@@ -51,7 +53,7 @@
 		echo json_encode($node_id_array);
 
 	}else if($_POST["val"] == "node_id"){
-		$sql = "SELECT * FROM node_latest WHERE id = '".$_POST["node_id"]."'";
+		$sql = "SELECT * FROM node_latest WHERE node_id = '".$_POST["id"]."' ";
 		$result = $mysqli->query($sql);
 
 		if(!$result){
@@ -66,7 +68,7 @@
 
 	}else if($_POST["val"] == "return"){
 
-		$sql = "SELECT * FROM nodes WHERE user_id = ".$_SESSION["USERID"]." AND map_id = ".$_SESSION["MAPID"]." AND updated_at = (select max(updated_at) from nodes)";
+		$sql = "SELECT * FROM node_histories WHERE node_version_id = (select node_version_id from node_versions where node_id = '".$_POST["node_id"]."') ORDER BY disappeared_at DESC LIMIT 1";
 
 		$i = 0;
 		$updated_array = array();

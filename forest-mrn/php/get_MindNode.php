@@ -14,7 +14,9 @@ $map_id = $_SESSION["MAPID"];//"102774749"; //
 date_default_timezone_set('Asia/Tokyo');
 
 // $sql = "SELECT scenario_title FROM maps WHERE id='$map_id'";
-$sql = "SELECT * FROM nodes WHERE map_id='$map_id' AND deleted='0'";
+$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
+
+
 
 $data = array();
 if($result = $mysqli->query($sql)){
