@@ -2,8 +2,10 @@
 require ("password.php");
 require_once("php/connect_db_user.php");
 
+
 // セッション開始
 session_start();
+
 
 // エラーメッセージの初期化
 $errorMessage = "";
