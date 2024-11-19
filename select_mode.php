@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-require("php/connect_db_user.php");
+require("php/connect_db.php");
 
 $mt_time_message = "";
 

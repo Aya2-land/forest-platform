@@ -1,6 +1,6 @@
 <?php
 require ("password.php");
-require_once("php/connect_db_user.php");
+require_once("php/connect_db.php");
 
 // セッション開始
 session_start();

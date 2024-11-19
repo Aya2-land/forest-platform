@@ -7,7 +7,7 @@
 	$db_dbname = "forest";
 
 	//アプリケーションサーバーにアップロードするとき．
-	// $db_host = "localhost:3306";  // DBサーバのurl
+	// $db_host = "localhost:8889";  // DBサーバのurl
 	// $db_user = "root";
 	// $db_password = "kslabkslab";
 	// $db_dbname = "shimizu";

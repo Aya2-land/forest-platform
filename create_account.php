@@ -1,6 +1,6 @@
 <?php
 require 'password.php';
-require 'php/connect_db_user.php';
+require 'php/connect_db.php';
 
 // セッション開始
 session_start();
@@ -55,7 +55,7 @@ if (isset($_POST["signUp"])) {
       header("Location: select_mode.php");
 
     } catch (PDOException $e) {
-        $errorMessage = 'データベースエラー';
+        $errorMessage =   $t;
       }
 
     // 上記に該当しない動作

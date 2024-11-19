@@ -12,7 +12,7 @@
 	// $db_password = "root";
 	// $db_dbname = "FCR-Experiment-Phase1";
 
-	// $db_host = "localhost:3306";
+	// $db_host = "localhost:8889";
 	// $db_user = "root";
 	// $db_password = "kslabkslab";
 	// $db_dbname = "kii";
