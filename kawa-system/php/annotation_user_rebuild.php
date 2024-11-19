@@ -13,14 +13,8 @@ date_default_timezone_set('Asia/Tokyo');
 $today_date = date("Y-m-d");
 $sheet_id = $_POST['sheet'];    //シートID
 
-<<<<<<< Updated upstream
 if($_POST["val"] == "all"){
   $sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM annotations 
-=======
-/* and user_id=${user_id} */
-
-$sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM annotations 
->>>>>>> Stashed changes
         WHERE deleted=0 and sheet_id='$sheet_id' 
         ORDER BY 'created_at' DESC"; 
 
@@ -52,7 +46,6 @@ if($result = $mysqli->query($sql)){
     }
 
 echo json_encode($reflections);
-<<<<<<< Updated upstream
 }
 
 else if($_POST['val'] == 'one'){
@@ -97,7 +90,5 @@ else if($_POST['val'] == 'one'){
 
 }
 
-=======
->>>>>>> Stashed changes
 
 ?>

@@ -3,11 +3,7 @@ session_start();
 require "connect_db.php";
 
     $sheet_id = $_SESSION["SHEETID"];
-<<<<<<< Updated upstream
     $paper_id = $_SESSION["PAPERID"]; 
-=======
-    $paper_id = $_SESSION["PAPERID"];
->>>>>>> Stashed changes
 
     if($_POST["val"] == "get_sheet_id"){
 

@@ -12,11 +12,7 @@ require("connect_db.php");
 date_default_timezone_set('Asia/Tokyo');
 $today_date = date("Y-m-d");
 $sheet_id = $_SESSION['SHEETID'];    //シートID
-<<<<<<< Updated upstream
 $paper_id_sql = "SELECT paper_id FROM sheets WHERE id=$sheet_id AND self_conversation_activity_mode = 'critical_reading'";
-=======
-$paper_id_sql = "SELECT paper_id FROM sheets WHERE id=$sheet_id ";
->>>>>>> Stashed changes
 
 $result_paper_id = $mysqli->query($paper_id_sql);
 $data_paper_id = mysqli_fetch_assoc($result_paper_id);

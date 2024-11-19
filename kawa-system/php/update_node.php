@@ -40,11 +40,7 @@
 	else if($_POST["update"] == "sheet"){
 
 		// $sql = "UPDATE sheets SET updated_at = '".$updated_at."' WHERE id = '".$_POST['id']."'";
-<<<<<<< Updated upstream
 		$sql = "UPDATE sheets SET updated_at = '".$updated_at."' WHERE id = '".$_SESSION['SHEETID']."' AND self_conversation_activity_mode = 'critical_reading'";
-=======
-		$sql = "UPDATE sheets SET updated_at = '".$updated_at."' WHERE id = '".$_SESSION['SHEETID']."'";
->>>>>>> Stashed changes
 		$result = $mysqli->query($sql);
 
 	}else if($_POST["update"] == "edit_reason"){

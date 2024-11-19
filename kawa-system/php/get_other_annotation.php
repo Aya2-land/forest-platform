@@ -36,11 +36,7 @@ require "connect_db.php";
         $data_array = array(); // contentとsheetidを格納する配列 
         $sheet_id = $_SESSION["SHEETID"];
         $paper_id = $_SESSION["PAPERID"]; 
-<<<<<<< Updated upstream
         $sql = "SELECT * FROM nodes WHERE concept_id = '".$id."' AND type = 'predict' AND deleted = '0' AND content NOT LIKE '＊あなたの解釈' AND content NOT LIKE '＊あなたの予測' AND sheet_id != '".$sheet_id."' AND (paper_id = '".$paper_id."')";
-=======
-        $sql = "SELECT content, sheet_id, id FROM nodes WHERE concept_id = '".$id."' AND type = 'predict' AND deleted = '0' AND content NOT LIKE '＊あなたの解釈' AND content NOT LIKE '＊あなたの予測' AND sheet_id != '".$sheet_id."' AND (paper_id = '".$paper_id."')";
->>>>>>> Stashed changes
 
         if ($result = $mysqli->query($sql)) {
 
@@ -49,12 +45,8 @@ require "connect_db.php";
                     
                     "content" => $row["content"],
                     "sheet_id" => $row["sheet_id"],
-<<<<<<< Updated upstream
                     "id" => $row["id"],
                     "parent_id"=> $row["parent_id"]
-=======
-                    "id" => $row["id"]
->>>>>>> Stashed changes
                 );
                 $i++;
             }
@@ -81,12 +73,8 @@ require "connect_db.php";
                         "content" => $row["content"],
                         "end_char_id"=> $row["end_char_id"],
                         "start_char_id"=> $row["start_char_id"],
-<<<<<<< Updated upstream
                         "sheet_id"=> $row["sheet_id"],
                         "parent_id"=> $row["parent_id"]
-=======
-                        "sheet_id"=> $row["sheet_id"]
->>>>>>> Stashed changes
                     );      
                     $i++;
                 } 
