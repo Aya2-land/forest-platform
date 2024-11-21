@@ -22,12 +22,12 @@ if (isset($_POST["signUp"])) {
       print('<p>データベースへの接続に失敗しました。</p>' . $mysqli->connect_error);
       exit();
     }
-
+    
     $username = $_POST["username"];
     $password = $_POST["password"];
 
     //dsn = sprintf('mysql: host=%s; dbname=%s; charset=utf8', $db['host'], $db['dbname']);
-    $dsn = sprintf('mysql: host=%s; dbname=%s; charset=utf8', $db_host, $db_dbname);
+    $dsn = sprintf('mysql: host=%s; port=%s; dbname=%s; charset=utf8', $db_host, $port, $db_dbname);
 
     // エラー処理
     // どのtry文のエラーであってもcatchの処理は一種類のみ
@@ -52,11 +52,12 @@ if (isset($_POST["signUp"])) {
 
       $_SESSION["USERNAME"] = $_POST["username"];
       $_SESSION["USERID"] = $user_id;
+
       header("Location: select_mode.php");
 
     } catch (PDOException $e) {
-        $errorMessage =   $t;
-      }
+       print($e->getMessage());
+    }
 
     // 上記に該当しない動作
     }

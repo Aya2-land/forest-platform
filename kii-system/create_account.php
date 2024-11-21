@@ -28,7 +28,7 @@ if (isset($_POST["signUp"])) {
     $password = $_POST["password"];
 
     //dsn = sprintf('mysql: host=%s; dbname=%s; charset=utf8', $db['host'], $db['dbname']);
-    $dsn = sprintf('mysql: host=%s; dbname=%s; charset=utf8', $db_host, $db_dbname);
+    $dsn = sprintf('mysql: host=%s; port=%s; dbname=%s; charset=utf8', $db_host, $port, $db_dbname);
 
     // エラー処理
     // どのtry文のエラーであってもcatchの処理は一種類のみ

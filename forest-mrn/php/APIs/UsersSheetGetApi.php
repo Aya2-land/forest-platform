@@ -1,13 +1,14 @@
 <?php
 
 // DB access
-$db_host = "localhost:8889";  // DBサーバのurl
+$db_host = "localhost";  // DBサーバのurl
 $db_user = "root";
 $db_password = "root";
 $db_dbname = "forest";
+$port = 8889;
 
 // mysqlへの接続
-$mysqli = new mysqli($db_host, $db_user, $db_password, $db_dbname);
+$mysqli = new mysqli($db_host, $db_user, $db_password, $db_dbname, $port);
 if ($mysqli->connect_error) {
   print('<p>データベースへの接続に失敗しました。</p>' . $mysqli->connect_error);
   exit();
