@@ -18,7 +18,7 @@
 
 		$map_node_id = rand();
 
-		if($_POST["type"] == "root"){
+		if($_POST["type"] == 0){
 
 			$id = $_SESSION["MAPID"];
 

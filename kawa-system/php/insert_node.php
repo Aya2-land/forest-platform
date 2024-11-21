@@ -15,7 +15,7 @@
 		$node_v_id = uniqid(rand(0,64));
 		$node_h_id = uniqid(rand(0,64));
 
-		if($_POST["type"] == "root"){
+		if($_POST["type"] == 0){
 
 			$id = $_SESSION["MAPID"];
 

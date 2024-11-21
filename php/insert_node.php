@@ -12,7 +12,7 @@
 		$created_at = date("Y-m-d H:i:s");
 		$deleted = 0;
 
-		if($_POST["type"] == "root"){
+		if($_POST["type"] == 0){
 
 			$id = $_SESSION["MAPID"];
 
