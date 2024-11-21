@@ -105,55 +105,32 @@
 			$text = $_POST["text"];
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 			$mysqli->query("UPDATE network_recruit SET reason = '$text'
-			WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND node_id = '$node_id' AND time >= '$struct_start_time'");
-		
-		//kagiatani
-		}else if($record_thing === 'activity'){
-			$object_node_id = $_POST["node_id"]; //ノードID
-			$object_activity_id = uniqid('activity_', true); 
-			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+			WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND node_id = '$node_id' AND time >= '$struct_start_time'");	
+		}
 
-			// デバッグ: 現在の時刻と送信されたノードIDを確認
-			echo "Timestamp: $timestamp<br>";
-			echo "Node ID: $object_node_id<br>";
-		
-			// activityを持ってくる
-			$result_activities = $mysqli->query("
-				SELECT id FROM activities
-				WHERE timestamp >= '2024-11-15 10:02:30.86'
-				ORDER BY timestamp DESC
-			");
+	//kagiatani
+	}else if($purpose === 'aut_record'){
+		if ($_POST['record_thing'] === 'activity') {
+				// ノードIDを取得
+				$object_node_id = $_POST['node_id'];
+				$activity_id = $_POST['activity_id'];
 
-			// デバッグ: クエリが正常に実行されたか確認
-			if (!$result_activities) {
-				echo "Error executing query: " . $mysqli->error . "<br>";
-			}
-
-			// activitiesからデータを取得し、object_activitiesに保存する
-			if ($result_activities) {
-				while ($activity = $result_activities->fetch_assoc()) {
-					$activity_id = $activity['id']; // activitiesのidを取得
-
-					// デバッグ: 各活動のIDを表示
-					echo "Activity ID: $activity_id<br>";
-
-					// object_activitiesに保存する
-					$sql = $mysqli->query("
-						INSERT INTO object_activities(object_activity_id, object_node_id, activity_id) 
-						VALUES ('$object_activity_id', '$object_node_id', '$activity_id')
-					");
-
+				// データをコンソールに出力（ブラウザのコンソール）
+				echo "<script>console.log('Received object_node_id: " . $object_node_id . "');</script>";
+				echo "<script>console.log('Received activity_id: " . $activity_id . "');</script>";		
+	
+				// データベース処理（活動記録を保存）
+				$object_activity_id = uniqid('activity_', true);
+	
+					// DBに挿入
+					$sql = $mysqli->query("INSERT INTO object_activities (object_activity_id, object_node_id, activity_id) VALUES ('$object_activity_id', '$object_node_id', '$activity_id')");
+	
 					// エラーチェック
 					if (!$sql) {
 						echo "Error inserting into object_activities: " . $mysqli->error . "<br>";
 					} else {
-						// デバッグ: 保存成功メッセージ
 						echo "Inserted object_activity_id: $object_activity_id<br>";
 					}
-				}
-			} else {
-				echo "Error fetching activities: " . $mysqli->error . "<br>";
-			}
 		}
 	}else if($purpose === 'update'){
 		$update_thing = $_POST['update_thing'];

@@ -1,6 +1,7 @@
 let defaultForestMRN;
 let defaultRecordForestMRN;
 let defaultShowForestMRN;
+let autoRecordFlag = false; // 自動記録フラグ
 
 class ForestMRN { // forestMRN: forest Meeting Reflection Network
     constructor(container, load) {
@@ -549,85 +550,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         }
     }
 
-    // 右クリック時
-    // onContext(params) {
-    //     this.nodeConnectEnabled = false;
-    //     if (params.nodes.length == 1) {
-    //         const NetworkMenu = document.getElementById('network_conmenu');
-    //         this.selectId = params.nodes[0];  // 右クリックされたノードのIDを選択
-    //         const pointerX = params.pointer.DOM.x;
-    //         const pointerY = params.pointer.DOM.y;
-
-    //         const mynetPosition = document.getElementById("myobject").getBoundingClientRect();
-    //         this.BoxDisplay.x = pointerX + mynetPosition.left + 20;
-    //         this.BoxDisplay.y = pointerY + mynetPosition.top + 20;
-
-    //         NetworkMenu.style.left = this.BoxDisplay.x + 'px';
-    //         NetworkMenu.style.top = this.BoxDisplay.y + 'px';
-    //         NetworkMenu.style.display = "block";  // メニューを表示
-
-    //         // 「作業開始」ボタンをメニューに追加
-    //         const startWorkButton = document.createElement("button");
-    //         startWorkButton.innerHTML = "作業開始";
-    //         startWorkButton.id = "start-work-btn";
-            
-    //         // ボタンをメニューに追加した後にイベントをバインド
-    //         startWorkButton.addEventListener("click", () => {
-    //             this.startWork(startWorkButton);  // アロー関数でこの関数を呼び出す
-    //         });
-
-    //         // 既に「作業開始」ボタンがある場合は削除してから追加
-    //         const existingButton = document.getElementById("start-work-btn");
-    //         if (existingButton) {
-    //             existingButton.remove();
-    //         }
-
-    //         // ボタンをメニューに追加
-    //         NetworkMenu.appendChild(startWorkButton);
-            
-    //         // 「採用/棄却」メニューを表示する条件
-    //         if (this.OntologyConnectNodeId.indexOf(this.selectId) !== -1) {
-    //             document.getElementById("net_conmenu3").style.display = "block";
-    //         }
-    //     }
-    // }
-
-    // // 「作業開始」ボタンが押された時の処理
-    // startWork(startWorkButton) {
-    //     console.log(`ノード ${this.selectId} の作業開始だよ！！`);  // コンソールにメッセージ表示
-    //     const NetworkMenu = document.getElementById('network_conmenu');
-        
-    //     // ボタンを「作業完了」に変更
-    //     console.log(`変更前！！`); 
-    //     startWorkButton.innerHTML = "作業完了";  // ボタンテキストを変更
-    //     console.log(`変更後！`); 
-        
-    //     // 新しいクリックイベントをバインド（作業完了の処理）
-    //     startWorkButton.removeEventListener("click", () => {
-    //         this.startWork(startWorkButton);
-    //     }); // 古いイベントを削除
-    //     console.log(`削除！`); 
-    //     startWorkButton.addEventListener("click", () => {
-    //         this.completeWork(startWorkButton);
-    //     }); // 新しいイベントを追加
-    //     console.log(`追加！`); 
-
-    //     // メニューを非表示にする
-    //     NetworkMenu.style.display = "none";
-    // }
-
-    // // 「作業完了」ボタンが押された時の処理
-    // completeWork(startWorkButton) {
-    //     console.log(`ノード ${this.selectId} の作業完了だよ！！`);  // コンソールにメッセージ表示
-    //     const NetworkMenu = document.getElementById('network_conmenu');
-    //     NetworkMenu.style.display = "none";  // メニューを非表示にする
-
-    //     // ここで「作業完了」に関する他の処理を追加することができます
-    // }
-
-
     //ラベルの選択（完了）
-   
     show_select (){
         console.log(this.OntologyConnectNodeId.indexOf(this.selectId))
         document.getElementById('network_conmenu').style.display = "none";
@@ -645,14 +568,23 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     step_start (){
         console.log(`ノード ${this.selectId} の作業開始だよ！！`);  // コンソールにメッセージ表示
         //DBに保存する
-        // 活動を記録
-        defaultRecordForestMRN.record_activity(this.selectId);
+        autoRecordFlag = true;
+        // カスタムイベントを発火
+        const event = new CustomEvent("stepStartEvent", {
+            detail: {
+            object_node_id: this.selectId,
+            autoRecordFlag: autoRecordFlag,
+            },
+        });
+        
+        window.dispatchEvent(event); // グローバルイベントとして発火
     }
 
     //手段中断ボタン
     step_break (){
         console.log(`ノード ${this.selectId} の作業中断だよ！！`);  // コンソールにメッセージ表示
         //DBに保存するのをやめる．
+        defaultRecordForestMRN.stopAutoRecord(this.selectId);
     }
 
     //手段完了ボタン
@@ -757,22 +689,22 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     // マインドマップのノードがクリックされたときの処理
     connect_mindmap (e) {
-        console.log("connect_mindmap function called")
+        //console.log("connect_mindmap function called")
         //jsMind オブジェクトを作成し、クリックされたノードIDを取得
         const Jsmind = new jsMind({container:'jsmind_container', editable: false});
         const mm_nodeid = Jsmind.view.get_binded_nodeid(e.target);
-        console.log("Clicked node ID:", mm_nodeid); //ここで，マインドマップのノードIDを取得してる．
+        //console.log("Clicked node ID:", mm_nodeid); //ここで，マインドマップのノードIDを取得してる．
 
         //新たな接続を記録し、ConnectNetworkNodeId と ConnectMindMapNodeId に追加
         // ノード接続を記録
         defaultRecordForestMRN.record_connection(this.selectId, mm_nodeid);
-        console.log("Recorded connection:", {selectId: this.selectId, mm_nodeid: mm_nodeid});
+        //console.log("Recorded connection:", {selectId: this.selectId, mm_nodeid: mm_nodeid});
 
         this.ConnectNetworkNodeId.push(this.selectId);
         this.ConnectMindMapNodeId.push(mm_nodeid);
 
-        console.log("ConnectNetworkNodeId:", this.ConnectNetworkNodeId);
-        console.log("ConnectMindMapNodeId:", this.ConnectMindMapNodeId);
+        //console.log("ConnectNetworkNodeId:", this.ConnectNetworkNodeId);
+        //console.log("ConnectMindMapNodeId:", this.ConnectMindMapNodeId);
 
         //ノードがクリックされなかった場合にアラートを表示。
         // if(mm_nodeid == null) {
@@ -1126,6 +1058,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
 }
 
+
 // ネットワーク関係の記録
 class RecordForestMRN{
 
@@ -1217,32 +1150,59 @@ class RecordForestMRN{
         console.log("エッジの記録をするぽよ");
     }
     
-    //作業開始が押された以降の活動をDBに記録する 
-    record_activity(id) {
-        // コンソールにログを出力
-        console.log("Sending data to PHP:", {
-            node_id: id,
-            purpose: 'record',
-            record_thing: 'activity'
-        });
-    
-        // 次はactivityをとってきて、object_node_idと結びつける
+
+    // //作業開始が押された以降の活動をDBに記録する 
+    // // フラグをオンにして記録を開始
+    // startAutoRecord(id) {
+    //     console.log("活動記録をするぽよ");
+    //     if (autoRecordFlag) { // フラグがオンの時
+    //         console.log("フラグオンになった！！");
+
+    //         // Record_activities 関数を呼び出し、引数を渡す
+    //         console.log("Record_activitiesを呼び出します");
+    //         Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nodeTYPE, primaryID);
+        
+    //         // 新しい $.ajax リクエストを送信
+    //         console.log("AJAXリクエストを送信中...");
+    //         $.ajax({
+    //           url: "php/object_maneger.php",
+    //           type: "POST",
+    //           data: {
+    //             purpose: 'auto_record',
+    //             record_thing: 'activity',
+    //             node_id: id, // ノードIDを送信
+    //             activity_id: nodeID
+    //           },
+    //           success: function(response) {
+    //             console.log("自動記録成功: ", response);
+    //           },
+    //           error: function() {
+    //             console.log("自動記録失敗");
+    //           }
+    //         });
+    //       }
+        
+    // }
+
+    // フラグをオフにして記録を停止
+    stopAutoRecord() {
+        autoRecordFlag = false; // 自動記録を停止
         $.ajax({
-            url: "php/object_maneger.php",
+            url: "php/record_object_activities.php",
             type: "POST",
             data: {
-                node_id: id,
-                purpose: 'record',
-                record_thing: 'activity'
+                purpose: 'auto_record',
+                record_thing: 'stop_flag',
             },
             success: function(response) {
-                console.log("Response from server:", response);  // サーバーからのレスポンスをコンソールに出力
+                console.log("Flag stopped:", response); // サーバーからのレスポンスを確認
             },
             error: function(xhr, status, error) {
-                console.error("Error with AJAX request:", status, error);  // エラーメッセージをコンソールに出力
+                console.error("Error stopping flag:", error); // エラーを表示
             }
         });
     }
+
     
 
     //フィードバックの記録

@@ -1,37 +1,72 @@
+
+// どこからでもアクセスできる変数を定義
+let object_node_id;
+
 //ノードの操作履歴を記録する関数
-function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nodeTYPE, primaryID){
-
+function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nodeTYPE, primaryID) {
   $.ajax({
-
-      url: "php/record_activities.php",
-      type: "POST",
-      data: { id : nodeID,
-              parent_id : parentID,
-              activity : nodeACT,
-              text : nodeTEXT,
-              concept_id : nodeCONCEPT,
-              type : nodeTYPE,
-              primary : primaryID},
-
-      success: function () {
-        console.log("\n");
-        console.log("登録成功");
-        console.log("ノードID：　" +nodeID );
-        console.log("操作：　" +nodeACT );
-        console.log("コンセプトID：　" +nodeCONCEPT );
-        console.log("ノードTYPE：　" +nodeTYPE );
-        console.log("ノードテキスト：　" +nodeTEXT );
-        console.log("親ノードID：　" +parentID );
-        console.log("\n");
-      },
-
-      error: function () {
-      console.log("登録失敗");},
-
+    url: "php/record_activities.php",
+    type: "POST",
+    data: {
+      id: nodeID,
+      parent_id: parentID,
+      activity: nodeACT,
+      text: nodeTEXT,
+      concept_id: nodeCONCEPT,
+      type: nodeTYPE,
+      primary: primaryID,
+    },
+    success: function () {
+      console.log("登録成功", {
+        ノードID: nodeID,
+        操作: nodeACT,
+        コンセプトID: nodeCONCEPT,
+        ノードTYPE: nodeTYPE,
+        ノードテキスト: nodeTEXT,
+        親ノードID: parentID,
+      });
+    },
+    error: function () {
+      console.log("登録失敗");
+    },
   });
 
-
+  if (autoRecordFlag) {
+    console.log("フラグオンですので！！");
+    //ここでobject_node_idを受け取りたい．
+    // 自動記録処理
+    $.ajax({
+      url: "php/record_object_activities.php",
+      type: "POST",
+      data: {
+        recoad_flag: autoRecordFlag,
+        object_node_id: object_node_id,
+        primary: primaryID
+      },
+      dataType: "json", // サーバーからのデータをJSON形式で受け取る
+      //保存できてるのに，エラーが出るんよね．一旦コメントアウト．
+      //timestampを定義しようと思ったらエラーが出てくる．
+      // success: function(response) {
+      //     console.log("やっっっっと成功したお！！:",response.message); // 成功またはエラーのメッセージを表示
+      // },
+      // error: function(xhr, status, error) {
+      //     console.error("AJAXエラーだお:", xhr.responseText);
+      // }
+    });
+  }
 }
+
+// イベントリスナーの設定
+window.addEventListener("stepStartEvent", (event) => {
+  // event.detail から object_node_id を取得
+  object_node_id = event.detail.object_node_id;
+  // autoRecordFlag を取得
+  const autoRecordFlag = event.detail.autoRecordFlag;
+
+  console.log("新しい object_node_id: ", object_node_id);
+  console.log("フラグどうなってるんか: ", {autoRecordFlag});
+});
+
 
 
 //node_idと取得したい情報の文字列を渡すと，
