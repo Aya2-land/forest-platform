@@ -1,11 +1,11 @@
 <?php
 session_start();
-require("php/connect_db.php");
+require("../php/connect_db.php");
 require("php/sheet.php");
 
 // ログイン状態のチェック
 if (!isset($_SESSION["USERID"]) ) { //ログイン出来ていない
-    header("Location: logout.php");
+    header("Location: ../logout.php");
     exit;
 }
 
@@ -18,7 +18,7 @@ if( (isset($_POST["sheetbtn"])) ||   //シート選択ボタンが押された
 if(isset($_POST["logout"])){ //logoutボタンが押された
     // alert("本当にログアウトしますか？");
     // 時間があれば確認ダイアログを作る
-    header("Location: logout.php");
+    header("Location: ../logout.php");
 }
 
 ?>
