@@ -6,7 +6,7 @@
 	require("connect_db.php");
 	date_default_timezone_set('Asia/Tokyo');
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-	$sheet_id = $_SESSION['SHEETID'];    //シートID
+	$map_id = $_SESSION['MAPID'];    //シートID
 	$user_id = $_SESSION['USERID'];      //ユーザID
 	
 	$add_to_comment_id = $_POST["id"]; 
@@ -14,8 +14,8 @@
 	$comment_id = $_POST["comment_id"];
     $version_id = $_POST["version_id"];
 	
-	$sql = "INSERT INTO add_to_comment (id, type, created_at, sheet_id, user_id, comment_id , version_id)
-	VALUES ('$add_to_comment_id', '$type','$timestamp', '$sheet_id', '$user_id', '$comment_id', '$version_id')";
+	$sql = "INSERT INTO add_to_comment (id, type, created_at, map_id, user_id, comment_id , version_id)
+	VALUES ('$add_to_comment_id', '$type','$timestamp', '$map_id', '$user_id', '$comment_id', '$version_id')";
 
 	$result = $mysqli->query($sql);
 

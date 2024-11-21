@@ -35,7 +35,7 @@ if(isset($_POST["sheetname"])){
 //シート編集
 if(isset($_POST["sheet"])){
 
-	$_SESSION["SHEETID"] = $_POST["sheet"];
+	$_SESSION["MAPID"] = $_POST["sheet"];
 
 	if(isset($_POST["edit"])){
 

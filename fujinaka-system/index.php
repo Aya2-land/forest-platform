@@ -10,9 +10,9 @@ if (!isset($_SESSION["USERID"]) ) { //ログイン出来ていない
 }
 
 if( (isset($_POST["sheetbtn"])) ||   //シート選択ボタンが押された
-    (isset($_SESSION["USERID"]) && !isset($_SESSION["SHEETID"]) )) { //ログインは出来ているがシート未選択の場合
+    (isset($_SESSION["USERID"]) && !isset($_SESSION["MAPID"]) )) { //ログインは出来ているがシート未選択の場合
   header("Location: select_sheet.php");
-  $_SESSION["SHEETID"] = null; //シート選択画面に遷移させた時にSHEETIDをリセット
+  $_SESSION["MAPID"] = null; //シート選択画面に遷移させた時にMAPIDをリセット
 }
 
 if(isset($_POST["logout"])){ //logoutボタンが押された

@@ -498,7 +498,7 @@ function add_annotation(comment_id){//kii-fujinaka変更　追加先をノード
 
 //       url: "php/update_node.php",
 //       type: "POST",
-//       data: { update : "sheet" }
+//       data: { update : "map" }
 
 //   });
 //     if(window.getSelection().toString().length != 0){
@@ -561,7 +561,7 @@ function add_annotation(comment_id){//kii-fujinaka変更　追加先をノード
 
 //         url: "php/update_node.php",
 //         type: "POST",
-//         data: { update : "sheet" }
+//         data: { update : "map" }
 
 //     });
 
@@ -654,7 +654,7 @@ function add_annotation(comment_id){//kii-fujinaka変更　追加先をノード
 
 //       url: "php/update_node.php",
 //       type: "POST",
-//       data: { update : "sheet" }
+//       data: { update : "map" }
 
 //   });
 

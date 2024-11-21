@@ -22,7 +22,7 @@ $map_id = $_GET["map_id"];
 $deleted = 0;
 
 // $sql = "SELECT * FROM nodes WHERE map_id='".$map_id."' and id='".$node_id."'";
-$sql = "SELECT * FROM nodes WHERE map_id='".$map_id."' and deleted='".$deleted."'";
+$sql = "SELECT * FROM nodes WHERE node_id IN (SELECT node_id FROM map_node_links WHERE map_id = ".$id.") AND deleted = 0";
 
 
 $data = array();

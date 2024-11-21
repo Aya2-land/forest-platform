@@ -66,7 +66,7 @@
 
 	}else if($_POST["val"] == "return"){
 
-		$sql = "SELECT * FROM nodes WHERE user_id = ".$_SESSION["USERID"]." AND map_id = ".$_SESSION["MAPID"]." AND updated_at = (select max(updated_at) from nodes)";
+		$sql = "SELECT * FROM node_histories WHERE node_version_id IN (select node_version_id from node_versions where node_id IN (SELECT node_id FROM map_node_links WHERE map_id = ".$_SESSION["MAPID"].")) ORDER BY disappeared_at DESC LIMIT 1";
 
 		$i = 0;
 		$updated_array = array();

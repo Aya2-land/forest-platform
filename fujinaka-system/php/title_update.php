@@ -6,11 +6,11 @@ session_start();
 require("connect_db.php");
 
 $user_id = $_SESSION["USERID"];//
-$sheet_id = $_SESSION["SHEETID"];//
+$map_id = $_SESSION["MAPID"];//
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 
-$sql = "SELECT scenario_title FROM sheets WHERE id='$sheet_id'";
+$sql = "SELECT scenario_title FROM sheets WHERE id='$map_id'";
 
 if($result = $mysqli->query($sql)) {
   while($row = mysqli_fetch_assoc($result)){
@@ -22,7 +22,7 @@ $title = $_POST["title"]; //論文タイトル
 
 if($title != $pre_title){	//変更があれば更新
 
-  $sql = "UPDATE sheets SET updated_at='$timestamp', scenario_title='$title' WHERE id='$sheet_id'";
+  $sql = "UPDATE sheets SET updated_at='$timestamp', scenario_title='$title' WHERE id='$map_id'";
     
   $result = $mysqli->query($sql);
 

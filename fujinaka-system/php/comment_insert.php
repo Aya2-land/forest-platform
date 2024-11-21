@@ -10,13 +10,13 @@
 
 	$user_id = $_SESSION['USERID'];     //ユーザID
 	$user_name = $_SESSION['USERNAME'];	//ユーザ名
-  	$sheet_id = $_SESSION['SHEETID'];   //シートID
+  	$map_id = $_SESSION['MAPID'];   //シートID
 	$comment_id = $_POST["comment_id"];	//コメントID
 	$version_id = $_POST["version_id"];	//バージョンID
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-	$sql = "INSERT INTO comment (comment_id, version_id, user_id, user_name, sheet_id, created_at)
-	VALUES ('$comment_id', '$version_id', '$user_id', '$user_name', '$sheet_id', '$timestamp')";
+	$sql = "INSERT INTO comment (comment_id, version_id, user_id, user_name, map_id, created_at)
+	VALUES ('$comment_id', '$version_id', '$user_id', '$user_name', '$map_id', '$timestamp')";
 
 	$result = $mysqli->query($sql);
 

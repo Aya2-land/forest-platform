@@ -9,13 +9,13 @@
   date_default_timezone_set('Asia/Tokyo');
 
 	$user_id = $_SESSION['USERID'];		//ユーザID
-  $sheet_id = $_SESSION['SHEETID'];	//シートID
+  $map_id = $_SESSION['MAPID'];	//シートID
   $chapter_id = $_POST["id"];				//章ID
 	$rank = $_POST["rank"];						//章順番
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-	$sql = "INSERT INTO chapter (chapter_id, user_id, sheet_id, rank, created_at)
-	VALUES ('$chapter_id', '$user_id', '$sheet_id', '$rank', '$timestamp')";
+	$sql = "INSERT INTO chapter (chapter_id, user_id, map_id, rank, created_at)
+	VALUES ('$chapter_id', '$user_id', '$map_id', '$rank', '$timestamp')";
 
 	$result = $mysqli->query($sql);
 

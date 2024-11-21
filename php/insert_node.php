@@ -16,13 +16,13 @@
 
 			$id = $_SESSION["MAPID"];
 
-			$sql = "SELECT * FROM nodes WHERE map_id = '$id'";
+			$sql = "SELECT * FROM nodes WHERE node_id IN (SELECT node_id FROM map_node_links WHERE map_id = ".$id.") AND deleted = 0";
 
 			if($result = $mysqli->query($sql)){
 
 				while($row = mysqli_fetch_assoc($result)){
 
-					$root = $row["id"];
+					$root = $row["node_id"];
 
 				}
 

@@ -53,7 +53,7 @@
 		echo json_encode($node_id_array);
 
 	}else if($_POST["val"] == "node_id"){
-		$sql = "SELECT * FROM node_latest WHERE node_id = '".$_POST["id"]."' ";
+		$sql = "SELECT * FROM node_latest WHERE node_id = '".$_POST["node_id"]."' ";
 		$result = $mysqli->query($sql);
 
 		if(!$result){
@@ -68,7 +68,7 @@
 
 	}else if($_POST["val"] == "return"){
 
-		$sql = "SELECT * FROM node_histories WHERE node_version_id = (select node_version_id from node_versions where node_id = '".$_POST["node_id"]."') ORDER BY disappeared_at DESC LIMIT 1";
+		$sql = "SELECT * FROM node_histories WHERE node_version_id IN (select node_version_id from node_versions where node_id IN (SELECT node_id FROM map_node_links WHERE map_id = ".$_SESSION["MAPID"].")) ORDER BY disappeared_at DESC LIMIT 1";
 
 		$i = 0;
 		$updated_array = array();
@@ -77,7 +77,7 @@
 
 			while($row = mysqli_fetch_assoc($result)){
 
-				$updated_array = $updated_array + array($i=>$row["id"]);
+				$updated_array = $updated_array + array($i=>$row["node_history_id"]);
 
 				$i += 1;
 

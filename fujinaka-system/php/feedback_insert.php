@@ -9,7 +9,7 @@
   date_default_timezone_set('Asia/Tokyo');
 
 	$user_id = $_SESSION['USERID'];     //ユーザID
-  $sheet_id = $_SESSION['SHEETID'];   //シートID
+  $map_id = $_SESSION['MAPID'];   //シートID
 	$feedback_id = $_POST["feedback_id"];	//フィードバックID
   $node_id = $_POST["node_id"];         //ノードID
 	$node_concept = $_POST["node_concept"]; 	//ノード概念
@@ -17,8 +17,8 @@
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 	$feedback_status = $_POST["feedback_status"]; //考える（0），考えない（1）
 
-	$sql = "INSERT INTO feedback (feedback_id, user_id, sheet_id, node_id, node_concept, content, created_at, feedback_status)
-	VALUES ('$feedback_id', '$user_id', '$sheet_id', '$node_id', '$node_concept', '$content', '$timestamp', '$feedback_status')";
+	$sql = "INSERT INTO feedback (feedback_id, user_id, map_id, node_id, node_concept, content, created_at, feedback_status)
+	VALUES ('$feedback_id', '$user_id', '$map_id', '$node_id', '$node_concept', '$content', '$timestamp', '$feedback_status')";
 
 	$result = $mysqli->query($sql);
 

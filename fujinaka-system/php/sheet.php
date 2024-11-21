@@ -4,7 +4,7 @@
 
 		require("connect_db.php");
 
-		$sql = "SELECT * FROM sheets WHERE id = ".$_SESSION["SHEETID"];
+		$sql = "SELECT * FROM sheets WHERE id = ".$_SESSION["MAPID"];
 
 		if($result = $mysqli->query($sql)){
 
@@ -42,13 +42,13 @@
 		require("connect_db.php");
 		date_default_timezone_set('Asia/Tokyo');
 
-		$_SESSION["SHEETID"] = rand();
+		$_SESSION["MAPID"] = rand();
 		$created_at = date("Y-m-d H:i:s");
 		$deleted = 0;
 
 		//if($name == ""){
 
-			$sql = "INSERT INTO sheets (id, user_id, created_at, name, updated_at, deleted) VALUES (".$_SESSION['SHEETID'].", ".$_SESSION['USERID'].", '".$created_at."', '".$_POST['mapname']."', '".$created_at."','".$deleted."')";
+			$sql = "INSERT INTO sheets (id, user_id, created_at, name, updated_at, deleted) VALUES (".$_SESSION['MAPID'].", ".$_SESSION['USERID'].", '".$created_at."', '".$_POST['mapname']."', '".$created_at."','".$deleted."')";
 			if (!$result = $mysqli->query($sql)) {
 		      print('Error - SQLSTATE'. mysqli_error($link));
 		      exit();
@@ -70,8 +70,8 @@
 
 		$deleted = 0;
 		$updated_at = date("Y-m-d H:i:s");
-		echo $_SESSION['SHEETID'];
-		$sql = "DELETE FROM sheets WHERE id = ".$_SESSION['SHEETID'];
+		echo $_SESSION['MAPID'];
+		$sql = "DELETE FROM sheets WHERE id = ".$_SESSION['MAPID'];
 		$result = $mysqli->query($sql);
 		if (!$result) {
 		     print('Error - SQLSTATE');

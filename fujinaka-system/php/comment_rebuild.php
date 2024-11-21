@@ -3,10 +3,10 @@
 session_start();
 require("connect_db.php");
 
-$sheet_id = $_SESSION["SHEETID"];
+$map_id = $_SESSION["MAPID"];
 
 
-$sql = "SELECT comment_id, version_id, user_name, content FROM comment WHERE sheet_id='$sheet_id' AND comment_status != 0 ORDER BY created_at ASC"; //0がdelete
+$sql = "SELECT comment_id, version_id, user_name, content FROM comment WHERE map_id='$map_id' AND comment_status != 0 ORDER BY created_at ASC"; //0がdelete
 
 $cdata = array();
 

@@ -162,7 +162,7 @@ function show_node2(id,pid,str,cid,type,cname, sid, eid, psid){
             jmnode[i].setAttribute("parent_id",pid);
             jmnode[i].setAttribute("start_char_id",sid);
             jmnode[i].setAttribute("end_char_id",eid)
-            jmnode[i].setAttribute("parent_sheet_id",psid);;
+            jmnode[i].setAttribute("parent_map_id",psid);;
 
         }
 
@@ -360,7 +360,7 @@ function add_node(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
@@ -452,7 +452,7 @@ function add_Anode_parentid(parent_id){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
@@ -532,7 +532,7 @@ function add_Qnode(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
     if (window.getSelection().anchorNode != null){
@@ -638,7 +638,7 @@ function add_Anode(node_class, node_type){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
    
@@ -741,7 +741,7 @@ function add_Pnode(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
@@ -837,7 +837,7 @@ function add_Cnode_parentid(parent_id,node_type){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
@@ -924,7 +924,7 @@ function add_Cnode(node_type){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
     if (window.getSelection().anchorNode != null){
@@ -993,7 +993,7 @@ function remove_node(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
@@ -1389,7 +1389,7 @@ function CheckClick(){
         
         $('#jsmind_container2').css('width','35%');
         $('#paper_area').show();
-        Rebuild_paper2("paper_area",sheet_id_tmp);
+        Rebuild_paper2("paper_area",map_id_tmp);
     };
 
     function hide_paper(){

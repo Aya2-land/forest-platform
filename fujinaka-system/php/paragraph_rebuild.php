@@ -3,10 +3,10 @@
 session_start();
 require("connect_db.php");
 
-$sheet_id = $_SESSION["SHEETID"];
+$map_id = $_SESSION["MAPID"];
 
 
-$sql = "SELECT paragraph_id, section_id, title, rank, content FROM paragraph WHERE sheet_id='$sheet_id' AND deleted = 0";
+$sql = "SELECT paragraph_id, section_id, title, rank, content FROM paragraph WHERE map_id='$map_id' AND deleted = 0";
 
 $sdata = array();
 

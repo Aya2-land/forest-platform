@@ -306,7 +306,7 @@ async function add_node(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
@@ -387,7 +387,7 @@ async function add_Qnode(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
@@ -508,7 +508,7 @@ async function add_Anode(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
@@ -640,7 +640,7 @@ async function add_Pnode(dom_target){ //fujinaka変更
         $.ajax({
             url: "php/update_node.php",
             type: "POST",
-            data: { update : "sheet" }
+            data: { update : "map" }
         });
 
     }else if(p_type == 'toi'){//問いの場合
@@ -690,7 +690,7 @@ async function add_Pnode(dom_target){ //fujinaka変更
       $.ajax({
           url: "php/update_node.php",
           type: "POST",
-          data: { update : "sheet" }
+          data: { update : "map" }
       });
     }
     } else {
@@ -789,7 +789,7 @@ async function add_Pnode(dom_target){ //fujinaka変更
       $.ajax({
           url: "php/update_node.php",
           type: "POST",
-          data: { update : "sheet" }
+          data: { update : "map" }
       });
 
     }
@@ -873,7 +873,7 @@ function remove_node(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 

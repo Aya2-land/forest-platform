@@ -290,7 +290,7 @@ function show_user(){
 			$user_name = $data_user_name['name'];
 
 			// echo"<option name='user' value='".$row['user_id']."'>"  .$row['updated_at'].    "</option>";
-			echo"<option name='user' value='".$row['id']."'>"  .$row['updated_at'].  "  "  .$user_name.  "</option>";
+			echo"<option name='user' value='".$row['user_id']."'>"  .$row['updated_at'].  "  "  .$user_name.  "</option>";
 			// echo"<option name='user' value='".$row['id']."+","+.$user_name.'>"  .$row['updated_at'].  "  "  .$user_name.  "</option>";  // https://qiita.com/Jun01t/items/dc3f5be9a399bbe336d9
 			array_push($array, $user_name); // あとで取り出せるように配列化
 

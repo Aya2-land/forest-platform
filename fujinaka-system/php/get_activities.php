@@ -4,7 +4,7 @@ session_start();
 require("connect_db.php");
 
 $user_id = $_SESSION["USERID"];
-$sheet_id = $_SESSION["SHEETID"];
+$map_id = $_SESSION["MAPID"];
 
 //タイムゾーンの設定
 date_default_timezone_set('Asia/Tokyo');
@@ -21,7 +21,7 @@ $reflection_item = array(); //リフレクション情報を格納する配列
 
 $sql = "SELECT *  FROM activities
         WHERE user_id = '$user_id'
-              AND sheet_id = '$sheet_id'";  //全ての活動記録を取得
+              AND map_id = '$map_id'";  //全ての活動記録を取得
 
 $t =0;
 $word;
@@ -203,7 +203,7 @@ $rationality_node_date;
                     WHERE template_number = '$wawawa'
                           AND target_nodes = '$targets'
                           AND user_id='$user_id'
-                          AND sheet_id='$sheet_id'";
+                          AND map_id='$map_id'";
                           
     $result222 = $mysqli->query($check_sql);
 

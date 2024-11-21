@@ -11,13 +11,13 @@ require("connect_db.php");
 //タイムゾーンの設定
 date_default_timezone_set('Asia/Tokyo');
 //$today_date = date("Y-m-d");
-$sheet_id = $_SESSION['SHEETID'];    //シートID
+$map_id = $_SESSION['MAPID'];    //シートID
 
 
 /* and user_id=${user_id} */
 
 $sql = "SELECT id, start_char_id, end_char_id, type, content, comment_id  FROM annotations 
-        WHERE deleted=0 and sheet_id='$sheet_id' 
+        WHERE deleted=0 and map_id='$map_id' 
         ORDER BY 'created_at' DESC";
 
 $reflections = array();

@@ -8,7 +8,7 @@ date_default_timezone_set('Asia/Tokyo');
 
 
 $user_id = $_SESSION['USERID'];		//ユーザID
-$sheet_id = $_SESSION['SHEETID'];	//シートID
+$map_id = $_SESSION['MAPID'];	//シートID
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 
@@ -22,8 +22,8 @@ if($_POST["type"] == "insert"){
     $concept_id = $_POST['concept_id'];
     $nodetype = $_POST['nodetype'];
 
-    $sql = "INSERT INTO fujinaka_rationality (user_id, sheet_id, created_at, rationality_id, node_id, concept_id, type)
-    VALUES ('$user_id', '$sheet_id', '$timestamp', '$rationality_id ', '$node_id', '$concept_id', '$nodetype')";
+    $sql = "INSERT INTO fujinaka_rationality (user_id, map_id, created_at, rationality_id, node_id, concept_id, type)
+    VALUES ('$user_id', '$map_id', '$timestamp', '$rationality_id ', '$node_id', '$concept_id', '$nodetype')";
     $result = $mysqli->query($sql);
 
     //php($sql)のエラー処理
@@ -52,8 +52,8 @@ if($_POST["type"] == "insert"){
     $parent_id = $_POST['parent_id'];
     $nodetype = $_POST['nodetype'];
 
-    $sql = "INSERT INTO fujinaka_rationality (user_id, sheet_id, created_at, rationality_id, node_id, concept_id, type) 
-    SELECT user_id, sheet_id, '". $timestamp ."', '" . $node_id . "', node_id, concept_id, '" . $nodetype . "'
+    $sql = "INSERT INTO fujinaka_rationality (user_id, map_id, created_at, rationality_id, node_id, concept_id, type) 
+    SELECT user_id, map_id, '". $timestamp ."', '" . $node_id . "', node_id, concept_id, '" . $nodetype . "'
     FROM fujinaka_rationality WHERE rationality_id = '" . $parent_id . "'";
 
     $result = $mysqli->query($sql);
@@ -80,7 +80,7 @@ if($_POST["type"] == "insert"){
 
 } else if ($_POST["type"] == "get_nodeid") {
 
-    $sql = "SELECT node_id FROM feedback WHERE sheet_id='$sheet_id' AND node_concept='考えた合理性'";
+    $sql = "SELECT node_id FROM feedback WHERE map_id='$map_id' AND node_concept='考えた合理性'";
 
     $result = $mysqli->query($sql);
 

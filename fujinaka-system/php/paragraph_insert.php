@@ -9,14 +9,14 @@
   date_default_timezone_set('Asia/Tokyo');
 
 	$user_id = $_SESSION['USERID'];     //ユーザID
-  $sheet_id = $_SESSION['SHEETID'];   //シートID
+  $map_id = $_SESSION['MAPID'];   //シートID
 	$section_id = $_POST["section_id"];	//節ID
   $paragraph_id = $_POST["id"];         //パラグラフID
 	$rank = $_POST["rank"]; 						//パラグラフ順番
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-	$sql = "INSERT INTO paragraph (paragraph_id, user_id, sheet_id, section_id, rank, created_at)
-	VALUES ('$paragraph_id', '$user_id', '$sheet_id', '$section_id', '$rank', '$timestamp')";
+	$sql = "INSERT INTO paragraph (paragraph_id, user_id, map_id, section_id, rank, created_at)
+	VALUES ('$paragraph_id', '$user_id', '$map_id', '$section_id', '$rank', '$timestamp')";
 
 	$result = $mysqli->query($sql);
 
@@ -38,8 +38,8 @@
 		error_log('$result:paragraph_insert不明なエラー', 0);
 	}
 
-	$sql = "INSERT INTO slide_content_activity (id, sheet_id, slide_content_id, node_id, concept_id, content, type, user_id, slide_id, act, date, from_slide_content)
-	VALUES ('$activity_id', '$sheet_id', '$content_id', '$node_id', '$concept_id', '$content', '$type', '$user_id', '$slide_id', 'add', '$timestamp', NULL)";
+	$sql = "INSERT INTO slide_content_activity (id, map_id, slide_content_id, node_id, concept_id, content, type, user_id, slide_id, act, date, from_slide_content)
+	VALUES ('$activity_id', '$map_id', '$content_id', '$node_id', '$concept_id', '$content', '$type', '$user_id', '$slide_id', 'add', '$timestamp', NULL)";
 
 	$result = $mysqli->query($sql);
 

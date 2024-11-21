@@ -14,15 +14,15 @@
 
 		if($_POST["type"] == 0){
 
-			$id = $_SESSION["SHEETID"];
+			$id = $_SESSION["MAPID"];
 
-			$sql = "SELECT * FROM nodes WHERE node_id IN (SELECT node_id FROM map_node_links WHERE map_id = ".$id.")";
+			$sql = "SELECT * FROM nodes WHERE node_id IN (SELECT node_id FROM map_node_links WHERE map_id = ".$id.") AND deleted = 0";
 
 			if($result = $mysqli->query($sql)){
 
 				while($row = mysqli_fetch_assoc($result)){
 
-					$root = $row["id"];
+					$root = $row["node_id"];
 
 				}
 
@@ -30,8 +30,8 @@
 			if(is_array($root) || $root instanceof Countable) {
 				if(count($root) === 0){
 
-					$node_sql = "INSERT INTO nodes (id, user_id, created_at, updated_at, type, concept_id, content, x, y, deleted, sheet_id, parent_id, class)
-					VALUES ('".$_POST['id']."','".$_SESSION['USERID']."','".$created_at."','".$created_at."','".$_POST['type']."','".$_POST['concept_id']."','".$_POST['content']."','".$_POST['x']."','".$_POST['y']."','".$deleted."','".$_SESSION['SHEETID']."','".$_POST['parent_id']."','".$_POST['class']."')";
+					$node_sql = "INSERT INTO nodes (id, user_id, created_at, updated_at, type, concept_id, content, x, y, deleted, map_id, parent_id, class)
+					VALUES ('".$_POST['id']."','".$_SESSION['USERID']."','".$created_at."','".$created_at."','".$_POST['type']."','".$_POST['concept_id']."','".$_POST['content']."','".$_POST['x']."','".$_POST['y']."','".$deleted."','".$_SESSION['MAPID']."','".$_POST['parent_id']."','".$_POST['class']."')";
 					$n_result = $mysqli->query($node_sql);
 					if(!$n_result){
 						echo "error";
@@ -55,8 +55,8 @@
 			$deleted = 0;
 			$edit_mode = 0;
 
-			$sql = "INSERT INTO nodes (id, user_id, created_at, updated_at, type, concept_id, content, x, y, deleted, sheet_id, parent_id, class, edit_mode)
-			VALUES ('$send_node_id', '".$_SESSION['USERID']."','$created_at', '$created_at','$send_type','$send_concept_id','$send_content','$send_x','$send_y','$deleted', '".$_SESSION['SHEETID']."','$send_parent_id','$send_class','$edit_mode')";
+			$sql = "INSERT INTO nodes (id, user_id, created_at, updated_at, type, concept_id, content, x, y, deleted, map_id, parent_id, class, edit_mode)
+			VALUES ('$send_node_id', '".$_SESSION['USERID']."','$created_at', '$created_at','$send_type','$send_concept_id','$send_content','$send_x','$send_y','$deleted', '".$_SESSION['MAPID']."','$send_parent_id','$send_class','$edit_mode')";
 			$result = $mysqli->query($sql);
 			if($result == TRUE){
 
@@ -76,8 +76,8 @@
 		$id = rand();
 
 
-		$sql = "INSERT INTO rationality_nodes(id, user_id, sheet_id, created_at, rationality_id, node_id)
-		VALUES ('".$id."', '".$_SESSION["USERID"]."', '".$_SESSION['SHEETID']."', '".$created_at."', '".$_POST['rationality_id']."', '".$_POST['node_id']."')";
+		$sql = "INSERT INTO rationality_nodes(id, user_id, map_id, created_at, rationality_id, node_id)
+		VALUES ('".$id."', '".$_SESSION["USERID"]."', '".$_SESSION['MAPID']."', '".$created_at."', '".$_POST['rationality_id']."', '".$_POST['node_id']."')";
 		$result = $mysqli->query($sql);
 
 	}else if($_POST["insert"] == "edit_reason"){
@@ -85,8 +85,8 @@
 		$created_at = date("Y-m-d H:i:s");
 		$id = rand();
 
-		$sql = "INSERT INTO edit_reason(id, user_id, sheet_id, created_at, updated_at, node_id, content)
-		VALUES ('".$id."', '".$_SESSION['USERID']."','".$_SESSION['SHEETID']."', '".$created_at."', '".$created_at."', '".$_POST['node_id']."', '".$_POST['content']."')";
+		$sql = "INSERT INTO edit_reason(id, user_id, map_id, created_at, updated_at, node_id, content)
+		VALUES ('".$id."', '".$_SESSION['USERID']."','".$_SESSION['MAPID']."', '".$created_at."', '".$created_at."', '".$_POST['node_id']."', '".$_POST['content']."')";
 		$result = $mysqli->query($sql);
 
 	}

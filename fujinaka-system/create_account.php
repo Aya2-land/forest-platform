@@ -36,7 +36,7 @@ if (isset($_POST["signUp"])) {
 
       $pdo = new PDO($dsn, $db_user, $db_password, array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
 
-      $stmt = $pdo->prepare("INSERT INTO users(id, name, login_time, password) VALUES (?, ?, ?, ?)");
+      $stmt = $pdo->prepare("INSERT INTO users(user_id, name, login_time, password) VALUES (?, ?, ?, ?)");
 
       $userid = $pdo->lastinsertid();
 
