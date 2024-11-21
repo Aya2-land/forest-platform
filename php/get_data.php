@@ -67,6 +67,7 @@
 	}else if($_POST["val"] == "return"){
 
 		$sql = "SELECT * FROM nodes WHERE user_id = ".$_SESSION["USERID"]." AND map_id = ".$_SESSION["MAPID"]." AND updated_at = (select max(updated_at) from nodes)";
+		
 
 		$i = 0;
 		$updated_array = array();

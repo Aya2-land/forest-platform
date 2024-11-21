@@ -83,48 +83,50 @@
 
 		}
 	}
-	else if($_POST["val"] == "get_other_answer"){
+	// js/create_other_question.jsで使用
 
-		$node_id = $_POST["id"];
+	// else if($_POST["val"] == "get_other_answer"){
 
-		$i = 0;
+	// 	$node_id = $_POST["id"];
 
-		$sql = "SELECT user_id, content, parent_map_id, map_id FROM nodes WHERE id = '$node_id'";
-		if ($result = $mysqli->query($sql)) {
+	// 	$i = 0;
 
-            while ($row = mysqli_fetch_assoc($result)) {
+	// 	$sql = "SELECT user_id, content, parent_map_id, map_id FROM nodes WHERE id = '$node_id'";
+	// 	if ($result = $mysqli->query($sql)) {
 
-				$sql2 = "SELECT name FROM users WHERE user_id = '".$row['user_id']."'";
-				$result2 = $mysqli->query($sql2);
+    //         while ($row = mysqli_fetch_assoc($result)) {
 
-				$row2 = mysqli_fetch_assoc($result2);
-				$user_array[0] = array(
-					"name" => $row2["name"]
-				);
+	// 			$sql2 = "SELECT name FROM users WHERE user_id = '".$row['user_id']."'";
+	// 			$result2 = $mysqli->query($sql2);
 
-				//後でcheckしよう kawa
-				$sql3 = "SELECT summary FROM maps WHERE map_id ='".$row['parent_map_id']."'";
-				$result3 = $mysqli->query($sql3);
+	// 			$row2 = mysqli_fetch_assoc($result2);
+	// 			$user_array[0] = array(
+	// 				"name" => $row2["name"]
+	// 			);
 
-				$row3 = mysqli_fetch_assoc($result3);
-				$summary_array[0] = array(
-					"summary" => $row3["summary"]
-				);
+	// 			//後でcheckしよう kawa
+	// 			$sql3 = "SELECT summary FROM maps WHERE map_id ='".$row['parent_map_id']."'";
+	// 			$result3 = $mysqli->query($sql3);
 
-                $data_array[$i] = array(
-					"parent_map_id" => $row["parent_map_id"],
-					"map_id" => $row["map_id"],
-                    "content" => $row["content"],
-					"name" => $user_array[0]["name"],
-					"summary" => $summary_array[0]["summary"]
+	// 			$row3 = mysqli_fetch_assoc($result3);
+	// 			$summary_array[0] = array(
+	// 				"summary" => $row3["summary"]
+	// 			);
 
-                );
+    //             $data_array[$i] = array(
+	// 				"parent_map_id" => $row["parent_map_id"],
+	// 				"map_id" => $row["map_id"],
+    //                 "content" => $row["content"],
+	// 				"name" => $user_array[0]["name"],
+	// 				"summary" => $summary_array[0]["summary"]
 
-                $i++;
-            }
-            echo json_encode($data_array);
-        }
-	}
+    //             );
+
+    //             $i++;
+    //         }
+    //         echo json_encode($data_array);
+    //     }
+	// }
 
 // MTタイムを選択した時の処理
 	else if($_POST["val"] == "time"){
