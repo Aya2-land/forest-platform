@@ -4,7 +4,7 @@
 	$db_host = "localhost";  // DBサーバのurl
 	$db_user = "root";
 	$db_password = "root";
-	$db_dbname = "fujinaka";
+	$db_dbname = "forest_platform";
 
 	// $db_host = "192.168.0.82:3306";  // DBサーバのurl
 	// $db_user = "root";

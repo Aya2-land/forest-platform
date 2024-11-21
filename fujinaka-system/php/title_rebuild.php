@@ -12,7 +12,7 @@ date_default_timezone_set('Asia/Tokyo');
 $today_date = date("Y-m-d");
 
 
-$sql = "SELECT scenario_title FROM sheets WHERE id='$map_id'";
+$sql = "SELECT scenario_title FROM maps WHERE map_id='$map_id'";
 
 if($result = $mysqli->query($sql)){
 

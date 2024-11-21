@@ -71,7 +71,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                 // echo("西田");
                 echo($_SESSION["USERNAME"]);
                 echo("　タイトル：");
-                getSheetname();
+                getMapname();
                 // 西田
                 // echo("Ontology-based Thought Organization Support System to Prompt Readiness of Intention Sharing and Its Long-term Practice：");?>
           </span>

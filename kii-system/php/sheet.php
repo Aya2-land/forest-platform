@@ -1,6 +1,6 @@
 <?php
 	/*index.phpでシート名を表示する*/
-	function getSheetname(){
+	function getMapname(){
 
 		require "connect_db.php";
 

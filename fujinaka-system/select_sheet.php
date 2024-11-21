@@ -18,9 +18,9 @@ if (isset($_POST["logout"])) {
 }
 
 //新規作成
-if(isset($_POST["sheetname"])){
+if(isset($_POST["mapname"])){
 
-	if($_POST["sheetname"] != ""){
+	if($_POST["mapname"] != ""){
 
 		createSheet();
 
@@ -144,7 +144,7 @@ if(isset($_POST["record"])){
            <div>
 	           <p><strong>思考表出マップ<br>新規作成</strong></p>
              <p><strong>マップ名を記入してください</strong></p>
-    	       <p><input type="text" name="sheetname" placeholder="マップ名"></p>
+    	       <p><input type="text" name="mapname" placeholder="マップ名"></p>
     	       <p><input class="button" type="submit" name="newsheet" value="新規作成"></p>
            </div>
   	     </form>

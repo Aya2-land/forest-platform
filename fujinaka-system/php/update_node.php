@@ -35,8 +35,8 @@
 
 	}else if($_POST["update"] == "map"){
 
-		// $sql = "UPDATE sheets SET updated_at = '".$updated_at."' WHERE id = '".$_POST['id']."'";
-		$sql = "UPDATE sheets SET updated_at = '".$updated_at."' WHERE id = '".$_SESSION['MAPID']."'";
+		// $sql = "UPDATE maps SET updated_at = '".$updated_at."' WHERE id = '".$_POST['id']."'";
+		$sql = "UPDATE maps SET updated_at = '".$updated_at."' WHERE map_id = '".$_SESSION['MAPID']."'";
 		$result = $mysqli->query($sql);
 
 	}else if($_POST["update"] == "edit_reason"){

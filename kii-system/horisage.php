@@ -37,7 +37,7 @@ if(isset($_POST["sheetbtn"])){ header("Location: index.php"); }
 
             <div align="center">ようこそ<?=htmlspecialchars($_SESSION["USERNAME"], ENT_QUOTES); ?>さん</div>
 
-            <div id="sheet" align="center"><?php require("js/sheet.php"); echo "Sheet Name： "; getSheetname(); ?></div><br>
+            <div id="sheet" align="center"><?php require("js/sheet.php"); echo "Sheet Name： "; getMapname(); ?></div><br>
 
             <center>
               <input class="button1" type="button" name="save" value="木構造作成画面に戻る" onClick="save();">

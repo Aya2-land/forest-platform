@@ -78,7 +78,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
           <?php //echo("ユーザ名：");
                 //echo($_SESSION["USERNAME"]);
                 //echo("  　シート名：");
-                //getSheetname();?>
+                //getMapname();?>
           </span>
           <span>
             <a href="" class="modal"><input type="button" id="js-show-popup" class="button9"  onclick="OperateDescription();" value="操作確認"></a>

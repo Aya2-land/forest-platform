@@ -6,7 +6,7 @@ require("connect_db.php");
 date_default_timezone_set('Asia/Tokyo');
 
 
-$name = $_SESSION["SHEETNAME"]; // シート名
+$name = $_SESSION["MAPNAME"]; // シート名
 $timestamp = time();
 $login_time = date("Y-m-d H:i:s", $timestamp);
 
