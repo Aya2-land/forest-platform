@@ -67,6 +67,11 @@ window.addEventListener("stepStartEvent", (event) => {
   console.log("フラグどうなってるんか: ", {autoRecordFlag});
 });
 
+window.addEventListener("stepBreakEvent", function(event) {
+  console.log("手段中断:", event.detail);
+
+  // ここで event.detail.object_node_id と event.detail.autoRecordFlag にアクセスできます
+});
 
 
 //node_idと取得したい情報の文字列を渡すと，

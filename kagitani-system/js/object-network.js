@@ -584,7 +584,16 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     step_break (){
         console.log(`ノード ${this.selectId} の作業中断だよ！！`);  // コンソールにメッセージ表示
         //DBに保存するのをやめる．
-        defaultRecordForestMRN.stopAutoRecord(this.selectId);
+        autoRecordFlag = false;
+        // カスタムイベントを発火
+        const breakEvent = new CustomEvent("stepBreakEvent", {
+            detail: {
+                object_node_id: this.selectId,
+                autoRecordFlag: autoRecordFlag,
+            },
+        });
+
+        window.dispatchEvent(breakEvent); // グローバルイベントとして発火
     }
 
     //手段完了ボタン
