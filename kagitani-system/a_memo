@@ -37,8 +37,4 @@ record_activityで，作業開始以降のDBを保存．　
 
 record_activities.phpでactivityが保存されてるっぽい！！
 
-object_manager.phpで，else if($record_thing === 'activity')を追加．
-
-トリガーを使ったらいいのでは？
-さやかに，どんな方法で繋げたらいいのか聞く．
-もし，avtivitiesに変化があったら，こっちも更新する，みたいな感じで行く？
+record_object_activities.phpで手段に対する活動を保存．

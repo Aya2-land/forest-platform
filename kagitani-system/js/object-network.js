@@ -176,20 +176,20 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     /*
      * データベースリクエストユーティリティ
      */
-    recordMeetingUtteranceNodes(utterances) {
-        // データを送信（DBに保存）
-        $.ajax({
-            url: "php/object_map_manager.php",
-            type: "POST",
-            data: {
-                purpose: "record_meeting_utterance",
-                utters: JSON.stringify(utterances),
-            }
-        }).success((r) => {
-            alert("議論データアップロードに成功しました")
-            document.getElementById("meetingUtteranceXmlFileUploader").value = "";
-        });
-    }
+    // recordMeetingUtteranceNodes(utterances) {
+    //     // データを送信（DBに保存）
+    //     $.ajax({
+    //         url: "php/object_map_manager.php",
+    //         type: "POST",
+    //         data: {
+    //             purpose: "record_meeting_utterance",
+    //             utters: JSON.stringify(utterances),
+    //         }
+    //     }).success((r) => {
+    //         alert("議論データアップロードに成功しました")
+    //         document.getElementById("meetingUtteranceXmlFileUploader").value = "";
+    //     });
+    // }
 
     /*
      * 議論内省マップの表示・操作部分（Extend vis.js）
@@ -1386,6 +1386,34 @@ const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
     });
 }
 
+//ここを編集して，活動ログを表示する．
+// 発言を発言エリアにdivとして表示
+const makeUtteranceNodeInList = (utter_id, timestamp, utter_content, act) => {
+    // 左側の発話ノードのリストのところのノードのDOMを構成する
+    let backColor = "gray";
+    if(act === "edit"){
+        backColor = '#e1e7e3';
+    }else if(act != "edit"){
+        backColor = '#a1b3a5';
+    }
+    return $(`(<div id="${utter_id}"
+                 style='border: solid 2px #000; 
+                 font-size: 13px; 
+                 line-height: 15px; 
+                 background: ${backColor}; 
+                 margin-bottom: 5px; padding: 
+                 2px; padding-left: 2px; 
+                 margin-bottom: 5px; 
+                 padding: 2px;'
+
+                 class='utter_node_in_list'￥
+                 utterance='${utter_content}'
+                 timestamp='${timestamp}'
+            >
+               <!-- もし，Mouseoverとかの処理がノードの色をつけ変えるだけの話なら，JSじゃなくてCSSのover擬似クラスで処理するようにする -->
+               【${timestamp}：${act}】<br>${utter_content}：<br>${utter_content}
+            </div>`);
+}
 
 
 // アップロードする時
@@ -1395,10 +1423,27 @@ const displayUtteranceNodeInList = (display_target_area_id, target_reflection_ti
     document.getElementById(display_target_area_id).innerHTML="";
     const target_area = $(`#${display_target_area_id}`); // 発話ノードリストのDOMエリア
     const timedisplay_area = $(`#timedisplay`); // 発話ノードの議論内での時間を表示するエリア
+    // テスト用の値を準備
+    const testUtterId = "utter_001";
+    const testTimestamp = "2024-11-24 15:00";
+    const testUtterContent = "これはテストの発話内容です。";
+    const testAct = "edit"; // または "view", "delete" など
     getDiscussionMapDataFromDB(target_reflection_time, null, (utterance_list_info) => {
-        // データの取得と挿入
+        //getDiscussionMapDataFromDB 関数を呼び出した後に取得したデータ (utterance_list_info) の中に含まれるobjectLogプロパティにアクセスしています。
+        console.log(utterance_list_info.objectLog);
+        // utterance_list_info.trigger.map(u => {
+        //     const utter_dom = makeTriggerInList(u.id, u.timestamp, u.text, u.act);
+        //     target_area.append(utter_dom); // 挿入
+        // });
+        // for(var i=0; i<trigger_list_info.document.length; i++){
+        //     defaultForestMRN.addmaterialNode(trigger_list_info.document[i].content_id, trigger_list_info.document[i].content);
+        //     document.getElementById("labelselect").style.display = "none";
+        //     defaultForestMRN.addMaterialOntology('material-content_'+trigger_list_info.document[i].content_id, trigger_list_info.document[i].concept_id);
+        // }
+        // defaultForestMRN.addmaterialEdge("material-content_"+u.doc_con1_id, "material-content_"+u.doc_con2_id, u.doc_con1_label+"→"+u.doc_con2_label)        
+        //データの取得と挿入
         utterance_list_info.utterance.map(u => {
-            const utter_dom = makeUtteranceNodeInList(u.area_id, u.content, u.sender, u.JPNtime, u.network_on);
+            const utter_dom = makeUtteranceNodeInList(testUtterId, testTimestamp, testUtterContent, testAct);
             target_area.append(utter_dom); // 挿入            
         });
         for(var i=0; i<utterance_list_info.document.length; i++){
@@ -1516,11 +1561,31 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
 
         console.log("utterance_list_info.dedge:", utterance_list_info.dedge);
 
+        // テスト用の値を準備
+        const testUtterId = "utter_001";
+        const testTimestamp = "2024-11-24 15:00";
+        const testUtterContent = "これはテストの発話内容です。";
+        const testAct = "edit"; // または "view", "delete" など
+
+        console.log("テスト値:", testUtterId, testTimestamp, testUtterContent, testAct);
+
+        const utter_dom = makeUtteranceNodeInList(testUtterId, testTimestamp, testUtterContent, testAct);
+        console.log("生成されたDOM:", utter_dom); // 生成されたノードを確認
+
+        target_area.append(utter_dom); // 挿入   
+
         // データの取得と挿入
         utterance_list_info.utterance.map(u => {
-            const utter_dom = makeUtteranceNodeInList(u.area_id, u.content, u.sender, u.JPNtime, u.network_on);
+            console.log("現在の発話データ:", u); // 繰り返しの中で各データを確認
+            
+            const utter_dom = makeUtteranceNodeInList(testUtterId, testTimestamp, testUtterContent, testAct);
+            console.log("生成されたDOM:", utter_dom); // 生成されたノードを確認
+
             target_area.append(utter_dom); // 挿入            
         });
+
+        console.log("すべてのデータを挿入完了");
+
         // utterance_list_info.dnode.map((n) => {
         //     defaultForestMRN.addReloadNode(n.node_id, n.label, n.node_type, n.node_x, n.node_y);
 
@@ -1637,6 +1702,22 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
         });        
     });
 }
+
+//これを編集して，随時nodeのactivityを表示するようにする．
+// 議論時の発言を記録する関数
+const recordMeetingUtteranceNodes = (utterances) => {
+    $.ajax({
+      url: "php/object_map_manager.php",
+      type: "POST",
+      data: {
+        purpose: "record_meeting_utterance",
+        utters: JSON.stringify(utterances),
+      }
+    }).success((r) => {
+      console.log(r);
+      displayUtteranceNodeInList("utterance_area2", null); 
+    });
+  }
 
 // ロードした際の関数
 window.addEventListener('load', () => {
