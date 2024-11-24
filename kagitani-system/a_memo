@@ -38,3 +38,7 @@ record_activityで，作業開始以降のDBを保存．　
 record_activities.phpでactivityが保存されてるっぽい！！
 
 record_object_activities.phpで手段に対する活動を保存．
+
+getDiscussionMapDataFromDB → getObjectLogDataFromDB作成．
+ここから，活動ログを取得する．
+必要要素は，{activitiesのtimestamp, object_nodesのlabel, activitiesのtextを追加．}

@@ -1158,40 +1158,6 @@ class RecordForestMRN{
         });
         console.log("エッジの記録をするぽよ");
     }
-    
-
-    // //作業開始が押された以降の活動をDBに記録する 
-    // // フラグをオンにして記録を開始
-    // startAutoRecord(id) {
-    //     console.log("活動記録をするぽよ");
-    //     if (autoRecordFlag) { // フラグがオンの時
-    //         console.log("フラグオンになった！！");
-
-    //         // Record_activities 関数を呼び出し、引数を渡す
-    //         console.log("Record_activitiesを呼び出します");
-    //         Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nodeTYPE, primaryID);
-        
-    //         // 新しい $.ajax リクエストを送信
-    //         console.log("AJAXリクエストを送信中...");
-    //         $.ajax({
-    //           url: "php/object_maneger.php",
-    //           type: "POST",
-    //           data: {
-    //             purpose: 'auto_record',
-    //             record_thing: 'activity',
-    //             node_id: id, // ノードIDを送信
-    //             activity_id: nodeID
-    //           },
-    //           success: function(response) {
-    //             console.log("自動記録成功: ", response);
-    //           },
-    //           error: function() {
-    //             console.log("自動記録失敗");
-    //           }
-    //         });
-    //       }
-        
-    // }
 
     // フラグをオフにして記録を停止
     stopAutoRecord() {
@@ -1341,6 +1307,7 @@ let utterance_list;
 const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
     let data;
 
+    //最初のデータロードの際に使われる。
     if(target_time === null){
         console.log("targt");
         data =  {
@@ -1384,6 +1351,44 @@ const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
             console.log("Response text:", xhr.responseText);
         }
     });
+}
+
+const getObjectLogDataFromDB = (target_time, end_time, callback) => {
+    return new Promise((resolve, reject) => {
+        try{
+            let data;
+            // データベースから発話ノードリストにあるノードデータ一覧を取得
+            if(target_time === null){
+                data =  {
+                        //読み込みたいnode_idを渡すように改変しよう
+                        purpose: "select_meeting_utterance",
+                        first_load_flag: true,
+                        };
+            }else if(end_time === null){
+                data =  {
+                        purpose: "select_version_discussionmap",
+                        first_load_flag: target_time,
+                        };
+            }else{
+                data =  {
+                        purpose: "select_past_discussionmap",
+                        discussion_start_time : target_time,
+                        discussion_end_time : end_time
+                        };      
+            }
+            return $.ajax({
+                url: "php/display_objectLog.php",
+                type: "POST",
+                data: data,
+            }).success((r) => {
+                utterance_list = JSON.parse(r);
+                callback(utterance_list);
+            });
+        } catch (error){
+            reject(error);
+        }
+    });
+    
 }
 
 //ここを編集して，活動ログを表示する．

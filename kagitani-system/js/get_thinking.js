@@ -33,7 +33,9 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
 
   if (autoRecordFlag) {
     console.log("フラグオンですので！！");
-    //ここでobject_node_idを受け取りたい．
+    console.log(object_node_id);
+    console.log(nodeTEXT);
+    
     // 自動記録処理
     $.ajax({
       url: "php/record_object_activities.php",
@@ -41,17 +43,18 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
       data: {
         recoad_flag: autoRecordFlag,
         object_node_id: object_node_id,
-        primary: primaryID
+        primary: primaryID,
+        text: nodeTEXT,
       },
       dataType: "json", // サーバーからのデータをJSON形式で受け取る
       //保存できてるのに，エラーが出るんよね．一旦コメントアウト．
       //timestampを定義しようと思ったらエラーが出てくる．
-      // success: function(response) {
-      //     console.log("やっっっっと成功したお！！:",response.message); // 成功またはエラーのメッセージを表示
-      // },
-      // error: function(xhr, status, error) {
-      //     console.error("AJAXエラーだお:", xhr.responseText);
-      // }
+      success: function(response) {
+          console.log("やっっっっと成功したお！！:",response.message); // 成功またはエラーのメッセージを表示
+      },
+      error: function(xhr, status, error) {
+          console.error("AJAXエラーだお:", xhr.responseText);
+      }
     });
   }
 }

@@ -13,10 +13,11 @@
 	$object_node_id = $_POST["object_node_id"];
     $object_activity_id = uniqid('activity_', true);// オブジェクトアクティビティIDの生成
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+	$activity_text = $_POST["text"]; 
 
 	//timestampを定義しようと思ったらエラーが出てくる．
-	$sql = "INSERT INTO object_activities (object_activity_id, object_node_id, activity_id) 
-				VALUES ('$object_activity_id', '$object_node_id', '$primary_id')";
+	$sql = "INSERT INTO object_activities (object_activity_id, object_node_id, activity_id, activity_text) 
+				VALUES ('$object_activity_id', '$object_node_id', '$primary_id', '$activity_text')";
 
 
 	$result = $mysqli->query($sql);
