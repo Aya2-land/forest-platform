@@ -27,48 +27,11 @@ while ($row = $result_map_create_start_and_end->fetch_assoc()) {
 }
 
 if($purpose === "select_meeting_utterance") { //こいつを取ってきていることが判明したぞお
-    /***
-     *** ここから議論内省マップデータの取得（SELECT）処理
-     ***/
-
-    $return_data = array_merge($return_data, ['start_time' => $target_map_created_start_times]);
-
-    /*
-     * 議論内省マップのノードデータの取得
-     */
-
-    $result_discussionmap_node = $mysqli->query("SELECT `object_node_id`, `object_map_id`, `label`, `x`, `y`, `object_nodes_type_id`, `created_at`, `updated_at`, `deleted`
-                FROM `object_nodes`
-                WHERE `deleted` = 0
-                ORDER BY `updated_at` DESC;
-                ");
-    $discussionmap_node = [];  //空の配列として初期化されます。この配列に、取得したノードの情報を格納
-    //fetch_assoc() は、クエリの結果から1行を連想配列（カラム名をキーにした配列）として取り出す．
-    //array_push($discussionmap_node, $row);: 取得した行（$row）を、$discussionmap_node 配列に追加します。この操作をクエリの結果がすべて取り出されるまで繰り返します。
-    while ($row = $result_discussionmap_node->fetch_assoc()) {
-        array_push($discussionmap_node, $row);
-    }
-
-    //既存の $return_data 配列に、新たに取得したノード情報（$discussionmap_node）を 'dnode' というキーで追加します。
-    $return_data = array_merge($return_data, ['dnode' => $discussionmap_node]);
-
-
-    /*
-     * 議論内省マップのエッジデータの取得
-     */
-    $result_discussionmap_edge = $mysqli->query("SELECT object_edges_id, edge_start, edge_end FROM object_edges
-              ORDER BY time DESC ");
-    $discussionmap_edge = [];
-    while ($row = $result_discussionmap_edge->fetch_assoc()) {
-        array_push($discussionmap_edge, $row);
-    }
-    $return_data = array_merge($return_data, ['dedge' => $discussionmap_edge]);
-
     /*
      * 議論における発話パーツ一覧
      */
     //活動ログの表示
-    $result_objectLog = $mysqli->query("SELECT timestamp, node_id, concept_id, act, text FROM activities type != 'question' ORDER BY timestamp DESC");
+    $result_objectLog = $mysqli->query("SELECT timestamp, obejct_node_id, activity_text FROM object_activities ORDER BY timestamp DESC");
     $objectLog = [];
     while ($row = $result_objectLog->fetch_assoc()) {
         array_push($objectLog, $row);
@@ -81,7 +44,7 @@ if($purpose === "select_meeting_utterance") { //こいつを取ってきてい�
         return;
     } else {
         // $return_data にデータがある場合、この部分が実行
-        //var_dump($return_data);  // ここでデータを確認
+        var_dump($return_data);  // ここでデータを確認
         
         //デバッグの後、$return_data を JSON 形式に変換して出力
         //JSON（JavaScript Object Notation）とは、データをシンプルかつわかりやすく表現するフォーマットの1つ．

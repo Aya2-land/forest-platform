@@ -32,10 +32,10 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
   });
 
   if (autoRecordFlag) {
-    console.log("フラグオンですので！！");
+    console.log("フラグオン！！");
     console.log(object_node_id);
     console.log(nodeTEXT);
-    
+
     // 自動記録処理
     $.ajax({
       url: "php/record_object_activities.php",
@@ -50,10 +50,10 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
       //保存できてるのに，エラーが出るんよね．一旦コメントアウト．
       //timestampを定義しようと思ったらエラーが出てくる．
       success: function(response) {
-          console.log("やっっっっと成功したお！！:",response.message); // 成功またはエラーのメッセージを表示
+          console.log("やっっっっと成功した！！:",response.message); // 成功またはエラーのメッセージを表示
       },
       error: function(xhr, status, error) {
-          console.error("AJAXエラーだお:", xhr.responseText);
+          console.error("AJAXエラーだ:", xhr.responseText);
       }
     });
   }

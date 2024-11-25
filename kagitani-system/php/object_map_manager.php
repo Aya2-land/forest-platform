@@ -89,33 +89,7 @@ if($purpose === "select_meeting_utterance") { //こいつを取ってきてい�
      *** ここから議論内省マップデータの取得（SELECT）処理
      ***/
 
-    $return_data = array_merge($return_data, ['start_time' => $target_map_created_start_times]);
-
-    /*
-     * 議論内省マップのノードデータと思考整理マップのノードの対応関係データを取得する処理
-     */
-    // $result_forest_node_and_discussionmap_node_relation = $mysqli->query("SELECT network_node_id, mindmap_node_id FROM network_mindmap_connect
-    //           WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND time > '$target_map_created_start_times'
-    //           ORDER BY time DESC ");
-    
-    // $forest_node_and_discussionmap_node_relation = [];
-    // while ($row = $result_forest_node_and_discussionmap_node_relation->fetch_assoc()) {
-    //     array_push($forest_node_and_discussionmap_node_relation, $row);
-    // }
-    // $return_data = array_merge($return_data, ['fnode_dnode_rel' => $forest_node_and_discussionmap_node_relation]);
-    
-    
-    /* 
-     * オントロジーとの対応データの読み込み
-     */
-    // $result_discussionmap_node_and_ontology_relation = $mysqli->query("SELECT ontology_id, node_id FROM network_ontology_activity
-    //           WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND time > '$target_map_created_start_times'
-    //           ORDER BY time DESC ");
-    // $discussionmap_node_and_ontology_relation = [];
-    // while ($row = $result_discussionmap_node_and_ontology_relation->fetch_assoc()) {
-    //     array_push($discussionmap_node_and_ontology_relation, $row);
-    // }
-    // $return_data = array_merge($return_data, ['dnode_ontology_rel' => $discussionmap_node_and_ontology_relation]);    
+    $return_data = array_merge($return_data, ['start_time' => $target_map_created_start_times]);  
     
     /*
      * 議論内省マップのノードデータの取得
