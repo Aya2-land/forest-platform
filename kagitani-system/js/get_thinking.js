@@ -31,6 +31,18 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
     },
   });
 
+  sendTextToObjectNetwork(nodeCONCEPT, nodeTEXT);
+
+  function sendTextToObjectNetwork(nodeCONCEPT, nodeTEXT) {
+      const event = new CustomEvent("textSendEvent", {
+          detail: { nodeCONCEPT: nodeCONCEPT, nodeTEXT: nodeTEXT }
+      });
+      console.log("[get_thinking.js] カスタムイベントを発行しました:", event);
+      window.dispatchEvent(event);
+  }
+
+
+
   if (autoRecordFlag) {
     console.log("フラグオン！！");
     console.log(object_node_id);

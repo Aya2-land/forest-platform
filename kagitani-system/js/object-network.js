@@ -1353,44 +1353,44 @@ const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
 
 }
 
-const getObjectLogDataFromDB = (target_time, end_time, callback) => {
-    console.log("こいつ動かしてみよう");
-    return new Promise((resolve, reject) => {
-        try{
-            let data;
-            // データベースから発話ノードリストにあるノードデータ一覧を取得
-            if(target_time === null){
-                data =  {
-                        //読み込みたいnode_idを渡すように改変しよう
-                        purpose: "select_meeting_utterance",
-                        first_load_flag: true,
-                        };
-            }else if(end_time === null){
-                data =  {
-                        purpose: "select_version_discussionmap",
-                        first_load_flag: target_time,
-                        };
-            }else{
-                data =  {
-                        purpose: "select_past_discussionmap",
-                        discussion_start_time : target_time,
-                        discussion_end_time : end_time
-                        };      
-            }
-            return $.ajax({
-                url: "php/display_object_activities.php",
-                type: "POST",
-                data: data,
-            }).success((r) => {
-                objectLog_list = JSON.parse(r);
-                callback(objectLog_list);
-            });
-        } catch (error){
-            reject(error);
-        }
-    });
+// const getObjectLogDataFromDB = (target_time, end_time, callback) => {
+//     console.log("こいつ動かしてみよう");
+//     return new Promise((resolve, reject) => {
+//         try{
+//             let data;
+//             // データベースから発話ノードリストにあるノードデータ一覧を取得
+//             if(target_time === null){
+//                 data =  {
+//                         //読み込みたいnode_idを渡すように改変しよう
+//                         purpose: "select_meeting_utterance",
+//                         first_load_flag: true,
+//                         };
+//             }else if(end_time === null){
+//                 data =  {
+//                         purpose: "select_version_discussionmap",
+//                         first_load_flag: target_time,
+//                         };
+//             }else{
+//                 data =  {
+//                         purpose: "select_past_discussionmap",
+//                         discussion_start_time : target_time,
+//                         discussion_end_time : end_time
+//                         };      
+//             }
+//             return $.ajax({
+//                 url: "php/display_object_activities.php",
+//                 type: "POST",
+//                 data: data,
+//             }).success((r) => {
+//                 objectLog_list = JSON.parse(r);
+//                 callback(objectLog_list);
+//             });
+//         } catch (error){
+//             reject(error);
+//         }
+//     });
     
-}
+// }
 
 //ここを編集して，活動ログを表示する．
 // 発言を発言エリアにdivとして表示
@@ -1420,6 +1420,38 @@ const makeUtteranceNodeInList = (utter_id, timestamp, utter_content, act) => {
                【${timestamp}：${act}】<br>${utter_content}：<br>${utter_content}
             </div>`);
 }
+
+
+//活動ログを表示する関数を作ってみたよん
+// イベントリスナーを設定
+window.addEventListener("textSendEvent", (event) => {
+    console.log("[object-network.js] カスタムイベントを受信しました:", event);
+
+    const receivedTimestamp = event.detail.nodeCONCEPT; // timestampを取得
+    const receivedNodeText = event.detail.nodeTEXT; // nodeTEXTを取得
+    console.log("[object-network.js] 受信したtimestamp:", receivedTimestamp);
+    console.log("[object-network.js] 受信したnodeTEXT:", receivedNodeText);
+
+    try {
+        // DOMを生成して挿入
+        console.log("[object-network.js] DOM生成を開始します。");
+        const utter_dom = makeUtteranceNodeInList(1245, receivedTimestamp, receivedNodeText, "edit");
+        console.log("[object-network.js] 生成されたDOM:", utter_dom);
+
+        const target_area = $(`#utterance_area2`);
+        console.log("[object-network.js] 挿入対象エリア:", target_area);
+
+        if (target_area.length > 0) {
+            target_area.prepend(utter_dom); // 一番上に挿入
+            console.log("[object-network.js] DOMを挿入しました。");
+        } else {
+            console.warn("[object-network.js] 挿入対象エリアが見つかりません。");
+        }
+    } catch (error) {
+        console.error("[object-network.js] DOM操作中にエラーが発生しました:", error);
+    }
+});
+
 
 
 // アップロードする時
@@ -1605,17 +1637,6 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
     //データベースから指定時間の発話データを取得。
     //データが存在する場合、dnode 内の各ノードを addReloadNode 関数でリロード。
     getDiscussionMapDataFromDB(null, null, (utterance_list_info) => {
-        //console.log("utterance_list_info:", utterance_list_info);
-        // もし utterance_list_info が正しい構造を持っていない場合に備えたチェック
-        // if (utterance_list_info && Array.isArray(utterance_list_info.utterance)) {
-        //     utterance_list_info.utterance.map(u => {
-        //         const utter_dom = makeUtteranceNodeInList(u.area_id, u.content, u.sender, u.JPNtime, u.network_on);
-        //         target_area.append(utter_dom); // 挿入        
-        //     });
-        // } else {
-        //     console.error("utterance_list_info.utterance が配列でないか存在しません");
-        // }
-        
         //utterance_listチェック
         if (utterance_list_info && Array.isArray(utterance_list_info.dnode)) {
             utterance_list_info.dnode.forEach((n) => {
@@ -1642,25 +1663,8 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
         } else {
             console.error("deges is undefined or not an array:", utterance_list_info.dnode);
         }
-        // console.log("utterance_list_info.dedge:", utterance_list_info.dedge);
-
-        // テスト用の値を準備
-        // const testUtterId = "utter_001";
-        // const testTimestamp = "2024-11-24 15:00";
-        // const testUtterContent = "これはテストの発話内容です。";
-        // const testAct = "edit"; // または "view", "delete" など
-
-        // console.log("テスト値:", testUtterId, testTimestamp, testUtterContent, testAct);
-
-        // const utter_dom = makeUtteranceNodeInList(testUtterId, testTimestamp, testUtterContent, testAct);
-        // console.log("生成されたDOM:", utter_dom); // 生成されたノードを確認
-
-        // target_area.append(utter_dom); // 挿入   
-
         // データの取得と挿入
         utterance_list_info.objectLog.map(u => {
-            console.log("現在の発話データ:", u); // 各データを確認
-        
             // 関数呼び出し前のデバッグログ
             console.log(`makeUtteranceNodeInListに渡すデータ:
                 node_id: ${u.node_id},
