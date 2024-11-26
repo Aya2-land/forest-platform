@@ -238,10 +238,10 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                        id="mrnb_addStep" value="手段追加" disabled/> 
                                 <input type="button" class="meeting_reflectin_network_button"
                                        id="mrnb_removeNode" value="ノード削除" />
-                                <input type="button" class="meeting_reflectin_network_button"
+                                <!-- <input type="button" class="meeting_reflectin_network_button"
                                        id="mrnb_startEditEdge" value="エッジ追加" />
                                 <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_removeEdge" value="エッジ削除" />
+                                       id="mrnb_removeEdge" value="エッジ削除" /> -->
                                 <input type="button" class="meeting_reflectin_network_button"
                                        id="mrnb_ZoomIn" value="拡大" />
                                 <input type="button" class="meeting_reflectin_network_button"

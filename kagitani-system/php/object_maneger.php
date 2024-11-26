@@ -107,31 +107,6 @@
 			$mysqli->query("UPDATE network_recruit SET reason = '$text'
 			WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND node_id = '$node_id' AND time >= '$struct_start_time'");	
 		}
-
-	//kagiatani
-	}else if($purpose === 'aut_record'){
-		if ($_POST['record_thing'] === 'activity') {
-				// ノードIDを取得
-				$object_node_id = $_POST['node_id'];
-				$activity_id = $_POST['activity_id'];
-
-				// データをコンソールに出力（ブラウザのコンソール）
-				echo "<script>console.log('Received object_node_id: " . $object_node_id . "');</script>";
-				echo "<script>console.log('Received activity_id: " . $activity_id . "');</script>";		
-	
-				// データベース処理（活動記録を保存）
-				$object_activity_id = uniqid('activity_', true);
-	
-					// DBに挿入
-					$sql = $mysqli->query("INSERT INTO object_activities (object_activity_id, object_node_id, activity_id) VALUES ('$object_activity_id', '$object_node_id', '$activity_id')");
-	
-					// エラーチェック
-					if (!$sql) {
-						echo "Error inserting into object_activities: " . $mysqli->error . "<br>";
-					} else {
-						echo "Inserted object_activity_id: $object_activity_id<br>";
-					}
-		}
 	}else if($purpose === 'update'){
 		$update_thing = $_POST['update_thing'];
 		if($update_thing === 'node'){

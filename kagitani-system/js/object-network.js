@@ -2,6 +2,7 @@ let defaultForestMRN;
 let defaultRecordForestMRN;
 let defaultShowForestMRN;
 let autoRecordFlag = false; // 自動記録フラグ
+let globalParams = null; //クリックされたネットワークノード
 
 class ForestMRN { // forestMRN: forest Meeting Reflection Network
     constructor(container, load) {
@@ -170,26 +171,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         }));
         console.log("ノード固定状態の更新後:", this.nodes);
     }
-    
-
-    
-    /*
-     * データベースリクエストユーティリティ
-     */
-    // recordMeetingUtteranceNodes(utterances) {
-    //     // データを送信（DBに保存）
-    //     $.ajax({
-    //         url: "php/object_map_manager.php",
-    //         type: "POST",
-    //         data: {
-    //             purpose: "record_meeting_utterance",
-    //             utters: JSON.stringify(utterances),
-    //         }
-    //     }).success((r) => {
-    //         alert("議論データアップロードに成功しました")
-    //         document.getElementById("meetingUtteranceXmlFileUploader").value = "";
-    //     });
-    // }
 
     /*
      * 議論内省マップの表示・操作部分（Extend vis.js）
@@ -220,7 +201,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
         let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
-        let object_nodes_type_id = 0;
         let result_label = '';
         for (let i = 0; i < node_label.length; i += 10) {
             result_label += node_label.substr(i, 10) + '\n';
@@ -254,13 +234,15 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         return this.nodes;
     }
 
-        //kagitani--目標追加
+    //kagitani--手段追加
     addStep(node_id, node_label, node_type, node_x, node_y) {
+        const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
+        const fromNode = this.nodes.get(fromNodeId); // globalParams.nodes から元のノードを取得
+
         let node_color = 'skyblue'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
-        let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
-        let object_nodes_type_id = 0; 
+        let position_fixed = false; // ノードを動かせるかどうか（Falseなら動かせる）
         let result_label = '';
         for (let i = 0; i < node_label.length; i += 10) {
             result_label += node_label.substr(i, 10) + '\n';
@@ -272,26 +254,47 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             color: node_color, shape: node_shape,
             font: { color: text_color },
             fixed: position_fixed,
-            x: node_x, y: node_y, 
+            x: node_x, y: node_y = fromNode.y, 
         };
         this.nodes.add(newNode);
-        const boundingBox = this.ownNetwork.getBoundingBox(`${node_type}_${node_id}`);
-        if(node_type !==  "topic-tag"){
-            node_y += Math.floor(((boundingBox.bottom)-(boundingBox.top))/2);
-        }
-        this.nodes.update({
-            id : `${node_type}_${node_id}`,
-            color: node_color, shape: node_shape,
-            font: { color: text_color },
-            y : node_y
-        });
+
         const boundingBoxupdate = this.ownNetwork.getBoundingBox(`${node_type}_${node_id}`);
         this.latest_selected_node_info.x = node_x;
-        this.latest_selected_node_info.y = boundingBoxupdate.bottom+10;
+        this.latest_selected_node_info.y = boundingBoxupdate.bottom + 10;
+    
         defaultRecordForestMRN.record_StepNode(`${node_type}_${node_id}`, node_label, node_type, node_x, node_y);
-        console.log("aaaaaaddstepppp");
+    
+        console.log("クリックされたノードの確認です:", globalParams);
+    
+        // ノード追加後に、エッジを自動で追加
+        if (globalParams && globalParams.nodes) {
+            console.log("globalParams と globalParams.nodes が存在しています。");
+    
+            // エッジ編集モードに切り替え
+            this.SelectEditEdge();
+            console.log("エッジ編集モードに切り替えました。");
+    
+            // エッジを追加
+            const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
+            console.log("エッジ追加:", { from: fromNodeId, to: `${node_type}_${node_id}` });
+            
+            this.edges.add({ from: fromNodeId, to: `${node_type}_${node_id}` });
+            
+            // エッジが正しく追加されたか確認
+            console.log("エッジが追加されました。現在のエッジ:", this.edges.get());
+            
+            // エッジの記録を行う
+            defaultRecordForestMRN.record_Edge(fromNodeId, `${node_type}_${node_id}`);
+            console.log("エッジが記録されました。");
+    
+            // 編集モードを解除
+            this.SelectEditEdge();
+            console.log("エッジ編集モードが解除されました。");
+        }
+    
         return this.nodes;
     }
+    
 
     addReloadNode(node_id, node_label, node_type, node_x, node_y) {
         console.log("Received node data:");
@@ -396,12 +399,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         return this.nodes;
     }
 
-    // 資料エッジ作成
-    addmaterialEdge(edge_start, edge_end, edge_label){
-        this.edges.add({ from: edge_start, to: edge_end, label: edge_label});
-        defaultRecordForestMRN.record_Material_Edge(edge_start, edge_end, edge_label);
-    }
-
+    //そうか，これはリロードした時に呼び起こすやつだ．じゃあ関係ないな．
     addReloadEdge(object_edges_id, edge_start, edge_end) {
         console.log("object_edges_id:", object_edges_id); // object_edges_idの確認
         console.log("addReloadEdge called with edge_start:", edge_start, "and edge_end:", edge_end);
@@ -710,27 +708,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
         this.ConnectNetworkNodeId.push(this.selectId);
         this.ConnectMindMapNodeId.push(mm_nodeid);
-
-        //console.log("ConnectNetworkNodeId:", this.ConnectNetworkNodeId);
-        //console.log("ConnectMindMapNodeId:", this.ConnectMindMapNodeId);
-
-        //ノードがクリックされなかった場合にアラートを表示。
-        // if(mm_nodeid == null) {
-        //     alert('ノードのクリックがうまくできませんでした．もう一度試してみてください');
-        //     return;
-        //既に接続されているノードが選択された場合に処理を終了。
-        // } else {
-        //     // 既に選択されているノードかどうかを確認
-        //     if(this.ConnectNetworkNodeId.indexOf(this.selectId) !== -1 && this.ConnectMindMapNodeId.indexOf(mm_nodeid) !== -1) {
-        //         alert('このノードはすでに選択されています');
-        //         return;
-        //     }
-        //     //新たな接続を記録し、ConnectNetworkNodeId と ConnectMindMapNodeId に追加
-        //     // ノード接続を記録
-        //     defaultRecordForestMRN.record_connection(this.selectId, mm_nodeid);
-        //     this.ConnectNetworkNodeId.push(this.selectId);
-        //     this.ConnectMindMapNodeId.push(mm_nodeid);
-        // }
     }
 
 
@@ -738,6 +715,9 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     networkClick (params){
         // ノード選択後、手段追加ボタンを有効にする
         console.log("クリックされたノード:", params.nodes);  // クリックされたノード情報をログ出力
+
+        globalParams = params; // グローバル変数に保存
+        console.log("確認:", globalParams);
 
         // ノードが1つ以上選択された場合に手段追加ボタンを有効化
         if (params.nodes.length > 0) {
