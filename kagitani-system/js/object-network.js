@@ -736,6 +736,19 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     //ネットワークノードがクリックされたときの処理
     networkClick (params){
+        // ノード選択後、手段追加ボタンを有効にする
+        console.log("クリックされたノード:", params.nodes);  // クリックされたノード情報をログ出力
+
+        // ノードが1つ以上選択された場合に手段追加ボタンを有効化
+        if (params.nodes.length > 0) {
+            console.log("手段追加ボタンを有効化する条件が満たされました。");
+            document.getElementById("mrnb_addStep").disabled = false; // 手段追加ボタンを有効化
+        } else {
+            console.log("手段追加ボタンを無効化します。");
+            document.getElementById("mrnb_addStep").disabled = true; // 手段追加ボタンを無効化
+        }
+
+
         //他のところクリックしたら色直す
         document.getElementById("ontology_feedback").innerHTML = "";
         const feedbackarea = document.getElementsByClassName("accordion-item");
@@ -760,10 +773,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 document.getElementById("ontology_feedback").innerHTML = "<div class='feedback_message'>この発言は「"+node_infomation.label + "」と「" + this.output_input[node_infomation.label] + "」<br>との合理性を意識して発言されたのかもしれません</div>";
             } 
         }
-        // if(this.OntologyConnectNodeId.indexOf(params.nodes[0]) !== -1){
-        //     const node_infomation = this.nodes.get(this.OntologyNodeId[this.OntologyConnectNodeId.indexOf(params.nodes[0])]);
-        //     document.getElementById("ontology_feedback").innerHTML = "「"+node_infomation.label + "」と「" + this.output_input[node_infomation.label] + "」との合理性を考えましょう";
-        // } 
         if(this.RecruitNodeId.indexOf(params.nodes[0]) !== -1){
             this.FeedbackNodeId = params.nodes[0];
             document.getElementById(this.FeedbackNodeId).style.display = "block";
@@ -789,6 +798,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         }
     }
 
+    //ここ色々使えるかも．
     //マインドマップ内の複数コンテナに対応し、選択されたネットワークノードの関連情報をハイライト
     shownetworkClick (params){
         //過去のハイライトをリセット（背景色を元に戻す）
@@ -1353,45 +1363,6 @@ const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
 
 }
 
-// const getObjectLogDataFromDB = (target_time, end_time, callback) => {
-//     console.log("こいつ動かしてみよう");
-//     return new Promise((resolve, reject) => {
-//         try{
-//             let data;
-//             // データベースから発話ノードリストにあるノードデータ一覧を取得
-//             if(target_time === null){
-//                 data =  {
-//                         //読み込みたいnode_idを渡すように改変しよう
-//                         purpose: "select_meeting_utterance",
-//                         first_load_flag: true,
-//                         };
-//             }else if(end_time === null){
-//                 data =  {
-//                         purpose: "select_version_discussionmap",
-//                         first_load_flag: target_time,
-//                         };
-//             }else{
-//                 data =  {
-//                         purpose: "select_past_discussionmap",
-//                         discussion_start_time : target_time,
-//                         discussion_end_time : end_time
-//                         };      
-//             }
-//             return $.ajax({
-//                 url: "php/display_object_activities.php",
-//                 type: "POST",
-//                 data: data,
-//             }).success((r) => {
-//                 objectLog_list = JSON.parse(r);
-//                 callback(objectLog_list);
-//             });
-//         } catch (error){
-//             reject(error);
-//         }
-//     });
-    
-// }
-
 //ここを編集して，活動ログを表示する．
 // 発言を発言エリアにdivとして表示
 const makeUtteranceNodeInList = (utter_id, timestamp, utter_content, act) => {
@@ -1540,89 +1511,6 @@ const displayUtteranceNodeInList = (display_target_area_id, target_reflection_ti
         });
         document.getElementById("accordion_discussion").innerHTML = "";      
     });
-    getObjectLogDataFromDB(null, null, (utterance_list_info) => {
-        // データの取得と挿入
-        utterance_list_info.objectLog.map(u => {
-            console.log("現在の発話データははっはは:", u); // 各データを確認
-        
-            // 関数呼び出し前のデバッグログ
-            console.log(`makeUtteranceNodeInListに渡すデータだあああ:
-                node_id: ${u.node_id},
-                timestamp: ${u.timestamp},
-                text: ${u.text},
-                act: ${u.act}`);
-        
-            const utter_dom = makeUtteranceNodeInList(u.node_id, u.timestamp, u.text, u.act);
-        
-            // 関数呼び出し後のデバッグログ
-            console.log("生成されたDOM:", utter_dom);
-        
-            target_area.append(utter_dom); // 挿入            
-        });
-        
-    }).then(() => {
-        const accordionHeaders = document.querySelectorAll('#accordion_discussion .accordion-header');
-        accordionHeaders.forEach(header => {
-            header.addEventListener('click', function () {
-                const accordionItem = this.parentElement;
-                accordionItem.classList.toggle('active');
-            });
-        });
-        const feedbackarea = document.getElementsByClassName("accordion-item");
-        for(var i=0; i<feedbackarea.length; i++){
-            feedbackarea[i].style.display = "none";
-        }
-         $(`#utterance_area`).on('mousedown', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-            mousedownId = null;
-            const overed_node = e.target;
-            if(overed_node.getAttribute('network_on')==='0'){
-                mousedownId = overed_node.getAttribute('id');
-            }
-         });
-         $(`#utterance_area`).on('mouseleave', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-            $(`#rclick`).empty();
-        });
-        $(`.utter_node_in_list`).on('mouseup', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-            const overed_node = e.target;
-            if(overed_node.getAttribute('network_on') === '0' && mousedownId !== null && mousedownId !== overed_node.getAttribute('id') && overed_node.getAttribute('speaker') === document.getElementById(mousedownId).getAttribute('speaker')){
-                union_utterance(mousedownId, overed_node.getAttribute('id'))
-            }
-        });
-        $(`.utter_node_in_list`).on('mouseenter', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上に入った）を追加
-            const overed_node = e.target;
-            timedisplay_area.html(overed_node.getAttribute('timestamp'));
-        });
-        $(`.utter_node_in_list`).on('mouseleave', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-            const overed_node = e.target;
-            timedisplay_area.empty();
-        });
-        $(`.utter_node_in_list`).on('click', (e) => {
-            // リスト内の発話ノードにマウスイベント(右クリック)を追加
-            document.getElementById("rclick").innerHTML="";
-            const clicked_node = e.target;
-            if(clicked_node.getAttribute('network_on') === '0'){
-                document.getElementById("rclick").innerHTML="<input type='button' id='utteranceNodebutton' value='ノードに追加'>";
-                $(`#utteranceNodebutton`).on("click", () => {
-                    defaultForestMRN.addutteranceNode(clicked_node.getAttribute('utterance'));
-                    document.getElementById("rclick").innerHTML="";
-                    clicked_node.setAttribute('network_on', "1");
-                    document.getElementById(clicked_node.getAttribute('id')).style.background="gray";
-                    update_text_on(clicked_node.getAttribute('id'));
-                });
-            }
-        });
-        $(`.utter_node_in_list`).on('contextmenu', (e) => {
-            // リスト内の発話ノードにマウスイベント(右クリック)を追加
-            const clicked_node = e.target;
-            timedisplay_area.empty();
-            // rightclick()
-        });        
-    });
 }
 
 //ロードする時
@@ -1667,89 +1555,6 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
         utterance_list_info.objectLog.map(u => {
             // 関数呼び出し前のデバッグログ
             console.log(`makeUtteranceNodeInListに渡すデータ:
-                node_id: ${u.node_id},
-                timestamp: ${u.timestamp},
-                text: ${u.text},
-                act: ${u.act}`);
-        
-            const utter_dom = makeUtteranceNodeInList(u.node_id, u.timestamp, u.text, u.act);
-        
-            // 関数呼び出し後のデバッグログ
-            console.log("生成されたDOM:", utter_dom);
-        
-            target_area.append(utter_dom); // 挿入            
-        });
-        
-    }).then(() => {
-        const accordionHeaders = document.querySelectorAll('#accordion_discussion .accordion-header');
-        accordionHeaders.forEach(header => {
-            header.addEventListener('click', function () {
-                const accordionItem = this.parentElement;
-                accordionItem.classList.toggle('active');
-            });
-        });
-        const feedbackarea = document.getElementsByClassName("accordion-item");
-        for(var i=0; i<feedbackarea.length; i++){
-            feedbackarea[i].style.display = "none";
-        }
-         $(`#utterance_area`).on('mousedown', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-            mousedownId = null;
-            const overed_node = e.target;
-            if(overed_node.getAttribute('network_on')==='0'){
-                mousedownId = overed_node.getAttribute('id');
-            }
-         });
-         $(`#utterance_area`).on('mouseleave', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-            $(`#rclick`).empty();
-        });
-        $(`.utter_node_in_list`).on('mouseup', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-            const overed_node = e.target;
-            if(overed_node.getAttribute('network_on') === '0' && mousedownId !== null && mousedownId !== overed_node.getAttribute('id') && overed_node.getAttribute('speaker') === document.getElementById(mousedownId).getAttribute('speaker')){
-                union_utterance(mousedownId, overed_node.getAttribute('id'))
-            }
-        });
-        $(`.utter_node_in_list`).on('mouseenter', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上に入った）を追加
-            const overed_node = e.target;
-            timedisplay_area.html(overed_node.getAttribute('timestamp'));
-        });
-        $(`.utter_node_in_list`).on('mouseleave', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-            const overed_node = e.target;
-            timedisplay_area.empty();
-        });
-        $(`.utter_node_in_list`).on('click', (e) => {
-            // リスト内の発話ノードにマウスイベント(右クリック)を追加
-            document.getElementById("rclick").innerHTML="";
-            const clicked_node = e.target;
-            if(clicked_node.getAttribute('network_on') === '0'){
-                document.getElementById("rclick").innerHTML="<input type='button' id='utteranceNodebutton' value='ノードに追加'>";
-                $(`#utteranceNodebutton`).on("click", () => {
-                    defaultForestMRN.addutteranceNode(clicked_node.getAttribute('utterance'));
-                    document.getElementById("rclick").innerHTML="";
-                    clicked_node.setAttribute('network_on', "1");
-                    document.getElementById(clicked_node.getAttribute('id')).style.background="gray";
-                    update_text_on(clicked_node.getAttribute('id'));
-                });
-            }
-        });
-        $(`.utter_node_in_list`).on('contextmenu', (e) => {
-            // リスト内の発話ノードにマウスイベント(右クリック)を追加
-            const clicked_node = e.target;
-            timedisplay_area.empty();
-            // rightclick()
-        });        
-    });
-    getObjectLogDataFromDB(null, null, (utterance_list_info) => {
-        // データの取得と挿入
-        utterance_list_info.objectLog.map(u => {
-            console.log("現在の発話データははっはは:", u); // 各データを確認
-        
-            // 関数呼び出し前のデバッグログ
-            console.log(`makeUtteranceNodeInListに渡すデータだあああ:
                 node_id: ${u.node_id},
                 timestamp: ${u.timestamp},
                 text: ${u.text},

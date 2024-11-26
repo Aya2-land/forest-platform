@@ -235,7 +235,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                 <input type="button" class="meeting_reflectin_network_button"
                                        id="mrnb_addGoal" value="目標追加" />
                                 <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_addStep" value="手順追加" /> 
+                                       id="mrnb_addStep" value="手段追加" disabled/> 
                                 <input type="button" class="meeting_reflectin_network_button"
                                        id="mrnb_removeNode" value="ノード削除" />
                                 <input type="button" class="meeting_reflectin_network_button"
