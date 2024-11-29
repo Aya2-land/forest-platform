@@ -235,7 +235,6 @@
                             x : "380.5px",
                             y : "187px",
                             content : "★",
-                            class : "root", 
                             from_mode : null},
 
                 });
@@ -3268,8 +3267,7 @@
                                     concept_id : n_concept,
                                     x : jmnode[j].style.left,
                                     y : jmnode[j].style.top,
-                                    content : "New Node",
-                                    class : "" },
+                                    content : "New Node",},
 
                         });
 

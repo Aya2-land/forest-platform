@@ -3259,7 +3259,7 @@
                                     x : jmnode[j].style.left,
                                     y : jmnode[j].style.top,
                                     content : "New Node",
-                                    class : "" },
+                                },
 
                         });
 

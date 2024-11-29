@@ -8,16 +8,17 @@
 
 	$id = $_SESSION["MAPID"];
 
-	$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$id')";
+	$n_sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$id')";
+	$a_sql = "SELECT * FROM paper_annotations WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$id') AND deleted = 0";
 
 	$i = 0;
 	$array = array();
 
-	if($result = $mysqli->query($sql)){
+	if($result_n= $mysqli->query($n_sql)){
 		
 		if($_POST["val"] == "id"){
 
-			while($row = mysqli_fetch_assoc($result)){
+			while($row = mysqli_fetch_assoc($result_n)){
 	
 				$array = $array + array($i=>$row["node_id"]);
 
@@ -29,7 +30,7 @@
 	
 		}else if($_POST["val"] == "concept_id"){
 	
-			while($row = mysqli_fetch_assoc($result)){
+			while($row = mysqli_fetch_assoc($result_n)){
 	
 				$array = $array + array($i=>$row["concept_id"]);
 
@@ -41,7 +42,7 @@
 	
 		}else if($_POST["val"] == "content"){
 	
-			while($row = mysqli_fetch_assoc($result)){
+			while($row = mysqli_fetch_assoc($result_n)){
 	
 				$array = $array + array($i=>$row["content"]);
 
@@ -53,7 +54,7 @@
 	
 		}else if($_POST["val"] == "type"){
 	
-			while($row = mysqli_fetch_assoc($result)){
+			while($row = mysqli_fetch_assoc($result_n)){
 	
 				$array = $array + array($i=>$row["type"]);
 
@@ -65,7 +66,7 @@
 	
 		}else if($_POST["val"] == "parent_id"){
 
-			while($row = mysqli_fetch_assoc($result)){
+			while($row = mysqli_fetch_assoc($result_n)){
 
 				$array = $array + array($i=>$row["parent_id"]);
 
@@ -77,7 +78,7 @@
 	
 		}else if($_POST["val"] == "class"){
 	
-			while($row = mysqli_fetch_assoc($result)){
+			while($row = mysqli_fetch_assoc($result_n)){
 	
 				$array = $array + array($i=>$row["class"]);
 
@@ -87,9 +88,38 @@
 	
 			echo json_encode($array);
 	
+		}else if($_POST["val"] == "start_char_id"){
+
+			if($result_a = $mysqli->query($a_sql)){
+
+				while($row = mysqli_fetch_assoc($result_a)){
+	
+					$array = $array + array($i=>$row["start_char_id"]);
+	
+					$i += 1;
+	
+				}
+			}
+			echo json_encode($array);
+			
+
+		}else if($_POST["val"] == "end_char_id"){
+
+			if($result_a = $mysqli->query($a_sql)){
+
+				while($row = mysqli_fetch_assoc($result_a)){
+	
+					$array = $array + array($i=>$row["end_char_id"]);
+	
+					$i += 1;
+	
+				}
+			}
+			echo json_encode($array);
+
 		}else if($_POST["val"] == "root"){
 	
-			while($row = mysqli_fetch_assoc($result)){
+			while($row = mysqli_fetch_assoc($result_n)){
 	
 				echo $row["content"];
 
@@ -98,7 +128,7 @@
 			echo json_encode($array);
 	
 		}
-	}else if($result == FALSE){
+	}else if($result_n== FALSE){
 		echo "false";
 			error_log($result.'$result失敗です'.$mysqli->error, "3", "error_log.txt");
 			// error_log('失敗しました。'.mysqli_error($link), 0);

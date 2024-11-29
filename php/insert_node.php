@@ -11,10 +11,10 @@
 
 		$created_at = date("Y-m-d H:i:s");
 		$deleted = 0;
+		$id = $_SESSION["MAPID"];
 
 		if($_POST["type"] == 0){
 
-			$id = $_SESSION["MAPID"];
 
 			$sql = "SELECT * FROM nodes WHERE node_id IN (SELECT node_id FROM map_node_links WHERE map_id = ".$id.") AND deleted = 0";
 

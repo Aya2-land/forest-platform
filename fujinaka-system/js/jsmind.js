@@ -8,6 +8,24 @@
 
  alert_count = 0;
 
+ async function get_Typeid(class_name, type_name) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: "php/get_Typeid.php",
+        type: "POST",
+        data: { class: class_name, type: type_name },
+        success: function(response) {
+          const result = JSON.parse(response);
+          resolve(result); 
+        },
+        error: function(error) {
+          console.log("エラー:", error);
+          reject(error);
+        }
+      });
+    });
+  }
+
 (function($w){
     'use strict';
     // set 'jsMind' as the library name.
@@ -209,12 +227,11 @@
                     type: "POST",
                     data: { insert : "node",
                             id : newId,
-                            type : "root",
+                            type : 0, //root
                             concept_id : null,
                             x : "380.5px",
                             y : "187px",
-                            content : "★",
-                            class : "root" },
+                            content : "★",},
 
                 });
 
@@ -2975,7 +2992,7 @@
             }
         },
 
-        handle_addchild: function(_jm,e){
+        handle_addchild: async function(_jm,e){
             var selected_node = _jm.get_selected_node();
             if(!!selected_node){
                 var nodeid = jm.util.uuid.newid();
@@ -3019,6 +3036,14 @@
 
                 }
 
+                try {
+                    var type_name = n_type;
+                    // get_typeid の非同期処理が完了するまで待つ
+                    var type_id = await get_Typeid("", type_name);
+                  } catch (error) {
+                    console.log("エラーが発生しました:", error);
+                  }
+
                 for(var j=0; j<jmnode.length; j++){
 
                     if(nodeid == jmnode[j].getAttribute("nodeid")){
@@ -3034,12 +3059,11 @@
                             data: { insert : "node",
                                     id : nodeid,
                                     parent_id : selected_node.id,
-                                    type : n_type,
+                                    type : type_id['type_id'],
                                     concept_id : n_concept,
                                     x : jmnode[j].style.left,
                                     y : jmnode[j].style.top,
-                                    content : "New Node",
-                                    class : "" },
+                                    content : "New Node",},
 
                         });
 
@@ -3074,7 +3098,7 @@
         },
 
 
-        handle_addbrother:function(_jm,e){
+        handle_addbrother: async function(_jm,e){
             var selected_node = _jm.get_selected_node();
             if(!!selected_node && !selected_node.isroot){
                 var nodeid = jm.util.uuid.newid();
@@ -3129,6 +3153,14 @@
 
                 }
 
+                try {
+                    var type_name = n_type;
+                    // get_typeid の非同期処理が完了するまで待つ
+                    var type_id = await get_Typeid("", type_name);
+                  } catch (error) {
+                    console.log("エラーが発生しました:", error);
+                  }
+
                 for(var j=0; j<jmnode.length; j++){
 
                     if(nodeid == jmnode[j].getAttribute("nodeid")){
@@ -3144,12 +3176,11 @@
                             data: { insert : "node",
                                     id : nodeid,
                                     parent_id : parent_id,
-                                    type : n_type,
+                                    type : type_id['type_id'],
                                     concept_id : n_concept,
                                     x : jmnode[j].style.left,
                                     y : jmnode[j].style.top,
-                                    content : "New Node",
-                                    class : "" },
+                                    content : "New Node",},
 
                         });
 

@@ -1,7 +1,6 @@
 var clickedType="";
 
 function make_micro_strat(node) {
-	console.log(node);
     node.addEventListener('click', function(event) {
         
         clickedType = event.target.getAttribute('type');
@@ -15,7 +14,6 @@ function make_micro_strat(node) {
             var nodeid = event.target.getAttribute('nodeid');
             var text = "この解釈について，①なぜこのような解釈に至らなかったのか②どのようなことを意識して読解することで考えられるようになるか考えてみましょう";
             $("#ref_guidance").text(text);
-            console.log($("#ref_guidance"));
             $("#make_micro_strat_form").css("display", "block");
             
 			
@@ -25,7 +23,6 @@ function make_micro_strat(node) {
             var nodeid = event.target.getAttribute('nodeid');
             var text = "この問いについて，①なぜ思いつけなかったのか，②どのようなことを意識して読解することで立てられるようになるか考えてみましょう";
             $("#ref_guidance").text(text);
-            console.log($("#ref_guidance"));
             $("#make_micro_strat_form").css("display", "block");		
         }
     });    
@@ -50,12 +47,11 @@ function getData(){
 	    type: "POST",
 	    data: { val : "id"},
 	    success: function(arr){
-
-	    	var parse = JSON.parse(arr);
+			var parse = JSON.parse(arr);
 	    	id_array = parse;
 	    	showNode(id_array,"id");
 
-			},
+		},
 			error: function(){
 				console.log("ajaxエラー");
 	    }
@@ -68,14 +64,12 @@ function getData(){
 	    type: "POST",
 	    data: { val : "concept_id" },
 	    success: function(arr){
+			var parse = JSON.parse(arr);
+			concept_id_array = parse;
+			showNode(concept_id_array,"concept_id");
 
-	    	var parse = JSON.parse(arr);
-	    	concept_id_array = parse;
-	    	showNode(concept_id_array,"concept_id");
-
-
-			},
-			error: function(){
+		},
+		error: function(){
 			console.log("ajaxエラー");
 
 	    }
@@ -88,13 +82,12 @@ function getData(){
 	    type: "POST",
 	    data: { val : "content" },
 	    success: function(arr){
-
-	    	var parse = JSON.parse(arr);
+			var parse = JSON.parse(arr);
 	    	content_array = parse;
 	    	showNode(content_array,"content");
 
-			},
-			error: function(){
+		},
+		error: function(){
 			console.log("ajaxエラー");
 
 	    }
@@ -107,16 +100,12 @@ function getData(){
 	    type: "POST",
 	    data: { val : "type" },
 	    success: function(arr){
-
-	    	var parse = JSON.parse(arr);
+			var parse = JSON.parse(arr);
 	    	type_array = parse;
-				//	console.log(parse);
 	    	showNode(type_array,"type");
-
-			},
+		},
  		error: function(){
-	 	console.log("ajaxエラー");
-
+	 		console.log("ajaxエラー");
 	    }
 
 	});
@@ -127,14 +116,11 @@ function getData(){
 	    type: "POST",
 	    data: { val : "parent_id" },
 	    success: function(arr){
-
-	    	var parse = JSON.parse(arr);
+			var parse = JSON.parse(arr);
 	    	parent_id_array = parse;
-			//	console.log(parse);
 	    	showNode(parent_id_array,"parent_id");
-
-			},
-			error: function(){
+		},
+		error: function(){
 			console.log("ajaxエラー");
 
 	    }
@@ -147,13 +133,11 @@ function getData(){
 	    type: "POST",
 	    data: { val : "class" },
 	    success: function(arr){
-
-	    	var parse = JSON.parse(arr);
+			var parse = JSON.parse(arr);
 	    	class_array = parse;
 	    	showNode(class_array,"class");
-
-			},
-			error: function(){
+		},
+		error: function(){
 			console.log("ajaxエラー");
 
 	    }
@@ -166,17 +150,13 @@ function getData(){
 	    type: "POST",
 	    data: { val : "start_char_id" },
 	    success: function(arr){
-		
-
-	    	var parse = JSON.parse(arr);
-	    	s_id_array = parse;
-			console.log(parse);
-	    	showNode(s_id_array,"start_char_id");
-
-			},
-			error: function(){
+			var parse = JSON.parse(arr);
+			s_id_array = parse;
+			showNode(s_id_array,"start_char_id");
+				
+		},
+		error: function(){
 			console.log("ajaxエラー");
-
 	    }
 
 	});
@@ -186,16 +166,12 @@ function getData(){
 	    type: "POST",
 	    data: { val : "end_char_id" },
 	    success: function(arr){
-
-	    	var parse = JSON.parse(arr);
-	    	e_id_array = parse;
-			console.log(parse);
-	    	showNode(e_id_array,"end_char_id");
-
-			},
-			error: function(){
+			var parse = JSON.parse(arr);
+			s_id_array = parse;
+			showNode(s_id_array,"start_char_id");
+		},
+		error: function(){
 			console.log("ajaxエラー");
-
 	    }
 
 	});
@@ -260,7 +236,6 @@ function showNode(arr,mode){
 	}
 
 	if(count >= 8){
-		console.log(e_id_array);
 
 		var n = 1;
 

@@ -33,9 +33,9 @@ if(isset($_POST["mapname"])){
 }
 
 //シート編集
-if(isset($_POST["sheet"])){
+if(isset($_POST["map"])){
 
-	$_SESSION["MAPID"] = $_POST["sheet"];
+	$_SESSION["MAPID"] = $_POST["map"];
 
 	if(isset($_POST["edit"])){
 

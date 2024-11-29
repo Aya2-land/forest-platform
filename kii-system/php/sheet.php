@@ -274,8 +274,8 @@ function show_user(){
 
 	require "connect_db.php";
 	// nishida 実験用後で直す
-	// $paper_id = $_SESSION["PAPERID"];
-	$paper_id = 15161151;
+	$paper_id = $_SESSION["PAPERID"];
+	// $paper_id = 15161151;
 	$sql = "SELECT * FROM map_mode_link WHERE paper_id = '$paper_id' AND mode_id = 2 ORDER BY updated_at DESC";
 	$array = array();
 	$result = $mysqli->query($sql);

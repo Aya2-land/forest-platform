@@ -1364,6 +1364,7 @@ function save_node(){
                 node_id : "root"
               },
         success: function(num){
+            console.log(num)
 
             if(num == "save"){
 

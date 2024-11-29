@@ -14,15 +14,15 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
               primary : primaryID},
 
       success: function () {
-        console.log("\n");
-        console.log("登録成功");
-        console.log("ノードID：　" +nodeID );
-        console.log("操作：　" +nodeACT );
-        console.log("コンセプトID：　" +nodeCONCEPT );
-        console.log("ノードTYPE：　" +nodeTYPE );
-        console.log("ノードテキスト：　" +nodeTEXT );
-        console.log("親ノードID：　" +parentID );
-        console.log("\n");
+        // console.log("\n");
+        // console.log("登録成功");
+        // console.log("ノードID：　" +nodeID );
+        // console.log("操作：　" +nodeACT );
+        // console.log("コンセプトID：　" +nodeCONCEPT );
+        // console.log("ノードTYPE：　" +nodeTYPE );
+        // console.log("ノードテキスト：　" +nodeTEXT );
+        // console.log("親ノードID：　" +parentID );
+        // console.log("\n");
       },
 
       error: function () {

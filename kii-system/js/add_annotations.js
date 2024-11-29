@@ -427,7 +427,7 @@ async function add_Qnode2(){
                       content : topic,
                     },
                     success:function(result){
-                      if(result){ console.log(result);}
+                    //   if(result){ console.log(result);}
                     },
                     error: function(error) {
                       console.log("エラー:", error);

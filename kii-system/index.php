@@ -128,32 +128,32 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
             
               
 
-                    <!-- <select name="add_criticism" id="s_criticism_node">
-                      <optgroup label="批評の観点（タグ）付与">
-                      <option value="criticism">批評ノード追加</option>
-                        <option value="evaluation">価値判断</option>
-                            <optgroup label="----L価値判断">
-                                <option value="e_1">---L有用性</option>
-                                <option value="e_2">---L新規性</option>
-                                <option value="e_3">---L信頼性</option>
-                              </optgroup>
+                  <select name="add_criticism" id="s_criticism_node">
+                    <optgroup label="批評の観点（タグ）付与">
+                    <option value="criticism">批評ノード追加</option>
+                      <option value="evaluation">価値判断</option>
+                          <optgroup label="----L価値判断">
+                              <option value="e_1">---L有用性</option>
+                              <option value="e_2">---L新規性</option>
+                              <option value="e_3">---L信頼性</option>
+                            </optgroup>
 
-                        <option value="objection">意見</option>
-                              <optgroup label="----L意見">
-                              <option value="o_1">---L反論</option>
-                                <option value="o_2">---L改善策</option>
-                                <option value="o_3">---L代替案</option>
-                              </optgroup>
-                        <option value="modification">問題点</option>
-                              <optgroup label="----L問題点">
-                              <option value="m_1">---L語の妥当性</option>
-                                <option value="m_2">---L証拠の十分生</option>
-                                <option value="m_3">---L論理の整合性</option>
-                              </optgroup>
+                      <option value="objection">意見</option>
+                            <optgroup label="----L意見">
+                            <option value="o_1">---L反論</option>
+                              <option value="o_2">---L改善策</option>
+                              <option value="o_3">---L代替案</option>
+                            </optgroup>
+                      <option value="modification">問題点</option>
+                            <optgroup label="----L問題点">
+                            <option value="m_1">---L語の妥当性</option>
+                              <option value="m_2">---L証拠の十分生</option>
+                              <option value="m_3">---L論理の整合性</option>
+                            </optgroup>
 
 
-                      </optgroup>
-                    </select> -->
+                    </optgroup>
+                  </select>
 
                     
 
