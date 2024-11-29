@@ -97,6 +97,7 @@
 			}
 			$n_v_result = $mysqli->query($node_v_sql);
 			if(!$n_v_result){
+				echo $node_v_sql;
 				echo "error2";
 			}
 			$n_h_result = $mysqli->query($node_h_sql);
@@ -113,7 +114,6 @@
 			$n_m_link_result = $mysqli->query($node_m_link_sql);
 			if(!$n_m_link_result){
 				echo "error_link, ";
-				echo $node_m_link_sql;
 			}
 
 		}
