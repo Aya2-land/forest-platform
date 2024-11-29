@@ -49,11 +49,9 @@ open_empty();
 function get_selected_nodeid(){
     var selected_node = _jm.get_selected_node();
     if(!!selected_node){
-        console.log(1);
         return selected_node.id;
     
     }else{
-      console.log(2);
         return null;
         
     }
@@ -765,7 +763,6 @@ $(window).keydown(function(e){
 function remove_node(){
 
     var selected_id = get_selected_nodeid();
-    console.log(selected_id);
 
     //yoshioka登録　システムが用意した問いを追加したこと
    //渡す情報（ノードID，親ノードID，操作，テキスト，法造コンセプトID，タイプ，primary）
@@ -787,7 +784,11 @@ function remove_node(){
         url: "php/update_node.php",
         type: "POST",
         data: { update : "delete",
-                id : selected_id },
+                id : selected_id 
+              },
+              success:function(result){
+                  if(result){ console.log(result);}
+              },
     });
 
     //hatakeyama ノード削除

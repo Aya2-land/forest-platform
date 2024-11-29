@@ -2711,7 +2711,11 @@
                             type: "POST",
                             data: { update : "content",
                                     id : node.id,
-                                    content : jmnode[i].innerHTML }
+                                    content : jmnode[i].innerHTML 
+                                },
+                                success:function(result){
+                                    if(result){ console.log(result);}
+                                },
 
                         });
 
@@ -3473,8 +3477,8 @@ async function GetNodeId_ContentRelationTable(node1_id)
         data: { node1_id : node1_id},
         success: function(arr){
           if(arr == "[]"){
-            console.log(arr);
-            console.log("何もなかった");
+            // console.log(arr);
+            // console.log("何もなかった");
           }else{
             //console.log(arr);
             var parse = JSON.parse(arr);

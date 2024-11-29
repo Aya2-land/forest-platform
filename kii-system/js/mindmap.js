@@ -1103,7 +1103,11 @@ function remove_node(){
         url: "php/update_node.php",
         type: "POST",
         data: { update : "delete",
-                id : selected_id },
+                id : selected_id 
+            },
+            success:function(result){
+                if(result){ console.log(result);}
+            },
 
     });
 
