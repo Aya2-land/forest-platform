@@ -782,6 +782,29 @@ h3 {
   }
 /*ここまで大槻修正*/
 
+/* 問い一覧の全体 */
+#side_menu .objectMap_area {
+	height: 47vw;
+	overflow-y: auto;
+	border:solid 5px #ccc;
+	margin-bottom: 30px;
+	font-size: 14px;
+	text-align: left;
+	resize:vertical;
+}
+
+#goalListArea {
+    margin-top: 20px;
+}
+
+.goalItem {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f9f9f9;
+    font-size: 16px;
+}
+
 /* 問い一覧の見出し */
 #side_menu .toi_menu {
 	background-color: #9acd32;

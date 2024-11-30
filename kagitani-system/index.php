@@ -84,6 +84,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/jsmind.screenshot.js"></script>
         <script type="text/javascript" src="js/change_tab.js"></script>
         <script type="text/javascript" src="./js/vis-network.min.js"></script>
+        <script type="text/javascript" src="js/show_objectMap.js"></script>
         <!-- <script type="text/javascript" src="./js/meeting-reflection-network.js"></script> -->
         <link rel="stylesheet" type="text/css" href="css/meeting-reflection-network.css" />
         <script type="text/javascript">
@@ -131,13 +132,17 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <div id="uploaded_meeting_utterance_xml_concent_display_area" style="display: none"></div>
                     </div>
                     <!--ここまで大槻修正-->
-                    <div class="toi_list">
-                        <div id="mind_all">
+
+                    <div class="toi_list" style="display: flex; justify-content: center; align-items: center;">
+                        <div id="mind_all" style="margin-right: 10px;">
                             <input class="button5" type="button" onclick="showGeneration();" value="問い一覧">
+                        </div>
+                        <div id="mind_all">
+                            <input class="button5" type="button" onclick="showObjectMap();" value="過去の目標"> 
                         </div>
                     </div>
 
-                    <div class="inquiry_area">
+                    <div class="inquiry_area" id="inquiry_area">
                         <div>【情報の表出化】</div>
                         <div id="testxml"></div>
                         <div id="ont"></div>
@@ -145,6 +150,22 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <div id="intention"></div>
                         <div>【合理性】</div>
                         <div id="rationality"></div>
+                    </div>
+
+                    <div class="objectMap_area" id="objectMap_area" style="display: none;">
+                        <!-- Object Map の内容 -->
+                        <div>Object Map の内容がここに表示されます。</div>
+                        
+                        <!-- 目標内容を入力するフォーム -->
+                        <div>
+                            <input type="text" id="goalInput" placeholder="目標の内容を入力してください" />
+                            <input class="button5" type="button" onclick="addObjectMap();" value="新しい目標追加">
+                        </div>
+
+                        <!-- 目標を一覧で表示するエリア -->
+                        <div id="goalListArea">
+                            <!-- 目標がここに表示されます -->
+                        </div>
                     </div>
 
                     <!-- この部分を消したら，問い一覧が消えてしまう．不思議だなあ． -->

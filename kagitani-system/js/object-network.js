@@ -199,7 +199,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     addGoal(node_id, node_label, node_type, node_x, node_y) {
         let node_color = 'red'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
-        let text_color = 'black';   // ノード内文字列の色
+        let text_color = 'white';   // ノード内文字列の色
         let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
         let result_label = '';
         for (let i = 0; i < node_label.length; i += 10) {
@@ -316,12 +316,12 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     
 
     addReloadNode(node_id, node_label, node_type, node_x, node_y) {
-        console.log("Received node data:");
-        console.log("node_id:", node_id);
-        console.log("node_label:", node_label);
-        console.log("node_type:", node_type);
-        console.log("node_x:", node_x);
-        console.log("node_y:", node_y);
+        // console.log("Received node data:");
+        // console.log("node_id:", node_id);
+        // console.log("node_label:", node_label);
+        // console.log("node_type:", node_type);
+        // console.log("node_x:", node_x);
+        // console.log("node_y:", node_y);
 
         let node_color = 'skyblue'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
@@ -420,20 +420,20 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     //そうか，これはリロードした時に呼び起こすやつだ．じゃあ関係ないな．
     addReloadEdge(object_edges_id, edge_start, edge_end) {
-        console.log("object_edges_id:", object_edges_id); // object_edges_idの確認
-        console.log("addReloadEdge called with edge_start:", edge_start, "and edge_end:", edge_end);
+        // console.log("object_edges_id:", object_edges_id); // object_edges_idの確認
+        // console.log("addReloadEdge called with edge_start:", edge_start, "and edge_end:", edge_end);
         
         // this.edges が Set または Map のインスタンスであることを確認
         if (this.edges instanceof Set) {
-            console.log("this.edges is a Set");
+            // console.log("this.edges is a Set");
         } else {
-            console.log("this.edges is not a Set, it is:", this.edges);
+            // console.log("this.edges is not a Set, it is:", this.edges);
         }
     
         try {
-            this.edges.add({ object_edge_id: object_edges_id, from: edge_start, to: edge_end });
+            // this.edges.add({ object_edge_id: object_edges_id, from: edge_start, to: edge_end });
         } catch (error) {
-            console.error("Error in addReloadEdge:", error);
+            // console.error("Error in addReloadEdge:", error);
         }
 
         this.edges.add({from: edge_start, to: edge_end});
@@ -1365,7 +1365,6 @@ class RecordForestMRN{
     }
 }
 
-
 /*
  * データベースからの読み込み
  */
@@ -1402,7 +1401,7 @@ const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
         type: "POST",
         data: data,
         success: (r) => {
-            console.log("Raw response:", r); 
+            // console.log("Raw response:", r); 
             try {
                 utterance_list = JSON.parse(r);
                 console.log("Parsed utterance_list:", utterance_list);
@@ -1611,16 +1610,16 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
         // データの取得と挿入
         utterance_list_info.objectLog.map(u => {
             // 関数呼び出し前のデバッグログ
-            console.log(`makeUtteranceNodeInListに渡すデータ:
-                node_id: ${u.node_id},
-                timestamp: ${u.timestamp},
-                text: ${u.text},
-                act: ${u.act}`);
+            // console.log(`makeUtteranceNodeInListに渡すデータ:
+            //     node_id: ${u.node_id},
+            //     timestamp: ${u.timestamp},
+            //     text: ${u.text},
+            //     act: ${u.act}`);
         
             const utter_dom = makeUtteranceNodeInList(u.node_id, u.timestamp, u.text, u.act);
         
             // 関数呼び出し後のデバッグログ
-            console.log("生成されたDOM:", utter_dom);
+            //console.log("生成されたDOM:", utter_dom);
         
             target_area.append(utter_dom); // 挿入            
         });

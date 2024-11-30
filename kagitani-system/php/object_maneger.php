@@ -74,39 +74,33 @@
 			$mysqli->query("INSERT INTO object_edges(object_edges_id, edge_start, edge_end, time)
 			                VALUES ('$object_edges_id', '$edge_start', '$edge_end', '$timestamp')");
 
-		}else if($record_thing === 'connection'){
-			$networknodeid = $_POST["networknodeid"];   //ネットワークのID
-			$mindmapnodeid = $_POST["mindmapnodeid"];  //マインドマップのID
-			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-			$mysqli->query($sql = "INSERT INTO network_mindmap_connect(user_id, sheet_id, network_node_id, mindmap_node_id, time)
-			               VALUES ('$user_id', '$sheet_id', '$networknodeid', '$mindmapnodeid', '$timestamp')");
-		}else if($record_thing === 'ontology'){
-			$node_id = $_POST["node_id"];             //ノードID
-			$ontology_node_id = $_POST["ontology_node_id"];    //オントロジーノードのノードID
-			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-			$mysqli->query("INSERT INTO network_ontology_activity (user_id, sheet_id, ontology_id, node_id, time)
-			               VALUES ('$user_id', '$sheet_id', '$ontology_node_id', '$node_id', '$timestamp')");
-		}else if($record_thing === 'recruit'){
-			$node_id = $_POST["node_id"];             //ノードID
-			$result_recruit = $_POST["result_recruit"];
-			$ontology_node = $_POST["ontology_node"];
-			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-			$mysqli->query("INSERT INTO network_recruit (user_id, sheet_id, node_id, ontology_id, result_recruit, time)
-			               VALUES ('$user_id', '$sheet_id', '$node_id', '$ontology_node', '$result_recruit', '$timestamp')");
-		}else if($record_thing === 'material_edge'){
-			$edge_start = $_POST["edge_start"];          //エッジ開始
-			$edge_end = $_POST["edge_end"];              //エッジ終了
-			$edge_label = $_POST['edge_label'];
-			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-			$mysqli->query("INSERT INTO network_edges_activity (user_id, sheet_id, edge_start, edge_end, edge_label, time)
-			                VALUES ('$user_id', '$sheet_id', '$edge_start', '$edge_end', '$edge_label', '$timestamp')");
-		}else if($record_thing === 'reflectioncontent'){
-			$node_id = $_POST["node_id"];
-			$text = $_POST["text"];
-			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-			$mysqli->query("UPDATE network_recruit SET reason = '$text'
-			WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND node_id = '$node_id' AND time >= '$struct_start_time'");	
+		}else if($record_thing === 'map'){
+			// マップの記録
+			$object_map_id = uniqid('map_', true);  // ユニークなIDを生成
+			$goalContent = $_POST["goalContent"];   // 目標内容を受け取る
+			$timeString = $_POST["timeString"];     // 時間を受け取る
+		
+			// データの確認
+			var_dump($goalContent);  // goalContent の確認
+			var_dump($timeString);   // timeString の確認
+		
+			// SQLクエリ
+			$query = "INSERT INTO object_maps(object_map_id,label, map_id, created_at, updated_at)
+					  VALUES ('$object_map_id','$goalContent' , null, '$timeString', '$timeString')";
+		
+			// SQLクエリの確認
+			echo "実行するSQLクエリ: " . $query . "<br>";
+		
+			// クエリの実行
+			if (!$mysqli->query($query)) {
+				// エラーハンドリング
+				echo "SQLエラー: " . $mysqli->error . "<br>";
+				echo "エラーコード: " . $mysqli->errno . "<br>";
+			} else {
+				echo "データが正常に挿入されました<br>";
+			}
 		}
+		
 	}else if($purpose === 'update'){
 		$update_thing = $_POST['update_thing'];
 		if($update_thing === 'node'){
