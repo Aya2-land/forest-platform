@@ -155,7 +155,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     enableEditEdge() {
         console.log("ノード固定状態の更新前:", this.nodes);
-        document.getElementById("mrnb_startEditEdge").value="エッジ追加終了";
+        //document.getElementById("mrnb_startEditEdge").value="エッジ追加終了";
         this.nodes.update(this.nodes.map(n => {
             return { ...n, fixed: true };
         }));
@@ -164,7 +164,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     
     disableEditEdge() {
         console.log("ノード固定状態の更新前:", this.nodes);
-        document.getElementById("mrnb_startEditEdge").value="エッジ追加";
+        //document.getElementById("mrnb_startEditEdge").value="エッジ追加";
         this.edgeEditMode = false;
         this.nodes.update(this.nodes.map(n => {
             return n.type !== "topic-tag" ? { ...n, fixed: false } : { ...n, fixed: true };
@@ -197,7 +197,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     //kagitani--目標追加
     addGoal(node_id, node_label, node_type, node_x, node_y) {
-        let node_color = 'skyblue'; // ノードの背景色
+        let node_color = 'red'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
         let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
@@ -239,9 +239,9 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
         const fromNode = this.nodes.get(fromNodeId); // globalParams.nodes から元のノードを取得
 
-        let node_color = 'skyblue'; // ノードの背景色
+        let node_color = 'green'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
-        let text_color = 'black';   // ノード内文字列の色
+        let text_color = 'white';   // ノード内文字列の色
         let position_fixed = false; // ノードを動かせるかどうか（Falseなら動かせる）
         let result_label = '';
         for (let i = 0; i < node_label.length; i += 10) {
@@ -290,7 +290,26 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             // 編集モードを解除
             this.SelectEditEdge();
             console.log("エッジ編集モードが解除されました。");
-        }
+
+            //ここに，globalParams.nodesの枠が赤くなる処理を行う．
+            // ここに，globalParams.nodesの枠が赤くなる処理を行う．
+            try {
+                globalParams.nodes.forEach(nodeId => {
+                    console.log("枠を赤くするノード:", nodeId);
+                    
+                    // ノードを更新して枠を赤くする
+                    // this.nodes.update({
+                    //     id: nodeId,
+                    //     color: { border: 'red' }, // 枠線の色を赤に変更
+                    //     borderWidth: 4 // 枠線の太さを設定
+                    // });
+
+                    console.log(`ノード ${nodeId} の枠が赤く変更されました。`);
+                });
+            } catch (error) {
+                console.error("枠の色変更中にエラーが発生しました:", error);
+            }
+                }
     
         return this.nodes;
     }
@@ -310,15 +329,15 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
 
         switch(node_type) {
-            // case "material-content": // 議論資料に書かれた内容に関するノードの場合
-            //     break;
-            case "0": // 自分で考えた要約に関するノードの場合
-                node_color = 'green';
+            //目標ノードか手段ノードか
+            case "0": // 目標ノード
+                node_color = 'red';
                 text_color = 'white';
                 break;
-            // case "utterance": // 議論内での発言ノードの場合
-            //     node_color = 'pink';
-            //     break;
+            case "1": // 手段ノード
+                 node_color = 'green';
+                 text_color = 'white';
+                 break;
             // case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
             //     node_color = 'blue';
             //     node_shape = 'ellipse';
@@ -594,9 +613,44 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     }
 
     //手段完了ボタン
-    step_end (){
-        console.log(`ノード ${this.selectId} の作業完了だよ！！`);  // コンソールにメッセージ表示
+    step_end() {
+        console.log(`step_end() を呼び出しました。選択中のノードID: ${this.selectId}`);  // デバッグ用ログ
+        // ノードの色を灰色に更新
+        try {
+            this.nodes.update({
+                id: this.selectId, // 対象ノードID
+                color: 'gray'      // ノードの色を灰色に変更
+            });
+            console.log(`ノード ${this.selectId} の色を灰色に変更しました。`);
+        } catch (error) {
+            console.error(`エラー: ノード ${this.selectId} の色を変更できませんでした。`, error);
+        }
+        // 振り返りをする欄を表示する処理
+        // 吹き出しを表示
+        const tooltip = document.getElementById("tooltip");
+        if (!tooltip) {
+            console.error("吹き出しの要素が見つかりませんでした。");
+            return;
+        }
+
+        // ノードの位置を取得
+        const nodePosition = this.ownNetwork.getPositions(this.selectId)[this.selectId];
+        const canvasPosition = this.ownNetwork.canvasToDOM({
+            x: nodePosition.x,
+            y: nodePosition.y
+        });
+
+        // 吹き出しの位置と内容を設定
+        tooltip.style.left = `${canvasPosition.x}px`;
+        tooltip.style.top = `${canvasPosition.y + 20}px`; // ノードの下に表示
+        tooltip.innerHTML = `
+            <strong>${this.selectId.label}</strong><br>
+            作業が完了しました！
+        `;
+        tooltip.style.display = "block";
+
     }
+    
 
     //概念をマップに追加（完了）
     addontology() {
@@ -880,50 +934,73 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             }
             this.dragStartNodeId = null;
             this.dragEndNodeId = null;
-        }else{
+        }else {
             const movedNodeId = params.nodes[0];
+            //console.log("Moved Node ID:", movedNodeId); // ノードIDをログ出力
+        
+            // ノードが正しく選択されている場合にのみ処理を進める
             if (movedNodeId !== undefined) {
-                //なぜか更新したら色変わってしまうから一時的に
-                let node_color = 'skyblue';
-                let border_color = 'skyblue'; 
-                switch(this.nodes.get(movedNodeId).group) {
-                    case "self-summary": // 自分で考えた要約に関するノードの場合
+                // ノードデータを取得
+                const node = this.nodes.get(movedNodeId);
+                //console.log("Node Data:", node); // ノードの詳細データをログ出力
+        
+                // なぜか更新したら色変わってしまうから一時的に
+                let node_color;
+        
+                // ノードのグループに応じて色を設定
+                switch (node?.group) { // nullチェック付き
+                    case "0": // 自分で考えた要約に関するノードの場合
+                        node_color = 'red';
+                        //console.log("Group is '0', setting color to red");
+                        break;
+                    case "1": // 議論内での発言ノードの場合
                         node_color = 'green';
-                        break;
-                    case "utterance": // 議論内での発言ノードの場合
-                        node_color = 'pink';
-                        break;
-                    case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                        node_color = 'blue';
+                        //console.log("Group is '1', setting color to green");
                         break;
                     default: // その他
+                        //console.log("Group does not match, using default color");
                         break;
                 }
-                this.nodes.update({ id: movedNodeId, color: node_color, x: params.pointer.x, y: params.pointer.y });
-                const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
-                //次に追加したノードの座標指定
-                this.latest_selected_node_info.x = (nodeBoundingBox.right + nodeBoundingBox.left)/2;
-                this.latest_selected_node_info.y = nodeBoundingBox.bottom + 10;
-                
-                //defaultRecordForestMRN.update_Node("point" ,movedNodeId, (nodeBoundingBox.right + nodeBoundingBox.left)/2, (nodeBoundingBox.bottom + nodeBoundingBox.top)/2)
-                defaultRecordForestMRN.update_Goal("point" ,movedNodeId, (nodeBoundingBox.right + nodeBoundingBox.left)/2, (nodeBoundingBox.bottom + nodeBoundingBox.top)/2)
-                const ontology_index = this.OntologyConnectNodeId.indexOf(movedNodeId);
-                if(ontology_index !== -1){
-                    const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
-                    const ontology_x = nodeBoundingBox.left;
-                    const ontology_y = nodeBoundingBox.top;
-                    console.log(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]);
-                    if(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]==="採用"){
-                        border_color = 'green'; 
-                    }else if(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]==="棄却"){
-                        border_color = 'red'; 
-                    }
-                    this.nodes.update({ id: this.OntologyNodeId[ontology_index], color: { background: 'blue', border: border_color}, x: ontology_x, y: ontology_y });
-                    // defaultRecordForestMRN.update_Node("point" ,this.OntologyNodeId[ontology_index], ontology_x, ontology_y);
-                    defaultRecordForestMRN.update_Goal("point" ,this.OntologyNodeId[ontology_index], ontology_x, ontology_y);
+                //console.log("Node Color to be set:", node_color); // 設定する色をログ出力
+        
+                // ノードを更新
+                try {
+                    this.nodes.update({ 
+                        id: movedNodeId, 
+                        color: { background: node_color }, // 背景色を設定
+                        x: params.pointer.x, 
+                        y: params.pointer.y 
+                    });
+                    //console.log("Node successfully updated.");
+                } catch (error) {
+                    //console.error("Error updating node:", error); // エラー時のログ
                 }
+        
+                // ノードの境界ボックスを取得
+                const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
+                //console.log("Node Bounding Box:", nodeBoundingBox); // 境界ボックスの情報をログ出力
+        
+                // 次に追加したノードの座標指定
+                this.latest_selected_node_info.x = (nodeBoundingBox.right + nodeBoundingBox.left) / 2;
+                this.latest_selected_node_info.y = nodeBoundingBox.bottom + 10;
+                //console.log("Updated latest_selected_node_info:", this.latest_selected_node_info); // 更新した座標情報をログ出力
+        
+                // 外部更新処理
+                try {
+                    defaultRecordForestMRN.update_Goal(
+                        "point", 
+                        movedNodeId, 
+                        (nodeBoundingBox.right + nodeBoundingBox.left) / 2, 
+                        (nodeBoundingBox.bottom + nodeBoundingBox.top) / 2
+                    );
+                    //console.log("defaultRecordForestMRN successfully updated.");
+                } catch (error) {
+                    //console.error("Error updating defaultRecordForestMRN:", error); // エラー時のログ
+                }
+            } else {
+                //console.warn("No node was moved.");
             }
-        }
+        }       
     }
     
     // エッジの削除（完了）
@@ -991,7 +1068,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     Nodeblinking() {
         this.Feedback.map((n) => {
             const feedbacknode = this.nodes.get(n);
-            let node_color = 'skyblue'; // ノードの背景色
+            //let node_color = 'skyblue'; // ノードの背景色
             switch(feedbacknode.group) {
                 case "material-content": // 議論資料に書かれた内容に関するノードの場合
                     break;

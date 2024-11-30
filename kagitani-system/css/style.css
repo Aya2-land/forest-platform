@@ -1463,6 +1463,19 @@ select[name="mttime_list"] {
 	background-color: #ff8c00;
 }
 
+.a_button {
+	background-color: #e1edfe;
+	color: #000000;
+	width: 100px;
+	height: 25px;
+	font-size: 12px;
+	margin-left: 30;
+	margin-top: 5;
+}
+.a_button:hover {
+	background-color: #0091ff;
+}
+
 .button0 {
 	background-color: #009656;
 	color: #fff;
@@ -1522,7 +1535,7 @@ select[name="mttime_list"] {
 .button4 {
 	background-color: #999;
 	color: #fff;
-	width: 100px;
+	width: 80px;
 	height: 25px;
 	font-size: 12px;
 	margin-left: 5px;
@@ -2103,4 +2116,17 @@ select[name="mttime_list"] {
 	position: absolute;
 	background-color: rgba(0, 140, 255, 0.3); /* 薄青色のハイライト */
 	border: 1px solid blue;
+}
+
+/* kagitani */
+#tooltip {
+    position: absolute;
+    display: none;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    z-index: 1000; /* 必要に応じて調整 */
 }

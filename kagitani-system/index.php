@@ -187,15 +187,15 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <div style="text-align: left">
                             <!-- 【Edit】 -->
                             <button class="button4" onclick="add_Qnode();">
-                                問いノード追加
+                                問い追加
                             </button>
                             <button class="button4" onclick="add_Anode();">
-                                答えノード追加
+                                答え追加
                             </button>
                             <!-- <li><button onclick="horisage();">掘り下げる</button></li>
                                  horisage()関数は現在存在しない-->
                             <button class="button4" onclick="remove_node();">
-                                ノードの削除
+                                ノード削除
                             </button>
                             <!--1つ前に消したノードを復元-->
                             <!-- <button class="button4" onclick="return_node();">
@@ -224,7 +224,10 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                     <div id="object_container" oncontextmenu="return false;" >
                         <div id="utterance_area">
                             <div id="rclick2">
-                                <div id="timedisplay"></div>
+                                <!-- <div id="timedisplay"></div> -->
+                                <button class="a_button" id="zoom-out-button" onclick="zoomOut();">
+                                活動を記録
+                                </button>
                                 <div id="rclick"></div>
                             </div>
                             <div id="utterance_area2">
@@ -252,12 +255,17 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <li><a href="javascript:void(0);" id="net_conmenu00">手順開始</a></li> 
                                     <li><a href="javascript:void(0);" id="net_conmenu01">手順中断</a></li> 
                                     <li><a href="javascript:void(0);" id="net_conmenu02">手順完了</a></li> 
+                                    <li><a href="javascript:void(0);" id="net_conmenu03">活動表示</a></li> 
                                     <!-- <li><a href="javascript:void(0);" id="net_conmenu1">概念をつける</a></li>
                                     <li><a href="javascript:void(0);" id="net_conmenu2">マインドマップと対応付ける</a></li>
                                     <li><a href="javascript:void(0);" id="net_conmenu3" style="display:none">採用/棄却をつける</a></li> -->
                                     <li><a href="javascript:void(0);" id="net_conmenu4">キャンセル</a></li>
                                 </ul>
                             </div>
+                            <div id="tooltip" style="position: absolute; display: none; padding: 10px; background: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">
+                                吹き出しの内容
+                            </div>
+
                             <div id="labelselect">
                                 <select id="selectionlist" size="3">
                                 </select>
@@ -274,56 +282,6 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         </div>
                     </div>
                     <!--  kagitani　-->
-                    <!--  ここから大槻修正　-->
-                    <!-- <div id="network_container" oncontextmenu="return false;" >
-                        <div id="utterance_area">
-                            <div id="rclick2">
-                                <div id="timedisplay"></div>
-                                <div id="rclick"></div>
-                            </div>
-                            <div id="utterance_area2">
-                            </div>
-                        </div>
-                        <div id="mynetwork2">
-                            <div id="buttoncluster">
-                                <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_addNode" value="要約ノード追加" />
-                                <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_removeNode" value="ノード削除" />
-                                <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_startEditEdge" value="エッジ追加" />
-                                <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_removeEdge" value="エッジ削除" />
-                                <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_ZoomIn" value="拡大" />
-                                <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_ZoomOut" value="縮小" />
-                            </div>
-                            <div id="network_conmenu">
-                                <ul>
-                                    <li><a href="javascript:void(0);" id="net_conmenu1">概念をつける</a></li>
-                                    <li><a href="javascript:void(0);" id="net_conmenu2">マインドマップと対応付ける</a></li>
-                                    <li><a href="javascript:void(0);" id="net_conmenu3" style="display:none">採用/棄却をつける</a></li>
-                                    <li><a href="javascript:void(0);" id="net_conmenu4">キャンセル</a></li>
-                                </ul>
-                            </div>
-                            <div id="labelselect">
-                                <select id="selectionlist" size="3">
-                                     いるやつあれば追加やけど未実装（研究活動オントロジー読み込みかな？） 
-                                </select>
-                                <input type="button" value="選択完了" id="ontology_select">
-                            </div>
-                            <div id="recruitselect">
-                                <select id="recruitselectionlist">
-                                    <option value="採用">採用</option>
-                                    <option value="棄却">棄却</option>
-                                </select>
-                                <input type="button" value="選択完了" id="recruit_select">
-                            </div>
-                            <div id="mynetwork"></div>
-                        </div>
-                    </div> -->
-                    <!--  ここまで大槻修正　-->
                 </div>
             </div><!--layout fin-->
 
