@@ -48,6 +48,7 @@ function showGeneration() {
     }
 }
 
+
 function addObjectMap() {
     // 入力フィールドの内容を取得
     const goalContent = document.getElementById("goalInput").value;
@@ -61,44 +62,52 @@ function addObjectMap() {
     // 現在の時刻を取得
     const currentDate = new Date();
     const timeString = currentDate.toLocaleString(); // ローカルの日時形式で取得
+	const objectMapId = 'map_' + Math.random().toString(36).substr(2, 9); // ランダムなIDを取得
 
-    // 新しい目標を作成
-    const newGoal = document.createElement("div");
-    
-    // 目標の内容と追加した時刻を表示
-    newGoal.innerHTML = `<strong>目標:</strong> ${goalContent} <br><strong>追加日時:</strong> ${timeString}`;
+    // 新しい目標ボタンを作成
+    const newGoalButton = document.createElement("button");
+    newGoalButton.classList.add('goal-item'); // CSSのクラスを追加
 
+    // 目標の内容と追加した時刻をボタンの中に設定
+    newGoalButton.innerHTML = `<strong>目標:</strong> ${goalContent} <br><strong>作成日時:</strong> ${timeString}`;
+
+	// ボタンにobject_map_idをdata属性として設定
+    newGoalButton.setAttribute('data-object-map-id', objectMapId);
+
+    // ボタンのクリック時の動作をhandleGoalClick関数に委任
+    newGoalButton.addEventListener('click', (event) => {
+        // クリックしたボタンからobject_map_idを取得
+        const clickedObjectMapId = event.target.getAttribute('data-object-map-id');
+        handleGoalClick(goalContent, timeString, objectMapId);
+    });
     // 目標を表示する一覧エリアに追加
     const goalListArea = document.getElementById("goalListArea");
 
     // 新しい目標をgoalListAreaの先頭に追加
     const firstChild = goalListArea.firstChild;
     if (firstChild) {
-        goalListArea.insertBefore(newGoal, firstChild); // 最初に目標を追加
+        goalListArea.insertBefore(newGoalButton, firstChild); // 最初に目標ボタンを追加
     } else {
-        goalListArea.appendChild(newGoal); // もし目標がなければ普通に追加
+        goalListArea.appendChild(newGoalButton); // もし目標ボタンがなければ普通に追加
     }
 
     // 目標を追加後、入力フィールドをクリア
     document.getElementById("goalInput").value = "";
 
-	// サーバーに目標を保存するリクエストを送信
-    record_objectMap(goalContent, timeString);
-
-    // 目標にスタイルを適用
-    newGoal.style.border = "1px solid black";
-    newGoal.style.margin = "10px 0";
-    newGoal.style.padding = "5px";
+    // サーバーに目標を保存するリクエストを送信
+    record_objectMap(goalContent, timeString,objectMapId);
 }
 
-//kagitani--目標ノードの記録
-function record_objectMap(goalContent, timeString){
+
+//目標マップの記録
+function record_objectMap(goalContent, timeString,objectMapId){
     $.ajax({
         url: "php/object_maneger.php",  // PHPファイルのパス
         type: "POST",  // HTTPメソッド
         data: {
             goalContent: goalContent,
             timeString: timeString,
+			object_map_id: objectMapId,  // ランダムIDを追加
             purpose : 'record',  // パラメータ
             record_thing: 'map'  // パラメータ
         },
@@ -118,48 +127,113 @@ window.addEventListener('load', () => {
 
 // DBから目標データを取得
 function fetchGoals() {
-    const data = { purpose: 'fetch' };  // サーバーに送るデータ（目的など）
+    const data = { purpose: 'fetch' }; // サーバーに送るデータ
 
     $.ajax({
-        url: 'php/get_goals.php',  // PHPファイルのパス
+        url: 'php/get_goals.php', // PHPファイルのパス
         type: 'POST',
-        data: data,  // サーバーに送るデータ
+        data: data,
         success: (response) => {
-            console.log('サーバーからのレスポンス:', response);
-            
             try {
-                // レスポンスをJSONとしてパース
+                // JSONをパース
                 const goals = JSON.parse(response);
-                console.log('パースされた目標:', goals);
 
-                const goalList = document.getElementById('goalList');
-				if (goalList) {
-					goalList.innerHTML = '';  // goalList が存在する場合のみ
-				} else {
-					console.error('goalList要素が見つかりません');
-				}
+                // 表示エリアをクリア
+                const goalListArea = document.getElementById('goalListArea');
+                goalListArea.innerHTML = '';
 
-                // 各目標をリストとして表示
-                goals.forEach(goal => {
-                    const goalElement = document.createElement('div');
-                    goalElement.classList.add('goal-item');
-                    goalElement.innerHTML = `
-                        <div><strong>目標ID:</strong> ${goal.object_map_id}</div>
-                        <div><strong>目標内容:</strong> ${goal.goal_content}</div>
-                        <div><strong>作成日時:</strong> ${goal.created_at}</div>
+                // 各目標を表示
+                goals.forEach((goal) => {
+                    // ボタン要素を作成
+                    const goalButton = document.createElement('button');
+                    goalButton.classList.add('goal-item'); // スタイル用クラスを追加
+                    goalButton.innerHTML = `
+                        <strong>目標:</strong> ${goal.label}<br>
+                        <strong>作成日時:</strong> ${goal.created_at}
                     `;
-                    goalList.appendChild(goalElement);
+
+					console.log('data-object-map-id', goal.object_map_id);
+
+					// ボタンに object_map_id を data 属性として設定
+                    goalButton.setAttribute('data-object-map-id', goal.object_map_id);
+
+                    // ボタンのクリック時の動作を handleGoalClick 関数に委任
+					goalButton.addEventListener('click', () => {
+						handleGoalClick(goal.label, goal.created_at, goal.object_map_id);
+					});
+
+                    // 表示エリアにボタンを追加
+                    goalListArea.appendChild(goalButton);
                 });
             } catch (e) {
-                // JSONパースに失敗した場合
-                console.error('JSONパースエラー:', e, response);
+                console.error("デバッグエラー: JSONパースエラー", e);
+                console.log("デバッグ: サーバーからのレスポンス（解析失敗）:", response);
             }
         },
         error: (xhr, status, error) => {
-            // AJAXリクエストが失敗した場合
-            console.error('AJAXエラー:', status, error);
-            console.log('レスポンステキスト:', xhr.responseText);
+            console.error("デバッグエラー: AJAXリクエスト失敗");
+            console.error("デバッグ: ステータス:", status);
+            console.error("デバッグ: エラー内容:", error);
+            console.error("デバッグ: レスポンステキスト:", xhr.responseText);
         }
     });
 }
+
+
+// ボタンがクリックされたときに実行する処理を別の関数に分ける
+function handleGoalClick(goalContent, timeString, objectMapId) {
+    // どのマップが，どのobject_map_idかどうかは，呼び出さずともわかる状態になった．
+    alert(`目標: ${goalContent}\n作成日時: ${timeString}\nobject_map_id: ${objectMapId}`);
+
+	//既存に表示されている目標手段ノードを削除する．表示を消す．
+
+	//クリックした時，object_map_idに紐づけられたobject_mapのデータを呼び出そう．	
+	// object_map_idに紐づけられたobject_mapのデータを取得
+    loadObjectMapData(objectMapId);
+}
+
+// object_map_idに紐づけられたobject_mapのデータを取得する関数
+function loadObjectMapData(objectMapId) {
+    $.ajax({
+        url: 'php/get_goals.php', // PHPファイルのパス
+        type: 'POST',
+        data: {
+            object_map_id: objectMapId,  // object_map_idを送信
+            purpose: 'load'  // 目的を指定
+        },
+        success: (response) => {
+            try {
+                // サーバーから返ってきたデータをパース
+                const objectMapData = JSON.parse(response);
+
+                // 取得したデータを表示（例: アラート表示）
+                if (objectMapData && Array.isArray(objectMapData)) {
+                    // データが正しく取得できた場合、forEach で各ノードを処理
+                    objectMapData.forEach((n) => {
+                        if (n.object_node_id) {
+                            // object_node_id を node_id として渡す
+                            defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y);
+                        } else {
+                            console.warn("Node ID is undefined, skipping this node:", n);
+                        }
+                    });
+                } else {
+                    alert("データが見つかりませんでした。");
+                }
+            } catch (e) {
+                console.error("デバッグエラー: JSONパースエラー", e);
+                console.log("デバッグ: サーバーからのレスポンス（解析失敗）:", response);
+            }
+        },
+        error: (xhr, status, error) => {
+            console.error("デバッグエラー: AJAXリクエスト失敗");
+            console.error("デバッグ: ステータス:", status);
+            console.error("デバッグ: エラー内容:", error);
+            console.error("デバッグ: レスポンステキスト:", xhr.responseText);
+        }
+    });
+}
+
+
+
 

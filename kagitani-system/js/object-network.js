@@ -338,12 +338,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                  node_color = 'green';
                  text_color = 'white';
                  break;
-            // case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-            //     node_color = 'blue';
-            //     node_shape = 'ellipse';
-            //     text_color = 'white';
-            //     position_fixed = true;
-            //     break;
             default: // その他
                 break;
         }
@@ -516,33 +510,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             defaultRecordForestMRN.delete_db_Node(selectNodeId);
             defaultRecordForestMRN.delete_db_Edge(selectNodeId, "");
             defaultRecordForestMRN.delete_db_Edge("", selectNodeId);
-
-            //削除対象ノードがOntologyConnectNodeId配列に存在する場合、その「Ontology Node」を削除します。
-            //データベースからもOntology Nodeを削除し、OntologyNodeIdとOntologyConnectNodeIdの配列からそのIDを削除しています。
-            // const ontology_index = this.OntologyConnectNodeId.indexOf(selectNodeId);
-            // if(ontology_index !== -1){
-            //     this.nodes.remove({ id: this.OntologyNodeId[ontology_index]});
-            //     defaultRecordForestMRN.delete_db_Node(this.OntologyNodeId[ontology_index]);
-            //     this.OntologyNodeId.splice(ontology_index, 1);
-            //     this.OntologyConnectNodeId.splice(ontology_index, 1);
-            // }
-
-            //ConnectNetworkNodeId配列内の、削除対象ノードと関連するインデックスを取得し、それらを削除しています。
-            //ConnectNetworkNodeIdとConnectMindMapNodeIdからも、関連するインデックスの要素を削除しています。
-            const connect_net_index = [];
-            this.ConnectNetworkNodeId.map((n_id, index) => {
-                if(n_id === selectNodeId){
-                    connect_net_index.push(index);
-                }
-            });
-            connect_net_index.sort((a, b) => b - a);
-            connect_net_index.forEach(index => {
-                this.ConnectNetworkNodeId.splice(index, 1);
-                this.ConnectMindMapNodeId.splice(index, 1);
-            });
-
-            //データベースからこのノードの接続情報も削除しています。
-            defaultRecordForestMRN.delete_connection(selectNodeId);
         }
     }
 
@@ -1689,7 +1656,6 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
     });
 }
 
-//これを編集して，随時nodeのactivityを表示するようにする．
 // 議論時の発言を記録する関数
 const recordMeetingUtteranceNodes = (utterances) => {
     $.ajax({

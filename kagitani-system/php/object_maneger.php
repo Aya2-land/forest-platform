@@ -76,7 +76,7 @@
 
 		}else if($record_thing === 'map'){
 			// マップの記録
-			$object_map_id = uniqid('map_', true);  // ユニークなIDを生成
+			$object_map_id = $_POST["object_map_id"];  // ユニークなIDを生成
 			$goalContent = $_POST["goalContent"];   // 目標内容を受け取る
 			$timeString = $_POST["timeString"];     // 時間を受け取る
 		

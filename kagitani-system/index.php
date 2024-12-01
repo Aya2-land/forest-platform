@@ -153,13 +153,10 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                     </div>
 
                     <div class="objectMap_area" id="objectMap_area" style="display: none;">
-                        <!-- Object Map の内容 -->
-                        <div>Object Map の内容がここに表示されます。</div>
-                        
                         <!-- 目標内容を入力するフォーム -->
                         <div>
                             <input type="text" id="goalInput" placeholder="目標の内容を入力してください" />
-                            <input class="button5" type="button" onclick="addObjectMap();" value="新しい目標追加">
+                            <input class="setGoal_button" type="button" onclick="addObjectMap();" value="新しい目標追加">
                         </div>
 
                         <!-- 目標を一覧で表示するエリア -->
