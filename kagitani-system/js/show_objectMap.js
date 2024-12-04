@@ -158,8 +158,9 @@ function fetchGoals() {
                     goalButton.setAttribute('data-object-map-id', goal.object_map_id);
 
                     // ボタンのクリック時の動作を handleGoalClick 関数に委任
-					goalButton.addEventListener('click', () => {
-						handleGoalClick(goal.label, goal.created_at, goal.object_map_id);
+					goalButton.addEventListener('click', (event) => {
+						goalButton.focus();  // ボタンにフォーカスを当てる
+						handleGoalClick(goalButton, goal.label, goal.created_at, goal.object_map_id);
 					});
 
                     // 表示エリアにボタンを追加
@@ -179,17 +180,24 @@ function fetchGoals() {
     });
 }
 
-function handleGoalClick(goalContent, timeString, objectMapId) {
+function handleGoalClick(goalButton, goalContent, timeString, objectMapId) {
+	defaultForestMRN = new ForestMRN("mynetwork", "load");
+
+    // 他のボタンのスタイルをリセット
+    const goalButtons = document.querySelectorAll('.goal-item');
+    goalButtons.forEach(button => {
+        button.style.border = ''; // スタイルをリセット
+    });
+
     // メッセージを表示
     alert(`目標: ${goalContent}\n作成日時: ${timeString}\nobject_map_id: ${objectMapId}`);
 
-    defaultForestMRN = new ForestMRN("mynetwork", "load");
-    console.log(defaultForestMRN.ownNetwork);
+    // クリックされたボタンのスタイルを変更
+    goalButton.style.border = '5px solid #007BFF'; // 太くするスタイルを適用
 
     // object_map_id に紐づけられたデータをロード
     loadObjectMapData(objectMapId);
 }
-
 
 // object_map_idに紐づけられたobject_mapのデータを取得する関数
 function loadObjectMapData(objectMapId) {
@@ -224,7 +232,6 @@ function loadObjectMapData(objectMapId) {
             } else {
                 console.error("objectMapData is undefined or not an array:", objectMapData);
             }
-			
         },
         error: (xhr, status, error) => {
             console.error("デバッグエラー: AJAXリクエスト失敗");

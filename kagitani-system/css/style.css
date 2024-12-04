@@ -824,6 +824,10 @@ h3 {
     background-color: #d9edf7;
 }
 
+.goal-item.active {
+    border: 2px solid #007BFF; /* お好みの色と太さ */
+    outline: none; /* ブラウザによってはアウトラインがつく場合があるのでそれを消す */
+}
 
 /* 問い一覧の見出し */
 #side_menu .toi_menu {
