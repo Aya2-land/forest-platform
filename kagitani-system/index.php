@@ -244,7 +244,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             <div id="rclick2">
                                 <!-- <div id="timedisplay"></div> -->
                                 <button class="a_button" id="zoom-out-button" onclick="zoomOut();">
-                                活動を記録
+                                活動ログ一覧
                                 </button>
                                 <div id="rclick"></div>
                             </div>
@@ -270,9 +270,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             </div>
                             <div id="network_conmenu">
                                 <ul>
-                                    <li><a href="javascript:void(0);" id="net_conmenu00">手順開始</a></li> 
-                                    <li><a href="javascript:void(0);" id="net_conmenu01">手順中断</a></li> 
-                                    <li><a href="javascript:void(0);" id="net_conmenu02">手順完了</a></li> 
+                                    <li><a href="javascript:void(0);" id="net_conmenu00">手段開始</a></li> 
+                                    <li><a href="javascript:void(0);" id="net_conmenu01">手段中断</a></li> 
+                                    <li><a href="javascript:void(0);" id="net_conmenu02">手段完了</a></li> 
                                     <li><a href="javascript:void(0);" id="net_conmenu03">活動表示</a></li> 
                                     <!-- <li><a href="javascript:void(0);" id="net_conmenu1">概念をつける</a></li>
                                     <li><a href="javascript:void(0);" id="net_conmenu2">マインドマップと対応付ける</a></li>

@@ -179,18 +179,17 @@ function fetchGoals() {
     });
 }
 
-
-// ボタンがクリックされたときに実行する処理を別の関数に分ける
 function handleGoalClick(goalContent, timeString, objectMapId) {
-    // どのマップが，どのobject_map_idかどうかは，呼び出さずともわかる状態になった．
+    // メッセージを表示
     alert(`目標: ${goalContent}\n作成日時: ${timeString}\nobject_map_id: ${objectMapId}`);
 
-	//既存に表示されている目標手段ノードを削除する．表示を消す．
+    defaultForestMRN = new ForestMRN("mynetwork", "load");
+    console.log(defaultForestMRN.ownNetwork);
 
-	//クリックした時，object_map_idに紐づけられたobject_mapのデータを呼び出そう．	
-	// object_map_idに紐づけられたobject_mapのデータを取得
+    // object_map_id に紐づけられたデータをロード
     loadObjectMapData(objectMapId);
 }
+
 
 // object_map_idに紐づけられたobject_mapのデータを取得する関数
 function loadObjectMapData(objectMapId) {
@@ -202,28 +201,30 @@ function loadObjectMapData(objectMapId) {
             purpose: 'load'  // 目的を指定
         },
         success: (response) => {
-            try {
-                // サーバーから返ってきたデータをパース
-                const objectMapData = JSON.parse(response);
+            console.log("サーバーレスポンス:", response); // デバッグ用
 
-                // 取得したデータを表示（例: アラート表示）
-                if (objectMapData && Array.isArray(objectMapData)) {
-                    // データが正しく取得できた場合、forEach で各ノードを処理
-                    objectMapData.forEach((n) => {
-                        if (n.object_node_id) {
-                            // object_node_id を node_id として渡す
-                            defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y);
-                        } else {
-                            console.warn("Node ID is undefined, skipping this node:", n);
-                        }
-                    });
-                } else {
-                    alert("データが見つかりませんでした。");
-                }
+			// レスポンスが JSON 文字列の場合、パースします
+            let objectMapData;
+            try {
+                objectMapData = JSON.parse(response);
             } catch (e) {
-                console.error("デバッグエラー: JSONパースエラー", e);
-                console.log("デバッグ: サーバーからのレスポンス（解析失敗）:", response);
+                console.error("JSONパースエラー:", e);
+                return; // エラーが発生した場合は早期リターン
             }
+
+			if (objectMapData && Array.isArray(objectMapData)) {
+                objectMapData.forEach((n) => {
+                    if (n.object_node_id) {
+                        // object_node_id を node_id として渡す
+                        defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y);
+                    } else {
+                        console.warn("Node ID is undefined, skipping this node:", n);
+                    }
+                });
+            } else {
+                console.error("objectMapData is undefined or not an array:", objectMapData);
+            }
+			
         },
         error: (xhr, status, error) => {
             console.error("デバッグエラー: AJAXリクエスト失敗");
@@ -233,6 +234,7 @@ function loadObjectMapData(objectMapId) {
         }
     });
 }
+
 
 
 

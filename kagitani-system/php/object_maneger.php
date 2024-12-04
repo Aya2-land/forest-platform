@@ -38,14 +38,6 @@
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 			$sql = $mysqli->query("INSERT INTO object_nodes(object_node_id, object_map_id, label, x, y, object_nodes_type_id, created_at, updated_at, deleted) 
                     VALUES ('$object_node_id', '$sheet_id', 'NewNodes', '$x', '$y', '$object_nodes_type_id', '$timestamp', '$timestamp', 0)");
-            //echo $sql; // 生成されたSQL文を表示
-
-            // クエリを実行
-            // if ($mysqli->query($sql)) {
-            //     echo "PHP, 目標ノード追加成功"; // 成功メッセージ
-            // } else {
-            //     echo "エラー: " . $mysqli->error; // エラーメッセージ
-            // }
 		//手順ノードの記録
 		}else if($record_thing === 'step'){
 			$object_node_id = $_POST["node_id"]; //ノードID
@@ -73,7 +65,17 @@
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 			$mysqli->query("INSERT INTO object_edges(object_edges_id, edge_start, edge_end, time)
 			                VALUES ('$object_edges_id', '$edge_start', '$edge_end', '$timestamp')");
-
+		}else if($record_thing === 'reflection'){
+			//エッジの記録
+			$object_reflection_id = uniqid('reflection_', true); // edge_で始まる一意のIDを生成
+			$object_node_id = $_POST["edge_start"];          //エッジ開始
+			$score = $_POST["rating"];   
+			$good_text = $_POST["good_text"];     
+			$bad_text = $_POST["bad_text"];                //エッジ終了
+			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+			$mysqli->query("INSERT INTO `object_reflection`(`object_reflection_id`, `object_node_id`, 
+														`score`, `good_text`, `bad_text`, `created_at`, `updated_at`) 
+									VALUES ('$object_reflection_id','$object_node_id','$score','$good_text','$bad_text','$timestamp','$timestamp')");
 		}else if($record_thing === 'map'){
 			// マップの記録
 			$object_map_id = $_POST["object_map_id"];  // ユニークなIDを生成
@@ -116,9 +118,14 @@
 				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 				$mysqli->query("UPDATE object_nodes SET label = '$node_update_thing1', updated_at = '$timestamp' 
 				WHERE object_map_id = '$sheet_id' AND object_node_id = '$node_id' ");
+			}else if($select_update === 'done'){
+				$object_node_id = $_POST["node_id"]; //ノードID
+				$done = $_POST["done"];
+				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+				$mysqli->query("UPDATE object_nodes SET done = '$done', updated_at = '$timestamp' 
+				WHERE object_map_id = '$sheet_id' AND object_node_id = '$node_id' ");
 			}
 		}
-
 	}else if($purpose === 'delete'){
 		$delete_thing = $_POST['delete_thing'];
 		echo "Purpose is delete<br>";

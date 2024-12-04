@@ -592,31 +592,132 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         } catch (error) {
             console.error(`エラー: ノード ${this.selectId} の色を変更できませんでした。`, error);
         }
-        // 振り返りをする欄を表示する処理
-        // 吹き出しを表示
+
+        $.ajax({
+            url: "php/object_maneger.php",
+            type: "POST",
+            data: {select_update : 'done',
+                node_id : this.selectId,
+                purpose : 'update',
+                update_thing : 'node'},
+            success: function(a){
+                console.log();
+            },
+            error: function(e){
+                console.log("ノード更新エラーだよ");
+            }
+        });
+    
+        // 吹き出しを表示する処理
         const tooltip = document.getElementById("tooltip");
         if (!tooltip) {
             console.error("吹き出しの要素が見つかりませんでした。");
             return;
         }
-
+    
         // ノードの位置を取得
         const nodePosition = this.ownNetwork.getPositions(this.selectId)[this.selectId];
         const canvasPosition = this.ownNetwork.canvasToDOM({
             x: nodePosition.x,
             y: nodePosition.y
         });
-
-        // 吹き出しの位置と内容を設定
+    
+        // 吹き出しの内容を設定
         tooltip.style.left = `${canvasPosition.x}px`;
         tooltip.style.top = `${canvasPosition.y + 20}px`; // ノードの下に表示
         tooltip.innerHTML = `
-            <strong>${this.selectId.label}</strong><br>
-            作業が完了しました！
+            <div id="tooltipHeader" style="cursor: move; background: #ccc; padding: 5px;">
+                <strong>【この手段を評価】</strong>
+            </div>
+            <div style="padding: 10px;">
+                <form id="evaluationForm">
+                    <label for="rating">総合評価：</label>
+                    <select id="rating" name="rating">
+                        <option value="1">1点</option>
+                        <option value="2">2点</option>
+                        <option value="3">3点</option>
+                        <option value="4" selected>4点</option>
+                        <option value="5">5点</option>
+                    </select><br><br>
+                    <label for="goodPoints">良かった点：</label><br>
+                    <textarea id="goodPoints" name="goodPoints" rows="3" placeholder="自由に記述できます"></textarea><br><br>
+                    <label for="badPoints">悪かった点：</label><br>
+                    <textarea id="badPoints" name="badPoints" rows="3" placeholder="自由に記述できます"></textarea><br><br>
+                    <button type="button" id="saveFeedback">保存</button>
+                </form>
+            </div>
         `;
         tooltip.style.display = "block";
+    
+        // 保存ボタンのイベントリスナーを追加
+        const saveButton = document.getElementById("saveFeedback");
+        saveButton.addEventListener("click", () => {
+            const rating = document.getElementById("rating").value;
+            const goodPoints = document.getElementById("goodPoints").value;
+            const badPoints = document.getElementById("badPoints").value;
+    
+            // サーバーにデータを送信
+            $.ajax({
+                url: "php/object_maneger.php",
+                type: "POST",
+                data: {rating: rating,
+                    goodPoints: goodPoints,
+                    badPoints: badPoints,
+                    node_id : this.selectId,
+                    purpose : 'record',
+                    record_thing : 'reflection'},
+                success: function (response) {
+                    console.log("サーバーの応答:", response);
+                    alert("フィードバックが保存されました！");
+                },
+                error: function (error) {
+                    console.error("フィードバック保存中にエラーが発生しました:", error);
+                    alert("フィードバックの保存に失敗しました。");
+                }
+            });
 
+            alert("フィードバックが保存されました！");
+            tooltip.style.display = "none"; // 保存後に吹き出しを閉じる
+        });
+    
+        // ドラッグの実装
+        const header = document.getElementById("tooltipHeader");
+        let offsetX = 0, offsetY = 0, isDragging = false;
+    
+        header.addEventListener("mousedown", (event) => {
+            isDragging = true;
+            offsetX = event.clientX - tooltip.offsetLeft;
+            offsetY = event.clientY - tooltip.offsetTop;
+            document.body.style.cursor = "grabbing";
+        });
+    
+        document.addEventListener("mousemove", (event) => {
+            if (isDragging) {
+                tooltip.style.left = `${event.clientX - offsetX}px`;
+                tooltip.style.top = `${event.clientY - offsetY}px`;
+            }
+        });
+    
+        document.addEventListener("mouseup", () => {
+            if (isDragging) {
+                isDragging = false;
+                document.body.style.cursor = "default";
+            }
+        });
+    
+        // 吹き出し以外をクリックしたら吹き出しを閉じる
+        const hideTooltip = (event) => {
+            if (!tooltip.contains(event.target)) {
+                tooltip.style.display = "none";
+                document.removeEventListener("click", hideTooltip); // イベントリスナーを解除
+            }
+        };
+    
+        // イベントリスナーを追加
+        //document.addEventListener("click", hideTooltip);
     }
+    
+    
     
 
     //概念をマップに追加（完了）
@@ -1421,7 +1522,7 @@ const makeUtteranceNodeInList = (utter_id, timestamp, utter_content, act) => {
 window.addEventListener("textSendEvent", (event) => {
     console.log("[object-network.js] カスタムイベントを受信しました:", event);
 
-    const receivedTimestamp = event.detail.nodeCONCEPT; // timestampを取得
+    const receivedTimestamp = event.detail.timestamp; // timestampを取得
     const receivedNodeText = event.detail.nodeTEXT; // nodeTEXTを取得
     console.log("[object-network.js] 受信したtimestamp:", receivedTimestamp);
     console.log("[object-network.js] 受信したnodeTEXT:", receivedNodeText);
