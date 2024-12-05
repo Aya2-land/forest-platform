@@ -47,7 +47,6 @@ function showGeneration() {
     }
 }
 
-
 function addObjectMap() {
     // 入力フィールドの内容を取得
     const goalContent = document.getElementById("goalInput").value;
@@ -80,34 +79,8 @@ function addObjectMap() {
         handleGoalClick(goalContent, timeString, objectMapId);
     });
 
-    // 編集機能を追加: 目標ボタンをクリックして編集モードにする
-    newGoalButton.addEventListener('dblclick', (event) => {
-        // 現在の目標内容を取得
-        const currentGoalContent = newGoalButton.innerHTML.split('<br>')[0].replace('<strong>目標:</strong> ', '').trim();
-
-        // 編集用の入力フィールドを作成
-        const inputField = document.createElement('input');
-        inputField.type = 'text';
-        inputField.value = currentGoalContent; // 現在の目標内容をセット
-
-        // 編集用ボタンに置き換え
-        newGoalButton.innerHTML = '<strong>目標:</strong> ';
-        newGoalButton.appendChild(inputField); // 入力フィールドを追加
-
-        // 編集が完了した際にボタンを更新する
-        inputField.addEventListener('blur', () => {
-            const updatedGoalContent = inputField.value.trim();
-
-            if (updatedGoalContent !== "") {
-                newGoalButton.innerHTML = `<strong>目標:</strong> ${updatedGoalContent} <br><strong>作成日時:</strong> ${timeString}`;
-                // 編集内容をサーバーに保存するリクエストを送信（必要であれば）
-                update_objectMap(updatedGoalContent, timeString, objectMapId);
-            } else {
-                alert("目標の内容が空です");
-                newGoalButton.innerHTML = `<strong>目標:</strong> ${currentGoalContent} <br><strong>作成日時:</strong> ${timeString}`;
-            }
-        });
-    });
+    // 編集機能を別の関数に委譲
+    enableGoalEdit(newGoalButton, goalContent, timeString, objectMapId);
 
     // 目標を表示する一覧エリアに追加
     const goalListArea = document.getElementById("goalListArea");
@@ -126,6 +99,35 @@ function addObjectMap() {
     // サーバーに目標を保存するリクエストを送信
     record_objectMap(goalContent, timeString, objectMapId);
 }
+
+function enableGoalEdit(newGoalButton, currentGoalContent, timeString, objectMapId) {
+    // ダブルクリックで編集モードにする
+    newGoalButton.addEventListener('dblclick', (event) => {
+        // 現在の目標内容を取得
+        const currentLabel = currentGoalContent;
+
+        // ユーザーに新しいラベルを入力させる
+        const newLabel = prompt('新しいラベルを入力してください:', currentLabel);
+
+        // 編集したラベルを反映
+        if (newLabel !== null) {
+            const updatedGoalContent = newLabel.trim();
+
+            if (updatedGoalContent !== "") {
+                // 新しいラベルをボタンに反映
+                newGoalButton.innerHTML = `<strong>目標:</strong> ${updatedGoalContent} <br><strong>作成日時:</strong> ${timeString}`;
+                
+                // 編集内容をサーバーに保存するリクエストを送信（必要であれば）
+                update_objectMap(updatedGoalContent, timeString, objectMapId);
+            } else {
+                alert("目標の内容が空です");
+                // 編集前の内容に戻す
+                newGoalButton.innerHTML = `<strong>目標:</strong> ${currentLabel} <br><strong>作成日時:</strong> ${timeString}`;
+            }
+        }
+    });
+}
+
 
 //目標マップの記録
 function record_objectMap(goalContent, timeString,objectMapId){
@@ -213,16 +215,19 @@ function fetchGoals() {
                         <strong>作成日時:</strong> ${goal.created_at}
                     `;
 
-					console.log('object-map-id', goal.object_map_id);
+                    console.log('object-map-id', goal.object_map_id);
 
-					// ボタンに object_map_id を data 属性として設定
+                    // ボタンに object_map_id を data 属性として設定
                     goalButton.setAttribute('data-object-map-id', goal.object_map_id);
 
                     // ボタンのクリック時の動作を handleGoalClick 関数に委任
-					goalButton.addEventListener('click', (event) => {
-						goalButton.focus();  // ボタンにフォーカスを当てる
-						handleGoalClick(goalButton, goal.label, goal.created_at, goal.object_map_id);
-					});
+                    goalButton.addEventListener('click', (event) => {
+                        goalButton.focus();  // ボタンにフォーカスを当てる
+                        handleGoalClick(goalButton, goal.label, goal.created_at, goal.object_map_id);
+                    });
+
+                    // 編集機能を追加
+                    enableGoalEdit(goalButton, goal.label, goal.created_at, goal.object_map_id);
 
                     // 表示エリアにボタンを追加
                     goalListArea.appendChild(goalButton);
@@ -240,6 +245,7 @@ function fetchGoals() {
         }
     });
 }
+
 
 function handleGoalClick(goalButton, goalContent, timeString, objectMapId) {
 	defaultForestMRN = new ForestMRN("mynetwork", "load");

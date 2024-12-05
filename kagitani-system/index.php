@@ -163,6 +163,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <div id="goalListArea">
                             <!-- 目標がここに表示されます -->
                         </div>
+                        <button class="delete-btn">🗑️</button>
                     </div>
 
                     <!-- この部分を消したら，問い一覧が消えてしまう．不思議だなあ． -->
