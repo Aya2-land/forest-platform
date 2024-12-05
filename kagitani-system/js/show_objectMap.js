@@ -151,7 +151,7 @@ function fetchGoals() {
                         <strong>作成日時:</strong> ${goal.created_at}
                     `;
 
-					console.log('data-object-map-id', goal.object_map_id);
+					console.log('object-map-id', goal.object_map_id);
 
 					// ボタンに object_map_id を data 属性として設定
                     goalButton.setAttribute('data-object-map-id', goal.object_map_id);
@@ -196,7 +196,7 @@ function handleGoalClick(goalButton, goalContent, timeString, objectMapId) {
 	updateObjectMapData(objectMapId);
 
     // メッセージを表示
-    alert(`目標: ${goalContent}\n作成日時: ${timeString}\nobject_map_id: ${objectMapId}`);
+    //alert(`目標: ${goalContent}\n作成日時: ${timeString}\nobject_map_id: ${objectMapId}`);
 
     // クリックされたボタンのスタイルを変更
     goalButton.style.border = '5px solid #007BFF'; // 太くするスタイルを適用
@@ -226,18 +226,44 @@ function loadObjectMapData(objectMapId) {
                 return; // エラーが発生した場合は早期リターン
             }
 
-			if (objectMapData && Array.isArray(objectMapData)) {
-                objectMapData.forEach((n) => {
-                    if (n.object_node_id) {
-                        // object_node_id を node_id として渡す
-                        defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y);
-                    } else {
-                        console.warn("Node ID is undefined, skipping this node:", n);
-                    }
-                });
-            } else {
-                console.error("objectMapData is undefined or not an array:", objectMapData);
-            }
+			if (objectMapData && Array.isArray(objectMapData.node)) {
+				objectMapData.node.forEach((n) => {
+					if (n.object_node_id) {
+						// object_node_id を node_id として渡す
+						defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y);
+					} else {
+						console.warn("Node ID is undefined, skipping this node:", n);
+					}
+				});
+			} else {
+				console.error("node is undefined or not an array:", objectMapData.node);
+			}
+	
+			if (objectMapData && Array.isArray(objectMapData.edge)) {
+				objectMapData.edge.forEach((n) => {
+					if (n.object_edges_id) {
+						// `object_edges_id` を使用する
+						defaultForestMRN.addReloadEdge(n.object_edges_id, n.edge_start, n.edge_end);
+					} else {
+						console.warn("dges ID is undefined, skipping this edge:", n);
+					}
+				});
+			} else {
+				console.error("eges is undefined or not an array:", objectMapData.node);
+			}
+
+			// if (objectMapData && Array.isArray(objectMapData)) {
+            //     objectMapData.forEach((n) => {
+            //         if (n.object_node_id) {
+            //             // object_node_id を node_id として渡す
+            //             defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y);
+            //         } else {
+            //             console.warn("Node ID is undefined, skipping this node:", n);
+            //         }
+            //     });
+            // } else {
+            //     console.error("objectMapData is undefined or not an array:", objectMapData);
+            // }
         },
         error: (xhr, status, error) => {
             console.error("デバッグエラー: AJAXリクエスト失敗");

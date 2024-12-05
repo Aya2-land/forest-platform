@@ -4,6 +4,7 @@
 session_start();
 require("connect_db.php");
 
+$return_data = [];
 $purpose = $_POST["purpose"]; //loadかfetchか
 
 if($purpose === 'fetch'){
@@ -27,30 +28,21 @@ if($purpose === 'fetch'){
 }else if ($purpose === 'load') {
     $objectMapId = $_POST['object_map_id'];
 
-    // SQLインジェクションを防ぐためにプリペアドステートメントを使用
-    $stmt = $mysqli->prepare("SELECT object_node_id, label, object_nodes_type_id, x, y FROM object_nodes WHERE object_map_id = ?");
-    
-    // パラメータをバインド
-    $stmt->bind_param("i", $objectMapId); // $objectMapIdが整数の場合の例
+    $result_object_node = $mysqli->query("SELECT object_node_id, label, object_nodes_type_id, x, y FROM object_nodes WHERE object_map_id = '$objectMapId'");
 
-    // クエリを実行
-    $stmt->execute();
-    
-    // 結果を取得
-    $result = $stmt->get_result();
-
-    $objects = [];
-    if ($result->num_rows > 0) {
-        // 結果を配列に格納
-        while ($row = $result->fetch_assoc()) {
-            $objects[] = $row;
-        }
+    $node = [];
+    while ($row = $result_object_node->fetch_assoc()) {
+        array_push($node, $row);
     }
+    $return_data = array_merge($return_data, ['node' => $node]);
 
-    // JSON形式で結果を返す
-    echo json_encode($objects);
+    $result_object_edge = $mysqli->query("SELECT object_edges_id, edge_start, edge_end FROM object_edges
+              WHERE object_map_id = '$objectMapId'");
+    $edge = [];
+    while ($row = $result_object_edge->fetch_assoc()) {
+        array_push($edge, $row);
+    }
+    $return_data = array_merge($return_data, ['edge' => $edge]);
 
-    // ステートメントと接続を閉じる
-    $stmt->close();
-    $mysqli->close();
+    echo json_encode($return_data); // JSONを出力
 }

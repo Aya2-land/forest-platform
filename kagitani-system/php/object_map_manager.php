@@ -15,88 +15,35 @@ $first_load_flag = $_POST["first_load_flag"]; // どんなデータがほしい�
 
 $return_data = []; // DBアクセスの結果として返すキー・バリューのペア
 
-/*
- * すべてのマップ履歴について，開始と終了（リフレクションの開始＿過去のリフレクションの終了）時刻を取得
- */
-$result_map_create_start_and_end = $mysqli->query("SELECT * FROM network_sturuct_activity WHERE user_id = $user_id AND sheet_id = $sheet_id ORDER BY start_time DESC");
-
-$map_create_start_and_end = [];
-$latest_map_created_time = null; // 最初にヒットしたもの（現在の最新状態のもの）を履歴情報から除外するためのフラグ
-while ($row = $result_map_create_start_and_end->fetch_assoc()) {
-    $latest_map_created_time === null ? $latest_map_created_time = $row['start_time'] : array_push($map_create_start_and_end, $row); // 最新のやつは除外してそれ以外はPUSH
-}
-
-if($purpose === "record_meeting_utterance") {
-    // ミーティングの発話をノードごとに保存する処理
-
-    /*
-     * マップ作成開始時間の記録・直前までのMapの終了時刻のアップデート
-     *   手続きは，まず過去の最新のマップの終了時刻を更新，次に，その更新した時刻TIMESTAMPをSELECT取得，最後にそのタイムスタンプと同じ時刻の新規マップデータを挿入
-     */
-    $et_update_query = "UPDATE network_sturuct_activity SET end_time = CURRENT_TIMESTAMP(), situation = 'end'
-                                                       WHERE user_id = $user_id AND
-                                                             sheet_id = $sheet_id AND
-                                                             start_time in
-                                                             ( SELECT * FROM (SELECT MAX(start_time) FROM network_sturuct_activity
-                                                                                    WHERE user_id = $user_id AND
-                                                                                          sheet_id = $sheet_id
-                                                             ) AS MAX_START_TIME)";
-    $mysqli->query($et_update_query);
-    $map_renewal_time_query = "SELECT MAX(end_time) FROM network_sturuct_activity WHERE user_id = $user_id AND sheet_id = $sheet_id ORDER BY end_time DESC"; // XMLからのデータを引き渡された時間（マップを新しく作り始めた時間＝リフレクションが次のフェーズにうつったとき）
-    $result_map_renewal_time_tmp = $mysqli->query($map_renewal_time_query);
-    $row = $result_map_renewal_time_tmp->fetch_assoc();
-    $map_renewal_time_tmp = $row['MAX(end_time)'];
-    $map_renewal_time = $map_renewal_time_tmp === null ? "CURRENT_TIMESTAMP" : "'$map_renewal_time_tmp'"; // 過去に作ったマップが１つもないときは現在時刻指定
-    $st_record_query = "INSERT INTO network_sturuct_activity (user_id, sheet_id, start_time, end_time, situation) VALUES
-                                              ($user_id, $sheet_id, $map_renewal_time, $map_renewal_time, 'start')";
-    $res = $mysqli->query($st_record_query);
-
-        /*
-    * 発話ノードの記録（network_textへのデータ挿入）
-    */
-    $jsonDataArray = json_decode($_POST['utters'], true);
-    
-    $nt_record_query = "INSERT INTO network_text (user_id, sheet_id, area_id, sender, content, time, JPNtime, ST_Time) VALUES ";
-    foreach ($jsonDataArray as $jsonData) {
-        $id = $mysqli->real_escape_string($jsonData['message_id']);
-        $content = $mysqli->real_escape_string($jsonData['content']);
-        $sender = $mysqli->real_escape_string($jsonData['sender']);
-        $time = $mysqli->real_escape_string($jsonData['time']);
-        $JPNtime = $mysqli->real_escape_string($jsonData['JPNtime']);
-        
-        $nt_record_query .= "($user_id, $sheet_id, $id, '$sender', '$content', $time, '$JPNtime', $map_renewal_time), ";
-    }
-    $nt_record_query = rtrim($nt_record_query,", ");
-    $mysqli->query($nt_record_query);
-    return;
-}
-
-
-
 if($purpose === "select_meeting_utterance") { //こいつを取ってきていることが判明したぞお
-    /***
-     *** ここから議論内省マップデータの取得（SELECT）処理
-     ***/
-
-    $return_data = array_merge($return_data, ['start_time' => $target_map_created_start_times]);  
-    
-    /*
-     * 議論内省マップのノードデータの取得
-     */
-
-    $result_discussionmap_node = $mysqli->query("SELECT `object_node_id`, `object_map_id`, `label`, `x`, `y`, `object_nodes_type_id`, `created_at`, `updated_at`, `deleted`
-                FROM `object_nodes`
-                WHERE `deleted` = 0
-                ORDER BY `updated_at` DESC;
-                ");
-    $discussionmap_node = [];  //空の配列として初期化されます。この配列に、取得したノードの情報を格納
-    //fetch_assoc() は、クエリの結果から1行を連想配列（カラム名をキーにした配列）として取り出す．
-    //array_push($discussionmap_node, $row);: 取得した行（$row）を、$discussionmap_node 配列に追加します。この操作をクエリの結果がすべて取り出されるまで繰り返します。
-    while ($row = $result_discussionmap_node->fetch_assoc()) {
-        array_push($discussionmap_node, $row);
+    //updated_atが最新のマップIDを獲得する．
+    // 最新の map_id を取得
+    $latest_map_id_result = $mysqli->query("SELECT `map_id` FROM `object_maps` ORDER BY `updated_at` DESC LIMIT 1;");
+    if ($latest_map_id_result->num_rows > 0) {
+        $latest_map_id_row = $latest_map_id_result->fetch_assoc();
+        $latest_map_id = $latest_map_id_row['map_id'];
+    } else {
+        die("No map_id found in object_maps table.\n");
     }
 
-    //既存の $return_data 配列に、新たに取得したノード情報（$discussionmap_node）を 'dnode' というキーで追加します。
+    // 最新の map_id に関連するノードを取得
+    $stmt = $mysqli->prepare("
+        SELECT `object_node_id`, `object_map_id`, `label`, `x`, `y`, `object_nodes_type_id`, `created_at`, `updated_at`, `deleted`
+        FROM `object_nodes`
+        WHERE `deleted` = 0 
+        AND `object_map_id` = ?
+        ORDER BY `updated_at` DESC;
+    ");
+    $stmt->bind_param('s', $latest_map_id); // 's' は文字列型を意味します
+    $stmt->execute();
+    $result_discussionmap_node = $stmt->get_result();
+
+    $discussionmap_node = [];
+    while ($row = $result_discussionmap_node->fetch_assoc()) {
+        $discussionmap_node[] = $row; // 配列に追加
+    }
+
+    // $return_data にノード情報を追加
     $return_data = array_merge($return_data, ['dnode' => $discussionmap_node]);
 
 
