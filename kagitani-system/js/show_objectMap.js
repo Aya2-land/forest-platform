@@ -61,7 +61,7 @@ function addObjectMap() {
     // 現在の時刻を取得
     const currentDate = new Date();
     const timeString = currentDate.toLocaleString(); // ローカルの日時形式で取得
-	const objectMapId = 'map_' + Math.random().toString(36).substr(2, 9); // ランダムなIDを取得
+    const objectMapId = 'map_' + Math.random().toString(36).substr(2, 9); // ランダムなIDを取得
 
     // 新しい目標ボタンを作成
     const newGoalButton = document.createElement("button");
@@ -70,7 +70,7 @@ function addObjectMap() {
     // 目標の内容と追加した時刻をボタンの中に設定
     newGoalButton.innerHTML = `<strong>目標:</strong> ${goalContent} <br><strong>作成日時:</strong> ${timeString}`;
 
-	// ボタンにobject_map_idをdata属性として設定
+    // ボタンにobject_map_idをdata属性として設定
     newGoalButton.setAttribute('data-object-map-id', objectMapId);
 
     // ボタンのクリック時の動作をhandleGoalClick関数に委任
@@ -79,6 +79,36 @@ function addObjectMap() {
         const clickedObjectMapId = event.target.getAttribute('data-object-map-id');
         handleGoalClick(goalContent, timeString, objectMapId);
     });
+
+    // 編集機能を追加: 目標ボタンをクリックして編集モードにする
+    newGoalButton.addEventListener('dblclick', (event) => {
+        // 現在の目標内容を取得
+        const currentGoalContent = newGoalButton.innerHTML.split('<br>')[0].replace('<strong>目標:</strong> ', '').trim();
+
+        // 編集用の入力フィールドを作成
+        const inputField = document.createElement('input');
+        inputField.type = 'text';
+        inputField.value = currentGoalContent; // 現在の目標内容をセット
+
+        // 編集用ボタンに置き換え
+        newGoalButton.innerHTML = '<strong>目標:</strong> ';
+        newGoalButton.appendChild(inputField); // 入力フィールドを追加
+
+        // 編集が完了した際にボタンを更新する
+        inputField.addEventListener('blur', () => {
+            const updatedGoalContent = inputField.value.trim();
+
+            if (updatedGoalContent !== "") {
+                newGoalButton.innerHTML = `<strong>目標:</strong> ${updatedGoalContent} <br><strong>作成日時:</strong> ${timeString}`;
+                // 編集内容をサーバーに保存するリクエストを送信（必要であれば）
+                update_objectMap(updatedGoalContent, timeString, objectMapId);
+            } else {
+                alert("目標の内容が空です");
+                newGoalButton.innerHTML = `<strong>目標:</strong> ${currentGoalContent} <br><strong>作成日時:</strong> ${timeString}`;
+            }
+        });
+    });
+
     // 目標を表示する一覧エリアに追加
     const goalListArea = document.getElementById("goalListArea");
 
@@ -94,9 +124,8 @@ function addObjectMap() {
     document.getElementById("goalInput").value = "";
 
     // サーバーに目標を保存するリクエストを送信
-    record_objectMap(goalContent, timeString,objectMapId);
+    record_objectMap(goalContent, timeString, objectMapId);
 }
-
 
 //目標マップの記録
 function record_objectMap(goalContent, timeString,objectMapId){
@@ -118,6 +147,39 @@ function record_objectMap(goalContent, timeString,objectMapId){
 			console.error('送信エラー:', status, error);
 		}
     });
+}
+
+function update_objectMap(updatedGoalContent, createdAt, objectMapId) {
+   const data = {
+       purpose: 'update',
+       object_map_id: objectMapId,
+       updated_label: updatedGoalContent,
+       created_at: createdAt
+   };
+   $.ajax({
+       url: "php/object_maneger.php",
+       type: "POST",
+       data: {
+           select_update: 'label',
+           purpose: 'update',
+           update_thing: 'map',
+           object_map_id: objectMapId,
+           label: updatedGoalContent,
+           created_at: createdAt,
+           node_update_thing1:null,
+           node_update_thing2:null,
+       },
+       success: function(response){
+           // レスポンスデータをコンソールに出力
+           console.log("Success: ", response);
+       },
+       error: function(xhr, status, error){
+           // エラーの詳細を表示
+           console.log("Error status: " + status);
+           console.log("Error message: " + error);
+           console.log("Response text: " + xhr.responseText);
+       }
+   });
 }
 
 window.addEventListener('load', () => {
@@ -215,7 +277,7 @@ function loadObjectMapData(objectMapId) {
             purpose: 'load'  // 目的を指定
         },
         success: (response) => {
-            console.log("サーバーレスポンス:", response); // デバッグ用
+            //console.log("サーバーレスポンス:", response); // デバッグ用
 
 			// レスポンスが JSON 文字列の場合、パースします
             let objectMapData;
@@ -276,8 +338,6 @@ function loadObjectMapData(objectMapId) {
 
 // object_map_idに紐づけられたobject_mapのデータを取得する関数
 function updateObjectMapData(objectMapId) {
-    console.log(`アップデートします: ${objectMapId}`); // ここでobjectMapIdを表示
-
     $.ajax({
         url: "php/object_maneger.php",
         type: "POST",
@@ -288,17 +348,13 @@ function updateObjectMapData(objectMapId) {
 			select_update: 'updated_at'
         },
         success: function(response) {
-            console.log("成功:", response); // 成功した場合のレスポンスを表示
+            //console.log("成功:", response); // 成功した場合のレスポンスを表示
         },
         error: function(xhr, status, error) {
             console.error("ノード更新エラー:", error); // エラー内容を詳しく表示
             console.error("レスポンス:", xhr.responseText); // サーバーからのレスポンスも表示
         }
     });
-
-    console.log(`アップデートしました: ${objectMapId}`); // ここでobjectMapIdを表示
 }
-
-
 
 

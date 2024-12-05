@@ -71,7 +71,7 @@
 		}else if($record_thing === 'reflection'){
 			//エッジの記録
 			$object_reflection_id = uniqid('reflection_', true); // edge_で始まる一意のIDを生成
-			$object_node_id = $_POST["edge_start"];          //エッジ開始
+			$object_node_id = $_POST["object_node_id"];          //エッジ開始
 			$score = $_POST["rating"];   
 			$good_text = $_POST["good_text"];     
 			$bad_text = $_POST["bad_text"];                //エッジ終了
@@ -123,7 +123,7 @@
 				WHERE  object_node_id = '$node_id' ");
 			}else if($select_update === 'done'){
 				$object_node_id = $_POST["node_id"]; //ノードID
-				$done = $_POST["done"];
+				$done = "done";
 				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 				$mysqli->query("UPDATE object_nodes SET done = '$done', updated_at = '$timestamp' 
 				WHERE  object_node_id = '$node_id' ");
@@ -131,9 +131,13 @@
 		}else if($update_thing === 'map'){
 			$select_update = $_POST['select_update']; 
 			$object_map_id = $_POST["object_map_id"]; 
+			$label = $_POST['label']; 
 			if($select_update === 'updated_at'){
 				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 				$mysqli->query("UPDATE object_maps SET updated_at = '$timestamp' WHERE object_map_id = '$object_map_id'");
+			}else if($select_update === 'label'){
+				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+				$mysqli->query("UPDATE object_maps SET label = '$label', updated_at = '$timestamp' WHERE object_map_id = '$object_map_id'");
 			}
 		}
 	}else if($purpose === 'delete'){

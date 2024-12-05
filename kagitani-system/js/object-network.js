@@ -315,7 +315,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     }
     
 
-    addReloadNode(node_id, node_label, node_type, node_x, node_y) {
+    addReloadNode(node_id, node_label, node_type, node_x, node_y, done) {
         // console.log("Received node data:");
         // console.log("node_id:", node_id);
         // console.log("node_label:", node_label);
@@ -338,6 +338,18 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                  node_color = 'green';
                  text_color = 'white';
                  break;
+            default: // その他
+                break;
+        }
+
+        switch(done) {
+            //目標ノードか手段ノードか
+            case "done": // 手段完了
+                node_color = 'gray';
+                text_color = 'white';
+                break;
+            case null: //手段進行中
+                break;
             default: // その他
                 break;
         }
@@ -586,17 +598,26 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         $.ajax({
             url: "php/object_maneger.php",
             type: "POST",
-            data: {select_update : 'done',
-                node_id : this.selectId,
-                purpose : 'update',
-                update_thing : 'node'},
-            success: function(a){
-                console.log();
+            data: { 
+                select_update: 'done',
+                node_id: this.selectId,
+                purpose: 'update',
+                update_thing: 'node',
+                node_update_thing1:null,
+                node_update_thing2:null,
             },
-            error: function(e){
-                console.log("ノード更新エラーだよ");
+            success: function(response){
+                // レスポンスデータをコンソールに出力
+                console.log("Success: ", response);
+            },
+            error: function(xhr, status, error){
+                // エラーの詳細を表示
+                console.log("Error status: " + status);
+                console.log("Error message: " + error);
+                console.log("Response text: " + xhr.responseText);
             }
         });
+        
     
         // 吹き出しを表示する処理
         const tooltip = document.getElementById("tooltip");
@@ -651,22 +672,19 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 url: "php/object_maneger.php",
                 type: "POST",
                 data: {rating: rating,
-                    goodPoints: goodPoints,
-                    badPoints: badPoints,
-                    node_id : this.selectId,
+                    good_text: goodPoints,
+                    bad_text: badPoints,
+                    object_node_id : this.selectId,
                     purpose : 'record',
                     record_thing : 'reflection'},
                 success: function (response) {
                     console.log("サーバーの応答:", response);
-                    alert("フィードバックが保存されました！");
                 },
                 error: function (error) {
                     console.error("フィードバック保存中にエラーが発生しました:", error);
                     alert("フィードバックの保存に失敗しました。");
                 }
             });
-
-            alert("フィードバックが保存されました！");
             tooltip.style.display = "none"; // 保存後に吹き出しを閉じる
         });
     
@@ -1196,17 +1214,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 class RecordForestMRN{
     //kagitani--目標ノードの記録
     record_GoalNode (id, label, node_type, x, y){
-        console.log("記録を開始");
-        console.log("送信データ:", {
-            node_id : id,
-            object_map_id : object_map_id,
-            label : label,
-            x : x,
-            y : y,
-            node_type : node_type,
-            purpose : 'record',
-            record_thing: 'node'
-        });
         $.ajax({
             url: "php/object_maneger.php",
             type: "POST",
@@ -1279,6 +1286,7 @@ class RecordForestMRN{
             url: "php/object_maneger.php",
             type: "POST",
             data: {
+                object_map_id : object_map_id,
                 edge_start: edge_start,
                 edge_end: edge_end,
                 purpose: 'record',
@@ -1343,13 +1351,6 @@ class RecordForestMRN{
 
     //kagitani--ノードの更新
     update_Goal(select_update, id, node_update_thing1, node_update_thing2) {
-        console.log("Sending AJAX request with data:", {
-            select_update,
-            id,
-            node_update_thing1,
-            node_update_thing2
-        });
-    
         $.ajax({
             url: "php/object_maneger.php",
             type: "POST",
@@ -1461,53 +1462,62 @@ class RecordForestMRN{
 let utterance_list;
 const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
     let data;
+        //最初のデータロードの際に使われる。
+        if(target_time === null){
+            data =  {
+                    purpose: "select_meeting_utterance",
+                    object_map_Id : object_map_id
+                    };
+        }
+        return $.ajax({
+            url: "php/object_map_manager.php",
+            type: "POST",
+            data: data,
+            success: (r) => {
+                //console.log("Raw response:", r); 
+                try {
+                    utterance_list = JSON.parse(r);
+                    console.log("Parsed utterance_list:", utterance_list);
+                    callback(utterance_list);
+                } catch (e) {
+                    //ここのエラー治ってない．原因はわからんけど，普通に動くから削除してる．
+                    // console.error("Failed to parse JSON:", e, r);
+                }
+            },
+            error: (xhr, status, error) => {
+                console.error("AJAX error:", status, error);
+                console.log("Response text:", xhr.responseText);
+            }
+        });
+}
 
-    //最初のデータロードの際に使われる。
-    if(target_time === null){
-        console.log("targt");
-        data =  {
-                purpose: "select_meeting_utterance",
-                first_load_flag: true,
-                };
-    // } else if(end_time === null){
-    //     console.log("bbbbbbbbbbb");
-    //     data =  {
-    //             purpose: "select_version_discussionmap",
-    //             first_load_flag: target_time,
-    //             };
-    // } else {
-    //     console.log("ccccccccccc");
-    //     data =  {
-    //             purpose: "select_past_discussionmap",
-    //             discussion_start_time: target_time,
-    //             discussion_end_time: end_time
-    //             };
-    }
-    
-    console.log("Sending data:", data);
-
-    return $.ajax({
-        url: "php/object_map_manager.php",
+const getLatestMapID = (callback) => {
+    $.ajax({
+        url: "php/object_map_manager.php",  // PHPファイルのURL
         type: "POST",
-        data: data,
-        success: (r) => {
-            // console.log("Raw response:", r); 
+        data: { purpose: "get_latest_map_id" }, // 送信するデータ
+        success: (response) => {
+            console.log("Raw response from getLatestMapID:", response); // 生のレスポンスを表示
             try {
-                utterance_list = JSON.parse(r);
-                console.log("Parsed utterance_list:", utterance_list);
-                callback(utterance_list);
+                const data = JSON.parse(response); // JSON形式にパース
+                if (data.error) {
+                    console.error("Error from server:", data.error); // エラーメッセージがあれば表示
+                } else {
+                    const latestMapID = data.map_id; // 最新のmap_idを取得
+                    console.log("Latest map_id:", latestMapID);
+                    callback(latestMapID); // コールバックに渡す
+                }
             } catch (e) {
-                //ここのエラー治ってない．原因はわからんけど，普通に動くから削除してる．
-                // console.error("Failed to parse JSON:", e, r);
+                console.error("Failed to parse JSON:", e, response); // JSONパースに失敗した場合
             }
         },
         error: (xhr, status, error) => {
-            console.error("AJAX error:", status, error);
-            console.log("Response text:", xhr.responseText);
+            console.error("AJAX error in getLatestMapID:", status, error); // エラー処理
+            console.log("Response text:", xhr.responseText); // レスポンスの内容を表示
         }
     });
+};
 
-}
 
 //ここを編集して，活動ログを表示する．
 // 発言を発言エリアにdivとして表示
@@ -1579,18 +1589,6 @@ const displayUtteranceNodeInList = (display_target_area_id, target_reflection_ti
     const target_area = $(`#${display_target_area_id}`); // 発話ノードリストのDOMエリア
     const timedisplay_area = $(`#timedisplay`); // 発話ノードの議論内での時間を表示するエリア
     getDiscussionMapDataFromDB(target_reflection_time, null, (utterance_list_info) => {
-        //getDiscussionMapDataFromDB 関数を呼び出した後に取得したデータ (utterance_list_info) の中に含まれるobjectLogプロパティにアクセスしています。
-        console.log(utterance_list_info.objectLog);
-        // utterance_list_info.trigger.map(u => {
-        //     const utter_dom = makeTriggerInList(u.id, u.timestamp, u.text, u.act);
-        //     target_area.append(utter_dom); // 挿入
-        // });
-        // for(var i=0; i<trigger_list_info.document.length; i++){
-        //     defaultForestMRN.addmaterialNode(trigger_list_info.document[i].content_id, trigger_list_info.document[i].content);
-        //     document.getElementById("labelselect").style.display = "none";
-        //     defaultForestMRN.addMaterialOntology('material-content_'+trigger_list_info.document[i].content_id, trigger_list_info.document[i].concept_id);
-        // }
-        // defaultForestMRN.addmaterialEdge("material-content_"+u.doc_con1_id, "material-content_"+u.doc_con2_id, u.doc_con1_label+"→"+u.doc_con2_label)        
         //データの取得と挿入
         utterance_list_info.utterance.map(u => {
             const utter_dom = makeUtteranceNodeInList(testUtterId, testTimestamp, testUtterContent, testAct);
@@ -1655,6 +1653,10 @@ const displayUtteranceNodeInList = (display_target_area_id, target_reflection_ti
             timedisplay_area.empty();
             // rightclick()
         });
+        $('#utterance_area').on('mouseenter', '.utter_node_in_list', (e) => {
+            console.log("いえ〜い");
+        });
+          
         document.getElementById("accordion_discussion").innerHTML = "";      
     });
 }
@@ -1662,21 +1664,34 @@ const displayUtteranceNodeInList = (display_target_area_id, target_reflection_ti
 //ロードする時
 //display_target_area_id: 表示するエリアのID。target_reflection_time: 表示したい時間帯のデータを取得するための引数。
 const displayDiscussionMapData = (display_target_area_id, target_reflection_time) => {
+    getLatestMapID((mapID) => {
+        console.log("getLatestMapID コールバック開始");  // コールバックが呼ばれたことを確認
+        console.log("取得した最新の mapID:", mapID);  // 取得した mapID を確認
+    
+        object_map_id = mapID;
+        console.log("object_map_id に設定した値:", object_map_id);  // object_map_id に代入された値を確認
+    
+        // object_map_id を使用して updateObjectMapData 関数を呼び出し
+        updateObjectMapData(object_map_id);  
+        console.log("updateObjectMapData 関数を呼び出し。引数:", object_map_id);  // 関数呼び出しの直前
+    
+        console.log("更新後の mapID:", mapID);  // もう一度、mapIDの値を確認
+    });
+    
     // 指定した時間（指定なしなら最新）のマップに対応する発話ノードリストを取得して画面上に配置
     const target_area = $(`#${display_target_area_id}`); // 発話ノードリストのDOMエリア
     const timedisplay_area = $(`#timedisplay`); // 発話ノードの議論内での時間を表示するエリア
     let mousedownId = null;
-    console.log("target_reflection_time:", target_reflection_time);
-    
     //データベースから指定時間の発話データを取得。
     //データが存在する場合、dnode 内の各ノードを addReloadNode 関数でリロード。
     getDiscussionMapDataFromDB(null, null, (utterance_list_info) => {
+        console.log("utterance_list_info:", utterance_list_info);
         //utterance_listチェック
         if (utterance_list_info && Array.isArray(utterance_list_info.dnode)) {
             utterance_list_info.dnode.forEach((n) => {
                 if (n.object_node_id) {
                     // object_node_id を node_id として渡す
-                    defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y);
+                    defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y, n.done);
                 } else {
                     console.warn("Node ID is undefined, skipping this node:", n);
                 }
@@ -1775,6 +1790,11 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
             const clicked_node = e.target;
             timedisplay_area.empty();
             // rightclick()
+        });
+        // ネットワークにイベントリスナーを追加
+        utterance_list_info.dnode.on('hoverNode', function(event) {
+            // ノードにカーソルが当たった時に「いえ〜い」を表示
+            console.log("いえ〜い");
         });        
     });
 }

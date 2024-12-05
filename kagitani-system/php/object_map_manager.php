@@ -11,32 +11,23 @@ $sheet_id = $_SESSION['SHEETID'];    //シートID
 $purpose = $_POST["purpose"]; // どんなデータを取得したり保存したりするのか（内容．例：発話ノードのXMLからの保存orマップノードの取得）
 
 $target_map_created_start_times = null;  // リフレクションの開始時間
-$first_load_flag = $_POST["first_load_flag"]; // どんなデータがほしいというリクエストなのかを判定
 
 $return_data = []; // DBアクセスの結果として返すキー・バリューのペア
 
 if($purpose === "select_meeting_utterance") { //こいつを取ってきていることが判明したぞお
     //updated_atが最新のマップIDを獲得する．
     // 最新の map_id を取得
-    $latest_map_id_result = $mysqli->query("SELECT `map_id` FROM `object_maps` ORDER BY `updated_at` DESC LIMIT 1;");
-    if ($latest_map_id_result->num_rows > 0) {
-        $latest_map_id_row = $latest_map_id_result->fetch_assoc();
-        $latest_map_id = $latest_map_id_row['map_id'];
-    } else {
-        die("No map_id found in object_maps table.\n");
-    }
+    // 最新の object_map_id を取得
+    $latest_map_id_result = $mysqli->query("SELECT `object_map_id` FROM `object_maps` ORDER BY `updated_at` DESC LIMIT 1;");
+    $latest_map_id_row = $latest_map_id_result->fetch_assoc();
+    $object_map_id = $latest_map_id_row['object_map_id']; // 実際の ID を取得
 
-    // 最新の map_id に関連するノードを取得
-    $stmt = $mysqli->prepare("
-        SELECT `object_node_id`, `object_map_id`, `label`, `x`, `y`, `object_nodes_type_id`, `created_at`, `updated_at`, `deleted`
+    // object_map_id を使って object_nodes を取得
+    $result_discussionmap_node = $mysqli->query("SELECT `object_node_id`, `object_map_id`, `label`, `x`, `y`, `object_nodes_type_id`, `created_at`, `done`
         FROM `object_nodes`
-        WHERE `deleted` = 0 
-        AND `object_map_id` = ?
+        WHERE `deleted` = 0 AND `object_map_id` = '$object_map_id'
         ORDER BY `updated_at` DESC;
     ");
-    $stmt->bind_param('s', $latest_map_id); // 's' は文字列型を意味します
-    $stmt->execute();
-    $result_discussionmap_node = $stmt->get_result();
 
     $discussionmap_node = [];
     while ($row = $result_discussionmap_node->fetch_assoc()) {
@@ -46,11 +37,11 @@ if($purpose === "select_meeting_utterance") { //こいつを取ってきてい�
     // $return_data にノード情報を追加
     $return_data = array_merge($return_data, ['dnode' => $discussionmap_node]);
 
-
     /*
      * 議論内省マップのエッジデータの取得
      */
     $result_discussionmap_edge = $mysqli->query("SELECT object_edges_id, edge_start, edge_end FROM object_edges
+                WHERE `object_map_id` = '$object_map_id'
               ORDER BY time DESC ");
     $discussionmap_edge = [];
     while ($row = $result_discussionmap_edge->fetch_assoc()) {
@@ -82,4 +73,22 @@ if($purpose === "select_meeting_utterance") { //こいつを取ってきてい�
         echo json_encode($return_data);  // 最終的なデータをJSONとして返す
         exit;
     }
+}else if ($purpose === "get_latest_map_id") {
+    // 最新の object_map_id を取得
+    // 最新のobject_map_idを取得するクエリ
+    $latest_map_id_result = $mysqli->query("SELECT `object_map_id` FROM `object_maps` ORDER BY `updated_at` DESC LIMIT 1;");
+
+    // クエリが失敗した場合のエラーハンドリング
+    if (!$latest_map_id_result) {
+        echo json_encode(['error' => 'Query failed', 'message' => $mysqli->error]);
+        exit;
+    }
+
+    if ($latest_map_id_result->num_rows > 0) {
+        $data = $latest_map_id_result->fetch_assoc();
+        echo json_encode(['map_id' => $data['object_map_id']]);
+    } else {
+        echo json_encode(['error' => 'No data found']);
+    }
+
 }
