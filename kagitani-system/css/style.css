@@ -825,8 +825,7 @@ h3 {
 }
 
 .goal-item.active {
-    border: 2px solid #007BFF; /* お好みの色と太さ */
-    outline: none; /* ブラウザによってはアウトラインがつく場合があるのでそれを消す */
+    animation: grow 0.3s forwards; /* アニメーションを適用 */
 }
 
 /* 問い一覧の見出し */

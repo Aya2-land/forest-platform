@@ -1,6 +1,5 @@
 //目標マップの切り替えを行う
-
-
+let object_map_id = null; // グローバル変数の定義
 
 // "過去の目標" ボタンをクリックした時に実行される関数
 function showObjectMap() {
@@ -189,6 +188,13 @@ function handleGoalClick(goalButton, goalContent, timeString, objectMapId) {
         button.style.border = ''; // スタイルをリセット
     });
 
+	// グローバル変数を更新
+    object_map_id = objectMapId; // object_map_idを更新
+    console.log(`Current object_map_id: ${object_map_id}`); // デバッグ用にコンソールに表示
+
+	//object_map_idの更新時間を最新にする．
+	updateObjectMapData(objectMapId);
+
     // メッセージを表示
     alert(`目標: ${goalContent}\n作成日時: ${timeString}\nobject_map_id: ${objectMapId}`);
 
@@ -242,6 +248,30 @@ function loadObjectMapData(objectMapId) {
     });
 }
 
+// object_map_idに紐づけられたobject_mapのデータを取得する関数
+function updateObjectMapData(objectMapId) {
+    console.log(`アップデートします: ${objectMapId}`); // ここでobjectMapIdを表示
+
+    $.ajax({
+        url: "php/object_maneger.php",
+        type: "POST",
+        data: {
+            object_map_id: objectMapId, // 正しいキーを使用
+            purpose: 'update',
+            update_thing: 'map',
+			select_update: 'updated_at'
+        },
+        success: function(response) {
+            console.log("成功:", response); // 成功した場合のレスポンスを表示
+        },
+        error: function(xhr, status, error) {
+            console.error("ノード更新エラー:", error); // エラー内容を詳しく表示
+            console.error("レスポンス:", xhr.responseText); // サーバーからのレスポンスも表示
+        }
+    });
+
+    console.log(`アップデートしました: ${objectMapId}`); // ここでobjectMapIdを表示
+}
 
 
 
