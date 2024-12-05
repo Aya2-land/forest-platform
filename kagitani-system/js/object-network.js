@@ -467,16 +467,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             node.label = result_label;
             this.nodes.update(node);
             defaultRecordForestMRN.update_Goal("label", node_id, node_content, "");
-            const ontology_index = this.OntologyConnectNodeId.indexOf(node_id);
-            // Consoleログで確認
-            console.log("OntologyConnectNodeId:", this.OntologyConnectNodeId);
-            console.log("node_id:", node_id);
-            if (ontology_index !== -1) {
-                const nodeBoundingBox = this.ownNetwork.getBoundingBox(node_id);
-                const ontology_x = nodeBoundingBox.left;
-                const ontology_y = nodeBoundingBox.top;
-                this.nodes.update({ id: this.OntologyNodeId[ontology_index], x: ontology_x, y: ontology_y });   
-            } 
         } 
     }
     
@@ -1204,13 +1194,24 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
 // ネットワーク関係の記録
 class RecordForestMRN{
-
     //kagitani--目標ノードの記録
     record_GoalNode (id, label, node_type, x, y){
+        console.log("記録を開始");
+        console.log("送信データ:", {
+            node_id : id,
+            object_map_id : object_map_id,
+            label : label,
+            x : x,
+            y : y,
+            node_type : node_type,
+            purpose : 'record',
+            record_thing: 'node'
+        });
         $.ajax({
             url: "php/object_maneger.php",
             type: "POST",
             data: {node_id : id,
+                object_map_id : object_map_id,
                 label : label,
                 x : x,
                 y : y,
@@ -1226,6 +1227,7 @@ class RecordForestMRN{
             url: "php/object_maneger.php",
             type: "POST",
             data: {node_id : id,
+                object_map_id : object_map_id,
                 label : label,
                 x : x,
                 y : y,
@@ -1266,6 +1268,7 @@ class RecordForestMRN{
     record_Edge(edge_start, edge_end) {
         console.log("エッジの記録を開始");
         console.log("送信データ:", {
+            object_map_id : object_map_id,
             edge_start: edge_start,
             edge_end: edge_end,
             purpose: 'record',
@@ -1339,25 +1342,44 @@ class RecordForestMRN{
     }
 
     //kagitani--ノードの更新
-    update_Goal(select_update, id, node_update_thing1, node_update_thing2){
+    update_Goal(select_update, id, node_update_thing1, node_update_thing2) {
+        console.log("Sending AJAX request with data:", {
+            select_update,
+            id,
+            node_update_thing1,
+            node_update_thing2
+        });
+    
         $.ajax({
             url: "php/object_maneger.php",
             type: "POST",
-            data: {select_update : select_update,
-                node_id : id,
-                purpose : 'update',
-                update_thing : 'node',
-                node_update_thing1 : node_update_thing1,
-                node_update_thing2: node_update_thing2},
-            success: function(a){
-                console.log();
+            data: {
+                select_update: select_update,
+                node_id: id,
+                purpose: 'update',
+                update_thing: 'node',
+                node_update_thing1: node_update_thing1,
+                node_update_thing2: node_update_thing2
             },
-            error: function(e){
-                console.log("ノード更新エラーだよ");
+            success: function(response) {
+                console.log("Server response:", response);
+                try {
+                    const parsedResponse = JSON.parse(response); // JSONレスポンスの解析を試みる
+                    console.log("Parsed response:", parsedResponse);
+                } catch (error) {
+                    console.error("Failed to parse response as JSON:", error);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX error:", {
+                    xhr: xhr,
+                    status: status,
+                    error: error
+                });
             }
         });
-        
     }
+    
     
     //エッジの削除(完了)
     delete_db_Edge(edge_start, edge_end) {
