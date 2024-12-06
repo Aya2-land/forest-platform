@@ -842,6 +842,23 @@ h3 {
     display: inline-block; /* ホバー時に削除ボタンを表示 */
 }
 
+.goal-item[data-memo]:hover::after {
+    content: attr(data-memo); /* data-memo 属性の内容を表示 */
+    position: absolute;
+    background: #f5f5f5;
+    color: #333;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    white-space: pre-wrap;
+    z-index: 1000;
+    max-width: 200px;
+    top: 100%; /* ボタンの下に表示 */
+    left: 0;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
 /* 問い一覧の見出し */
 #side_menu .toi_menu {
 	background-color: #9acd32;

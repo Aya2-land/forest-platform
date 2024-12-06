@@ -213,6 +213,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             font: { color: text_color },
             fixed: position_fixed,
             x: node_x, y: node_y, 
+            done:null
         };
         
         this.nodes.add(newNode);
@@ -255,6 +256,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             font: { color: text_color },
             fixed: position_fixed,
             x: node_x, y: node_y = fromNode.y, 
+            done:null
         };
         this.nodes.add(newNode);
 
@@ -368,6 +370,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             font: { color: text_color },
             fixed: position_fixed,
             x: node_x, y: node_y, 
+            done:done,
         };
         // newNodeが作成された時点で確認
         //console.log("Created newNode:", newNode);
@@ -419,6 +422,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             font: { color: text_color },
             fixed: true,
             x: node_x, y: node_y, 
+            done:null
         };
         this.nodes.add(newNode);
         return this.nodes;
@@ -849,17 +853,17 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     //ネットワークノードがクリックされたときの処理
     networkClick (params){
         // ノード選択後、手段追加ボタンを有効にする
-        console.log("クリックされたノード:", params.nodes);  // クリックされたノード情報をログ出力
+        //console.log("クリックされたノード:", params.nodes);  // クリックされたノード情報をログ出力
 
         globalParams = params; // グローバル変数に保存
-        console.log("確認:", globalParams);
+        //console.log("確認:", globalParams);
 
         // ノードが1つ以上選択された場合に手段追加ボタンを有効化
         if (params.nodes.length > 0) {
-            console.log("手段追加ボタンを有効化する条件が満たされました。");
+            //console.log("手段追加ボタンを有効化する条件が満たされました。");
             document.getElementById("mrnb_addStep").disabled = false; // 手段追加ボタンを有効化
         } else {
-            console.log("手段追加ボタンを無効化します。");
+            //console.log("手段追加ボタンを無効化します。");
             document.getElementById("mrnb_addStep").disabled = true; // 手段追加ボタンを無効化
         }
 
@@ -1018,32 +1022,49 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         }else {
             const movedNodeId = params.nodes[0];
             //console.log("Moved Node ID:", movedNodeId); // ノードIDをログ出力
+            //console.log("param:", params); 
         
             // ノードが正しく選択されている場合にのみ処理を進める
             if (movedNodeId !== undefined) {
                 // ノードデータを取得
                 const node = this.nodes.get(movedNodeId);
-                //console.log("Node Data:", node); // ノードの詳細データをログ出力
+                console.log("Node Data:", node); // ノードの詳細データをログ出力
         
                 // なぜか更新したら色変わってしまうから一時的に
                 let node_color;
-        
                 // ノードのグループに応じて色を設定
                 switch (node?.group) { // nullチェック付き
                     case "0": // 自分で考えた要約に関するノードの場合
                         node_color = 'red';
-                        //console.log("Group is '0', setting color to red");
+                        console.log("Group is '0', setting color to red");
                         break;
                     case "1": // 議論内での発言ノードの場合
                         node_color = 'green';
-                        //console.log("Group is '1', setting color to green");
+                        console.log("Group is '1', setting color to green");
                         break;
                     default: // その他
-                        //console.log("Group does not match, using default color");
+                        console.log("Group does not match, using default color");
                         break;
                 }
-                //console.log("Node Color to be set:", node_color); // 設定する色をログ出力
-        
+
+                // "done"が設定されている場合は色をgrayに変更
+                if (node.done === "done") {
+                    node_color = 'gray'; // "done"の場合は強制的に灰色に
+                    console.log("Node is 'done', setting color to gray");
+                }
+
+                // "done"がnullまたは進行中の場合
+                else if (node.done === null) {
+                    console.log("Node is 'null', progressing...");
+                }
+
+                // 設定されたnode_colorをノードに適用
+                console.log("Node Color to be set:", node_color);
+                this.nodes.update({
+                    id: movedNodeId,
+                    color: { background: node_color },
+                });
+
                 // ノードを更新
                 try {
                     this.nodes.update({ 

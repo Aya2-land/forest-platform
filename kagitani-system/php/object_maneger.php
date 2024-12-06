@@ -104,8 +104,16 @@
 			} else {
 				echo "データが正常に挿入されました<br>";
 			}
+		}else if($record_thing === 'memo'){
+			//エッジの記録
+			$object_memo_id = uniqid('memo_', true); // edge_で始まる一意のIDを生成
+			$object_map_id = $_POST["object_map_id"];          //エッジ開始
+			$label = $_POST["label"];            //エッジ終了
+			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+			$mysqli->query("INSERT INTO `object_memos`(`object_memo_id`, `object_map_id`, 
+														`label`, `created_at`, `updated_at`) 
+									VALUES ('$object_memo_id','$object_map_id','$label','$timestamp','$timestamp')");
 		}
-		
 	}else if($purpose === 'update'){
 		$update_thing = $_POST['update_thing'];
 		if($update_thing === 'node'){
@@ -131,13 +139,21 @@
 		}else if($update_thing === 'map'){
 			$select_update = $_POST['select_update']; 
 			$object_map_id = $_POST["object_map_id"]; 
-			$label = $_POST['label']; 
 			if($select_update === 'updated_at'){
 				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 				$mysqli->query("UPDATE object_maps SET updated_at = '$timestamp' WHERE object_map_id = '$object_map_id'");
 			}else if($select_update === 'label'){
+				$label = $_POST['label']; 
 				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 				$mysqli->query("UPDATE object_maps SET label = '$label', updated_at = '$timestamp' WHERE object_map_id = '$object_map_id'");
+			}
+		}else if($update_thing === 'memo'){
+			$select_update = $_POST['select_update']; 
+			$object_map_id = $_POST["object_map_id"]; 
+			$label = $_POST['label']; 
+			if($select_update === 'label'){
+				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+				$mysqli->query("UPDATE object_memos SET label = '$label', updated_at = '$timestamp' WHERE object_map_id = '$object_map_id'");
 			}
 		}
 	}else if($purpose === 'delete'){
