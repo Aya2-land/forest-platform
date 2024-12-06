@@ -627,7 +627,12 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         }
     
         // ノードの位置を取得
-        const nodePosition = this.ownNetwork.getPositions(this.selectId)[this.selectId];
+        const positions = this.ownNetwork.getPositions(this.selectId);
+        if (!positions || !positions[this.selectId]) {
+            console.error("選択されたノードの位置情報が取得できませんでした。");
+            return;
+        }
+        const nodePosition = positions[this.selectId];
         const canvasPosition = this.ownNetwork.canvasToDOM({
             x: nodePosition.x,
             y: nodePosition.y

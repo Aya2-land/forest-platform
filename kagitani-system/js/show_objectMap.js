@@ -63,24 +63,26 @@ function addObjectMap() {
     const objectMapId = 'map_' + Math.random().toString(36).substr(2, 9); // ランダムなIDを取得
 
     // 新しい目標ボタンを作成
-    const newGoalButton = document.createElement("button");
+    const newGoalButton = document.createElement("div");
     newGoalButton.classList.add('goal-item'); // CSSのクラスを追加
 
-    // 目標の内容と追加した時刻をボタンの中に設定
-    newGoalButton.innerHTML = `<strong>目標:</strong> ${goalContent} <br><strong>作成日時:</strong> ${timeString}`;
+    // 目標の内容と追加した時刻を表示
+    newGoalButton.innerHTML = `
+        <span class="goal-content"><strong>目標:</strong> ${goalContent} <br><strong>作成日時:</strong> ${timeString}</span>
+        <button class="delete-btn">🗑️</button>
+    `;
 
     // ボタンにobject_map_idをdata属性として設定
     newGoalButton.setAttribute('data-object-map-id', objectMapId);
 
-    // ボタンのクリック時の動作をhandleGoalClick関数に委任
-    newGoalButton.addEventListener('click', (event) => {
-        // クリックしたボタンからobject_map_idを取得
-        const clickedObjectMapId = event.target.getAttribute('data-object-map-id');
-        handleGoalClick(goalContent, timeString, objectMapId);
+    // 削除ボタンのクリックイベント
+    const deleteButton = newGoalButton.querySelector('.delete-btn');
+    deleteButton.addEventListener('click', (event) => {
+        event.stopPropagation(); // 親のクリックイベントを防ぐ
+        if (confirm('本当にこの目標を削除しますか？')) {
+            deleteGoal(objectMapId, newGoalButton); // 目標を削除
+        }
     });
-
-    // 編集機能を別の関数に委譲
-    enableGoalEdit(newGoalButton, goalContent, timeString, objectMapId);
 
     // 目標を表示する一覧エリアに追加
     const goalListArea = document.getElementById("goalListArea");
@@ -99,6 +101,39 @@ function addObjectMap() {
     // サーバーに目標を保存するリクエストを送信
     record_objectMap(goalContent, timeString, objectMapId);
 }
+
+//削除するところでエラーが出る！！！！何でだ！！！！
+// 目標を削除する関数
+function deleteGoal(objectMapId, goalButton) {
+    $.ajax({
+        url: "php/object_maneger.php",
+        type: "POST",
+        data: {
+            purpose: 'delete',
+            delete_thing: 'map',
+            object_map_id: objectMapId,
+            node_update_thing1: null,
+            node_update_thing2: null,
+        },
+        success: (response) => {
+            console.log("サーバーレスポンス:", response); // デバッグ用ログ
+			goalButton.remove();
+            try {
+            } catch (e) {
+                console.error("JSONパースエラー: ", e);
+                alert('不明なエラーが発生しました');
+            }
+        },
+        error: (xhr, status, error) => {
+            console.error("AJAXエラー: ", error);
+            console.log("ステータス: ", status);
+            console.log("レスポンステキスト: ", xhr.responseText);
+            alert('通信エラーが発生しました: ' + xhr.responseText);
+        }
+    });
+}
+
+
 
 function enableGoalEdit(newGoalButton, currentGoalContent, timeString, objectMapId) {
     // ダブルクリックで編集モードにする
@@ -152,12 +187,6 @@ function record_objectMap(goalContent, timeString,objectMapId){
 }
 
 function update_objectMap(updatedGoalContent, createdAt, objectMapId) {
-   const data = {
-       purpose: 'update',
-       object_map_id: objectMapId,
-       updated_label: updatedGoalContent,
-       created_at: createdAt
-   };
    $.ajax({
        url: "php/object_maneger.php",
        type: "POST",
@@ -219,6 +248,21 @@ function fetchGoals() {
 
                     // ボタンに object_map_id を data 属性として設定
                     goalButton.setAttribute('data-object-map-id', goal.object_map_id);
+
+                    // 削除ボタンの作成
+                    const deleteButton = document.createElement('button');
+                    deleteButton.classList.add('delete-btn');
+                    deleteButton.textContent = '🗑️'; // ゴミ箱アイコン
+                    deleteButton.addEventListener('click', (event) => {
+                        event.stopPropagation(); // ボタンクリック時に親ボタンがクリックされないようにする
+                        const confirmDelete = confirm('この目標を削除しますか？');
+                        if (confirmDelete) {
+                            deleteGoal(goal.object_map_id, goalButton);
+                        }
+                    });
+
+                    // ボタンに削除ボタンを追加
+                    goalButton.appendChild(deleteButton);
 
                     // ボタンのクリック時の動作を handleGoalClick 関数に委任
                     goalButton.addEventListener('click', (event) => {

@@ -828,6 +828,20 @@ h3 {
     animation: grow 0.3s forwards; /* アニメーションを適用 */
 }
 
+.delete-btn {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: red;
+    padding: 5px;
+    display: none; /* 初期状態では非表示 */
+}
+
+.goal-item:hover .delete-btn {
+    display: inline-block; /* ホバー時に削除ボタンを表示 */
+}
+
 /* 問い一覧の見出し */
 #side_menu .toi_menu {
 	background-color: #9acd32;

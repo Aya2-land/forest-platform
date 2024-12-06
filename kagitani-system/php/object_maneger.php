@@ -165,7 +165,25 @@
 			$node_id = $_POST["node_id"];
 			$result1 = $mysqli->query("DELETE FROM network_ontology_activity WHERE node_id = '$node_id' AND time > '$struct_start_time'");
 			$result2 = $mysqli->query("DELETE FROM network_mindmap_connect WHERE network_node_id = '$node_id' AND time > '$struct_start_time'");
+		}else if ($delete_thing === 'map') {
+			$object_map_id = $_POST["object_map_id"];
+			
+			$stmt = $mysqli->prepare("DELETE FROM object_maps WHERE object_map_id = ?");
+			$stmt->bind_param("s", $object_map_id); // "s" は文字列の型を表す
+		
+			if ($stmt->execute()) {
+				echo json_encode(["status" => "success", "message" => "削除に成功しました"]);
+			} else {
+				echo json_encode([
+					"status" => "error", 
+					"message" => "削除に失敗しました", 
+					"error" => $stmt->error
+				]);
+			}
+		
+			$stmt->close();
 		}
+		
 	}
 
 	
