@@ -4,10 +4,7 @@ let object_node_id;
 
 //ノードの操作履歴を記録する関数
 function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nodeTYPE, primaryID) {
-  $.ajax({
-    url: "php/record_activities.php",
-    type: "POST",
-    data: {
+    const requestData = {
       id: nodeID,
       parent_id: parentID,
       activity: nodeACT,
@@ -15,33 +12,42 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
       concept_id: nodeCONCEPT,
       type: nodeTYPE,
       primary: primaryID,
-    },
-    success: function () {
-      console.log("登録成功", {
-        ノードID: nodeID,
-        操作: nodeACT,
-        コンセプトID: nodeCONCEPT,
-        ノードTYPE: nodeTYPE,
-        ノードテキスト: nodeTEXT,
-        親ノードID: parentID,
-      });
-    },
-    error: function () {
-      console.log("登録失敗");
-    },
+  };
+
+  console.log("送信データ:", requestData);
+
+  $.ajax({
+      url: "php/record_activities.php",
+      type: "POST",
+      data: requestData,
+      success: function (response) {
+          console.log("サーバーからのレスポンス: ", response);
+          if (response.message) {
+              console.log("やっっっっと成功した！！:", response.message);
+          } else {
+              console.warn("メッセージがありません。レスポンスの構造を確認してください。");
+          }
+
+          console.log("登録成功", {
+              ノードID: nodeID,
+              操作: nodeACT,
+              コンセプトID: nodeCONCEPT,
+              ノードTYPE: nodeTYPE,
+              ノードテキスト: nodeTEXT,
+              親ノードID: parentID,
+          });
+      },
+      error: function (xhr, status, error) {
+          console.error("AJAXリクエストエラー:", {
+              status: status,
+              error: error,
+              responseText: xhr.responseText,
+          });
+      },
   });
 
-  sendTextToObjectNetwork(nodeCONCEPT, nodeTEXT);
 
-  function sendTextToObjectNetwork(nodeCONCEPT, nodeTEXT) {
-      const event = new CustomEvent("textSendEvent", {
-          detail: { nodeCONCEPT: nodeCONCEPT, nodeTEXT: nodeTEXT }
-      });
-      console.log("[get_thinking.js] カスタムイベントを発行しました:", event);
-      window.dispatchEvent(event);
-  }
-
-
+  sendTextToObjectNetwork(nodeTEXT, nodeACT,nodeTYPE);
 
   if (autoRecordFlag) {
     console.log("フラグオン！！");
@@ -69,6 +75,14 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
       }
     });
   }
+}
+
+function sendTextToObjectNetwork(nodeTEXT, nodeACT,nodeTYPE) {
+  const event = new CustomEvent("textSendEvent", {
+      detail: { nodeTEXT: nodeTEXT, nodeACT:nodeACT, nodeTYPE:nodeTYPE }
+  });
+  console.log("[get_thinking.js] カスタムイベントを発行しました:", event);
+  window.dispatchEvent(event);
 }
 
 // イベントリスナーの設定

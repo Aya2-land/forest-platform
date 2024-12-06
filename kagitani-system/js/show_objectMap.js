@@ -455,19 +455,6 @@ function loadObjectMapData(objectMapId) {
 			} else {
 				console.error("eges is undefined or not an array:", objectMapData.node);
 			}
-
-			// if (objectMapData && Array.isArray(objectMapData)) {
-            //     objectMapData.forEach((n) => {
-            //         if (n.object_node_id) {
-            //             // object_node_id を node_id として渡す
-            //             defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y);
-            //         } else {
-            //             console.warn("Node ID is undefined, skipping this node:", n);
-            //         }
-            //     });
-            // } else {
-            //     console.error("objectMapData is undefined or not an array:", objectMapData);
-            // }
         },
         error: (xhr, status, error) => {
             console.error("デバッグエラー: AJAXリクエスト失敗");

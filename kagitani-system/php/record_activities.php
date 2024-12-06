@@ -7,47 +7,39 @@
 
   //タイムゾーンの設定
   date_default_timezone_set('Asia/Tokyo');
-
-
-
-
 		// $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);//日時をマイクロ秒まで取得するようにしてみる
-		$user_id = $_SESSION['USERID'];      //ユーザID
-   	 	$sheet_id = $_SESSION['SHEETID'];    //シートID
-    	$node_id = $_POST["id"];             //ノードID
-		$type = $_POST["type"];              //タイプ
-		$concept_id = $_POST["concept_id"];  //法造コンセプトID
-		$text = $_POST["text"];              //テキスト
-		$parent_id = $_POST["parent_id"];    //親ノードID
-		$activity = $_POST["activity"];      //操作
-    	$primary_id = $_POST["primary"];     //primary_id
-
-		$recoad_flag = $_POST["flag"]; 
+	$user_id = $_SESSION['USERID'];      //ユーザID
+ 	$sheet_id = $_SESSION['SHEETID'];    //シートID
+    $node_id = $_POST["id"];             //ノードID
+	$type = $_POST["type"];              //タイプ
+	$concept_id = $_POST["concept_id"];  //法造コンセプトID
+	$text = $_POST["text"];              //テキスト
+	$parent_id = $_POST["parent_id"];    //親ノードID
+	$activity = $_POST["activity"];      //操作
+    $primary_id = $_POST["primary"];     //primary_id
 
 
+	//用意された問いの追加だった場合，微調整を行う
+	if($type==='prepared_question' and $activity==='add'){
+		//0.5秒速く登録する
+		$timestamp = date("Y-m-d H:i:s", strtotime(' - 1 seconds ')) . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+	}else{
+		//普通に登録する
+		$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+	}
 
-		//用意された問いの追加だった場合，微調整を行う
-		if($type==='prepared_question' and $activity==='add'){
-			//0.5秒速く登録する
-			$timestamp = date("Y-m-d H:i:s", strtotime(' - 1 seconds ')) . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-		}else{
-			//普通に登録する
-			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-		}
 
+	// SQLクエリの生成
+	$sql = "INSERT INTO activities (id, timestamp, node_id, act, type, concept_id, text, parent_id, user_id, sheet_id)
+	VALUES ('$primary_id', '$timestamp', '$node_id','$activity', '$type','$concept_id','$text','$parent_id','$user_id','$sheet_id')";
 
-		$sql = "INSERT INTO activities (id, timestamp, node_id, act, type, concept_id, text, parent_id, user_id, sheet_id)
-		VALUES ('$primary_id', '$timestamp', '$node_id','$activity', '$type','$concept_id','$text','$parent_id','$user_id','$sheet_id')";
+	// SQLクエリをエコーで出力（ブラウザやネットワークタブで確認可能）
+	echo "Generated SQL: " . $sql . "\n";
 
-		// if($recoad_flag == true){
-		// 	$recoad_flag= $_POST["flag"];     //
-		// 	$object_node_id= $_POST["object_node_id"];   //
-		// 	$object_activity_id = uniqid('activity_', true);  //
+	// ログにも出力（サーバーログで確認可能）
+	error_log("Generated SQL: " . $sql);
 
-		// 	$sql = $mysqli->query("INSERT INTO object_activities (object_activity_id, object_node_id, activity_id) VALUES ('$object_activity_id', '$object_node_id', '$primary_id')");
-		// }
-
-		$result = $mysqli->query($sql);
+	$result = $mysqli->query($sql);
 
     //クエリ($sql)のエラー処理
     if($sql == TRUE){

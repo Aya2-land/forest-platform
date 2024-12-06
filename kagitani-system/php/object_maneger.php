@@ -90,8 +90,8 @@
 			var_dump($timeString);   // timeString の確認
 		
 			// SQLクエリ
-			$query = "INSERT INTO object_maps(object_map_id,label, map_id, created_at, updated_at)
-					  VALUES ('$object_map_id','$goalContent' , null, '$timeString', '$timeString')";
+			$query = "INSERT INTO object_maps(object_map_id,label, map_id, created_at, updated_at, deleted)
+					  VALUES ('$object_map_id','$goalContent' , null, '$timeString', '$timeString', 0)";
 		
 			// SQLクエリの確認
 			echo "実行するSQLクエリ: " . $query . "<br>";
@@ -184,7 +184,7 @@
 		}else if ($delete_thing === 'map') {
 			$object_map_id = $_POST["object_map_id"];
 			
-			$stmt = $mysqli->prepare("DELETE FROM object_maps WHERE object_map_id = ?");
+			$stmt = $mysqli->prepare("UPDATE object_maps SET deleted = 1 WHERE object_map_id = ?");
 			$stmt->bind_param("s", $object_map_id); // "s" は文字列の型を表す
 		
 			if ($stmt->execute()) {

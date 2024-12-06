@@ -4,6 +4,11 @@ let defaultShowForestMRN;
 let autoRecordFlag = false; // 自動記録フラグ
 let globalParams = null; //クリックされたネットワークノード
 
+//Record_activitiesのためにユニークな値を作り出す．
+function generateUniqueID() {
+    return crypto.randomUUID();
+}
+
 class ForestMRN { // forestMRN: forest Meeting Reflection Network
     constructor(container, load) {
         // this.ownNetwork = this.generateMeetingReflectionNetworkCanvas(container, {}, {}); // デフォルトのマップを表示
@@ -195,7 +200,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
      * ノードの操作
      */
 
-    //kagitani--目標追加
+    //目標追加
     addGoal(node_id, node_label, node_type, node_x, node_y) {
         let node_color = 'red'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
@@ -231,6 +236,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.latest_selected_node_info.x = node_x;
         this.latest_selected_node_info.y = boundingBoxupdate.bottom+10;
         defaultRecordForestMRN.record_GoalNode(`${node_type}_${node_id}`, node_label, node_type, node_x, node_y);
+        Record_activities(`${node_type}_${node_id}`, null, "add", node_label, null, "goal", generateUniqueID());
         // console.log("check");
         return this.nodes;
     }
@@ -265,7 +271,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.latest_selected_node_info.y = boundingBoxupdate.bottom + 10;
     
         defaultRecordForestMRN.record_StepNode(`${node_type}_${node_id}`, node_label, node_type, node_x, node_y);
-    
+        Record_activities(`${node_type}_${node_id}`, null, "add", node_label, null, "step",generateUniqueID());
         console.log("クリックされたノードの確認です:", globalParams);
     
         // ノード追加後に、エッジを自動で追加
@@ -483,6 +489,21 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             node.label = result_label;
             this.nodes.update(node);
             defaultRecordForestMRN.update_Goal("label", node_id, node_content, "");
+   
+            console.log("Node Data:", node); // ノードの詳細データをログ出力
+
+            switch (node?.group) { // nullチェック付き
+                case "0": // 自分で考えた要約に関するノードの場合
+                    console.log("ゴールを保存！！！！！！！！！！！！");
+                    Record_activities(node_id, null, "edit", node_content, null, "goal", generateUniqueID());
+                    break;
+                case "1": // 議論内での発言ノードの場合
+                    console.log("手段を保存！！！！！！！！！！！！");
+                    Record_activities(node_id, null, "edit", node_content, null, "step", generateUniqueID());
+                    break;       
+            }
+            // デバッグ: Record_activities の呼び出し確認
+            console.log("Record_activities invoked for Node ID:", node_id);
         } 
     }
     
@@ -516,6 +537,17 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             defaultRecordForestMRN.delete_db_Node(selectNodeId);
             defaultRecordForestMRN.delete_db_Edge(selectNodeId, "");
             defaultRecordForestMRN.delete_db_Edge("", selectNodeId);
+        }
+
+        switch (node?.group) { // nullチェック付き
+            case "0": // 自分で考えた要約に関するノードの場合
+                console.log("ゴールを保存！！！！！！！！！！！！");
+                Record_activities(node_id, null, "delete", node_content, null, "goal", generateUniqueID());
+                break;
+            case "1": // 議論内での発言ノードの場合
+                console.log("手段を保存！！！！！！！！！！！！");
+                Record_activities(node_id, null, "delete", node_content, null, "step", generateUniqueID());
+                break;       
         }
     }
 
@@ -1036,30 +1068,30 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 switch (node?.group) { // nullチェック付き
                     case "0": // 自分で考えた要約に関するノードの場合
                         node_color = 'red';
-                        console.log("Group is '0', setting color to red");
+                        //console.log("Group is '0', setting color to red");
                         break;
                     case "1": // 議論内での発言ノードの場合
                         node_color = 'green';
-                        console.log("Group is '1', setting color to green");
+                        //console.log("Group is '1', setting color to green");
                         break;
                     default: // その他
-                        console.log("Group does not match, using default color");
+                        //console.log("Group does not match, using default color");
                         break;
                 }
 
                 // "done"が設定されている場合は色をgrayに変更
                 if (node.done === "done") {
                     node_color = 'gray'; // "done"の場合は強制的に灰色に
-                    console.log("Node is 'done', setting color to gray");
+                    //console.log("Node is 'done', setting color to gray");
                 }
 
                 // "done"がnullまたは進行中の場合
                 else if (node.done === null) {
-                    console.log("Node is 'null', progressing...");
+                    //console.log("Node is 'null', progressing...");
                 }
 
                 // 設定されたnode_colorをノードに適用
-                console.log("Node Color to be set:", node_color);
+                //console.log("Node Color to be set:", node_color);
                 this.nodes.update({
                     id: movedNodeId,
                     color: { background: node_color },
@@ -1389,12 +1421,12 @@ class RecordForestMRN{
                 node_update_thing2: node_update_thing2
             },
             success: function(response) {
-                console.log("Server response:", response);
+                //console.log("Server response:", response);
                 try {
                     const parsedResponse = JSON.parse(response); // JSONレスポンスの解析を試みる
                     console.log("Parsed response:", parsedResponse);
                 } catch (error) {
-                    console.error("Failed to parse response as JSON:", error);
+                    //console.error("Failed to parse response as JSON:", error);
                 }
             },
             error: function(xhr, status, error) {
@@ -1420,7 +1452,7 @@ class RecordForestMRN{
                 delete_thing: 'edge'
             },
             success: function(response) {
-                console.log("サーバーの応答:", response); // サーバーからの応答を表示
+                console.log("エッジのサーバーの応答:", response); // サーバーからの応答を表示
                 if (response === "success") {
                     console.log("エッジ削除が成功しました");
                 } else {
@@ -1546,16 +1578,25 @@ const getLatestMapID = (callback) => {
 
 
 //ここを編集して，活動ログを表示する．
-// 発言を発言エリアにdivとして表示
-const makeUtteranceNodeInList = (utter_id, timestamp, utter_content, act) => {
-    // 左側の発話ノードのリストのところのノードのDOMを構成する
+const makeLog = (utter_id, timestamp, utter_content, act,type) => {
+    console.log("makeLog called with arguments:", { 
+        utter_id, 
+        timestamp, 
+        utter_content, 
+        act,
+        type
+    });
+
     let backColor = "gray";
-    if(act === "edit"){
+    if (act === "edit") {
         backColor = '#e1e7e3';
-    }else if(act != "edit"){
+        console.log("Action is 'edit', backColor set to:", backColor);
+    } else {
         backColor = '#a1b3a5';
+        console.log("Action is not 'edit', backColor set to:", backColor);
     }
-    return $(`(<div id="${utter_id}"
+
+    const logNode = $(`(<div id="${utter_id}"
                  style='border: solid 2px #000; 
                  font-size: 13px; 
                  line-height: 15px; 
@@ -1565,13 +1606,17 @@ const makeUtteranceNodeInList = (utter_id, timestamp, utter_content, act) => {
                  margin-bottom: 5px; 
                  padding: 2px;'
 
-                 class='utter_node_in_list'￥
+                 class='utter_node_in_list'
                  utterance='${utter_content}'
                  timestamp='${timestamp}'
             >
                <!-- もし，Mouseoverとかの処理がノードの色をつけ変えるだけの話なら，JSじゃなくてCSSのover擬似クラスで処理するようにする -->
                【${timestamp}：${act}】<br>${utter_content}：<br>${utter_content}
             </div>`);
+
+    console.log("Generated logNode HTML:", logNode);
+
+    return logNode;
 }
 
 
@@ -1580,23 +1625,26 @@ const makeUtteranceNodeInList = (utter_id, timestamp, utter_content, act) => {
 window.addEventListener("textSendEvent", (event) => {
     console.log("[object-network.js] カスタムイベントを受信しました:", event);
 
-    const receivedTimestamp = event.detail.timestamp; // timestampを取得
+    const now = new Date();
+    // 年/月/日 時:分:秒 形式でフォーマット
+    const receivedTimestamp = `${now.getMonth() + 1}月${now.getDate()}日 ${now.getHours()}時${now.getMinutes()}分${now.getSeconds()}秒`;
     const receivedNodeText = event.detail.nodeTEXT; // nodeTEXTを取得
-    console.log("[object-network.js] 受信したtimestamp:", receivedTimestamp);
-    console.log("[object-network.js] 受信したnodeTEXT:", receivedNodeText);
+    const receivedNodeAct = event.detail.nodeACT; // nodeTEXTを取得
+    const receivedNodeType = event.detail.nodeTYPE; // nodeTEXTを取得
+    console.log("[object-network.js] 受信したtimestamp:", receivedTimestamp, receivedNodeText, receivedNodeAct,receivedNodeType);
 
     try {
         // DOMを生成して挿入
-        console.log("[object-network.js] DOM生成を開始します。");
-        const utter_dom = makeUtteranceNodeInList(1245, receivedTimestamp, receivedNodeText, "edit");
-        console.log("[object-network.js] 生成されたDOM:", utter_dom);
+        // console.log("[object-network.js] DOM生成を開始します。");
+        const utter_dom = makeLog(receivedTimestamp, receivedNodeText, receivedNodeAct,receivedNodeType);
+        // console.log("[object-network.js] 生成されたDOM:", utter_dom);
 
         const target_area = $(`#utterance_area2`);
-        console.log("[object-network.js] 挿入対象エリア:", target_area);
+        // console.log("[object-network.js] 挿入対象エリア:", target_area);
 
         if (target_area.length > 0) {
             target_area.prepend(utter_dom); // 一番上に挿入
-            console.log("[object-network.js] DOMを挿入しました。");
+            // console.log("[object-network.js] DOMを挿入しました。");
         } else {
             console.warn("[object-network.js] 挿入対象エリアが見つかりません。");
         }
@@ -1616,10 +1664,6 @@ const displayUtteranceNodeInList = (display_target_area_id, target_reflection_ti
     const timedisplay_area = $(`#timedisplay`); // 発話ノードの議論内での時間を表示するエリア
     getDiscussionMapDataFromDB(target_reflection_time, null, (utterance_list_info) => {
         //データの取得と挿入
-        utterance_list_info.utterance.map(u => {
-            const utter_dom = makeUtteranceNodeInList(testUtterId, testTimestamp, testUtterContent, testAct);
-            target_area.append(utter_dom); // 挿入            
-        });
         for(var i=0; i<utterance_list_info.document.length; i++){
             defaultForestMRN.addmaterialNode(utterance_list_info.document[i].content_id, utterance_list_info.document[i].content);
             document.getElementById("labelselect").style.display = "none";
@@ -1741,13 +1785,13 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
         // データの取得と挿入
         utterance_list_info.objectLog.map(u => {
             // 関数呼び出し前のデバッグログ
-            // console.log(`makeUtteranceNodeInListに渡すデータ:
+            // console.log(`makeLogに渡すデータ:
             //     node_id: ${u.node_id},
             //     timestamp: ${u.timestamp},
             //     text: ${u.text},
             //     act: ${u.act}`);
         
-            const utter_dom = makeUtteranceNodeInList(u.node_id, u.timestamp, u.text, u.act);
+            const utter_dom = makeLog(u.timestamp, u.text, u.act, u.type);
         
             // 関数呼び出し後のデバッグログ
             //console.log("生成されたDOM:", utter_dom);
