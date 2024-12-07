@@ -599,6 +599,9 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             },
         });
         window.dispatchEvent(event); // グローバルイベントとして発火
+
+
+        Record_activities(this.selectId, null, "start", "ノードテキストとってきたい．", null, "step", generateUniqueID());
     }
 
     //手段中断ボタン
@@ -615,11 +618,15 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         });
 
         window.dispatchEvent(breakEvent); // グローバルイベントとして発火
+
+        Record_activities(this.selectId, null, "break", "ノードテキストとってきたい．", null, "step", generateUniqueID());
     }
 
     //手段完了ボタン
     step_end() {
         console.log(`step_end() を呼び出しました。選択中のノードID: ${this.selectId}`);  // デバッグ用ログ
+        Record_activities(this.selectId, null, "end", "ノードテキストとってきたい．", null, "step", generateUniqueID());
+
         // ノードの色を灰色に更新
         try {
             this.nodes.update({
@@ -1577,47 +1584,76 @@ const getLatestMapID = (callback) => {
 };
 
 
-//ここを編集して，活動ログを表示する．
-const makeLog = (utter_id, timestamp, utter_content, act,type) => {
+//活動ログを表示する．
+const makeLog = (timestamp, text, act, type) => {
     console.log("makeLog called with arguments:", { 
-        utter_id, 
         timestamp, 
-        utter_content, 
+        text, 
         act,
         type
     });
 
-    let backColor = "gray";
-    if (act === "edit") {
-        backColor = '#e1e7e3';
-        console.log("Action is 'edit', backColor set to:", backColor);
+    // メッセージの内容を決定
+    let message = "";
+    if (type === "goal") {
+        if (act === "add") {
+            message = `<strong>🎯 新しい目標追加</strong>`;
+        } else if (act === "edit") {
+            message = `<strong>🎯 目標設定</strong><br>「${text}」`;
+        }
+    } else if (type === "step") {
+        if (act === "add") {
+            message = `<u>🛠️ 新しい手段追加</u>`;
+        } else if (act === "edit") {
+            message = `<u>🛠️ 手段設定</u><br>「${text}」`;
+        } else if (act === "start") {
+            message = `<u>🟠 手段開始</u><br>「${text}」`;
+        } else if (act === "break") {
+            message = `<u>🔴 手段中断</u><br>「${text}」`;
+        } else if (act === "end") {
+            message = `<u>⚪ 手段終了</u><br>「${text}」`;
+        }
     } else {
-        backColor = '#a1b3a5';
-        console.log("Action is not 'edit', backColor set to:", backColor);
+        console.error("Invalid type:", type);
+        return null; // 不正なtypeの場合、処理を終了
     }
 
-    const logNode = $(`(<div id="${utter_id}"
-                 style='border: solid 2px #000; 
-                 font-size: 13px; 
-                 line-height: 15px; 
-                 background: ${backColor}; 
-                 margin-bottom: 5px; padding: 
-                 2px; padding-left: 2px; 
-                 margin-bottom: 5px; 
-                 padding: 2px;'
+    // 背景色を設定
+    const backColorMap = {
+        add: '#d4edda',    // 緑
+        edit: '#d1ecf1',   // 青
+        start: '#fff3cd',  // オレンジ
+        break: '#f8d7da',  // 赤
+        end: '#f1f3f4'     // 灰色
+    };
+    const backColor = backColorMap[act] || 'gray';
 
+    // ログノードを作成
+    const logNode = $(`(<div id="${timestamp}"
+                 style='border: solid 1px #ccc; 
+                 border-radius: 5px;
+                 font-size: 13px; 
+                 line-height: 1.5; 
+                 background: ${backColor}; 
+                 margin-bottom: 10px; 
+                 padding: 10px;' 
                  class='utter_node_in_list'
-                 utterance='${utter_content}'
-                 timestamp='${timestamp}'
-            >
-               <!-- もし，Mouseoverとかの処理がノードの色をつけ変えるだけの話なら，JSじゃなくてCSSのover擬似クラスで処理するようにする -->
-               【${timestamp}：${act}】<br>${utter_content}：<br>${utter_content}
+                 utterance='${text}'
+                 timestamp='${timestamp}'>
+               <div style="margin-bottom: 5px;">${message}</div>
+               <div style="font-size: 10px; color: #666; text-align: right;">${timestamp}</div>
+               <div style="margin-top: 10px; text-align: right;">
+                   <button onclick="editLog('${timestamp}')" style="margin-right: 5px;">編集</button>
+                   <button onclick="deleteLog('${timestamp}')" style="margin-right: 5px;">削除</button>
+                   <button onclick="viewDetails('${timestamp}')" style="margin-right: 5px;">詳細</button>
+               </div>
             </div>`);
 
     console.log("Generated logNode HTML:", logNode);
 
     return logNode;
 }
+
 
 
 //活動ログを表示する関数を作ってみたよん
@@ -1636,14 +1672,14 @@ window.addEventListener("textSendEvent", (event) => {
     try {
         // DOMを生成して挿入
         // console.log("[object-network.js] DOM生成を開始します。");
-        const utter_dom = makeLog(receivedTimestamp, receivedNodeText, receivedNodeAct,receivedNodeType);
+        const log = makeLog(receivedTimestamp, receivedNodeText, receivedNodeAct,receivedNodeType);
         // console.log("[object-network.js] 生成されたDOM:", utter_dom);
 
         const target_area = $(`#utterance_area2`);
         // console.log("[object-network.js] 挿入対象エリア:", target_area);
 
         if (target_area.length > 0) {
-            target_area.prepend(utter_dom); // 一番上に挿入
+            target_area.prepend(log); // 一番上に挿入
             // console.log("[object-network.js] DOMを挿入しました。");
         } else {
             console.warn("[object-network.js] 挿入対象エリアが見つかりません。");
@@ -1791,12 +1827,12 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
             //     text: ${u.text},
             //     act: ${u.act}`);
         
-            const utter_dom = makeLog(u.timestamp, u.text, u.act, u.type);
+            const log = makeLog(u.timestamp, u.text, u.act, u.type);
         
             // 関数呼び出し後のデバッグログ
-            //console.log("生成されたDOM:", utter_dom);
+            console.log("生成されたDOM:", u.timestamp, u.text, u.act, u.type);
         
-            target_area.append(utter_dom); // 挿入            
+            target_area.append(log); // 挿入            
         });
         
     }).then(() => {
