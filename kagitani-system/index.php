@@ -211,13 +211,55 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                     <!--  kagitani　-->
                 <div id="object_container" oncontextmenu="return false;" >
                         <div id="utterance_area">
-                            <div id="rclick2">
-                                <!-- <div id="timedisplay"></div> -->
-                                <button class="a_button" id="zoom-out-button" onclick="zoomOut();">
-                                活動ログ一覧
-                                </button>
-                                <div id="rclick"></div>
+                        <button id="a_button" onclick="openFilterModal()">活動ログフィルタ</button>
+
+                           <!-- モーダルウィンドウ -->
+                            <div id="filter-modal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close" onclick="closeFilterModal()">&times;</span>
+                                    <h2>活動ログのフィルタ</h2>
+
+                                     <!-- 開始日と終了日の選択 -->
+                                    <div class="filter-item date-range">
+                                        <div class="date-picker-wrapper">
+                                            <label for="filter-start-date">開始日</label>
+                                            <input type="date" id="filter-start-date" class="date-picker">
+                                        </div>
+
+                                        <div class="date-picker-wrapper">
+                                            <label for="filter-end-date">終了日</label>
+                                            <input type="date" id="filter-end-date" class="date-picker">
+                                        </div>
+                                    </div>
+
+                                    <!-- 使用マップフィルタ -->
+                                    <div class="filter-item">
+                                        <label for="filter-map">使用マップ</label>
+                                        <select id="filter-map">
+                                            <option value="">選択してください</option>
+                                            <option value="map1">マップ1</option>
+                                            <option value="map2">マップ2</option>
+                                            <option value="map3">マップ3</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- 手段開始のみ表示 -->
+                                    <div class="filter-item">
+                                        <label for="filter-start">手段開始のみ表示</label>
+                                        <input type="checkbox" id="filter-start">
+                                    </div>
+
+                                    <!-- 手段終了のみ表示 -->
+                                    <div class="filter-item">
+                                        <label for="filter-end">手段終了のみ表示</label>
+                                        <input type="checkbox" id="filter-end">
+                                    </div>
+
+                                    <!-- フィルタを適用するボタン -->
+                                    <button class="filter_button" onclick="applyFilters();">フィルタを適用</button>
+                                </div>
                             </div>
+
                             <div id="utterance_area2">
                             </div>
                         </div>

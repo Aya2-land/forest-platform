@@ -1647,6 +1647,81 @@ const makeLog = (timestamp, text, act, type) => {
     return logNode;
 }
 
+function openFilterModal() {
+    document.getElementById("filter-modal").style.display = "block";
+}
+
+function closeFilterModal() {
+    document.getElementById("filter-modal").style.display = "none";
+}
+
+//フィルタを書ける関数，一旦仮．
+function applyFilters() {
+    // 活動日付の範囲を取得
+    var startDate = document.getElementById('filter-start-date').value;
+    var endDate = document.getElementById('filter-end-date').value;
+
+    // 使用マップの選択
+    var map = document.getElementById('filter-map').value;
+
+    // 手段開始・終了のチェックボックス状態を取得
+    var start = document.getElementById('filter-start').checked;
+    var end = document.getElementById('filter-end').checked;
+
+    // 活動日付の範囲を選択していない場合のエラーチェック
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+        alert("終了日は開始日以降の日付を選択してください。");
+        return; // 逆転した範囲を適用しないように
+    }
+
+    console.log('開始日:', startDate);
+    console.log('終了日:', endDate);
+    console.log('マップ:', map);
+    console.log('手段開始:', start);
+    console.log('手段終了:', end);
+
+    // フィルタ処理（ログのデータをフィルタリング）
+    
+    // モーダルを閉じる
+    closeFilterModal();
+}
+
+function filterLogs(logs, startDate, endDate) {
+    return logs.filter(log => {
+        var logDate = new Date(log.date);
+        var start = startDate ? new Date(startDate) : null;
+        var end = endDate ? new Date(endDate) : null;
+
+        // 開始日と終了日の範囲内でログがあるか確認
+        if (start && logDate < start) return false;
+        if (end && logDate > end) return false;
+        return true;
+    });
+}
+
+
+// ログを表示するための関数（サンプル）
+function displayLogs(logs) {
+    const container = document.getElementById('activity-log-container');
+    container.innerHTML = ""; // 現在のログをクリア
+
+    if (logs.length === 0) {
+        container.innerHTML = "条件に一致するログはありません。";
+    } else {
+        logs.forEach(log => {
+            const logElement = document.createElement('div');
+            logElement.textContent = JSON.stringify(log); // ログを表示（JSON形式で）
+            container.appendChild(logElement);
+        });
+    }
+}
+
+// サンプルデータ（実際のデータに置き換えてください）
+const activityLogs = [
+    { date: '2024-12-09', map: 'map1', start: '08:00', end: '12:00' },
+    { date: '2024-12-10', map: 'map2', start: '09:00', end: '13:00' },
+    // 他のログデータ...
+];
 
 
 //活動ログを表示する関数を作ってみたよん
