@@ -55,9 +55,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<!-- ここから大槻修正 -->
 <html lang="en">
-    <!-- ここまで大槻修正 -->
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -85,6 +83,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/change_tab.js"></script>
         <script type="text/javascript" src="./js/vis-network.min.js"></script>
         <script type="text/javascript" src="js/show_objectMap.js"></script>
+        <script type="text/javascript" src="js/horizontal.js"></script>
         <!-- <script type="text/javascript" src="./js/meeting-reflection-network.js"></script> -->
         <link rel="stylesheet" type="text/css" href="css/meeting-reflection-network.css" />
         <script type="text/javascript">
@@ -101,38 +100,22 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
             </form>
         </div>
         <!---          タイトルメニューFinish              -->
-
-        <!--      タブメニュー Start        -->
-        <ul div class="tabnav">
-            <li class="active"><a href="#tab01">思考整理支援システム</a></li>
-            <!-- <li><a href="#tab02">過去のマインドマップ</a></li>
-                 <li class="active"><a href="#tab03" >リフレクション</a></li>
-                 <li class="active"><a href="#record_tab" >履歴</a></li> -->
-            <li class="active"><a href="#tab04">過去のマインドマップ</a></li>  <!--hatakeyama-->
-        </ul>
-        <!-- タブメニュー　Finish -->
         
         <div class="Menu">
             <!--サイドメニュー　start-->
             <div id="side_menu">
+                <div class="checkbox">
+                    <form name="target_mode" action="">
+                        <select class="cp_ipselect2 cp_sl02"name="Select1">
+                            <option>二分割モード</option>
+                            <option>思考整理マップ</option>
+                            <option>手段目標マップ</option>
+                        </select>
+                        <input type="button" class="button3" value="実行" onclick="ModeChangeButtonClick();" />
+                    </form>
+                </div>
                 <!-- マインドマップ編集のサイドメニュー -->
                 <div id="mind">
-                    <!--ここから大槻修正-->
-                    <div id = "feedback_area" style="display: none">
-                        <div id = "ontology_feedback"></div>
-                        <div id = "accordion_discussion"></div>
-                        <input id = "feedbackrecord" type="button" value="記録">
-                    </div>
-                    <div id="xml_upload_area" style="display: none">
-                        <form id="uploadForm" enctype="multipart/form-data">
-                            <div style="font-size: 15px;">XMLファイルを選んでください</div>
-                            <input type="file" name="xmlFile" id="meetingUtteranceXmlFileUploader" accept=".xml">
-                        </form>
-                        <button id="discussion_log_xml_file_upload_button">アップロード</button>
-                        <div id="uploaded_meeting_utterance_xml_concent_display_area" style="display: none"></div>
-                    </div>
-                    <!--ここまで大槻修正-->
-
                     <div class="toi_list" style="display: flex; justify-content: center; align-items: center;">
                         <div id="mind_all" style="margin-right: 10px;">
                             <input class="button5" type="button" onclick="showGeneration();" value="問い一覧">
@@ -164,17 +147,6 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             <!-- 目標がここに表示されます -->
                         </div>
                     </div>
-
-                    <!-- この部分を消したら，問い一覧が消えてしまう．不思議だなあ． -->
-                    <div id='node_slide'>
-                        <!-- <input id="finish_btn" class="presen-btn" type="button" value="資料作成終了" onclick="macrolevel_xmlLoad();"> -->
-                        <input id="output_file" class="presen-btn" type="button" value="資料構成出力" onclick="OutputFile();">
-                        <button id="input_btn" class="presen-btn">資料構成復元</button>
-                        <input id="input_file" type="file" onclick="InputFile()" >
-                    </div>
-                    <div id='document_slide'>
-                        <input id="finish_btn" class="presen-btn" type="button" value="資料作成終了" onclick="OutputFileS();">
-                    </div>
                 </div> <!-- mind fin -->
 
                 <!--サイドメニュー　finish-->
@@ -182,24 +154,21 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
 
         </div>
 
-        <div class="checkbox">
+        <!-- <div class="checkbox">
             <form name="target_mode" action="">
                 <select class="cp_ipselect2 cp_sl02"name="Select1">
-                    <option>目標管理モード</option>
-                    <option>自己内対話モード</option>
-                    <option>資料構成作成モード</option>
-                    <option>資料作成モード</option>
-                    <option>議論内省マップモード</option>
+                    <option>二分割モード</option>
+                    <option>思考整理マップ</option>
+                    <option>手段目標マップ</option>
                 </select>
                 <input type="button" class="button3" value="実行" onclick="ModeChangeButtonClick();" />
             </form>
-            
-        </div>
+        </div> -->
 
         <!--メインメニュー　Start  -->
         <div class="tabcontent">
             <!-- 思考整理支援システム -->
-            <div id="tab01">
+            <div id="forestTab">
                 <div id="layout">
                     <div id="jsmind_nav">
                         <div style="text-align: left">
@@ -238,8 +207,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             </ul>
                         </div>
                     </div>
+                </div>
                     <!--  kagitani　-->
-                    <div id="object_container" oncontextmenu="return false;" >
+                <div id="object_container" oncontextmenu="return false;" >
                         <div id="utterance_area">
                             <div id="rclick2">
                                 <!-- <div id="timedisplay"></div> -->
@@ -283,84 +253,14 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             <div id="tooltip" style="position: absolute; display: none; padding: 10px; background: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">
                                 吹き出しの内容
                             </div>
-
-                            <div id="labelselect">
-                                <select id="selectionlist" size="3">
-                                </select>
-                                <input type="button" value="選択完了" id="ontology_select">
-                            </div>
-                            <div id="recruitselect">
-                                <select id="recruitselectionlist">
-                                    <option value="採用">採用</option>
-                                    <option value="棄却">棄却</option>
-                                </select>
-                                <input type="button" value="選択完了" id="recruit_select">
-                            </div>
                             <div id="mynetwork"></div>
                         </div>
-                    </div>
+                </div>
                     <!--  kagitani　-->
-                </div>
+                
             </div><!--layout fin-->
-
-            <!--  tab04メニュー　　hatakeyama　　-->
-            <div id="tab04">
-                <div id="layout">
-                    <div id="jsmind_nav2">
-                        <div class ="mt_timing">
-                            <!-- 時刻入力で過去のマップ表示 -->
-                            <!-- ここから大槻修正 -->
-                            <div id="timeselect">
-                                <select id="selectiontime">
-                                </select>
-                                <input id="past_time_select_button" type="button" value="選択完了">
-                            </div>
-                            <!-- ここまで大槻修正 -->
-                        </div>
-                    </div>
-                    <!-- ここから大槻修正 -->
-                    <div id="jsmind_container4">
-                        <!-- ここまで大槻修正 -->
-                        <!-- 過去のマインドマップを表示する部分 -->
-                        <div id="jsmind_container2"></div>
-                        <!--<div>過去のオントロジー</div>-->
-                        <!-- </div> -->
-                        <!-- 現在のマインドマップのコピー -->
-                        <div id="jsmind_container3"></div>
-                        <!-- ここから大槻修正 -->
-                    </div>
-                    <div id="mynetwork_show"></div>
-                    <!-- ここまで大槻修正 -->
-                </div>
-            </div>
-
-            <!-- リフレクション　yoshioka -->
-            <div id="tab03">
-                <div id="layout">
-                    <div id="reflection_container">
-                        <form id ="ref_peri" class="ref_peri" method = "post" acion="">
-                            <p>リフクション期間を設定してください</p>
-                            <label><input id="ref_c2" type="radio" name="ref_per" value="today" onclick="riflection_period2();" checked/>本日分のリフレクション</label>
-                            <br>
-                            <br>
-                            <label><input id="ref_c" type="radio" name="ref_per" value="select" onclick="riflection_period();"/>リフレクション期間を指定する</label>
-                            <br>
-                            <input id="reflection_period" name="start_date" type="date" disabled="disabled"/>から<input id="reflection_period2" name="finish_date" type="date" disabled="disabled"/>
-                            <br>
-                            <br>
-                            <span><input id="reflection_btn" type="button" onclick="activity_reflection();" value="リフレクション開始" /></span>
-                        </form>
-                        <form id ="reflection_form" class="ref_form" method = "post" action = "php/record_reflection.php" ></form>
-                    </div>
-                </div>
-            </div>
-            <!--リフレクション終了 yoshioka -->
         </div>
         <!-- メインメニュー　Finish -->
-
-        <div id="macro_feedback_area">
-        </div>
-
 
         <script type="text/javascript" src="js/second_advice.js"></script>
         <script type="text/javascript" src="js/mindmap.js"></script>

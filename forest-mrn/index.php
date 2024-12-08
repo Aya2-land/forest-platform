@@ -509,7 +509,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                 <div id="timedisplay"></div>
                                 <div id="rclick"></div>
                             </div>
-                            <div id="utterance_area2">
+                            <div id="objectLog_area">
                             </div>
                         </div>
                         <div id="mynetwork2">

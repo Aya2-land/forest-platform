@@ -216,14 +216,14 @@ function ShowNodeVersionLog(array){ //arrayはノードバージョン最新順
 
         var atag = document.createElement("a");
         var tab04 = document.getElementById('tab04');
-        var tab01 = document.getElementById('tab01');
+        var forestTab = document.getElementById('forestTab');
         atag.href = "#";
         atag.id = "atag" + i;
 
         function atagClicked(e){  //なんでこれでできるかわからんができたー！！
-        // tab01.style.display = "none";  //下とどっちでも良さげ
+        // forestTab.style.display = "none";  //下とどっちでも良さげ
         // tab04.style.display = "block";
-        $("#tab01").hide().fadeOut(); //フェードではない
+        $("#forestTab").hide().fadeOut(); //フェードではない
         $("#tab04").show().fadeIn();
         // $('.tabnav a:first').removeClass('active');
         // $(tab04).addClass('active');  //できてない
@@ -236,7 +236,7 @@ function ShowNodeVersionLog(array){ //arrayはノードバージョン最新順
         // $(function() {
         //   $("#"+atag.id).on("click", function() {
         //   console.log("!!");
-        //     $("#tab01").hide();
+        //     $("#forestTab").hide();
         //     $("#tab04").show();
         //   });
         // });

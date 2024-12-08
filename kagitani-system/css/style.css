@@ -194,51 +194,141 @@ table[type] {
 /* タブので切り替わる要素 */
 /* 親はvh,子は親を参照する％ */
 .tabcontent{
-	width:100vw;
+	width:calc(100% - 200px); 
 	/* min-width: 765px; */
 	height:calc(100vh - 200px);
 	/* (タイトルメニューの高さの分引く)　*/
-
 }
 
 /* 思考整理支援システム */
-#tab01 {
-	width:100%;
+#forestTab {
+	width:98%;
 	height: 100%;
+	display: grid; /* グリッドレイアウト */
+	grid-template-columns: 1fr 1fr; 
+	gap: 0;
 }
 
-/* #layout{
-	height:100%;
-} */
+#layout{
+	width:100%;
+	grid-column: 1; 
+}
 
 /* 「問いノード追加」等のボタンがある箇所 */
 #jsmind_nav {
-	width: calc(100vw - 350px);
-	min-width: 450px;
+	width: 100%;
+	min-width: 300px;
 	height:37px;
-	display: inline;
+	/* display: inline; */
 	font-size: 1em;
 	border:solid 5px #ccc;
 	margin: 0;
 	overflow-x: auto;
-	overflow-y: visible;
+	overflow-y: auto;
 	float:left;
 }
 
-/* 文書化モードのチェックボックス */
+/* マインドマップを表示する枠の設定 */
+#jsmind_container{
+	resize: horizontal; /* 横幅のリサイズを許可 */
+	width:100%;
+	min-width: 300px;
+	/* height:75vh; */
+	height:113%;
+	/* 元は75 */
+	min-height: 450px;
+	margin-bottom:2vh;
+	border:solid 5px #ccc;
+	background:#F0F0F0;
+	overflow: scroll;
+	float:left;
+}
+
+
+/*kagitani*/
+#object_container{
+	grid-column: 2; 
+	width: calc((100vw - 280px)*0.6);
+	min-width: 300px;
+	height:121%;
+	min-height: 450px;
+	border:solid 5px #c5c3c3;
+	background:#fff;
+	/* overflow: auto; */
+	float:left;
+	display: flex; /* 横並びにする */
+}
+#myobject{
+	resize: horizontal; /* 横幅のリサイズを許可 */
+	width: calc((100vw - 250px)*0.45);
+	min-width: 300px;
+	height:99%;
+	min-height: 450px;
+	margin-bottom:2vh;
+	border:solid 5px #c5c3c3;
+	background:#fff;
+	overflow: auto;
+}
+#utterance_area{
+	width: calc((100vw - 350px)*0.15);
+	min-width: 100px;
+	height:100%;
+	min-height: 450px;
+	margin-bottom:2vh;
+	background:#c6deff;
+	overflow-y: scroll;
+	/* float:left; */
+}
+#utterance_area2{
+	width: calc((100vw - 350px)*0.15);
+	min-width: 100px;
+	margin-bottom:2vh;
+	border:solid 5px #cccccc00;
+	background:#c6deff;
+	overflow-y: scroll;
+	float:left;
+	line-height:20px;
+	cursor: pointer;
+}
+#mynetwork {
+	position: relative;
+	width: calc((100vw - 270px)*0.45);
+	min-width: 300px;
+	height:113%;
+	min-height: 450px;
+	margin-bottom:2vh;
+	border:solid 0.5px #000000;
+	background:#fff;
+	overflow: auto;
+	/* float:left; */
+}
+
 .checkbox {
+    margin-bottom:0px; /* チェックボックスとその下の要素の間隔を調整 */
+}
+
+.checkbox select {
+    width: 135px; /* 適宜調整 */
+	height: 28px; /* 縦の幅を調整 */
+    padding: 5px; /* 内側の余白 */
+    font-size: 0.9em; /* フォントサイズを調整 */
+    border: 1px solid #ccc; /* 枠線 */
+    border-radius: 4px; /* 角丸 */
+    background-color: #f9f9f9; /* 背景色 */
+    box-sizing: border-box; /* 幅計算に枠と余白を含む */
+}
+
+
+/* 文書化モードのチェックボックス */
+/* .checkbox {
 	float: right;
 	width: 280px;
 	font-size: 20px;
 	vertical-align: middle;
 	margin-right: 0px;
 	margin-top:15px;
-	margin-bottom:0px;
-}
-
-
-
-
+	margin-bottom:10px;
+} */
 
 /* 通常のチェックボックスの削除 */
 input[type="checkbox"][name="check"]{
@@ -364,21 +454,6 @@ input:checked+label::after {
     transform: translateY(4px);
     box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);
     border-bottom: none;
-}
-
-/* マインドマップを表示する枠の設定 */
-#jsmind_container{
-	width: calc(100vw - 350px);
-	min-width: 300px;
-	/* height:75vh; */
-	height:100%;
-	/* 元は75 */
-	min-height: 450px;
-	margin-bottom:2vh;
-	border:solid 5px #ccc;
-	background:#F0F0F0;
-	overflow: scroll;
-	float:left;
 }
 
 /* マインドマップ上で右クリックしたときのメニュー */
@@ -543,112 +618,15 @@ h3 {
 	border: solid 1px #7f8080;
 }
 
-
-/* ドキュメントエリア内で右クリックしたときのメニュー */
-#document_area_conmenu{
-	width:160px;
-	background-color:#ffffff;
-	border:2px solid #999999;
-	  border-radius: 10px;
-	display:none;
-	position:fixed;
-	  z-index: 1000;
-	  text-align: center;
-}
-#document_area_conmenu.on{
-  display:block;
-}
-#document_area_conmenu ul{
-  list-style:none;
-  margin:0px;
-  padding:5px;
-}
-#document_area_conmenu li:hover{
-	background-color: #CCFFFF;
-}
-/* ドキュメントエリア内で右クリックしたとき[ノード2個選択時]のメニュー */
-#document_area_conmenu2{
-	width:auto;
-	min-width: 350px;
-	padding: 5px;
-	background-color:#f0f0f0;
-	border:2px solid #999999;
-	  border-radius: 10px;
-	display:none;
-	position:fixed;
-	z-index: 1000;
-	text-align: center;
-}
-#document_area_conmenu2.on{
-  display:block;
-}
-#document_area_conmenu2 ul{
-  list-style:none;
-  margin:0px;
-  padding:5px;
-}
-#document_area_conmenu2 li:hover{
-	background-color: #CCFFFF;
-}
-
-/* スライドに関係性を設定するためのメニュー */
-#document_area_conmenu3{
-	width:auto;
-	min-width: 350px;
-	padding: 5px;
-	background-color:#f0f0f0;
-	border:2px solid #999999;
-	  border-radius: 10px;
-	display:none;
-	position:fixed;
-	z-index: 1000;
-	text-align: center;
-}
-#document_area_conmenu3.on{
-  display:block;
-}
-#document_area_conmenu3 ul{
-  list-style:none;
-  margin:0px;
-  padding:5px;
-}
-#document_area_conmenu3 li:hover{
-	background-color: #CCFFFF;
-}
-
-/* スライドに関係性を設定するためのメニュー */
-#document_area_conmenu4{
-	width:auto;
-	min-width: 350px;
-	padding: 5px;
-	background-color:#f0f0f0;
-	border:2px solid #999999;
-	  border-radius: 10px;
-	display:none;
-	position:fixed;
-	z-index: 1000;
-	text-align: center;
-}
-#document_area_conmenu4.on{
-  display:block;
-}
-#document_area_conmenu4 ul{
-  list-style:none;
-  margin:0px;
-  padding:5px;
-}
-#document_area_conmenu4 li:hover{
-	background-color: #CCFFFF;
-}
 /* -------------------- サイドメニューの設定 ---------------------- */
 /*　サイドメニュー全体の設定　*/
 #side_menu{
-	width: 280px;
+	width: 200px;
 	/* height: 75vh; */
-	height: 50%;
-	min-height: 450px;
+	height: 40%;
+	min-height: 400px;
 	float:right;
-  background: #F0F0F0;
+  	background: #F0F0F0;
 	z-index: 1000;
 	/* margin-right: 1vw; */
 }
@@ -876,7 +854,7 @@ h3 {
 }
 /* 問い一覧の全体 */
 #side_menu .inquiry_area {
-	height: 47vw;
+	height: 44vw;
 	overflow-y: auto;
 	border:solid 5px #ccc;
 	margin-bottom: 30px;
@@ -1067,134 +1045,6 @@ h3 {
 	font-family: 'Noto Sans JP', sans-serif;
 }
 
-/* -------------------- 過去のマインドマップ表示の設定 ---------------------- */
-#jsmind_nav2 {
-	width: calc(100vw - 350px);
-	min-width: 450px;
-	height:37px;
-	display: inline;
-	font-size: 1em;
-	border:solid 5px #ccc;
-	margin: 0;
-	overflow-x: auto;
-	overflow-y: visible;
-	float:left;
-}
-
-
-/* 過去のMT時間一覧のリストの設定 */
-select[name="mttime_list"] {
-  width: 20vw;
-	min-width: 300px;
-  height: 35px;
-  line-height: 30px;
-	font-size:1.5em;
-}
-
-/* ここから畠山さんver */
-/* 過去のマインドマップを表示するエリア */
-/* #jsmind_container2{
-		width: calc(100vw - 350px);
-		min-width: 300px;
-		height:70vh;
-		min-height: 450px;
-		margin-bottom:2vh;
-		border:solid 5px #ccc;
-		background:#fff;
-		overflow: scroll;
-		float:left;
-	} */
-
-/* 過去のマインドマップを表示するエリア */
-/* #jsmind_container3{
-		display: none;
-		width: 30vw;
-		min-width: 300px;
-		height:70vh;
-		min-height: 450px;
-		margin-bottom:2vh;
-		border:solid 5px #ccc;
-		background:#fff;
-		overflow: scroll;
-		float:left;
-	} */
-/* ここまで畠山さんver *
-
-/*ここから大槻修正*/
-/* 過去のマインドマップを表示するエリア */
-#jsmind_container4{
-	width: calc((100vw - 350px)*0.5);
-	min-width: 300px;
-	height:70vh;
-	min-height: 450px;
-	margin-bottom:2vh;
-	border:solid 5px #ccc;
-	background:#fff;
-	overflow: scroll;
-	float:left;
-}
-
-/* 過去のマインドマップ（上）を表示するエリア */
-#jsmind_container2{
-	width: calc((100vw - 350px)*0.5);
-	min-width: 300px;
-	height:35vh;
-	min-height: 225px;
-	margin-bottom:2vh;
-	border:solid 5px #ccc;
-	background:#fff;
-	overflow: scroll;
-	float:left;
-}
-
-/* 過去のマインドマップ（下）を表示するエリア */
-#jsmind_container3{
-	width: calc((100vw - 350px)*0.5);
-	min-width: 300px;
-	height:35vh;
-	min-height: 225px;
-	margin-bottom:2vh;
-	border:solid 5px #ccc;
-	background:#fff;
-	overflow: scroll;
-	float:left;
-}
-/*議事録マップ表示*/
-#mynetwork_show{
-	width: calc((100vw - 350px)*0.5);
-	min-width: 300px;
-	height:70vh;
-	min-height: 450px;
-	margin-bottom:2vh;
-	border:solid 5px #c5c3c3;
-	background:#fff;
-	overflow: auto;
-	float:left;
-}
-/*kagitani*/
-#object_container{
-	width: calc((100vw - 350px)*0.6);
-	min-width: 300px;
-	height:70vh;
-	min-height: 450px;
-	margin-bottom:2vh;
-	border:solid 5px #c5c3c3;
-	background:#fff;
-	overflow: hidden;
-	float:left;
-	display: none;
-}
-#myobject{
-	width: calc((100vw - 350px)*0.45);
-	min-width: 300px;
-	height:70vh;
-	min-height: 450px;
-	margin-bottom:2vh;
-	border:solid 5px #c5c3c3;
-	background:#fff;
-	overflow: auto;
-}
-
 /*ネットワーク*/
 #network_container{
 	width: calc((100vw - 350px)*0.6);
@@ -1227,37 +1077,6 @@ select[name="mttime_list"] {
 	width: calc((100vw - 350px)*0.15);
 	height:80px;
 	background:#c6deff;
-}
-#utterance_area{
-	width: calc((100vw - 350px)*0.15);
-	min-width: 100px;
-	height:70vh;
-	min-height: 450px;
-	margin-bottom:2vh;
-	background:#c6deff;
-	overflow-y: scroll;
-}
-#utterance_area2{
-	width: calc((100vw - 350px)*0.15);
-	min-width: 100px;
-	margin-bottom:2vh;
-	border:solid 5px #cccccc00;
-	background:#c6deff;
-	overflow-y: scroll;
-	float:left;
-	line-height:20px;
-	cursor: pointer;
-}
-#mynetwork {
-	position: relative;
-	width: calc((100vw - 350px)*0.45);
-	min-width: 300px;
-	height:70vh;
-	min-height: 450px;
-	margin-bottom:2vh;
-	border:solid 0.5px #000000;
-	background:#fff;
-	overflow: auto;
 }
 
 /*ここまで大槻修正*/

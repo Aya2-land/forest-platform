@@ -226,7 +226,7 @@ table[type] {
 }
 
 /* 文書化モードのチェックボックス */
-.checkbox {
+/* .checkbox {
 	float: right;
 	width: 280px;
 	font-size: 20px;
@@ -234,16 +234,12 @@ table[type] {
 	margin-right: 0px;
 	margin-top:15px;
 	margin-bottom:0px;
-}
-
-
-
-
+} */
 
 /* 通常のチェックボックスの削除 */
-input[type="checkbox"][name="check"]{
+/* input[type="checkbox"][name="check"]{
    display: none;
- }
+ } */
 
 /* アニメーションの設定 */
 input+label,
@@ -1137,7 +1133,7 @@ select[name="mttime_list"] {
 	background:#c6deff;
 	overflow-y: scroll;
 }
-#utterance_area2{
+#objectLog_area{
 	width: calc((100vw - 350px)*0.15);
 	min-width: 100px;
 	margin-bottom:2vh;

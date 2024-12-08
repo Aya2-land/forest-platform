@@ -905,14 +905,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             //console.log("手段追加ボタンを無効化します。");
             document.getElementById("mrnb_addStep").disabled = true; // 手段追加ボタンを無効化
         }
-
-
         //他のところクリックしたら色直す
-        document.getElementById("ontology_feedback").innerHTML = "";
-        const feedbackarea = document.getElementsByClassName("accordion-item");
-        for(var i=0; i<feedbackarea.length; i++){
-            feedbackarea[i].style.display = "none";
-        }
         if(this.jmindex != []){
             const jmnode = document.getElementsByTagName("jmnode");
             this.jmindex.map((n) => {

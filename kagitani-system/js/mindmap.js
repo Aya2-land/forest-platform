@@ -1133,19 +1133,24 @@ function CheckClick(){
 function ModeChangeButtonClick() {
   const selindex = document.target_mode.Select1;
   const num = selindex.selectedIndex;
-  var ModeLabel = ["目標設定モード","自己内対話モード","資料構成作成モード","資料作成モード","議論内省マップモード"]
+  var ModeLabel = ["二分割モード","思考整理マップ","手段目標マップ"]
 
   console.log(num);
   console.log(ModeLabel);
   target = document.getElementById("output");
 
   if(num == 0){
+    //#object_container 要素の表示/非表示を切り替えます。
+    //アニメーション効果 (fast) を適用。
     $('#object_container').toggle('fast');
     $('#object_container').css('display','flex');
-    $('#jsmind_container').css('width','calc((100vw - 350px)*0.4)');
-    $('#mind').css('height','90%');
-    $('#document').hide();
-    // $('#mind').show();\
+    $('#jsmind_container').css('width','calc((100vw - 315px)*0.4)');
+    // 現在表示している領域（親要素）の幅を取得
+    const parentWidth = $('#object_container').parent().width(); 
+    // #forestTab の幅をその 30% に設定
+    $('#layout').css('width', `${parentWidth * 0.3}px`);
+
+    $('#mind').show();
   }else if (num == 1 ){
     $('#jsmind_container').show();
     $('#jsmind_container').css('width','calc(100vw - 350px)');
