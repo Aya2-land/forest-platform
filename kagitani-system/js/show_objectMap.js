@@ -83,13 +83,17 @@ function addObjectMap() {
 function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, objectMapId) {
     // ボタンのHTMLを設定
     goalButton.innerHTML = `
-        <span class="goal-content">
-            <strong>目標:</strong> ${goalContent} <br>
-            <strong>更新日時:</strong> ${updatedAt} <br>
-            <strong>作成日時:</strong> ${createdAt}
-        </span>
-        <button class="memo-btn">📝</button>
-        <button class="delete-btn">🗑️</button>
+        <div class="goal-card compact">
+            <div class="goal-content">
+                <span class="goal-text">${goalContent}</span><br>
+                <span class="goal-date">作成: ${createdAt}</span> | 
+                <span class="goal-date">更新: ${updatedAt}</span>
+            </div>
+            <div class="goal-actions">
+                <button class="memo-btn" title="メモを追加/編集">📝</button>
+                <button class="delete-btn" title="目標を削除">🗑️</button>
+            </div>
+        </div>
     `;
 
     // メモボタンを取得し、イベントリスナーを追加
@@ -385,23 +389,33 @@ function fetchGoals() {
 }
 
 function handleGoalClick(goalButton, goalContent, timeString, objectMapId) {
-	defaultForestMRN = new ForestMRN("mynetwork", "load");
+    defaultForestMRN = new ForestMRN("mynetwork", "load");
 
     // 他のボタンのスタイルをリセット
     const goalButtons = document.querySelectorAll('.goal-item');
     goalButtons.forEach(button => {
         button.style.border = ''; // スタイルをリセット
+        button.classList.remove('selected'); // 'selected'クラスを外す
     });
 
-	// グローバル変数を更新
+    // クリックされたボタンに選択状態を適用
+    goalButton.classList.add('selected'); // クリックされたボタンに'selected'クラスを追加
+
+    // グローバル変数を更新
     object_map_id = objectMapId; // object_map_idを更新
     console.log(`Current object_map_id: ${object_map_id}`); // デバッグ用にコンソールに表示
-	console.log(`更新時間を最新にします`); 
-	//object_map_idの更新時間を最新にする．
-	updateObjectMapData(objectMapId);
+    console.log(`更新時間を最新にします`); 
+    // object_map_idの更新時間を最新にする．
+    updateObjectMapData(objectMapId);
 
-    // クリックされたボタンのスタイルを変更
-    goalButton.style.border = '5px solid #007BFF'; // 太くするスタイルを適用
+     // 現在の日時を取得し、更新日時を更新
+     const currentDate = new Date().toLocaleString(); // 現在の日時を取得 (適切なフォーマット)
+    
+     // goalButton内の更新日時を更新
+     const updatedAtElement = goalButton.querySelector('.goal-date');
+     if (updatedAtElement) {
+         updatedAtElement.textContent = currentDate; // 更新日時のテキストを現在時刻に変更
+     }
 
     // object_map_id に紐づけられたデータをロード
     loadObjectMapData(objectMapId);
@@ -411,6 +425,7 @@ function handleGoalClick(goalButton, goalContent, timeString, objectMapId) {
 //ここ改善したら良さそう．
 // object_map_idに紐づけられたobject_mapのデータを取得する関数
 function loadObjectMapData(objectMapId) {
+
     $.ajax({
         url: 'php/get_goals.php', // PHPファイルのパス
         type: 'POST',
@@ -434,7 +449,7 @@ function loadObjectMapData(objectMapId) {
 				objectMapData.node.forEach((n) => {
 					if (n.object_node_id) {
 						// object_node_id を node_id として渡す
-						defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y, n.done);
+						defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y, n.status);
 					} else {
 						console.warn("Node ID is undefined, skipping this node:", n);
 					}

@@ -1133,204 +1133,48 @@ function CheckClick(){
 function ModeChangeButtonClick() {
   const selindex = document.target_mode.Select1;
   const num = selindex.selectedIndex;
-  var ModeLabel = ["二分割モード","思考整理マップ","手段目標マップ"]
+  var ModeLabel = ["二分割モード", "思考整理マップ", "手段目標マップ"];
 
   console.log(num);
   console.log(ModeLabel);
   target = document.getElementById("output");
 
   if(num == 0){
-    //#object_container 要素の表示/非表示を切り替えます。
-    //アニメーション効果 (fast) を適用。
+    // 二分割モード：現在の状態
     $('#object_container').toggle('fast');
     $('#object_container').css('display','flex');
     $('#jsmind_container').css('width','calc((100vw - 315px)*0.4)');
-    // 現在表示している領域（親要素）の幅を取得
-    const parentWidth = $('#object_container').parent().width(); 
-    // #forestTab の幅をその 30% に設定
+    
+    const parentWidth = $('#object_container').parent().width();
     $('#layout').css('width', `${parentWidth * 0.3}px`);
-
     $('#mind').show();
-  }else if (num == 1 ){
-    $('#jsmind_container').show();
-    $('#jsmind_container').css('width','calc(100vw - 350px)');
-    $('#mind').css('height','90%');
-    $('#document').hide();
-    // $('#mind').show();
-    if(BeforeSelectModeNumber == 0){
-      document.getElementById('network_container').style.display = "none";
-    }else if(BeforeSelectModeNumber == 2){
-      $('#document_area').toggle('fast');
-      $('#node_slide').toggle('fast');
-      $('#ImageAddContent').toggle('fast');
-      $('#presen_menu').toggle('fast');
-      // $('#node_slide').toggle('fast');  
-    }else if(BeforeSelectModeNumber == 3){
-      $('#document_area').toggle('fast');
-      $('#node_slide').toggle('fast');
-      $('#ImageAddContent').toggle('fast');
-      $('#presen_menu').toggle('fast');
-      $('#document_slide').toggle('fast');
-      //ここから大槻変更
-    }else if(BeforeSelectModeNumber == 4){
-      $('#network_container').toggle('fast');
-      document.getElementById('feedback_area').style.display = "none";
-      document.getElementById('xml_upload_area').style.display = "none";
-    }
-    //ここまで大槻変更
-   
-    // $('.changemode_button').toggle('fast');
-    const frame_dom = document.getElementsByClassName("inquiry_area");
-    frame_dom[0].style.border = "solid 5px #ccc";
-    showGeneration();
-    BeforeSelectModeNumber = 0;
-
+  }else if(num == 1){
+    // 思考整理マップモード：layoutのみ表示
+    $('#document').hide();  // ドキュメント非表示
+    $('#object_container').hide();  // ドキュメント非表示
+    $('#myobject').hide();  // ドキュメント非表示
+    $('#utterance_area').hide();  // ドキュメント非表示
+    $('#layout').show();  // layoutを表示
+    const parentWidth = $('#object_container').parent().width();
+    $('#layout').css('width', `${parentWidth * 1.0}px`);  // layoutの横幅を2倍に変更
+    $('#jsmind_nav').css('width', `${parentWidth * 1.008}px`);  // layoutの横幅を2倍に変更
   }else if(num == 2){
-
-    $('.content_delete').css('visibility', 'visible');
-    $('.simple_btn').css('visibility', 'visible');
-    $('.cspan').css('font-size', '15');
-    $('.cspan').css('border', 'White');
-    $('.cspan').css('margin-bottom', '5');
-    $('.tspan').css('font-size', '20');
-  
-    $('.inquiry_area').css('height', '25vw');
-    $('#jsmind_container').css('width','40vw');//横幅を全体の40％で表示？
-    $('#document').show(); //Menu下の目標設定箇所
-    $('#mind').css('height','50%');　//問い一覧箇所
-
+    // 手段目標マップモード：layout以外の部分を表示
+    $('#layout').hide();  // layoutを非表示にする
+    $('#jsmind_container').show();  // jsMind コンテナ表示
+    $('#document').show();  // ドキュメント表示
+    $('#mind').css('height','50%');
 
     $('#scenario_title').css('margin-left','15px');
     $('#scenario_title').css('width','90%');
-
     $('#scenario_title').css('border','Black');
-    $('#document_area').css('width','calc(60vw - 350px)');　//資料作成箇所
+    $('#document_area').css('width','calc(60vw - 350px)');
     $('#document_area').css('height','84vh');
     $('#document_area').css('overflow','scroll');
-    // height:84vh;overflow: scroll;
-
-    // $('#document_area').css('width','620px');
-    console.log(BeforeSelectModeNumber);
-    if(BeforeSelectModeNumber == 1){
-      $('#document_area').toggle('fast'); //資料作成箇所を表示
-      $('#node_slide').toggle('fast');  //
-      $('#ImageAddContent').toggle('fast');
-      $('#presen_menu').toggle('fast'); //資料作成用のボタン
-    }else if(BeforeSelectModeNumber == 3){
-      $('#document_slide').toggle('fast');
-      //ここから大槻変更
-    }else if(BeforeSelectModeNumber == 4){
-      $('#document_area').toggle('fast'); //資料作成箇所を表示
-      $('#node_slide').toggle('fast');  //
-      $('#ImageAddContent').toggle('fast');
-      $('#network_container').toggle('fast');
-      document.getElementById('feedback_area').style.display = "none";
-      document.getElementById('xml_upload_area').style.display = "none";
-    }
-    //ここまで大槻変更
-
-    $('.thread').css('border', 'solid 0.7px #000000');
-    
-    $("select[name='Logic_options_contents']").css('font-size', '15');
-    $("select[name='Logic_options_contents']").css('visibility', 'visible');
-    $("select[name='Logic_options_contents']").css('height', '20px');
-
-    $("select[name='Logic_options_title']").css('font-size', '15');
-    $("select[name='Logic_options_title']").css('visibility', 'visible');
-    $("select[name='Logic_options_title']").css('height', '20px');
-    // $('.changemode_button').toggle('fast');
-
-    $('.badge').css('visibility', 'visible');
-    $('.badge').css('height', '20px');
-    $('.badge').css('padding','0.125rem 0.3rem');
-    BeforeSelectModeNumber = 1;
-    AddAOI_on_ImageArea();
-    MoveAndExpensionImageArea();
-  }else if(num == 3 ){
-    var text2 = document.getElementsByClassName("cspan");
-    // console.log(text2);
-    for (var i = 0; i < text2.length; i++){
-      // console.log(text2[i].nodeType);
-    }
-    $('#document_area').css('width','calc(70vw - 350px)');//資料作成箇所
-    $('#document_area').css('height','auto');
-    
-    $('.content_delete').css('visibility', 'hidden');
-    $('.simple_btn').css('visibility', 'hidden');
-    $('.thread').css('border','White');
-    $('.thread').css('padding','0');
-    $('.cspan').css('font-size', '20');
-    $('.cspan').css('border', 'White');
-    $('.cspan').css('margin-bottom', '0');
-    $('.tspan').css('margin-bottom', '0');
-    $('.tspan').css('font-size', '20');
-    if(BeforeSelectModeNumber == 2){
-      $('#document_slide').toggle('fast');
-    }else if(BeforeSelectModeNumber == 0){
-      $('#document_area').toggle('fast'); //資料作成箇所を表示
-      $('#node_slide').toggle('fast');  //
-      $('#ImageAddContent').toggle('fast');
-      //ここから大槻変更
-    }else if(BeforeSelectModeNumber == 4){
-      $('#document_area').toggle('fast'); //資料作成箇所を表示
-      $('#node_slide').toggle('fast');  //
-      $('#ImageAddContent').toggle('fast');
-      $('#network_container').toggle('fast');
-      document.getElementById('feedback_area').style.display = "none";
-      document.getElementById('xml_upload_area').style.display = "none";
-    }
-    //ここまで大槻変更
-
-    // $('#scenario_title').css('font-size', '30');
-    $('#scenario_title').css('border','White');
-    $('#scenario_title').css('margin-left','0');
-    $('#scenario_title').css('width','calc(70vw - 350px)');
-    //$('#jsmind_container').hide();//横幅を無くす
-    $('#jsmind_container').css('width','30vw');//横幅を全体の20％で表示？
-
-    $("select[name='Logic_options_contents']").css('font-size', '0.01');
-    $("select[name='Logic_options_contents']").css('visibility', 'hidden');
-    $("select[name='Logic_options_contents']").css('height', '1px');
-
-    $("select[name='Logic_options_title']").css('font-size', '0.01');
-    $("select[name='Logic_options_title']").css('visibility', 'hidden');
-    $("select[name='Logic_options_title']").css('height', '2px');
-    
-    $('.badge').css('visibility', 'hidden');
-    $('.badge').css('height', '1px');
-    $('.badge').css('padding','0');
-
-    BeforeSelectModeNumber = 2;
-    MoveAndExpensionImageArea();
-  }else if(num == 4){
-    document.getElementById('feedback_area').style.display = "block";
-    document.getElementById('xml_upload_area').style.display = "block";
-    $('#network_container').toggle('fast');
-    $('#network_container').css('display','flex');
-    $('#jsmind_container').css('width','calc((100vw - 350px)*0.4)');
-    $('#mind').css('height','90%');
-    $('#document').hide();
-    // $('#mind').show();
-    if(BeforeSelectModeNumber == 1){
-      $('#document_area').toggle('fast');
-      $('#node_slide').toggle('fast');
-      $('#ImageAddContent').toggle('fast');
-      $('#presen_menu').toggle('fast');
-      // $('#node_slide').toggle('fast');  
-    }else if(BeforeSelectModeNumber == 2){
-      $('#document_area').toggle('fast');
-      $('#node_slide').toggle('fast');
-      $('#ImageAddContent').toggle('fast');
-      $('#presen_menu').toggle('fast');
-      $('#document_slide').toggle('fast');
-    }
-    const frame_dom = document.getElementsByClassName("inquiry_area");
-    frame_dom[0].style.border = "solid 5px #ccc";
-    showGeneration();
-    BeforeSelectModeNumber = 3;
   }
   jump_node("root");
 }
+
 
 function jump_node(nodeid) {
   // 対象となる要素を取得

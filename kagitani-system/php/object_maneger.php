@@ -133,7 +133,7 @@
 				$object_node_id = $_POST["node_id"]; //ノードID
 				$done = "done";
 				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-				$mysqli->query("UPDATE object_nodes SET done = '$done', updated_at = '$timestamp' 
+				$mysqli->query("UPDATE object_nodes SET status = '$done', updated_at = '$timestamp' 
 				WHERE  object_node_id = '$node_id' ");
 			}
 		}else if($update_thing === 'map'){
@@ -154,6 +154,13 @@
 			if($select_update === 'label'){
 				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 				$mysqli->query("UPDATE object_memos SET label = '$label', updated_at = '$timestamp' WHERE object_map_id = '$object_map_id'");
+			}
+		}else if($update_thing === 'status'){
+			$select_update = $_POST['select_update']; 
+			$object_node_id = $_POST["node_id"];
+			if($select_update === 'inProgress'){
+				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+				$mysqli->query("UPDATE object_nodes SET status = '$select_update', updated_at = '$timestamp' WHERE object_node_id = '$object_node_id'");
 			}
 		}
 	}else if($purpose === 'delete'){

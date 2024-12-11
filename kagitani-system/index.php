@@ -53,6 +53,8 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
 
 
 ?>
+<!-- FontAwesomeのCDNをHTMLに追加 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html lang="en">
@@ -137,8 +139,8 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
 
                     <div class="objectMap_area" id="objectMap_area" style="display: none;">
                         <!-- 目標内容を入力するフォーム -->
-                        <div>
-                            <input type="text" id="goalInput" placeholder="目標の内容を入力してください" />
+                        <div class="goal-input-container">
+                            <input type="text" id="goalInput" class="goal-input" placeholder="目標の内容を入力してください" />
                             <input class="setGoal_button" type="button" onclick="addObjectMap();" value="新しい目標追加">
                         </div>
 
@@ -171,32 +173,25 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
             <div id="forestTab">
                 <div id="layout">
                     <div id="jsmind_nav">
-                        <div style="text-align: left">
+                        <!-- <div class="button-container"> -->
                             <!-- 【Edit】 -->
-                            <button class="button4" onclick="add_Qnode();">
-                                問い追加
-                            </button>
-                            <button class="button4" onclick="add_Anode();">
-                                答え追加
-                            </button>
-                            <!-- <li><button onclick="horisage();">掘り下げる</button></li>
-                                 horisage()関数は現在存在しない-->
-                            <button class="button4" onclick="remove_node();">
-                                ノード削除
-                            </button>
-                            <!--1つ前に消したノードを復元-->
-                            <!-- <button class="button4" onclick="return_node();">
-                                 1つ前に戻る
-                                 </button> -->
-                            <!-- 【Zoom】 -->
-                            <button class="button3" id="zoom-in-button" onclick="zoomIn();">
-                                拡大
-                            </button>
-                            <button class="button3" id="zoom-out-button" onclick="zoomOut();">
-                                縮小
-                            </button>
-                        </div>
-                    </div><!--jsmind_nav fin-->
+                        <button class="action-button primary-button" onclick="add_Qnode();">
+                            <span class="button-icon">❓</span> 問い追加
+                        </button>
+                        <button class="action-button primary-button" onclick="add_Anode();">
+                            <span class="button-icon">💡</span> 答え追加
+                        </button>
+                        <button class="action-button danger-button" onclick="remove_node();">
+                            <span class="button-icon">❌</span> ノード削除
+                        </button>
+                        <button class="action-button tool-button" id="zoom-in-button" onclick="zoomIn();">
+                            <span class="button-icon">🔍➕</span> 拡大
+                        </button>
+                        <button class="action-button tool-button" id="zoom-out-button" onclick="zoomOut();">
+                            <span class="button-icon">🔍➖</span> 縮小
+                        </button>
+                    </div>
+                <!-- </div> -->
 
                     <div id="jsmind_container" oncontextmenu="return false;">
                         <div id="mindmap_conmenu">
@@ -236,12 +231,10 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <div class="filter-item">
                                         <label for="filter-map">使用マップ</label>
                                         <select id="filter-map">
-                                            <option value="">選択してください</option>
-                                            <option value="map1">マップ1</option>
-                                            <option value="map2">マップ2</option>
-                                            <option value="map3">マップ3</option>
+                                            <!-- JavaScriptがここにオプションを追加 -->
                                         </select>
                                     </div>
+
 
                                     <!-- 手段開始のみ表示 -->
                                     <div class="filter-item">
@@ -265,31 +258,29 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         </div>
                         <div id="myobject">
                             <div id="buttoncluster">
-                                <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_addGoal" value="目標追加" />
-                                <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_addStep" value="手段追加" disabled/> 
-                                <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_removeNode" value="ノード削除" />
-                                <!-- <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_startEditEdge" value="エッジ追加" />
-                                <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_removeEdge" value="エッジ削除" /> -->
-                                <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_ZoomIn" value="拡大" />
-                                <input type="button" class="meeting_reflectin_network_button"
-                                       id="mrnb_ZoomOut" value="縮小" />
+                                <button class="action-button primary-button" id="mrnb_addGoal">
+                                    <span class="button-icon">🎯</span> 目標追加
+                                </button>
+                                <button class="action-button primary-button" id="mrnb_addStep" disabled>
+                                    <span class="button-icon">🔧</span> 手段追加
+                                </button>
+                                <button class="action-button danger-button" id="mrnb_removeNode">
+                                    <span class="button-icon">❌</span> ノード削除
+                                </button>
+                                <button class="action-button tool-button" id="mrnb_ZoomIn">
+                                    <span class="button-icon">🔍➕</span> 拡大
+                                </button>
+                                <button class="action-button tool-button" id="mrnb_ZoomOut">
+                                    <span class="button-icon">🔍➖</span> 縮小
+                                </button>
                             </div>
-                            <div id="network_conmenu">
+                            <div id="network_conmenu" class="context-menu">
                                 <ul>
-                                    <li><a href="javascript:void(0);" id="net_conmenu00">手段開始</a></li> 
-                                    <li><a href="javascript:void(0);" id="net_conmenu01">手段中断</a></li> 
-                                    <li><a href="javascript:void(0);" id="net_conmenu02">手段完了</a></li> 
-                                    <li><a href="javascript:void(0);" id="net_conmenu03">活動表示</a></li> 
-                                    <!-- <li><a href="javascript:void(0);" id="net_conmenu1">概念をつける</a></li>
-                                    <li><a href="javascript:void(0);" id="net_conmenu2">マインドマップと対応付ける</a></li>
-                                    <li><a href="javascript:void(0);" id="net_conmenu3" style="display:none">採用/棄却をつける</a></li> -->
-                                    <li><a href="javascript:void(0);" id="net_conmenu4">キャンセル</a></li>
+                                    <li><a href="javascript:void(0);" id="net_conmenu00"><i class="fa fa-play"></i> 手段開始</a></li> 
+                                    <li><a href="javascript:void(0);" id="net_conmenu01"><i class="fa fa-pause"></i> 手段中断</a></li> 
+                                    <li><a href="javascript:void(0);" id="net_conmenu02"><i class="fa fa-check"></i> 手段完了</a></li> 
+                                    <li><a href="javascript:void(0);" id="net_conmenu03"><i class="fa fa-eye"></i> 活動表示</a></li> 
+                                    <li><a href="javascript:void(0);" id="net_conmenu4"><i class="fa fa-times"></i> キャンセル</a></li>
                                 </ul>
                             </div>
                             <div id="tooltip" style="position: absolute; display: none; padding: 10px; background: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">

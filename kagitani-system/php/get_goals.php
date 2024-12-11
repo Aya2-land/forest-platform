@@ -28,7 +28,7 @@ if($purpose === 'fetch'){
 }else if ($purpose === 'load') {
     $objectMapId = $_POST['object_map_id'];
 
-    $result_object_node = $mysqli->query("SELECT object_node_id, label, object_nodes_type_id, x, y, done FROM object_nodes WHERE object_map_id = '$objectMapId' AND deleted = '0'");
+    $result_object_node = $mysqli->query("SELECT object_node_id, label, object_nodes_type_id, x, y, status FROM object_nodes WHERE object_map_id = '$objectMapId' AND deleted = '0'");
 
     $node = [];
     while ($row = $result_object_node->fetch_assoc()) {
@@ -45,4 +45,20 @@ if($purpose === 'fetch'){
     $return_data = array_merge($return_data, ['edge' => $edge]);
 
     echo json_encode($return_data); // JSONを出力
+}else if ($purpose === 'label') {
+    $sql = "SELECT label FROM object_maps WHERE deleted = '0' ORDER BY created_at DESC";
+    $result = $mysqli->query($sql);
+
+    $goals = [];
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $goals[] = $row; // 結果を配列に格納
+        }
+    }
+
+    // JSON形式で返す
+    echo json_encode($goals);
+
+    // 接続を閉じる
+    $mysqli->close();
 }
