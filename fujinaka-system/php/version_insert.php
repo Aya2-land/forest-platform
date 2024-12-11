@@ -29,7 +29,7 @@ if (!empty($_POST['content'])) {
 
         $result = $mysqli->query($sql);
 
-        $sql = "INSERT INTO node_versions (node_version_id, node_id, map_version_id, parent_id, type_id, appeared_at, content, concept_id, x, y) 
+        $sql = "INSERT INTO node_versions (node_version_id, node_id, parent_id, type_id, appeared_at, content, concept_id, x, y) 
                 SELECT '".$node_version_id."' AS node_version_id, node_id, '".$map_version_id."' AS map_version_id, parent_id, type_id, appeared_at, content, concept_id, x, y
                 FROM node_latest WHERE node_id IN (SELECT node_id FROM map_node_links WHERE map_id='$map_id')";
 

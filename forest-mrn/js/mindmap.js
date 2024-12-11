@@ -246,14 +246,14 @@ async function add_node(){
             });
 
             // hatakeyama 用意された問いを追加
-            NodeInsert(
-              versionid, 
-              thisId, 
-              parent_id, 
-              jmnode[i].innerHTML, 
-              "",
-              "add_prepared_question"
-            );
+            // NodeInsert(
+            //   versionid, 
+            //   thisId, 
+            //   parent_id, 
+            //   jmnode[i].innerHTML, 
+            //   "",
+            //   "add_prepared_question"
+            // );
             RecordRelation(2);   //relationテーブル
             //ここから大槻修正
             $("#reason").html("");
@@ -361,14 +361,14 @@ async function add_Qnode(){
             });
 
             // hatakeyama 「問いノード追加」ボタン
-            NodeInsert(
-              versionid, 
-              nodeid, 
-              parent_id, 
-              jmnode[i].innerHTML, 
-              "",
-              "add_new_node"
-            );
+            // NodeInsert(
+            //   versionid, 
+            //   nodeid, 
+            //   parent_id, 
+            //   jmnode[i].innerHTML, 
+            //   "",
+            //   "add_new_node"
+            // );
             RecordRelation(2);
             //ここから大槻修正
             $("#reason").html("");
@@ -488,14 +488,14 @@ async function add_Anode(){
             });
 
             // hatakeyama 「答えノード追加」ボタン
-            NodeInsert(
-              versionid, 
-              nodeid, 
-              parent_id, 
-              jmnode[j].innerHTML, 
-              "",
-              "add_new_node"
-            );
+            // NodeInsert(
+            //   versionid, 
+            //   nodeid, 
+            //   parent_id, 
+            //   jmnode[j].innerHTML, 
+            //   "",
+            //   "add_new_node"
+            // );
             RecordRelation(2);   //relationテーブル
             //ここから大槻修正
             $("#reason").html("");
@@ -792,23 +792,23 @@ function remove_node(){
     });
 
     //hatakeyama ノード削除
-    var versionid = jsMind.util.uuid.newid(); //hatakeyama
-    GetSelectedNodeVersion(selected_id).then(function (res) {
-      const parse = JSON.parse(res)
+    // var versionid = jsMind.util.uuid.newid(); //hatakeyama
+    // GetSelectedNodeVersion(selected_id).then(function (res) {
+    //   const parse = JSON.parse(res)
 
-      $.ajax({
+    //   $.ajax({
 
-        url: "php/version_update.php",
-        type: "POST",
-        data: { data : "delete",
-                node_id : selected_id,
-                parent_node_id : Get_NodeInfo(selected_id, "parent_id"),
-                node_version_id_update : parse[0],   //最新version_id
-                node_version_id_insert : versionid   //新しく追加するversion_id
-              }
-      });
+    //     url: "php/version_update.php",
+    //     type: "POST",
+    //     data: { data : "delete",
+    //             node_id : selected_id,
+    //             parent_node_id : Get_NodeInfo(selected_id, "parent_id"),
+    //             node_version_id_update : parse[0],   //最新version_id
+    //             node_version_id_insert : versionid   //新しく追加するversion_id
+    //           }
+    //   });
 
-    });
+    // });
     RecordRelation(2);   //relationテーブル
     $('#comment_balloon').hide();
     $('#comment_balloon').fadeIn(1000);

@@ -2,6 +2,7 @@
 
 //ノードの挿入
 function NodeInsert(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reasonSYSTEM){
+  console.log("NodeInsert");
     $.ajax({
         url: "php/version_update.php",
         type: "POST",
@@ -26,6 +27,7 @@ function NodeInsert(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reas
   
 //ノードの編集／移動
 function NodeEdit(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reasonSYSTEM){
+  console.log("NodeEdit");
     $.ajax({
         url: "php/version_update.php",
         type: "POST",
@@ -52,42 +54,69 @@ function NodeEdit(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reason
     });
 }
 
-//relationテーブルにINSERTし、現在存在しているノードと新しいマップを結びつける
-function RecordRelation(count){
-
-    var jmnode = document.getElementsByTagName("jmnode");
-    GetMapVersion().then(function (res) { //最新map_version_idを取得
-        const parse = JSON.parse(res)
-
-        if (jmnode.length == 2){  //rootと追加したノードのみならINSERTだけ,後で
-        
-        }else{  //INSERT & UPDATE
-    
-            for(let i=1; i<jmnode.length; i++){ //現存ノードで回す(root抜き)
-    
-                $node_id = jmnode[i].getAttribute("nodeid");
-        
-                if ($node_id!=null){
-        
-                    $.ajax({
-                    url: "php/version_update.php",
-                    type: "POST",
-                    data: { data : "relation",
-                            count : count,
-                            node_id : $node_id,
-                            map_version_id : parse[0]
-                            }
-                    });
-        
-                }
-    
-            }
-
-        }
-
+function NodeVersionUpdate(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reasonSYSTEM){
+  console.log("NodeVersionUpdate");
+    $.ajax({
+        url: "php/version_update.php",
+        type: "POST",
+        data: { 
+                data : "node_edit",
+                node_version_id : nodeVERSION,
+                node_id : nodeID,
+                parent_node_id : parentID,
+                text : nodeTEXT,
+                updated_reason_by_learner : reasonLEARNER,
+                updated_reason_by_system : reasonSYSTEM
+              },
+  
+        success: function (res) {
+           if(!res){
+            console.log(res);
+           }
+           GetPairNodeId_ContentRelationTable(nodeID);
+        },
+        error: function () {
+          console.log("node_versionsに保存失敗");
+        },
     });
-
 }
+
+//relationテーブルにINSERTし、現在存在しているノードと新しいマップを結びつける
+// function RecordRelation(count){
+
+//     var jmnode = document.getElementsByTagName("jmnode");
+//     GetMapVersion().then(function (res) { //最新map_version_idを取得
+//         const parse = JSON.parse(res)
+
+//         if (jmnode.length == 2){  //rootと追加したノードのみならINSERTだけ,後で
+        
+//         }else{  //INSERT & UPDATE
+    
+//             for(let i=1; i<jmnode.length; i++){ //現存ノードで回す(root抜き)
+    
+//                 $node_id = jmnode[i].getAttribute("nodeid");
+        
+//                 if ($node_id!=null){
+        
+//                     $.ajax({
+//                     url: "php/version_update.php",
+//                     type: "POST",
+//                     data: { data : "relation",
+//                             count : count,
+//                             node_id : $node_id,
+//                             map_version_id : parse[0]
+//                             }
+//                     });
+        
+//                 }
+    
+//             }
+
+//         }
+
+//     });
+
+// }
 
 //マップver更新ボタンをクリック
 var mapSnapshotButton = document.getElementById("map-snapshot-button");
@@ -97,11 +126,16 @@ function MapSnapShot(){
     $.ajax({
         url: "php/version_update.php",
         type: "POST",
-        data: { data : "map"}
+        data: { data : "map"},
+        success: function(e){
+          console.log(e);
+          if(!e){
+            alert("マップver更新されました");
+            show_edit_reason();
+          }
+        }
     });
 
-    alert("マップver更新されました");
-    show_edit_reason();
     $('#comment_balloon').hide();
     $('#comment_balloon').fadeIn(1000);
 }

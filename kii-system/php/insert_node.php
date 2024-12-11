@@ -39,8 +39,8 @@
 				$node_sql = "INSERT INTO nodes (node_id, user_id, type_id, from_mode, deleted )
 					VALUES ('".$_POST['id']."','".$_SESSION['USERID']."','".$_POST['type']."', '".$_POST['from_mode']."', '".$deleted."')";
 				
-				$node_v_sql = "INSERT INTO node_versions (node_version_id, node_id, map_version_id, parent_id, type_id, appeared_at, disappeared_at, content, concept_id, x, y)
-					VALUES ('".$node_v_id."', '".$_POST['id']."', (SELECT map_version_id FROM map_versions WHERE map_id = '".$id."' ORDER BY appeared_at DESC LIMIT 1),'".$_POST['parent_id']."','".$_POST['type']."', '".$created_at."', NULL,'".$_POST['content']."','".$_POST['concept_id']."','".$_POST['x']."','".$_POST['y']."')";
+				$node_v_sql = "INSERT INTO node_versions (node_version_id, node_id, parent_id, type_id, appeared_at, disappeared_at, content, concept_id, x, y)
+					VALUES ('".$node_v_id."', '".$_POST['id']."','".$_POST['parent_id']."','".$_POST['type']."', '".$created_at."', NULL,'".$_POST['content']."','".$_POST['concept_id']."','".$_POST['x']."','".$_POST['y']."')";
 				
 				$node_h_sql = "INSERT INTO node_histories (node_history_id, node_version_id, parent_id, type_id, appeared_at, disappeared_at, content, concept_id, x, y)
 					VALUES ('".$node_h_id."', '".$node_v_id."','".$_POST['parent_id']."','".$_POST['type']."', '".$created_at."', NULL,'".$_POST['content']."','".$_POST['concept_id']."','".$_POST['x']."','".$_POST['y']."')";
@@ -82,8 +82,8 @@
 			$node_sql = "INSERT INTO nodes (node_id, user_id, type_id, from_mode, deleted )
 				VALUES ('".$_POST['id']."','".$_SESSION['USERID']."','".$_POST['type']."', '".$_POST['from_mode']."', '".$deleted."')";
 			
-			$node_v_sql = "INSERT INTO node_versions (node_version_id, node_id, map_version_id, parent_id, type_id, appeared_at, disappeared_at, content, concept_id, x, y)
-				VALUES ('".$node_v_id."', '".$_POST['id']."', (SELECT map_version_id FROM map_versions WHERE map_id = '".$id."' ORDER BY appeared_at DESC LIMIT 1),'".$_POST['parent_id']."','".$_POST['type']."', '".$created_at."', NULL ,'".$_POST['content']."','".$_POST['concept_id']."','".$_POST['x']."','".$_POST['y']."')";
+			$node_v_sql = "INSERT INTO node_versions (node_version_id, node_id, parent_id, type_id, appeared_at, disappeared_at, content, concept_id, x, y)
+				VALUES ('".$node_v_id."', '".$_POST['id']."','".$_POST['parent_id']."','".$_POST['type']."', '".$created_at."', NULL ,'".$_POST['content']."','".$_POST['concept_id']."','".$_POST['x']."','".$_POST['y']."')";
 			
 			$node_h_sql = "INSERT INTO node_histories (node_history_id, node_version_id, parent_id, type_id, appeared_at, disappeared_at, content, concept_id, x, y)
 				VALUES ('".$node_h_id."', '".$node_v_id."','".$_POST['parent_id']."','".$_POST['type']."', '".$created_at."', NULL ,'".$_POST['content']."','".$_POST['concept_id']."','".$_POST['x']."','".$_POST['y']."')";

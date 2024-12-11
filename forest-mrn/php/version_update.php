@@ -20,116 +20,119 @@
 
 	//ノードの挿入
 	if ($_POST["data"] == "node_insert"){
-		$node_version_id = $_POST["node_version_id"];
-		$node_id = $_POST["node_id"];
-		$parent_node_id = $_POST["parent_node_id"];
-		$content = $_POST["text"];
-		$updated_reason_by_learner = $_POST["updated_reason_by_learner"];
-		$updated_reason_by_system = $_POST["updated_reason_by_system"];
-		$map_version = rand();
+		// $node_version_id = $_POST["node_version_id"];
+		// $node_id = $_POST["node_id"];
+		// $parent_node_id = $_POST["parent_node_id"];
+		// $content = $_POST["text"];
+		// $updated_reason_by_learner = $_POST["updated_reason_by_learner"];
+		// $updated_reason_by_system = $_POST["updated_reason_by_system"];
+		// $map_version = rand();
 
-		//node_versionsにINSERT
-		$sql_nvi = "INSERT INTO node_versions(id, node_id, parent_node_id, appeared_at, disappeared_at, content, updated_reason_by_learner, updated_reason_by_system)
-		VALUES ('$node_version_id', '$node_id', '$parent_node_id', '$timestamp', NULL, '$content', '$updated_reason_by_learner', '$updated_reason_by_system')";
-		$result_nvi = $mysqli->query($sql_nvi);
+		// //node_versionsにINSERT
+		// $sql_nvi = "INSERT INTO node_versions(id, node_id, parent_node_id, appeared_at, disappeared_at, content, updated_reason_by_learner, updated_reason_by_system)
+		// VALUES ('$node_version_id', '$node_id', '$parent_node_id', '$timestamp', NULL, '$content', '$updated_reason_by_learner', '$updated_reason_by_system')";
+		// $result_nvi = $mysqli->query($sql_nvi);
 
-		//map_versionsをUPDATE
-		$sql_mvu = "UPDATE map_versions SET disappeared_at = '".$timestamp."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
-		$result_mvu = $mysqli->query($sql_mvu);
+		// //map_versionsをUPDATE
+		// $sql_mvu = "UPDATE map_versions SET disappeared_at = '".$timestamp."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
+		// $result_mvu = $mysqli->query($sql_mvu);
 
-		//map_versionsにINSERT
-		$sql_mvi = $sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) 
-		VALUES ($map_version, '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'system', NULL)";
-		$result_mvi = $mysqli->query($sql_mvi);
+		// //map_versionsにINSERT
+		// $sql_mvi = $sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) 
+		// VALUES ($map_version, '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'system', NULL)";
+		// $result_mvi = $mysqli->query($sql_mvi);
 
+		echo "version_update: node_insert";
 	//ノードの編集、移動
 	}else if($_POST["data"] == "node_edit"){
-		$node_version_id = $_POST["node_version_id"];
-		$node_id = $_POST["node_id"];
-		$parent_node_id = $_POST["parent_node_id"];
-		$content = $_POST["text"];
-		$updated_reason_by_learner = $_POST["updated_reason_by_learner"];
-		$updated_reason_by_system = $_POST["updated_reason_by_system"];
-		$map_version_id = rand();
+		// $node_version_id = $_POST["node_version_id"];
+		// $node_id = $_POST["node_id"];
+		// $parent_node_id = $_POST["parent_node_id"];
+		// $content = $_POST["text"];
+		// $updated_reason_by_learner = $_POST["updated_reason_by_learner"];
+		// $updated_reason_by_system = $_POST["updated_reason_by_system"];
+		// $map_version_id = rand();
 
-		$sql_check_edit = "SELECT * FROM node_versions WHERE node_id = '".$node_id."' AND updated_reason_by_system = 'edit'";
-		$result_check_edit = $mysqli->query($sql_check_edit);
-		$count = mysqli_num_rows($result_check_edit);
+		// $sql_check_edit = "SELECT * FROM node_versions WHERE node_id = '".$node_id."' AND updated_reason_by_system = 'edit'";
+		// $result_check_edit = $mysqli->query($sql_check_edit);
+		// $count = mysqli_num_rows($result_check_edit);
 
-		if(!$count){	//無い場合、初めての編集／移動
+		// if(!$count){	//無い場合、初めての編集／移動
 
-			//node_versionsをUPDATE
-			$sql_nvu = "UPDATE node_versions SET appeared_at = '".$timestamp."', updated_reason_by_system = '".$updated_reason_by_system."', content = '".$content."', parent_node_id = '".$parent_node_id."' WHERE node_id = '".$node_id."' AND appeared_at = (select max(appeared_at) from (select appeared_at from node_versions) temp)";
-			$result_nvu = $mysqli->query($sql_nvu);
-			//map_versionsも？
-			$sql_mvu = "UPDATE map_versions SET appeared_at = '".$timestamp."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
-			$result_mvu = $mysqli->query($sql_mvu);
+		// 	//node_versionsをUPDATE
+		// 	$sql_nvu = "UPDATE node_versions SET appeared_at = '".$timestamp."', updated_reason_by_system = '".$updated_reason_by_system."', content = '".$content."', parent_node_id = '".$parent_node_id."' WHERE node_id = '".$node_id."' AND appeared_at = (select max(appeared_at) from (select appeared_at from node_versions) temp)";
+		// 	$result_nvu = $mysqli->query($sql_nvu);
+		// 	//map_versionsも？
+		// 	$sql_mvu = "UPDATE map_versions SET appeared_at = '".$timestamp."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
+		// 	$result_mvu = $mysqli->query($sql_mvu);
 
 
-			// //relationをUPDATE
-			// $sql_u_relation = "UPDATE map_node_versions SET appeared_at = '".$timestamp."' WHERE disappeared_at IS NULL AND ";
-			// $result_u_relation = $mysqli->query($sql_u_relation);
-			// if($result_u_relation == TRUE){
-			// 			error_log('の$result成功しています'.$timestamp, 0);
-			// 		}else if($result_u_relation == FALSE){
-			// 			error_log($result_u_relation.'の$result失敗です'.$mysqli->error, 0);
-			// 			// error_log('失敗しました。'.mysqli_error($link), 0);
-			// 		}else{
-			// 			error_log('の$result不明なエラーです', 0);
-			// 		}
+		// 	// //relationをUPDATE
+		// 	// $sql_u_relation = "UPDATE map_node_versions SET appeared_at = '".$timestamp."' WHERE disappeared_at IS NULL AND ";
+		// 	// $result_u_relation = $mysqli->query($sql_u_relation);
+		// 	// if($result_u_relation == TRUE){
+		// 	// 			error_log('の$result成功しています'.$timestamp, 0);
+		// 	// 		}else if($result_u_relation == FALSE){
+		// 	// 			error_log($result_u_relation.'の$result失敗です'.$mysqli->error, 0);
+		// 	// 			// error_log('失敗しました。'.mysqli_error($link), 0);
+		// 	// 		}else{
+		// 	// 			error_log('の$result不明なエラーです', 0);
+		// 	// 		}
 
-		}else{	//ある場合、2回目以降の編集／移動
+		// }else{	//ある場合、2回目以降の編集／移動
 
-			//node_versionsをUPDATE
-			$sql_nvu = "UPDATE node_versions SET disappeared_at = '".$timestamp."' WHERE node_id = '".$node_id."' AND appeared_at = (select max(appeared_at) from (select appeared_at from node_versions) temp)";
-			$result_nvu = $mysqli->query($sql_nvu);
+		// 	//node_versionsをUPDATE
+		// 	$sql_nvu = "UPDATE node_versions SET disappeared_at = '".$timestamp."' WHERE node_id = '".$node_id."' AND appeared_at = (select max(appeared_at) from (select appeared_at from node_versions) temp)";
+		// 	$result_nvu = $mysqli->query($sql_nvu);
 
-			//node_versionsにINSERT
-			$sql_nvi = "INSERT INTO node_versions(id, node_id, parent_node_id, appeared_at, disappeared_at, content, updated_reason_by_learner, updated_reason_by_system)
-			VALUES ('$node_version_id', '$node_id', '$parent_node_id', '$timestamp', NULL, '$content', '$updated_reason_by_learner', '$updated_reason_by_system')";
-			$result_nvi = $mysqli->query($sql_nvi);
+		// 	//node_versionsにINSERT
+		// 	$sql_nvi = "INSERT INTO node_versions(id, node_id, parent_node_id, appeared_at, disappeared_at, content, updated_reason_by_learner, updated_reason_by_system)
+		// 	VALUES ('$node_version_id', '$node_id', '$parent_node_id', '$timestamp', NULL, '$content', '$updated_reason_by_learner', '$updated_reason_by_system')";
+		// 	$result_nvi = $mysqli->query($sql_nvi);
 
-			//map_versionsをUPDATE
-			$sql_mvu = "UPDATE map_versions SET disappeared_at = '".$timestamp."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
-			$result_mvu = $mysqli->query($sql_mvu);
+		// 	//map_versionsをUPDATE
+		// 	$sql_mvu = "UPDATE map_versions SET disappeared_at = '".$timestamp."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
+		// 	$result_mvu = $mysqli->query($sql_mvu);
 
-			//map_versionsにINSERT
-			$sql_mvi = $sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) 
-			VALUES ($map_version_id, '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'system', NULL)";
-			$result_mvi = $mysqli->query($sql_mvi);
+		// 	//map_versionsにINSERT
+		// 	$sql_mvi = $sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) 
+		// 	VALUES ($map_version_id, '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'system', NULL)";
+		// 	$result_mvi = $mysqli->query($sql_mvi);
 
-		}
+		// }
+		echo "version_update: node_edit";
 	//ノードの削除
 	}else if($_POST["data"] == "delete"){
 
-		$node_version_id_update = $_POST["node_version_id_update"];
-		$node_version_id_insert = $_POST["node_version_id_insert"];
-		$node_id = $_POST["node_id"];
-		$parent_node_id = $_POST["parent_node_id"];
+		// $node_version_id_update = $_POST["node_version_id_update"];
+		// $node_version_id_insert = $_POST["node_version_id_insert"];
+		// $node_id = $_POST["node_id"];
+		// $parent_node_id = $_POST["parent_node_id"];
 		
-		//h_nodesのdeleted_atを更新
-		$sql_hnd = "UPDATE h_nodes SET deleted_at = '".$timestamp."' WHERE node_id = '".$node_id."'";
-		$result_hnd = $mysqli->query($sql_hnd);
+		// //h_nodesのdeleted_atを更新
+		// $sql_hnd = "UPDATE h_nodes SET deleted_at = '".$timestamp."' WHERE node_id = '".$node_id."'";
+		// $result_hnd = $mysqli->query($sql_hnd);
 
-		//nodes_versionsをUPDATE
-		$sql_nvd = "UPDATE node_versions SET disappeared_at = '".$timestamp."' WHERE id = '".$node_version_id_update."'";
-		$result_nvd = $mysqli->query($sql_nvd);
+		// //nodes_versionsをUPDATE
+		// $sql_nvd = "UPDATE node_versions SET disappeared_at = '".$timestamp."' WHERE id = '".$node_version_id_update."'";
+		// $result_nvd = $mysqli->query($sql_nvd);
 
-		//nodes_versionsにINSERT(deleteのデータのみ)
-		$sql_nvi = "INSERT INTO node_versions(id, node_id, parent_node_id, appeared_at, disappeared_at, content, updated_reason_by_learner, updated_reason_by_system)
-		VALUES ('".$node_version_id_insert."', '$node_id', '$parent_node_id', '$timestamp', '$timestamp', '', '', 'delete')";
-		$result_nvi = $mysqli->query($sql_nvi);
+		// //nodes_versionsにINSERT(deleteのデータのみ)
+		// $sql_nvi = "INSERT INTO node_versions(id, node_id, parent_node_id, appeared_at, disappeared_at, content, updated_reason_by_learner, updated_reason_by_system)
+		// VALUES ('".$node_version_id_insert."', '$node_id', '$parent_node_id', '$timestamp', '$timestamp', '', '', 'delete')";
+		// $result_nvi = $mysqli->query($sql_nvi);
 
-		//map_versionsをUPDATE
-		$sql_mvu = "UPDATE map_versions SET disappeared_at = '".$timestamp."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
-		$result_mvu = $mysqli->query($sql_mvu);
+		// //map_versionsをUPDATE
+		// $sql_mvu = "UPDATE map_versions SET disappeared_at = '".$timestamp."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
+		// $result_mvu = $mysqli->query($sql_mvu);
 
-		//map_versionsにINSERT
-		$map_version = rand();
-		$sql_mvi = $sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) 
-		VALUES ($map_version, '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'system', NULL)";
-		$result_mvi = $mysqli->query($sql_mvi);
+		// //map_versionsにINSERT
+		// $map_version = rand();
+		// $sql_mvi = $sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) 
+		// VALUES ($map_version, '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'system', NULL)";
+		// $result_mvi = $mysqli->query($sql_mvi);
 
+		echo "version_update: node_delete";
 
 	//relationテーブルにINSERT＆UPDATE
 	}else if($_POST["data"] == "relation"){
@@ -175,36 +178,44 @@
 			//map_versionsをUPDATE
 			$sql_mvu = "UPDATE map_versions SET disappeared_at = '".$timestamp."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
 			$result_mvu = $mysqli->query($sql_mvu);
+			if($mysqli->error){
+				echo "Error: ". $mysqli->error;
+			}
 
 			//map_versionsにINSERTする
 			$map_version = rand();	//not unique
-			$sql_mvi = "INSERT INTO map_versions(id, map_id, appeared_at, disappeared_at, type, updated_reason)
-			VALUES ($map_version, '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'map', NULL)";	//後で理由入れる
+			$sql_mvi = "INSERT INTO map_versions(map_version_id, map_id, name, scenario_title, appeared_at, disappeared_at)
+				VALUES ($map_version, '".$_SESSION['MAPID']."', (SELECT name FROM maps WHERE map_id = ".$_SESSION['MAPID']."), (SELECT scenario_title FROM maps WHERE map_id = ".$_SESSION['MAPID']."), '".$timestamp."', NULL)";	//後で理由入れる
 			$result_mvi = $mysqli->query($sql_mvi);
+			if($mysqli->error){
+				echo "Error: ". $mysqli->error;
+			}
 
 		//ノードからマップ全体に波及させるとき	11/30意味なくないですか？マップver2個できる 壊れそう relationも設定せず置いとこう
 		}else{
 
 			//ノードの最新appeared_atを取得	ここ後で選べるようにできたらいいね
-			$node_id = $_POST["node_id"];
-			$sql_get_app = "SELECT appeared_at FROM node_versions WHERE node_id = '$node_id' AND disappeared_at = (select max(appeared_at) from (select appeared_at from node_versions) temp)";
-    		if($result_get_app = $mysqli->query($sql_get_app)) {
-      			while($row = mysqli_fetch_assoc($result_get_app)){
-					$appeared_at = $row['appeared_at'];
-      			}
-    		}
+			// $node_id = $_POST["node_id"];
+			// $sql_get_app = "SELECT appeared_at FROM node_versions WHERE node_id = '$node_id' AND disappeared_at = (select max(appeared_at) from (select appeared_at from node_versions) temp)";
+    		// if($result_get_app = $mysqli->query($sql_get_app)) {
+      		// 	while($row = mysqli_fetch_assoc($result_get_app)){
+			// 		$appeared_at = $row['appeared_at'];
+      		// 	}
+    		// }
 			//ノードに時間を合わせてmap_versionsをUPDATE
-			$sql_mvu = "UPDATE map_versions SET disappeared_at = '".$appeared_at."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
-			$result_mvu = $mysqli->query($sql_mvu);
+			// $sql_mvu = "UPDATE map_versions SET disappeared_at = '".$appeared_at."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
+			// $result_mvu = $mysqli->query($sql_mvu);
 
 			//ノードに時間を合わせてmap_versionsにINSERTする
-			$map_version = rand();	//not unique
-			$sql = "INSERT INTO map_versions(id, map_id, appeared_at, disappeared_at, type, updated_reason)
-			VALUES ($map_version, '".$_SESSION['MAPID']."', '$appeared_at', NULL, 'spread', NULL)";	//後で理由入れる
-			$result = $mysqli->query($sql);
+			// $map_version = rand();	//not unique
+			// $sql = "INSERT INTO map_versions(id, map_id, appeared_at, disappeared_at, type, updated_reason)
+			// VALUES ($map_version, '".$_SESSION['MAPID']."', '$appeared_at', NULL, 'spread', NULL)";	//後で理由入れる
+			// $result = $mysqli->query($sql);
 		}
 
-	//ver更新理由の追加
+	//ノードのバージョンを更新
+	}else if($_POST["data"] == "node")
+	{
 	}else if($_POST["data"] == "edit_reason"){
 		
 		$text = $_POST["text"];
@@ -298,7 +309,7 @@
 	}else if($_POST["data"] == "node_version"){
 
 		$node_id = $_POST["node_id"];
-		$sql = "SELECT * FROM node_versions WHERE node_id = '".$node_id."' ORDER BY id DESC";
+		$sql = "SELECT * FROM node_versions WHERE node_id = '".$node_id."' ORDER BY appeared_at DESC";
 
 		$i = 0;
 		$updated_array = array(999 => 'temp');	//最初にこれ入れとかないと何故かindex($i)がついてくれない
@@ -307,7 +318,7 @@
 
 			while($row = mysqli_fetch_assoc($result)){
 
-				$updated_array[$i] = $row["id"];
+				$updated_array[$i] = $row["node_version_id"];
 
 				$i += 1;
 			}
@@ -326,7 +337,7 @@
 
 			while($row = mysqli_fetch_assoc($result)){
 
-				$updated_array[$i] = $row["id"];
+				$updated_array[$i] = $row["map_version_id"];
 
 				$i += 1;
 			}
@@ -361,24 +372,24 @@
 	}else if($_POST["data"] == "create_sheet"){
 		
 		//mapの名前を取得
-		$sql_get = "SELECT name FROM maps WHERE user_id = ".$_SESSION['USERID']." AND map_id = ".$_SESSION['MAPID'];
-		if($result_get = $mysqli->query($sql_get)) {
-      		while($row = mysqli_fetch_assoc($result_get)){
-				$name = $row['name'];
-      		}
-    	}
-		$timestamp_2sec = date("Y-m-d H:i:s", strtotime("2 second"));	//Record_rank()と被らないように＋2秒する（よくない）
+		// $sql_get = "SELECT name FROM maps WHERE user_id = ".$_SESSION['USERID']." AND map_id = ".$_SESSION['MAPID'];
+		// if($result_get = $mysqli->query($sql_get)) {
+      	// 	while($row = mysqli_fetch_assoc($result_get)){
+		// 		$name = $row['name'];
+      	// 	}
+    	// }
+		// $timestamp_2sec = date("Y-m-d H:i:s", strtotime("2 second"));	//Record_rank()と被らないように＋2秒する（よくない）
 
-		$mode_id = 1; //自己内対話モード
-		$map_mode_link = rand();
+		// $mode_id = 1; //自己内対話モード
+		// $map_mode_link = rand();
 	
-		//同じ名前,idのmap作成
-		$sql1 = "INSERT INTO maps (map_id, user_id, name, created_at, updated_at, deleted) 
-			VALUES (".$_SESSION['MAPID'].", ".$_SESSION['USERID'].", '".$name."', '".$timestamp_2sec."', '".$timestamp_2sec."','0')";
-		$sql2 = "INSERT INTO map_mode_links (id, map_id, mode_id) VALUES (".$map_mode_link.", ".$_SESSION['MAPID'].", ".$mode_id.")";
+		// //同じ名前,idのmap作成
+		// $sql1 = "INSERT INTO maps (map_id, user_id, name, created_at, updated_at, deleted) 
+		// 	VALUES (".$_SESSION['MAPID'].", ".$_SESSION['USERID'].", '".$name."', '".$timestamp_2sec."', '".$timestamp_2sec."','0')";
+		// $sql2 = "INSERT INTO map_mode_links (id, map_id, mode_id) VALUES (".$map_mode_link.", ".$_SESSION['MAPID'].", ".$mode_id.")";
 
-		$result = $mysqli->query($sql1);
-		$result = $mysqli->query($sql2);
+		// $result = $mysqli->query($sql1);
+		// $result = $mysqli->query($sql2);
 
 	//資料の内容全削除
 	}else if($_POST["data"] == "delete_document"){

@@ -78,23 +78,23 @@
 		}
 		$result_update = $mysqli->query($sql_update);
 		if ($mysqli->error) {
-			echo "Error creating temporary table: " . $mysqli->error;
+			echo "Error update: " . $mysqli->error;
 		}
 		$result_new_2 = $mysqli->query($sql_new_2);
 		if ($mysqli->error) {
-			echo "Error creating temporary table: " . $mysqli->error;
+			echo "Error new2: " . $mysqli->error;
 		}
 		$result_new_3 = $mysqli->query($sql_new_3);
 		if ($mysqli->error) {
-			echo "Error creating temporary table: " . $mysqli->error;
+			echo "Error new3: " . $mysqli->error;
 		}
 		$result_act = $mysqli->query($sql_act);
 		if ($mysqli->error) {
-			echo "Error creating temporary table: " . $mysqli->error;
+			echo "Error act: " . $mysqli->error;
 		}
 		$result_drop = $mysqli->query($sql_drop);
 		if ($mysqli->error) {
-			echo "Error creating temporary table: " . $mysqli->error;
+			echo "Error drop: " . $mysqli->error;
 		}
 
 	}else if($_POST["update"] == "delete"){
@@ -143,7 +143,7 @@
 		$sql = "UPDATE maps SET updated_at = '".$updated_at."' WHERE map_id = '".$_SESSION['MAPID']."'";
 		$result = $mysqli->query($sql);
 		if ($mysqli->error) {
-			echo "Error creating temporary table: " . $mysqli->error;
+			echo "Error updated_at: " . $mysqli->error;
 		}
 
 	}else if($_POST["update"] == "edit_reason"){
