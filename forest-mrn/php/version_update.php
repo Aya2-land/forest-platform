@@ -214,8 +214,22 @@
 		}
 
 	//ノードのバージョンを更新
-	}else if($_POST["data"] == "node")
-	{
+	}else if($_POST["data"] == "node"){
+		//node_versionsをUPDATE
+		$sql_nvu = "UPDATE node_versions SET disappeared_at = '".$timestamp."' WHERE node_id = '".$_POST['node_id']."' AND disappeared_at IS NULL";
+		$result_nvu = $mysqli->query($sql_nvu);
+		if($mysqli->error){
+			echo "Error update node_version: ". $mysqli->error;
+		}
+
+		//node_versionsにINSERTする
+		$sql_nvi = "INSERT INTO node_versions(node_version_id, node_id, parent_id, type_id, appeared_at, disappeared_at, content, concept_id, x, y)
+			VALUES ('".$_POST['node_version_id']."', '".$_POST['node_id']."', '".$_POST['parent_id']."', ".$_POST['type_id'].", '".$timestamp."', NULL, '".$_POST['content']."', '".$_POST['concept_id']."', '".$_POST['x']."', '".$_POST['y']."')";
+		$result_nvi = $mysqli->query($sql_nvi);
+		if($mysqli->error){
+			echo "Error insert node_version: ". $mysqli->error;
+		}
+		
 	}else if($_POST["data"] == "edit_reason"){
 		
 		$text = $_POST["text"];

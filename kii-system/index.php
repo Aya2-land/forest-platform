@@ -155,6 +155,10 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                     </optgroup>
                   </select>
 
+                  <button class="button4" id="map-snapshot-button" onclick="MapSnapShot();">
+                        マップver更新
+                  </button>
+
                     
 
 
@@ -235,6 +239,11 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
               <li>
               <button class="button4" onclick="remove_node();">
                   ノードの削除
+                </button>
+              </li>
+              <li>
+                <button class="button4" onclick="NodeVersionUpdate()">
+                    ノードを更新
                 </button>
               </li>
               <li>
@@ -663,6 +672,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
         <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
         <script type="text/javascript" src="js/node_tag.js"></script>
         <script type="text/javascript" src="js/add_annotations.js"></script>
+        <script type="text/javascript" src="js/version.js"></script>
         <script type="text/javascript" src="js/node_change.js"></script>
         <script type="text/javascript" src="js/add_node.js"></script>
         <script type="text/javascript" src="js/mindmap.js"></script>

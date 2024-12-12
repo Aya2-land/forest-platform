@@ -290,9 +290,28 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <ul>
                                         <!-- <li><a href="javascript:void(0);" onClick="SetPurpose()">スライドを作成する</a></li> -->
                                         <!-- <li><a href="javascript:void(0);" onClick="NodeAppend()">資料に追加する</a></li> -->
-                                        <li><a href="javascript:void(0);" onClick="ItemAddDocument()">項目として追加する</a></li>
-                                        <li><a href="javascript:void(0);" onClick="NodeAppendLogic()">内容として追加する</a></li>
-                                        <li><a href="javascript:void(0);" onClick="VersionSpread();RecordRelation()">ノードの更新をマップ全体に波及させる</a></li><!--hatakeyama-->
+                                        
+                                        <li>
+                                            <button class="button4" onclick="ItemAddDocument()">
+                                                項目として追加する
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="button4" onclick="NodeAppendLogic()">
+                                                内容として追加する 
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="button4" onclick="NodeVersionUpdate()">
+                                                ノードを更新
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="button4" onclick="VersionSpread();RecordRelation()">
+                                                ノードの更新をマップ全体に波及させる
+                                            </button>
+                                        </li><!--hatakeyama-->
+                                       
                                     </ul>
                                 </div>
                             </div>

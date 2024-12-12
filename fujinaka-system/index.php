@@ -145,6 +145,9 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                     <!-- <button class="button4" onclick="return_node();">
                       1つ前に戻る
                     </button> -->
+                    <button class="button4" id="map-snapshot-button" onclick="MapSnapShot();">
+                        マップver更新
+                    </button>
 
                     <!-- 【Zoom】 -->
                     <button class="button3" id="zoom-in-button" onclick="zoomIn();">
@@ -229,10 +232,31 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
             <div id="jsmind_container" oncontextmenu="return false;"></div>
             <div id="mindmap_conmenu">
               <ul>
-                <li><a href="javascript:void(0);" onClick="SetPurposeonChapter()">章を作成</a></li>
-                <li><a href="javascript:void(0);" onClick="SetPurposeonSection()">節を作成</a></li>
-                <li><a href="javascript:void(0);" onClick="SetPurpose()">パラグラフを作成</a></li>
-                <li><a href="javascript:void(0);" onClick="NodeAppend()">パラグラフに内容を追加</a></li>
+                <li>
+                  <button class="button4" onclick="NodeVersionUpdate()">
+                    ノードを更新
+                  </button>
+                </li>
+                <li>
+                  <button class="button4" onclick="SetPurposeonChapter()">
+                    章を作成
+                  </button>
+                </li>
+                <li>
+                  <button class="button4" onclick="SetPurposeonSection()">
+                    節を作成
+                  </button>
+                </li>
+                <li>
+                  <button class="button4" onclick="SetPurpose()">
+                    パラグラフを作成
+                  </button>
+                </li>
+                <li>
+                  <button class="button4" onclick="NodeAppend()">
+                    パラグラフに内容を追加
+                  </button>
+                </li>
               </ul>
             </div>
             <div id="document_area"> 

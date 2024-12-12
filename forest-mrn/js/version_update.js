@@ -54,31 +54,60 @@ function NodeEdit(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reason
     });
 }
 
-function NodeVersionUpdate(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reasonSYSTEM){
-  console.log("NodeVersionUpdate");
+function NodeVersionUpdate(){
+
+    var nodeVERSION = jsMind.util.uuid.newid();
+    var node = _jm.get_selected_node();
+    var nodeID = node.id;
+    var class_name = Get_NodeInfo(nodeID, 'class').split(' ')[0]; // 'XXX selected'になっているのでselectedを取り除く
+    var type_name = Get_NodeInfo(nodeID, 'type');
+    var parentID = node.parent.id;
+    var nodeTEXT = node.topic;
+    var conceptID = Get_NodeInfo(nodeID, 'concept_id');
+    var x = node._data.view.abs_x;
+    var y = node._data.view.abs_y;
+
+    //　type_idを取得
     $.ajax({
-        url: "php/version_update.php",
-        type: "POST",
-        data: { 
-                data : "node_edit",
-                node_version_id : nodeVERSION,
-                node_id : nodeID,
-                parent_node_id : parentID,
-                text : nodeTEXT,
-                updated_reason_by_learner : reasonLEARNER,
-                updated_reason_by_system : reasonSYSTEM
-              },
-  
-        success: function (res) {
-           if(!res){
-            console.log(res);
-           }
-           GetPairNodeId_ContentRelationTable(nodeID);
-        },
-        error: function () {
-          console.log("node_versionsに保存失敗");
-        },
+      url: "php/get_Typeid.php",
+      type: "POST",
+      data: { class: class_name, type: type_name },
+      success: function(response) {
+        const typeID = JSON.parse(response)['type_id'];
+        
+        //　type_idを取得できたらversion更新
+        $.ajax({
+          url: "php/version_update.php",
+          type: "POST",
+          data: { 
+                  data : "node",
+                  node_version_id : nodeVERSION,
+                  node_id : nodeID,
+                  type_id: typeID,
+                  parent_id : parentID,
+                  content : nodeTEXT,
+                  concept_id: conceptID,
+                  x: x,
+                  y: y,
+                },
+    
+          success: function (res) {
+             if(!res || res){
+              console.log(res);
+             }
+             GetPairNodeId_ContentRelationTable(nodeID);
+          },
+          error: function () {
+            console.log("node_versionsに保存失敗");
+          },
+      });
+      },
+      error: function(error) {
+        console.log("エラー:", error);
+      }
     });
+
+    
 }
 
 //relationテーブルにINSERTし、現在存在しているノードと新しいマップを結びつける
