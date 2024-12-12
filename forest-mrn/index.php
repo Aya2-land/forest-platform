@@ -70,11 +70,14 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <link rel="stylesheet" type="text/css" href="../css/jquery.cleditor.css">
         <link rel="stylesheet" type="text/css" href="../css/ui.css">
         <link rel="stylesheet" type="text/css" href="../css/style.css">
+        <link rel="stylesheet" type="text/css" href="../css/thinking-process-network.css" />
 
         <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/jsmind.js"></script>
         <script type="text/javascript" src="js/jsmind.draggable.js"></script>
+        <script type="text/javascript" src="../js/vis-network.min.js"></script>
+        <script type="text/javascript" src="../js/thinking-process-network.js"></script>
 
         <script src="js/jquery.autosize.js"></script>
         <script src="js/jquery.autosize.min.js"></script>
@@ -83,7 +86,6 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/get_thinking.js"></script>
         <script type="text/javascript" src="js/jsmind.screenshot.js"></script>
         <script type="text/javascript" src="js/change_tab.js"></script>
-        <script type="text/javascript" src="./js/vis-network.min.js"></script>
         <script type="text/javascript" src="./js/meeting-reflection-network.js"></script>
         <link rel="stylesheet" type="text/css" href="../css/meeting-reflection-network.css" />
         <script type="text/javascript">
@@ -292,6 +294,11 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                         <!-- <li><a href="javascript:void(0);" onClick="NodeAppend()">資料に追加する</a></li> -->
                                         
                                         <li>
+                                            <button class="button4" onclick="showThinkingProcessMap()">
+                                                思考過程表出化マップ
+                                            </button>
+                                        </li>
+                                        <li>
                                             <button class="button4" onclick="ItemAddDocument()">
                                                 項目として追加する
                                             </button>
@@ -428,6 +435,63 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             <!--  ここから大槻修正　-->
                             
                             <!--  ここまで大槻修正　-->
+
+                            <!-- 思考過程表出化マップ　By川 -->
+                            <div id="process_network_container" oncontextmenu="return false;" >
+                                <div id="myProcessnetwork2">
+                                    <div id="buttoncluster">
+                                        <input type="button" class="thinkingProcess_network_button"
+                                                id="process_addNode" value="要約ノード追加" />
+                                        <input type="button" class="thinkingProcess_network_button"
+                                                id="process_removeNode" value="ノード削除" />
+                                        <input type="button" class="thinkingProcess_network_button"
+                                                id="process_startEditEdge" value="エッジ追加" />
+                                        <input type="button" class="thinkingProcess_network_button"
+                                                id="process_removeEdge" value="エッジ削除" />
+                                        <input type="button" class="thinkingProcess_network_button"
+                                                id="process_ZoomIn" value="拡大" />
+                                        <input type="button" class="thinkingProcess_network_button"
+                                                id="process_ZoomOut" value="縮小" />
+                                    </div>
+                                    <div id="t_Process_conmenu">
+                                        <ul>
+                                            <li><a href="javascript:void(0);" id="process_conmenu1">概念をつける</a></li>
+                                            <li><a href="javascript:void(0);" id="process_conmenu2">マインドマップと対応付ける</a></li>
+                                            <li><a href="javascript:void(0);" id="process_conmenu3" style="display:none">採用/棄却をつける</a></li>
+                                            <li><a href="javascript:void(0);" id="process_conmenu4">キャンセル</a></li>
+                                        </ul>
+                                    </div>
+                                    <div id="t_Process_labelselect">
+                                        <select id="t_Process_selectionlist" size="3">
+                                            <!-- いるやつあれば追加やけど未実装（研究活動オントロジー読み込みかな？） -->
+                                        </select>
+                                        <input type="button" value="選択完了" id="p_ontology_select">
+                                    </div>
+                                    <div id="t_Process_recruitselect">
+                                        <select id="t_Process_recruitselectionlist">
+                                            <option value="採用">採用</option>
+                                            <option value="棄却">棄却</option>
+                                        </select>
+                                        <input type="button" value="選択完了" id="p_recruit_select">
+                                    </div>
+                                    <div id="myProcessnetwork"></div>
+                                </div>
+                                <div id="trigger_area">
+                                    <div id="trigger_area_display">
+                                        <div id="conceptdisplay"></div>
+                                        <div id="trigger_click"></div>
+                                        <div id="trigger_area_add">
+                                            <input type="button" id="inputTriggerbutton" value=" ＋ 活動を入力" onclick="inputTriggerAreaOpen()"/>
+                                            <div id="trigger_add">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="trigger_area_list">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 思考過程表出化マップ　fin -->
+
                         </div>
                         <!--are fin-->
                     </div>
