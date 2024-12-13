@@ -191,6 +191,18 @@
 				echo "Error: ". $mysqli->error;
 			}
 
+			$sql_update = "SELECT * FROM node_latest WHERE content NOT IN (SELECT content FROM node_versions WHERE node_id IN (SELECT node_id FROM map_node_links WHERE map_id = ".$_SESSION['MAPID'].") AND disappeared_at IS NULL) AND node_id IN (SELECT node_id FROM map_node_links WHERE map_id = ".$_SESSION['MAPID'].") ";
+
+			if($result = $mysqli->query($sql_update)) {
+				$rows = [];  // 結果を格納するための配列
+				while ($row = $result->fetch_assoc()) {
+					$rows[] = $row;  // 各行を配列に追加
+				}
+				echo json_encode($rows);
+			}else if($mysqli->error){
+				echo "Error update node_version: ". $mysqli->error;
+			}
+
 		//ノードからマップ全体に波及させるとき	11/30意味なくないですか？マップver2個できる 壊れそう relationも設定せず置いとこう
 		}else{
 
@@ -229,7 +241,14 @@
 		if($mysqli->error){
 			echo "Error insert node_version: ". $mysqli->error;
 		}
-		
+
+		//node_historiesをUPDATE
+		$sql_nvu = "UPDATE node_histories SET node_version_id = '".$_POST['node_version_id']."' WHERE node_version_id IN (SELECT node_version_id FROM node_versions WHERE node_id = '".$_POST['node_id']."') AND disappeared_at IS NULL";
+		$result_nvu = $mysqli->query($sql_nvu);
+		if($mysqli->error){
+			echo "Error update node_historie: ". $mysqli->error;
+		}
+
 	}else if($_POST["data"] == "edit_reason"){
 		
 		$text = $_POST["text"];

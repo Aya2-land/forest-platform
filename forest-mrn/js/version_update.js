@@ -54,8 +54,10 @@ function NodeEdit(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reason
     });
 }
 
-function NodeVersionUpdate(){
+function NodeVersionUpdate(nodes){
 
+  if(!nodes){
+    console.log(nodes);
     var nodeVERSION = jsMind.util.uuid.newid();
     var node = _jm.get_selected_node();
     var nodeID = node.id;
@@ -100,12 +102,44 @@ function NodeVersionUpdate(){
           error: function () {
             console.log("node_versionsに保存失敗");
           },
-      });
+        });
       },
       error: function(error) {
         console.log("エラー:", error);
       }
     });
+
+  }else if(nodes){
+
+    console.log(nodes);
+    var nodeVERSION = jsMind.util.uuid.newid();
+    $.ajax({
+      url: "php/version_update.php",
+      type: "POST",
+      data: { 
+              data : "node",
+              node_version_id : nodeVERSION,
+              node_id : nodes['node_id'],
+              type_id: nodes['type_id'],
+              parent_id : nodes['parent_id'],
+              content : nodes['content'],
+              concept_id: nodes['concept_id'],
+              x: nodes['x'],
+              y: nodes[y],
+            },
+      success: function (res) {
+         if(res){
+          console.log(res);
+         }
+         GetPairNodeId_ContentRelationTable(nodeID);
+      },
+      error: function () {
+        console.log("node_versionsに保存失敗");
+      },
+    });
+  }
+
+    
 
     
 }
@@ -157,9 +191,15 @@ function MapSnapShot(){
         type: "POST",
         data: { data : "map"},
         success: function(e){
-          console.log(e);
-          if(!e){
-            alert("マップver更新されました");
+          if(e == 'null'){
+            alert("マップverが更新されました");
+            show_edit_reason();
+          }else{
+            var nodes = JSON.parse(e);
+            for(var i=0; i<Object.keys(nodes).length; i++){
+              NodeVersionUpdate(nodes[i]);
+            }
+            alert("マップverと変更があったノードのverが更新されました");
             show_edit_reason();
           }
         }
@@ -1148,8 +1188,6 @@ async function GetPairNodeId_ContentRelationTable(node_id)
         data: { node_id   : node_id},
         success: function(arr){
           if(arr == "[]"){
-            console.log(arr);
-            console.log("何もなかった");
           }else{
             //console.log(arr);
             var parse = JSON.parse(arr);

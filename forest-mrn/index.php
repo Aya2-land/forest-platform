@@ -298,7 +298,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                                 思考過程表出化マップ
                                             </button>
                                         </li>
-                                        <li>
+                                        <!-- <li>
                                             <button class="button4" onclick="ItemAddDocument()">
                                                 項目として追加する
                                             </button>
@@ -307,17 +307,17 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                             <button class="button4" onclick="NodeAppendLogic()">
                                                 内容として追加する 
                                             </button>
-                                        </li>
+                                        </li> -->
                                         <li>
-                                            <button class="button4" onclick="NodeVersionUpdate()">
+                                            <button class="button4" onclick="NodeVersionUpdate(null)">
                                                 ノードを更新
                                             </button>
                                         </li>
-                                        <li>
+                                        <!-- <li>
                                             <button class="button4" onclick="VersionSpread();RecordRelation()">
                                                 ノードの更新をマップ全体に波及させる
                                             </button>
-                                        </li><!--hatakeyama-->
+                                        </li>hatakeyama -->
                                        
                                     </ul>
                                 </div>
