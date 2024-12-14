@@ -256,6 +256,22 @@ table[type] {
 	float:left;
 	display: flex; /* 横並びにする */
 }
+
+ /* 手段目標マップモードのためのスタイル */
+.num-2 #object_container {
+    position: absolute; /* 絶対配置で画面全体に表示 */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw; /* 幅を画面全体に */
+    height: 100vh; /* 高さを画面全体に */
+    min-width: 100vw; /* 最小幅も画面全体に */
+    min-height: 100vh; /* 最小高さも画面全体に */
+    border: none; /* 枠線を削除 */
+    overflow: hidden; /* オーバーフローを隠す */
+}
+
 #myobject{
 	resize: horizontal; /* 横幅のリサイズを許可 */
 	width: calc((100vw - 250px)*0.45);
@@ -269,7 +285,6 @@ table[type] {
 }
 #utterance_area{
 	width: calc((100vw - 350px)*0.15);
-	min-width: 100px;
 	height:100%;
 	min-height: 450px;
 	margin-bottom:2vh;
@@ -278,12 +293,9 @@ table[type] {
 	/* float:left; */
 }
 #utterance_area2{
-	width: calc((100vw - 350px)*0.15);
-	min-width: 100px;
 	margin-bottom:2vh;
 	border:solid 5px #cccccc00;
 	background:#c6deff;
-	overflow-y: scroll;
 	float:left;
 	line-height:20px;
 	cursor: pointer;
@@ -845,22 +857,14 @@ h3 {
 	align-items: center; /* 水平方向の中央寄せ */
 }
 
-/* 選択されたボタンのスタイル */
-.goal-item.selected {
-    background-color: #007BFF; /* 背景色を青に変更 */
-    color: white; /* 文字色を白に変更 */
-    border: 2px solid #0056b3; /* 枠線を青く強調 */
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.6); /* 青いシャドウを追加 */
-    transform: scale(1.05); /* 少し拡大して選択されている感を出す */
+
+/* 選択された目標カードのスタイル */
+.goal-card.selected {
+    border: 3px solid #007BFF; /* 枠線を3pxの青に変更 */
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4); /* 少し青い影を追加 */
+    transform: scale(1.05); /* 選択時にやや拡大 */
     transition: all 0.3s ease; /* なめらかな遷移 */
 }
-
-/* 他のボタンがホバーしたとき */
-.goal-item:not(.selected):hover {
-    background-color: #f0f8ff; /* ホバー時に背景色を薄い青に変更 */
-    cursor: pointer; /* カーソルをポインターに変更 */
-}
-
 
 /* 目標ボタンのスタイル */
 /* 目標カードのスタイル */
@@ -873,8 +877,9 @@ h3 {
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 15px;
+	margin-left: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 80%;
+    width: 75%;
     max-width: 300px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
@@ -917,11 +922,13 @@ h3 {
 }
 
 .goal-actions button {
+	width: 32px; /* ボタンの横幅を狭く設定 */
+    height: 32px; /* ボタンの高さも調整 */
     background-color: transparent;
     border: 2px solid #007BFF;
     color: #007BFF;
     padding: 5px 15px; /* ボタンの内側にスペース */
-    font-size: 1.2em;
+    font-size: 1.0em;
     border-radius: 5px;
     cursor: pointer;
     flex-grow: 1; /* ボタンの横幅を均等にする */
@@ -935,6 +942,24 @@ h3 {
 
 .goal-actions button:focus {
     outline: none;
+}
+/* エクスポートボタンのホバー時 */
+.export-btn:hover {
+    background-color: #007bff;  /* エクスポートボタンのホバー時の背景色 */
+    color: white;  /* 文字色を白に変更 */
+}
+
+/* エクスポートボタンが押されたとき（active状態） */
+.export-btn:active {
+    background-color: #0056b3;  /* 押されたときの色を少し濃い青に変更 */
+    color: white;  /* 文字色を白に変更 */
+    transform: scale(0.95);  /* 押された感を出すため、少し縮小 */
+}
+
+/* エクスポートボタンがフォーカスされた時のスタイル */
+.export-btn:focus {
+    outline: none;
+    box-shadow: 0 0 5px 3px rgba(0, 123, 255, 0.8);  /* 青い外枠のシャドウ */
 }
 
 /* メモボタンのホバー時 */
@@ -1704,7 +1729,7 @@ select {
     width: 130px;
     height: 35px;
     font-size: 14px; /* 少し大きめにして押しやすく */
-    margin-left: 10px;
+    margin-left: 14px;
     margin-top: 5px;
     border-radius: 5px; /* 角を丸くして柔らかい印象に */
     border: 1px solid #b0c4de; /* 薄い青の枠線 */
@@ -1797,6 +1822,19 @@ select {
 /* ボタンのアイコン */
 .action-button .button-icon {
     font-size: 1.0rem; /* アイコンのサイズを大きく */
+}
+
+/* disabled 状態のボタン */
+.action-button:disabled {
+    background-color: #d3d3d3; /* 灰色 */
+    color: #a9a9a9; /* 文字も薄く */
+    cursor: not-allowed; /* マウスカーソルを「使えない」状態に */
+    box-shadow: none; /* シャドウを消す */
+}
+
+/* マウスオーバー時のスタイル（enabled時のみ） */
+.action-button:not(:disabled):hover {
+    background-color: #0056b3; /* 少し濃い青色 */
 }
 
 /* ボタンスタイルのバリエーション */

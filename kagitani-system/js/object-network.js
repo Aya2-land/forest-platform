@@ -17,10 +17,10 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.edges = new vis.DataSet();
         this.options = {
 	        layout: {
-                hierarchical: {
-                  direction: 'UD',  // 上から下
-                  sortMethod: 'hubsize',  // スケールフリーネットワークに適用
-                },
+                // hierarchical: {
+                //   direction: 'UD',  // 上から下
+                //   sortMethod: 'hubsize',  // スケールフリーネットワークに適用
+                // },
               },
               edges: {
                 arrows: 'to',
@@ -243,7 +243,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.latest_selected_node_info.x = node_x;
         this.latest_selected_node_info.y = boundingBoxupdate.bottom+10;
         defaultRecordForestMRN.record_GoalNode(`${node_type}_${node_id}`, node_label, node_type, node_x, node_y);
-        Record_activities(`${node_type}_${node_id}`, null, "add", node_label, null, "goal", generateUniqueID());
+        Record_activities(`${node_type}_${node_id}`, null, "add", node_label, null, "goal", generateUniqueID(),object_map_id);
         // console.log("check");
         return this.nodes;
     }
@@ -280,7 +280,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.latest_selected_node_info.y = boundingBoxupdate.bottom + 10;
     
         defaultRecordForestMRN.record_StepNode(`${node_type}_${node_id}`, node_label, node_type, node_x, node_y);
-        Record_activities(`${node_type}_${node_id}`, null, "add", node_label, null, "step",generateUniqueID());
+        Record_activities(`${node_type}_${node_id}`, null, "add", node_label, null, "step",generateUniqueID(),object_map_id);
         console.log("クリックされたノードの確認です:", globalParams);
     
         // ノード追加後に、エッジを自動で追加
@@ -339,6 +339,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         // console.log("node_type:", node_type);
         // console.log("node_x:", node_x);
         // console.log("node_y:", node_y);
+        console.log("status:", done);
 
         let node_color = 'skyblue'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
@@ -363,9 +364,13 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             //目標ノードか手段ノードか
             case "inProgress":
                 node_color = 'orange';
+                break;
             case "done": // 手段完了
                 node_color = 'gray';
                 text_color = 'white';
+                break;
+            case "break": // 手段完了
+                node_color = 'LightCoral';
                 break;
             case null: //手段進行中
                 break;
@@ -472,12 +477,12 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     //kagitani
     addNewGoal() {
-        this.addGoal(this.generateUniqueNumberText(), "newNode", "0", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
+        this.addGoal(this.generateUniqueNumberText(), "newNode", "goal", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
         console.log("addGoalできた");
     }
 
     addNewStep() {
-        this.addStep(this.generateUniqueNumberText(), "newNode", "1", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
+        this.addStep(this.generateUniqueNumberText(), "newNode", "step", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
         console.log("addStepできた");
     }
     //kagitani
@@ -509,18 +514,18 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             switch (node.group) { // nullチェック付き
                 case "0": // 自分で考えた要約に関するノードの場合
                     console.log("ゴールを保存！！！！！！！！！！！！");
-                    Record_activities(node_id, null, "edit", node_content, null, "goal", generateUniqueID());
+                    Record_activities(node_id, null, "edit", node_content, null, "goal", generateUniqueID(),object_map_id);
                     break;
                 case "1": // 議論内での発言ノードの場合
                     console.log("手段を保存！！！！！！！！！！！！");
-                    Record_activities(node_id, null, "edit", node_content, null, "step", generateUniqueID());
+                    Record_activities(node_id, null, "edit", node_content, null, "step", generateUniqueID(),object_map_id);
                     break; 
                 default:
                     console.log("何でやねん");
                     break;
             }
             // デバッグ: Record_activities の呼び出し確認
-            console.log("Record_activities invoked for Node ID:", node_id);
+            console.log("Record_activities invoked for Node ID:", node_id,object_map_id);
         } 
     }
     
@@ -609,16 +614,16 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         document.getElementById('network_conmenu').style.display = "none";
         console.log(`ノード ${this.selectId} の作業開始だよ！！`);  // コンソールにメッセージ表示
         defaultRecordForestMRN.update_NodeStatus("inProgress", this.selectId, "", "");
-        
+    
         const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
         const fromNode = this.nodes.get(fromNodeId); // globalParams.nodes から元のノードを取得
         console.log("ここ確認する！！！！！！！", fromNode);
-        
+    
         // ノードを更新
         this.nodes.update({
             id: this.selectId,
             color: 'orange',
-            title:"作業中",
+            title: "作業中",
             size: 50,  // ノードのサイズを大きく変更
             physics: { enabled: false },  // 物理エンジンを無効にする
             borderWidth: 3,
@@ -644,11 +649,43 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         });
         window.dispatchEvent(event); // グローバルイベントとして発火
     
-        Record_activities(this.selectId, null, "start", fromNode.label, null, "step", generateUniqueID());
+        Record_activities(this.selectId, null, "start", fromNode.label, null, "step", generateUniqueID(),object_map_id);
+    
+        // 「fromNode.label 実行中．．．」を画面に表示
+        const statusMessage = `${fromNode.label} 実行中．．．`;
+    
+        // メッセージを表示するためのdivを作成
+        const messageDiv = document.createElement('div');
+        messageDiv.id = 'statusMessage';
+        messageDiv.style.position = 'fixed';
+        messageDiv.style.top = '20px';  // 画面上部から少し下
+        messageDiv.style.left = '50%';
+        messageDiv.style.transform = 'translateX(-50%)';
+        messageDiv.style.backgroundColor = '#f8d7da';  // 背景色（赤みの強い色）
+        messageDiv.style.color = '#721c24';  // 文字色
+        messageDiv.style.padding = '5px 15px';
+        messageDiv.style.fontSize = '12px';  // 文字サイズを小さく
+        messageDiv.style.fontWeight = 'bold';
+        messageDiv.style.border = '2px solid #f5c6cb';
+        messageDiv.style.borderRadius = '5px';
+        messageDiv.style.zIndex = '9999';  // 他の要素より前面に表示
+        messageDiv.style.display = 'flex';  // 横並びに設定
+        messageDiv.style.alignItems = 'center';  // 中央に整列
+        messageDiv.style.justifyContent = 'center';  // 中央に整列
+    
+        // メッセージ内容を設定
+        messageDiv.innerText = statusMessage;
+    
+        // ボディに追加
+        document.body.appendChild(messageDiv);
+    
+        // 一定時間後にメッセージを非表示にする（例えば5秒後）
+        setTimeout(() => {
+            document.getElementById('statusMessage').remove();
+        }, 5000);
     }
     
     
-
     //手段中断ボタン
     step_break (){
         document.getElementById('network_conmenu').style.display = "none";
@@ -657,6 +694,15 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         
         const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
         const fromNode = this.nodes.get(fromNodeId); 
+
+        // ノードを更新
+        this.nodes.update({
+            id: this.selectId,
+            color: 'LightCoral',
+            title: "作業中断",
+            size: 50,  // ノードのサイズを大きく変更
+            
+        });
 
         //DBに保存するのをやめる．
         autoRecordFlag = false;
@@ -670,7 +716,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
         window.dispatchEvent(breakEvent); // グローバルイベントとして発火
 
-        Record_activities(this.selectId, null, "break",fromNode.label, null, "step", generateUniqueID());
+        Record_activities(this.selectId, null, "break",fromNode.label, null, "step", generateUniqueID(),object_map_id);
     }
 
     //手段完了ボタン
@@ -682,8 +728,11 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         
         const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
         const fromNode = this.nodes.get(fromNodeId); 
+        console.log(`step_end() を呼び出しました。選択中のノードID: ${fromNodeId}`);
+        console.log(`step_end() を呼び出しました。選択中のノードID: ${this.nodes}`);
+        console.log(`step_end() を呼び出しました。選択中のノードID: ${fromNodeId.object_node_id}`); // デバッグ用ログ
 
-        Record_activities(this.selectId, null, "end", fromNode.label, null, "step", generateUniqueID());
+        Record_activities(this.selectId, null, "end", fromNode.label, null, "step", generateUniqueID(),object_map_id);
     
         // ノードの色を灰色に更新
         try {
@@ -1395,7 +1444,7 @@ class RecordForestMRN{
                 node_update_thing2: node_update_thing2
             },
             success: function(response) {
-                //console.log("完了！！！！！１Server response:", response);
+                console.log("完了！！！！！１Server response:", response);
                 try {
                     const parsedResponse = JSON.parse(response); // JSONレスポンスの解析を試みる
                     console.log("Parsed response:", parsedResponse);
@@ -1682,74 +1731,107 @@ const getLatestMapID = (callback) => {
 
 
 //活動ログを表示する．
-const makeLog = (timestamp, text, act, type) => {
+const makeLog = (timestamp, text, act, type, mapId) => {
     console.log("makeLog called with arguments:", { 
         timestamp, 
         text, 
         act,
-        type
+        type,
+        mapId
     });
 
-    // メッセージの内容を決定
+    let mapName = '';
+
+    $.ajax({
+        url: 'php/get_goals.php',
+        type: 'POST',
+        data: {
+            object_map_id: mapId,
+            purpose: 'name'
+        },
+        async: false,
+        success: (response) => {
+            console.log("AJAX success - レスポンス受け取り:", response);
+            try {
+                const data = JSON.parse(response);
+                mapName = data[0].label;
+                console.log("mapName received:", mapName);
+            } catch (error) {
+                console.error("レスポンスの解析に失敗しました:", error, "レスポンス内容:", response);
+            }
+        },
+        error: (xhr, status, error) => {
+            console.error("AJAX error:", status, error);
+        }
+    });
+
     let message = "";
+    const mapNameElement = mapName ? `<br><span style="font-size: 11px; color: #330;"> ${mapName}</span>` : '';
+
     if (type === "goal") {
         if (act === "add") {
-            message = `<strong>🎯 新しい目標追加</strong>`;
+            message = `<strong>🎯 新しい目標追加</strong> ${mapNameElement}`;
         } else if (act === "edit") {
-            message = `<strong>🎯 目標設定</strong><br>「${text}」`;
+            message = `<strong>🎯 目標設定</strong><br>${text} ${mapNameElement}`;
         }
     } else if (type === "step") {
         if (act === "add") {
-            message = `<u>🛠️ 新しい手段追加</u>`;
+            message = `<u>🛠️ 新しい手段追加</u> ${mapNameElement}`;
         } else if (act === "edit") {
-            message = `<u>🛠️ 手段設定</u><br>「${text}」`;
+            message = `<u>🛠️ 手段設定</u><br>${text} ${mapNameElement}`;
         } else if (act === "start") {
-            message = `<u>🟠 手段開始</u><br>「${text}」`;
+            message = `<u><i class="fa fa-play"></i> 手段開始</u><br>${text} ${mapNameElement}`;
         } else if (act === "break") {
-            message = `<u>🔴 手段中断</u><br>「${text}」`;
+            message = `<u><i class="fa fa-pause"></i> 手段中断</u><br>${text} ${mapNameElement}`;
         } else if (act === "end") {
-            message = `<u>⚪ 手段終了</u><br>「${text}」`;
+            message = `<u><i class="fa fa-check"></i> 手段終了</u><br>${text} ${mapNameElement}`;
+        }
+    } else if (type === "map") {
+        if (act === "add") {
+            message = `<strong style="font-size: 13px; color: #d19a00;">🗺️ 新しいマップ追加</strong><br>${mapName}`;
         }
     } else {
         console.error("Invalid type:", type);
-        return null; // 不正なtypeの場合、処理を終了
+        return null;
     }
 
-    // 背景色を設定
     const backColorMap = {
-        add: '#d4edda',    // 緑
-        edit: '#d1ecf1',   // 青
-        start: '#fff3cd',  // オレンジ
-        break: '#f8d7da',  // 赤
-        end: '#f1f3f4'     // 灰色
+        add: '#d4edda',
+        edit: '#d1ecf1',
+        start: '#fff3cd',
+        break: '#f8d7da',
+        end: '#f1f3f4',
+        mapAdd: '#fff8dc'
     };
-    const backColor = backColorMap[act] || 'gray';
+    const backColor = (type === "map" && act === "add") ? backColorMap.mapAdd : backColorMap[act] || 'gray';
 
-    // ログノードを作成
-    const logNode = $(`(<div id="${timestamp}"
-                 style='border: solid 1px #ccc; 
-                 border-radius: 5px;
-                 font-size: 13px; 
-                 line-height: 1.5; 
-                 background: ${backColor}; 
-                 margin-bottom: 10px; 
-                 padding: 10px;' 
-                 class='utter_node_in_list'
-                 utterance='${text}'
-                 timestamp='${timestamp}'>
-               <div style="margin-bottom: 5px;">${message}</div>
-               <div style="font-size: 10px; color: #666; text-align: right;">${timestamp}</div>
-               <div style="margin-top: 10px; text-align: right;">
-                   <button onclick="editLog('${timestamp}')" style="margin-right: 5px;">編集</button>
-                   <button onclick="deleteLog('${timestamp}')" style="margin-right: 5px;">削除</button>
-                   <button onclick="viewDetails('${timestamp}')" style="margin-right: 5px;">詳細</button>
-               </div>
-            </div>`);
+    const logNode = $(`
+        <div id="${timestamp}" 
+             style='border: solid 2px #d19a00; 
+                    border-radius: 10px;
+                    font-size: 14px; 
+                    line-height: 1.5; 
+                    background: ${backColor}; 
+                    margin: 0 auto 10px auto; 
+                    width: 95%; 
+                    padding: 3px;
+                    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);'
+             class='utter_node_in_list animated fadeIn' 
+             utterance='${text}' 
+             timestamp='${timestamp}'>
+            <div style="margin: 0; padding: 0;">${message}</div>
+            <div style="font-size: 10px; color: #666; text-align: right; margin: 0; padding: 0;">${timestamp}</div>
+            <ul style="margin: 0; padding: 0; text-align: right; list-style: none;"></ul>
+        </div>
+    `);
+
+    logNode.hide().fadeIn(500);
 
     console.log("Generated logNode HTML:", logNode);
 
     return logNode;
 }
+
 
 
 // objectMapIdを指定してマップ名を取得
@@ -1789,11 +1871,12 @@ function loadMapLabel() {
                 // マップ名を選択肢として追加
                 mapsData.forEach((map, index) => {
                     const option = document.createElement("option");
-                    option.value = map.label;  // map_nameを値に設定
-                    option.textContent = map.label;  // 表示名として使用
+                    option.value = map.object_map_id;  // object_map_idを値に設定
+                    option.textContent = map.label;   // 表示名として使用
                     filterMapSelect.appendChild(option);
-                    console.log(`マップ名を追加 - index: ${index}, map_name: ${map.label}`); // 追加されたmap_nameを表示
+                    console.log(`マップ名を追加 - index: ${index}, map_name: ${map.label}, map_id: ${map.object_map_id}`);
                 });
+                
             } else {
                 console.error("mapsDataは配列ではありません。取得失敗かデータ形式が不正です。");
             }
@@ -1822,7 +1905,9 @@ function applyFilters() {
     var endDate = document.getElementById('filter-end-date').value;
 
     // 使用マップの選択
-    var map = document.getElementById('filter-map').value;
+    var mapSelect = document.getElementById('filter-map');
+    var mapValue = mapSelect.value; // 選択された値
+    var mapLabel = mapSelect.options[mapSelect.selectedIndex]?.textContent || ""; // 選択された表示名
 
     // 手段開始・終了のチェックボックス状態を取得
     var start = document.getElementById('filter-start').checked;
@@ -1834,9 +1919,24 @@ function applyFilters() {
         return; // 逆転した範囲を適用しないように
     }
 
+    var filterStatus = document.getElementById('filter-status');
+
+    // フィルタ条件をチェック
+    if (startDate || endDate || mapValue) {
+        // 現在のフィルタ条件を表示
+        let filterText = "現在のフィルタ: ";
+        if (startDate) filterText += `開始日 ${startDate} `;
+        if (endDate) filterText += `| 終了日 ${endDate} `;
+        if (mapValue) filterText += `| マップ: ${mapLabel}`;
+        filterStatus.querySelector('p').textContent = filterText;
+        filterStatus.style.display = 'block'; // 表示
+    } else {
+        filterStatus.style.display = 'none'; // 非表示
+    }
+
     console.log('開始日:', startDate);
     console.log('終了日:', endDate);
-    console.log('マップ:', map);
+    console.log('マップ:', mapLabel);
     console.log('手段開始:', start);
     console.log('手段終了:', end);
 
@@ -1846,15 +1946,80 @@ function applyFilters() {
         data: {
             startDate: startDate,
             endDate: endDate,
-            map: map,
+            map: mapValue, // マップの値を送信
             start: start ? 1 : 0,
             end: end ? 1 : 0
         },
         success: (response) => {
             console.log("AJAX success - レスポンス受け取り:", response);
             try {
-                const data = JSON.parse(response); // PHPからのJSONをパース
-                displayFilteredData(data);
+                // レスポンスをJSONにパース
+                const logs = JSON.parse(response);
+            
+                // 挿入対象エリアを取得
+                const target_area = $(`#utterance_area2`);
+                // 既存の内容をクリア
+                target_area.empty();
+
+                // レスポンスが配列であることを確認
+                if (Array.isArray(logs)) {
+                    logs.forEach(logEntry => {
+                        // 各ログエントリから必要なデータを取得
+                        const { timestamp, text, act, type } = logEntry;
+            
+                        // makeLogを呼び出してログを生成
+                        const log = makeLog(timestamp, text, act, type, mapLabel);
+                        console.log("生成されたDOM:", { timestamp, text, act, type, log });
+            
+                        // 挿入対象エリアに追加
+                        target_area.append(log);
+                    });
+                } else {
+                    console.error("レスポンスは配列形式ではありません:", logs);
+                }
+            } catch (error) {
+                console.error("レスポンスの解析に失敗しました:", error, "レスポンス内容:", response);
+            }
+        },
+        error: (xhr, status, error) => {
+            console.error("AJAX error:", status, error);
+        }
+    });
+    // モーダルを閉じる
+    closeFilterModal();
+}
+
+
+function resetFilters() {
+    // フィルタ条件をリセット
+    document.getElementById('filter-start-date').value = '';
+    document.getElementById('filter-end-date').value = '';
+    document.getElementById('filter-map').value = '';
+    document.getElementById('filter-start').checked = false;
+    document.getElementById('filter-end').checked = false;
+
+    // サーバーから全てのログを取得するリクエストを送信
+    $.ajax({
+        url: 'php/get_objectLogs.php', // 全てのログを取得するPHPスクリプト
+        type: 'POST',
+        data: {}, // 条件なしでリクエスト
+        success: (response) => {
+            console.log("AJAX success - 全てのログを取得:", response);
+            try {
+                const logs = JSON.parse(response);
+                const target_area = $(`#utterance_area2`);
+                // 既存の内容をクリア
+                target_area.empty();
+
+                if (Array.isArray(logs)) {
+                    logs.forEach(logEntry => {
+                        const { timestamp, text, act, type } = logEntry;
+                        const log = makeLog(timestamp, text, act, type,map);
+                        target_area.append(log);
+                    });
+                } else {
+                    console.error("レスポンスは配列形式ではありません:", logs);
+                }
             } catch (error) {
                 console.error("レスポンスの解析に失敗しました:", error);
             }
@@ -1863,33 +2028,7 @@ function applyFilters() {
             console.error("AJAX error:", status, error);
         }
     });
-
-    // モーダルを閉じる
-    closeFilterModal();
 }
-
-// ログを表示するための関数（サンプル）
-function displayLogs(logs) {
-    const container = document.getElementById('activity-log-container');
-    container.innerHTML = ""; // 現在のログをクリア
-
-    if (logs.length === 0) {
-        container.innerHTML = "条件に一致するログはありません。";
-    } else {
-        logs.forEach(log => {
-            const logElement = document.createElement('div');
-            logElement.textContent = JSON.stringify(log); // ログを表示（JSON形式で）
-            container.appendChild(logElement);
-        });
-    }
-}
-
-// サンプルデータ（実際のデータに置き換えてください）
-const activityLogs = [
-    { date: '2024-12-09', map: 'map1', start: '08:00', end: '12:00' },
-    { date: '2024-12-10', map: 'map2', start: '09:00', end: '13:00' },
-    // 他のログデータ...
-];
 
 
 //活動ログを表示する関数を作ってみたよん
@@ -1901,22 +2040,19 @@ window.addEventListener("textSendEvent", (event) => {
     // 年/月/日 時:分:秒 形式でフォーマット
     const receivedTimestamp = `${now.getMonth() + 1}月${now.getDate()}日 ${now.getHours()}時${now.getMinutes()}分${now.getSeconds()}秒`;
     const receivedNodeText = event.detail.nodeTEXT; // nodeTEXTを取得
-    const receivedNodeAct = event.detail.nodeACT; // nodeTEXTを取得
-    const receivedNodeType = event.detail.nodeTYPE; // nodeTEXTを取得
-    console.log("[object-network.js] 受信したtimestamp:", receivedTimestamp, receivedNodeText, receivedNodeAct,receivedNodeType);
+    const receivedNodeAct = event.detail.nodeACT; // nodeACTを取得
+    const receivedNodeType = event.detail.nodeTYPE; // nodeTYPEを取得
+    const receiveMapId = event.detail.objectMapId; // objectMapIdの誤スペルを修正
+    console.log("[object-network.js] 受信したtimestamp:", receivedTimestamp, receivedNodeText, receivedNodeAct, receivedNodeType, receiveMapId);
 
     try {
         // DOMを生成して挿入
-        // console.log("[object-network.js] DOM生成を開始します。");
-        const log = makeLog(receivedTimestamp, receivedNodeText, receivedNodeAct,receivedNodeType);
-        // console.log("[object-network.js] 生成されたDOM:", utter_dom);
+        const log = makeLog(receivedTimestamp, receivedNodeText, receivedNodeAct, receivedNodeType, receiveMapId);
 
         const target_area = $(`#utterance_area2`);
-        // console.log("[object-network.js] 挿入対象エリア:", target_area);
 
         if (target_area.length > 0) {
             target_area.prepend(log); // 一番上に挿入
-            // console.log("[object-network.js] DOMを挿入しました。");
         } else {
             console.warn("[object-network.js] 挿入対象エリアが見つかりません。");
         }
@@ -1924,8 +2060,6 @@ window.addEventListener("textSendEvent", (event) => {
         console.error("[object-network.js] DOM操作中にエラーが発生しました:", error);
     }
 });
-
-
 
 // アップロードする時
 const displayUtteranceNodeInList = (display_target_area_id, target_reflection_time) => {
@@ -2065,7 +2199,7 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
             //     text: ${u.text},
             //     act: ${u.act}`);
         
-            const log = makeLog(u.timestamp, u.text, u.act, u.type);
+            const log = makeLog(u.timestamp, u.text, u.act, u.type,u.object_map_id);
         
             // 関数呼び出し後のデバッグログ
             console.log("生成されたDOM:", u.timestamp, u.text, u.act, u.type);

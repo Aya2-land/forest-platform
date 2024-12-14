@@ -53,7 +53,7 @@ if($purpose === "select_meeting_utterance") { //こいつを取ってきてい�
      * 議論における発話パーツ一覧
      */
     //活動ログの表示
-    $result_objectLog = $mysqli->query("SELECT timestamp, node_id, type, act, text FROM activities
+    $result_objectLog = $mysqli->query("SELECT timestamp, node_id, type, act, text, object_map_id FROM activities
             WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND type != 'question' ORDER BY timestamp DESC");
     $objectLog = [];
     while ($row = $result_objectLog->fetch_assoc()) {

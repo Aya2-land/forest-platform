@@ -1150,7 +1150,6 @@ function ModeChangeButtonClick() {
     $('#mind').show();
   }else if(num == 1){
     // 思考整理マップモード：layoutのみ表示
-    $('#document').hide();  // ドキュメント非表示
     $('#object_container').hide();  // ドキュメント非表示
     $('#myobject').hide();  // ドキュメント非表示
     $('#utterance_area').hide();  // ドキュメント非表示
@@ -1161,17 +1160,23 @@ function ModeChangeButtonClick() {
   }else if(num == 2){
     // 手段目標マップモード：layout以外の部分を表示
     $('#layout').hide();  // layoutを非表示にする
-    $('#jsmind_container').show();  // jsMind コンテナ表示
-    $('#document').show();  // ドキュメント表示
-    $('#mind').css('height','50%');
+    $('#jsmind_container').hide();  // jsMind コンテナ非表示
+    $('#myobject').show();  // ドキュメント非表示
+    $('#utterance_area').show();  // ドキュメント非表示
+    $('#object_container').toggle('fast');
+    $('#object_container').css('display','flex');
 
-    $('#scenario_title').css('margin-left','15px');
-    $('#scenario_title').css('width','90%');
-    $('#scenario_title').css('border','Black');
-    $('#document_area').css('width','calc(60vw - 350px)');
-    $('#document_area').css('height','84vh');
-    $('#document_area').css('overflow','scroll');
-  }
+    // 画面全体に#object_containerを広げる
+    $('#object_container').css('width', '300vw');  // 画面全体に設定
+    $('#object_container').css('height', '60vh'); // 画面全体に設定
+    $('#object_container').css('position', 'absolute'); // 絶対配置に設定
+    $('#object_container').css('top', '80'); // 上端を0に設定
+    $('#object_container').css('left', '0'); // 左端を0に設定
+    $('#object_container').css('right', '0'); // 右端を0に設定
+    $('#object_container').css('bottom', '100'); // 下端を0に設定
+    $('#object_container').css('grid-column', 'span 2'); // グリッドのカラムを跨るように設定
+}
+
   jump_node("root");
 }
 

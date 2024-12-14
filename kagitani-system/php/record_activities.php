@@ -17,6 +17,7 @@
 	$parent_id = $_POST["parent_id"];    //親ノードID
 	$activity = $_POST["activity"];      //操作
     $primary_id = $_POST["primary"];     //primary_id
+	$object_map_id = $_POST["object_map_id"];
 
 
 	//用意された問いの追加だった場合，微調整を行う
@@ -30,8 +31,8 @@
 
 
 	// SQLクエリの生成
-	$sql = "INSERT INTO activities (id, timestamp, node_id, act, type, concept_id, text, parent_id, user_id, sheet_id)
-	VALUES ('$primary_id', '$timestamp', '$node_id','$activity', '$type','$concept_id','$text','$parent_id','$user_id','$sheet_id')";
+	$sql = "INSERT INTO activities (id, timestamp, node_id, act, type, concept_id, text, parent_id, user_id, sheet_id, object_map_id)
+	VALUES ('$primary_id', '$timestamp', '$node_id','$activity', '$type','$concept_id','$text','$parent_id','$user_id','$sheet_id', '$object_map_id')";
 
 	// SQLクエリをエコーで出力（ブラウザやネットワークタブで確認可能）
 	echo "Generated SQL: " . $sql . "\n";

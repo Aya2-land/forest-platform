@@ -56,6 +56,10 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
 <!-- FontAwesomeのCDNをHTMLに追加 -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
+<!-- html2canvasのCDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html lang="en">
     <head>
@@ -153,19 +157,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
 
                 <!--サイドメニュー　finish-->
             </div>
-
         </div>
-
-        <!-- <div class="checkbox">
-            <form name="target_mode" action="">
-                <select class="cp_ipselect2 cp_sl02"name="Select1">
-                    <option>二分割モード</option>
-                    <option>思考整理マップ</option>
-                    <option>手段目標マップ</option>
-                </select>
-                <input type="button" class="button3" value="実行" onclick="ModeChangeButtonClick();" />
-            </form>
-        </div> -->
 
         <!--メインメニュー　Start  -->
         <div class="tabcontent">
@@ -207,6 +199,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                 <div id="object_container" oncontextmenu="return false;" >
                         <div id="utterance_area">
                         <button id="a_button" onclick="openFilterModal()">活動ログフィルタ</button>
+                        <div id="filter-status" style="display: none;">
+                            <p>現在のフィルタ: 開始日 2024-12-01 | 終了日 2024-12-12 | マップ: Tokyo</p>
+                        </div>
 
                            <!-- モーダルウィンドウ -->
                             <div id="filter-modal" class="modal">
@@ -250,6 +245,8 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
 
                                     <!-- フィルタを適用するボタン -->
                                     <button class="filter_button" onclick="applyFilters();">フィルタを適用</button>
+                                    <button class="filter_button" onclick="resetFilters();">全てのログを表示</button>
+
                                 </div>
                             </div>
 

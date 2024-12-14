@@ -78,6 +78,9 @@ function addObjectMap() {
 
     // サーバーに目標を保存
     record_objectMap(goalContent, timeString, objectMapId);
+    
+    //活動ログに追加
+    Record_activities(objectMapId, null, "add", goalContent, null, "map", generateUniqueID(),null);
 }
 
 function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, objectMapId) {
@@ -86,11 +89,12 @@ function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, obj
         <div class="goal-card compact">
             <div class="goal-content">
                 <span class="goal-text">${goalContent}</span><br>
-                <span class="goal-date">作成: ${createdAt}</span> | 
-                <span class="goal-date">更新: ${updatedAt}</span>
+                <span class="goal-date-updated" style="font-size: 0.7em; display: block;">更新: ${updatedAt}</span> 
+                <span class="goal-date-created" style="font-size: 0.7em; display: block;">作成: ${createdAt}</span>
             </div>
             <div class="goal-actions">
                 <button class="memo-btn" title="メモを追加/編集">📝</button>
+                <button class="export-btn" title="目標をエクスポート">📤</button>
                 <button class="delete-btn" title="目標を削除">🗑️</button>
             </div>
         </div>
@@ -106,6 +110,50 @@ function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, obj
             goalButton.setAttribute('data-memo', newMemo.trim() || 'メモがありません');
         }
     });
+
+    // エクスポートボタンのイベントリスナーを追加
+// エクスポートボタンのイベントリスナーを追加
+    const exportButton = goalButton.querySelector('.export-btn');
+    exportButton.addEventListener('click', () => {
+        // マップ名と時間を取得
+        const currentTime = new Date().toISOString().replace(/[:.-]/g, '_');  // ファイル名用にISO形式の日付を取得
+
+        // エクスポートするマップ（vis.jsのコンテナ）を取得
+        const networkContainer = document.querySelector('#mynetwork');  // マップのコンテナのIDを指定
+
+        // マップの全体の高さと幅を取得
+        const width = networkContainer.scrollWidth;  // 全体の幅
+        const height = networkContainer.scrollHeight;  // 全体の高さ
+
+        // html2canvasのオプション設定
+        html2canvas(networkContainer, {
+            scrollX: 0,
+            scrollY: 0,
+            width: width,
+            height: height,
+            useCORS: true,
+            allowTaint: true,
+            x: 0,
+            y: 0,
+            logging: true,  // デバッグ用
+            ignoreElements: (element) => {
+                // 不要な要素は無視する場合
+                return element.id === 'someIdToIgnore';
+            }
+        }).then(canvas => {
+            // キャプチャしたcanvasを画像として保存
+            canvas.toBlob(blob => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `${currentTime}_${goalContent}.png`;  // ファイル名に時間と目標内容を使用
+                link.click();
+            }, 'image/png');
+        }).catch(error => {
+            console.error('Error in capturing canvas:', error);
+        });
+    });
+
+
 
     // 削除ボタンのイベントリスナーを追加
     const deleteButton = goalButton.querySelector('.delete-btn');
@@ -125,6 +173,7 @@ function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, obj
     // 編集機能を追加
     enableGoalEdit(goalButton, goalContent, createdAt, objectMapId);
 }
+
 
 
 
@@ -414,7 +463,7 @@ function handleGoalClick(goalButton, goalContent, timeString, objectMapId) {
      // goalButton内の更新日時を更新
      const updatedAtElement = goalButton.querySelector('.goal-date');
      if (updatedAtElement) {
-         updatedAtElement.textContent = currentDate; // 更新日時のテキストを現在時刻に変更
+         updatedAtElement.textContent = `更新: ${currentDate}`; // 更新日時のテキストを現在時刻に変更
      }
 
     // object_map_id に紐づけられたデータをロード

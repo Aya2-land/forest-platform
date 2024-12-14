@@ -3,7 +3,7 @@
 let object_node_id;
 
 //ノードの操作履歴を記録する関数
-function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nodeTYPE, primaryID) {
+function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nodeTYPE, primaryID,objectMapId) {
     const requestData = {
       id: nodeID,
       parent_id: parentID,
@@ -12,6 +12,7 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
       concept_id: nodeCONCEPT,
       type: nodeTYPE,
       primary: primaryID,
+      object_map_id:objectMapId
   };
 
   console.log("送信データ:", requestData);
@@ -23,7 +24,7 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
       success: function (response) {
           console.log("サーバーからのレスポンス: ", response);
           if (response.message) {
-              console.log("やっっっっと成功した！！:", response.message);
+              console.log(response.message);
           } else {
               console.warn("メッセージがありません。レスポンスの構造を確認してください。");
           }
@@ -35,6 +36,7 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
               ノードTYPE: nodeTYPE,
               ノードテキスト: nodeTEXT,
               親ノードID: parentID,
+              手段目標マップID: objectMapId
           });
       },
       error: function (xhr, status, error) {
@@ -46,8 +48,7 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
       },
   });
 
-
-  sendTextToObjectNetwork(nodeTEXT, nodeACT,nodeTYPE);
+  sendTextToObjectNetwork(nodeTEXT, nodeACT,nodeTYPE,objectMapId);
 
   if (autoRecordFlag) {
     console.log("フラグオン！！");
@@ -77,9 +78,9 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
   }
 }
 
-function sendTextToObjectNetwork(nodeTEXT, nodeACT,nodeTYPE) {
+function sendTextToObjectNetwork(nodeTEXT, nodeACT,nodeTYPE,objectMapId) {
   const event = new CustomEvent("textSendEvent", {
-      detail: { nodeTEXT: nodeTEXT, nodeACT:nodeACT, nodeTYPE:nodeTYPE }
+      detail: { nodeTEXT: nodeTEXT, nodeACT:nodeACT, nodeTYPE:nodeTYPE ,objectMapId:objectMapId}
   });
   console.log("[get_thinking.js] カスタムイベントを発行しました:", event);
   window.dispatchEvent(event);

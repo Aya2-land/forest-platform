@@ -161,6 +161,9 @@
 			if($select_update === 'inProgress'){
 				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 				$mysqli->query("UPDATE object_nodes SET status = '$select_update', updated_at = '$timestamp' WHERE object_node_id = '$object_node_id'");
+			}else if($select_update === 'break'){
+				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+				$mysqli->query("UPDATE object_nodes SET status = '$select_update', updated_at = '$timestamp' WHERE object_node_id = '$object_node_id'");
 			}
 		}
 	}else if($purpose === 'delete'){
