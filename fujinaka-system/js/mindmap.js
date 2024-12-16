@@ -1304,7 +1304,8 @@ function CheckClick(){
       showGeneration();
 
     }else{
-      $('#jsmind_container').css('width','calc(100vw - 350px)');
+      // $('#jsmind_container').css('width','calc(100vw - 350px)');
+    $('#jsmind_container').css('width','100%');
 
       $('#jsmind_container').show('fast');
       $('#document_area').hide('fast');

@@ -1173,7 +1173,8 @@ function CheckClickVersion(){
   else{
     console.log("ノーチェック");
     $('#jsmind_container').show();
-    $('#jsmind_container').css('width','calc(100vw - 350px)');
+    // $('#jsmind_container').css('width','calc(100vw - 350px)');
+    $('#jsmind_container').css('width','100%');
     $('#mind').css('height','90%');
   }
 }
@@ -1204,7 +1205,8 @@ function CheckClick(){
   }
   else{
     $('#jsmind_container').show();
-    $('#jsmind_container').css('width','calc(100vw - 350px)');
+    // $('#jsmind_container').css('width','calc(100vw - 350px)');
+    $('#jsmind_container').css('width','100%');
     $('#mind').css('height','90%');
     $('#document').hide();
     // $('#mind').show();
@@ -1232,7 +1234,8 @@ function ModeChangeButtonClick() {
   if (num == 0 ){
 
     $('#jsmind_container').show();
-    $('#jsmind_container').css('width','calc(100vw - 350px)');
+    // $('#jsmind_container').css('width','calc(100vw - 350px)');
+    $('#jsmind_container').css('width','100%');
     $('#mind').css('height','90%');
     $('#document').hide();
     // $('#mind').show();

@@ -5,7 +5,7 @@ let defaultShowThinkingProcess;
 
 class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     constructor(container, load) {
-        // this.ownNetwork = this.generateMeetingReflectionNetworkCanvas(container, {}, {}); // デフォルトのマップを表示
+        // this.ownNetwork = this.generateThinkingProcessNetworkCanvas(container, {}, {}); // デフォルトのマップを表示
 
         defaultRecordThinkingProcess = new RecordThinkingProcess();
         this.nodes = new vis.DataSet();
@@ -39,16 +39,16 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         this.edgeEditMode = false; // リンクを編集できるかどうかのモード（Falseは編集不可）
         this.EdgeStartId = []; //エッジの開始ID
         this.EdgeEndId = []; //エッジの終了ID
-        this.OntologyNodeId = []; //オントロジーノードのノードID
-        this.OntologyConnectNodeId = []; //オントロジーノードと対応づいているノードID
-        this.ConnectNetworkNodeId = [];
-        this.ConnectMindMapNodeId = [];
-        this.RecruitNodeId = [];//採用or棄却されたノードID
-        this.Recruit = [];//採用or棄却
-        this.Feedback = [];//フィードバック書いたかどうか
-        this.FeedbackNodeId = null; //フィードバック書かれるノードID
+        // this.OntologyNodeId = []; //オントロジーノードのノードID
+        // this.OntologyConnectNodeId = []; //オントロジーノードと対応づいているノードID
+        // this.ConnectNetworkNodeId = [];
+        // this.ConnectMindMapNodeId = [];
+        // this.RecruitNodeId = [];//採用or棄却されたノードID
+        // this.Recruit = [];//採用or棄却
+        // this.Feedback = [];//フィードバック書いたかどうか
+        // this.FeedbackNodeId = null; //フィードバック書かれるノードID
         this.selectId = null;//選択されたノードID
-        this.interval = null; //インターバル抜けるための変数
+        // this.interval = null; //インターバル抜けるための変数
         this.material_id = null;
         this.concept_id = null;
         this.scale = 1;
@@ -56,28 +56,24 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             x: 0,
             y: 0
         }//右クリックされやメニューの表示場所
-        this.ownNetwork = this.generateMeetingReflectionNetworkCanvas(container, this.nodes, this.edges); // デフォルトのマップを表示
+        this.ownNetwork = this.generateThinkingProcessNetworkCanvas(container, this.nodes, this.edges); // デフォルトのマップを表示
         this.choose_input_xmlLoad();
         if(load == "load"){
             this.jmindex = [];
             this.addEventLister();
-            $(`#jsmind_container`).on('click',this.connect_mindmap.bind(this));
-            $(`#process_conmenu1`).on('click',this.show_select.bind(this));
-            $(`#process_conmenu2`).on('click',this.connect_network.bind(this));
-            $(`#process_conmenu3`).on('click',this.Recruit_Idea.bind(this));
+            // $(`#jsmind_container`).on('click',this.connect_mindmap.bind(this));
+            // $(`#process_conmenu1`).on('click',this.show_select.bind(this));
+            // $(`#process_conmenu2`).on('click',this.connect_network.bind(this));
+            // $(`#process_conmenu3`).on('click',this.Recruit_Idea.bind(this));
             $(`#process_conmenu4`).on('click',this.ContentmenuCancel.bind(this));
-            $(`#p_ontology_select`).on('click',this.addontology.bind(this));
-            $(`#p_recruit_select`).on('click',this.Selected_Recruit_Idea.bind(this));
+            // $(`#p_ontology_select`).on('click',this.addontology.bind(this));
+            // $(`#p_recruit_select`).on('click',this.Selected_Recruit_Idea.bind(this));
             this.ownNetwork.on('click', this.networkClick.bind(this));
             this.ownNetwork.on('dragStart', this.dragstart.bind(this));
             this.ownNetwork.on('dragEnd', this.dragend.bind(this));
             this.ownNetwork.on('doubleClick', this.doubleclick.bind(this));
             this.ownNetwork.on("oncontext", this.onContext.bind(this));
             this.ownNetwork.on('select', this.selectdelete.bind(this));
-        }else if(load == 'pastmap'){
-            this.jmindex2 = [];
-            this.jmindex3 = [];
-            this.ownNetwork.on('click', this.shownetworkClick.bind(this));
         }
         this.choose_input_xmlLoad();
     }
@@ -158,36 +154,36 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     }
 
     addEventLister(){
-        this.bindconnect_mindmap = this.connect_mindmap.bind(this);
-        this.bindshow_select = this.show_select.bind(this);
-        this.bindconnect_network = this.connect_network.bind(this);
-        this.bindRecruit_Idea = this.Recruit_Idea.bind(this);
+        // this.bindconnect_mindmap = this.connect_mindmap.bind(this);
+        // this.bindshow_select = this.show_select.bind(this);
+        // this.bindconnect_network = this.connect_network.bind(this);
+        // this.bindRecruit_Idea = this.Recruit_Idea.bind(this);
         this.bindContentmenuCancel = this.ContentmenuCancel.bind(this);
-        this.bindaddontology = this.addontology.bind(this);
-        this.bindSelected_Recruit_Idea = this.Selected_Recruit_Idea.bind(this);
-        this.bindfeedback = this.feedback.bind(this);
-        this.bindNodeblinking = this.Nodeblinking.bind(this);
-        $(`#jsmind_container`).on('click',this.bindconnect_mindmap);
-        $(`#process_conmenu1`).on('click',this.bindshow_select);
-        $(`#process_conmenu2`).on('click',this.bindconnect_network);
-        $(`#process_conmenu3`).on('click',this.bindRecruit_Idea);
+        // this.bindaddontology = this.addontology.bind(this);
+        // this.bindSelected_Recruit_Idea = this.Selected_Recruit_Idea.bind(this);
+        // this.bindfeedback = this.feedback.bind(this);
+        // this.bindNodeblinking = this.Nodeblinking.bind(this);
+        // $(`#jsmind_container`).on('click',this.bindconnect_mindmap);
+        // $(`#process_conmenu1`).on('click',this.bindshow_select);
+        // $(`#process_conmenu2`).on('click',this.bindconnect_network);
+        // $(`#process_conmenu3`).on('click',this.bindRecruit_Idea);
         $(`#process_conmenu4`).on('click',this.bindContentmenuCancel);
-        $(`#p_ontology_select`).on('click',this.bindaddontology);
-        $(`#p_recruit_select`).on('click',this.bindSelected_Recruit_Idea);
-        $(`#feedbackrecord`).on('click',this.bindfeedback);
-        this.interval = setInterval(this.bindNodeblinking, 1000);
+        // $(`#p_ontology_select`).on('click',this.bindaddontology);
+        // $(`#p_recruit_select`).on('click',this.bindSelected_Recruit_Idea);
+        // $(`#feedbackrecord`).on('click',this.bindfeedback);
+        // this.interval = setInterval(this.bindNodeblinking, 1000);
     }
 
     removeEventLister(){
-        $(`#jsmind_container`).off('click',this.bindconnect_mindmap);
-        $(`#process_conmenu1`).off('click',this.bindshow_select);
-        $(`#process_conmenu2`).off('click',this.bindconnect_network);
-        $(`#process_conmenu3`).off('click',this.bindRecruit_Idea);
+        // $(`#jsmind_container`).off('click',this.bindconnect_mindmap);
+        // $(`#process_conmenu1`).off('click',this.bindshow_select);
+        // $(`#process_conmenu2`).off('click',this.bindconnect_network);
+        // $(`#process_conmenu3`).off('click',this.bindRecruit_Idea);
         $(`#process_conmenu4`).off('click',this.bindContentmenuCancel);
-        $(`#p_ontology_select`).off('click',this.bindaddontology);
-        $(`#p_recruit_select`).off('click',this.bindSelected_Recruit_Idea);
-        $(`#feedbackrecord`).off('click',this.bindfeedback);
-        clearInterval(this.interval);
+        // $(`#p_ontology_select`).off('click',this.bindaddontology);
+        // $(`#p_recruit_select`).off('click',this.bindSelected_Recruit_Idea);
+        // $(`#feedbackrecord`).off('click',this.bindfeedback);
+        // clearInterval(this.interval);
     }
     /*
      * マップ編集ユーティリティ
@@ -236,27 +232,9 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     }
 
     /*
-     * データベースリクエストユーティリティ
-     */
-    // recordMeetingUtteranceNodes(utterances) {
-    //     // データを送信（DBに保存）
-    //     $.ajax({
-    //         url: "php/thinking_map_manager.php",
-    //         type: "POST",
-    //         data: {
-    //             purpose: "record_meeting_utterance",
-    //             utters: JSON.stringify(utterances),
-    //         }
-    //     }).success((r) => {
-    //         alert("議論データアップロードに成功しました")
-    //         document.getElementById("meetingUtteranceXmlFileUploader").value = "";
-    //     });
-    // }
-
-    /*
      * 議論内省マップの表示・操作部分（Extend vis.js）
      */
-    generateMeetingReflectionNetworkCanvas (canvas_dom_id, nodes, edges) {
+    generateThinkingProcessNetworkCanvas (canvas_dom_id, nodes, edges) {
         // マップを表示
 
         this.setNodes(nodes);
@@ -284,32 +262,15 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
         let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
-        // switch(node_type) {
-        //     case "material-content": // 議論資料に書かれた内容に関するノードの場合
-        //         break;
-        //     case "process": // 自分で考えた要約に関するノードの場合
-        //         node_color = 'green';
-        //         text_color = 'white';
-        //         break;
-        //     case "utterance": // 議論内での発言ノードの場合
-        //         node_color = 'pink';
-        //         break;
-        //     case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-        //         node_color = 'blue';
-        //         node_shape = 'ellipse';
-        //         text_color = 'white';
-        //         position_fixed = true;
-        //         break;
-        //     default: // その他
-        //         break;
-        // }
+
         let result_label = '';
         for (let i = 0; i < node_label.length; i += 10) {
             result_label += node_label.substr(i, 10) + '\n';
         }
         result_label = result_label.trim(); // 末尾の不要な改行を除去
         const newNode = {
-            id: `${node_type}_${node_id}`, label: result_label,
+            id: node_id,
+            label: result_label,
             group: node_type,
             color: node_color, shape: node_shape,
             font: { color: text_color },
@@ -317,20 +278,19 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             x: node_x, y: node_y, 
         };
         this.nodes.add(newNode);
-        const boundingBox = this.ownNetwork.getBoundingBox(`${node_type}_${node_id}`);
-        if(node_type !==  "topic-tag"){
-            node_y += Math.floor(((boundingBox.bottom)-(boundingBox.top))/2);
-        }
+        const boundingBox = this.ownNetwork.getBoundingBox(node_id);
+        node_y += Math.floor(((boundingBox.bottom)-(boundingBox.top))/2);
         this.nodes.update({
-            id : `${node_type}_${node_id}`,
-            color: node_color, shape: node_shape,
+            id : node_id,
+            color: node_color,
+            shape: node_shape,
             font: { color: text_color },
             y : node_y
         });
-        const boundingBoxupdate = this.ownNetwork.getBoundingBox(`${node_type}_${node_id}`);
+        const boundingBoxupdate = this.ownNetwork.getBoundingBox(node_id);
         this.latest_selected_node_info.x = node_x;
         this.latest_selected_node_info.y = boundingBoxupdate.bottom+10;
-        defaultRecordThinkingProcess.record_Node(`${node_type}_${node_id}`, node_label, node_type, node_x, node_y);
+        defaultRecordThinkingProcess.record_Node(node_id, node_label, node_type, node_x, node_y);
         return this.nodes;
     }
 
@@ -344,24 +304,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
         let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
-        // switch(node_type) {
-        //     case "material-content": // 議論資料に書かれた内容に関するノードの場合
-        //         break;
-        //     case "process": // 自分で考えた要約に関するノードの場合
-        //         node_color = 'green';
-        //         text_color = 'white';
-        //         break;
-        //     case "utterance": // 議論内での発言ノードの場合
-        //         node_color = 'pink';
-        //         break;
-        //     case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-        //         node_color = 'blue';
-        //         node_shape = 'ellipse';
-        //         text_color = 'white';
-        //         break;
-        //     default: // その他
-        //         break;
-        // }
         let result_label = '';
         for (let i = 0; i < node_label.length; i += 10) {
             result_label += node_label.substr(i, 10) + '\n';
@@ -382,52 +324,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         return defaultThinkingProcess.nodes;
     }
 
-    //操作できないノードを作る（過去のマインドマップのため）
-    addShowNode(node_id, node_label, node_type, node_x, node_y) {
-        const existingNode = defaultThinkingProcess.nodes.get(node_id);
-        if (existingNode) {
-            console.log(`Node with ID ${node_id} already exists. Skipping addition.`);
-            return; // 重複がある場合は追加せずにリターン
-        }
-        let node_color = '#ffdb4f'; // ノードの背景色
-        let node_shape = 'box';     // ノードの形状
-        let text_color = 'black';   // ノード内文字列の色
-        switch(node_type) {
-            case "material-content": // 議論資料に書かれた内容に関するノードの場合
-                break;
-            case "process": // 自分で考えた要約に関するノードの場合
-                node_color = 'green';
-                text_color = 'white';
-                break;
-            case "utterance": // 議論内での発言ノードの場合
-                node_color = 'pink';
-                break;
-            case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                node_color = 'blue';
-                node_shape = 'ellipse';
-                text_color = 'white';
-                break;
-            case "versions": //選択されたノードのバージョンを表示する場合
-                node_color = '#ffbaa1';
-                node_shape = 'box';
-                text_color = 'black';
-                break;
-            default: // その他
-                break;
-        }
-        const newNode = {
-            id: `${node_id}`, label: node_label,
-            group: node_type,
-            color: node_color, shape: node_shape,
-            font: { color: text_color },
-            fixed: true,
-            x: node_x, y: node_y, 
-        };
-        defaultThinkingProcess.nodes.add(newNode);
-        return defaultThinkingProcess.nodes;
-    }
-
-    addVersionNode(node_id, node_label, node_type, node_x, node_y){
+    addVersionNode(node_id, node_label, node_type, appeared_at, node_x, node_y){
         const existingNode = defaultThinkingProcess.nodes.get(node_id);
         if (existingNode) {
             console.log(`Node with ID ${node_id} already exists. Skipping addition.`);
@@ -481,7 +378,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             node_x = (defaultThinkingProcess.nodes.get(from_node).x + defaultThinkingProcess.nodes.get(to_node).x ) /2; //ノードがversionの間に来るように
         }
         if(!node_y){
-            node_y = Math.floor(Math.random()*500)-250;
+            node_y = Math.floor(Math.random()*200)-100;
         }
 
         //triggerとなった活動ごとにアイコンを変更
@@ -565,32 +462,13 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         return defaultThinkingProcess.edges, defaultThinkingProcess.nodes;
     }
 
-    addNewTriggerEdge(trigger_id, to_id, color, edge_type){
-        //triggeからversion_nodeを指す新しいエッジを追加
-        return defaultThinkingProcess.edges;
-    }
-
-    // 資料エッジ作成
-    addmaterialEdge(edge_start, edge_end, edge_label){
-        this.edges.add({ from: edge_start, to: edge_end, label: edge_label});
-        defaultRecordThinkingProcess.record_Material_Edge(edge_start, edge_end, edge_label);
-    }
-
-    addReloadEdge(edge_start, edge_end, edge_label) {
-        this.edges.add({ from: edge_start, to: edge_end ,label: edge_label});
+    addReloadEdge(edge_id, edge_start, edge_end, edge_label) {
+        this.edges.add({id: edge_id, from: edge_start, to: edge_end ,label: edge_label});
     }
 
     //未完成　ノード追加
     addNewNode() {
         this.addNode(this.generateUniqueNumberText(), "newNode", "process", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
-    }
-
-    addmaterialNode(node_id, node_label){
-        this.addNode(node_id, node_label, "material-content", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
-    }
-
-    addutteranceNode(utterance){
-        this.addNode(this.generateUniqueNumberText(), utterance, "utterance", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
     }
 
     //ノードのラベル編集(完了)
@@ -607,14 +485,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             // 編集を反映
             this.nodes.update(node);
             defaultRecordThinkingProcess.update_Node("label", node_id, node_content, "");
-            const ontology_index = this.OntologyConnectNodeId.indexOf(node_id);
-            if(ontology_index !== -1){
-                const nodeBoundingBox = this.ownNetwork.getBoundingBox(node_id);
-                const ontology_x = nodeBoundingBox.left;
-                const ontology_y = nodeBoundingBox.top;
-                this.nodes.update({ id: this.OntologyNodeId[ontology_index], x: ontology_x, y: ontology_y });
-                defaultRecordThinkingProcess.update_Node("point", this.OntologyNodeId[ontology_index], ontology_x, ontology_y);
-            }
         }
     }
 
@@ -638,27 +508,27 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             this.edges.remove(this.ownNetwork.getConnectedEdges(selectNodeId));
             this.nodes.remove({id: selectNodeId});
             defaultRecordThinkingProcess.delete_db_Node(selectNodeId);
-            defaultRecordThinkingProcess.delete_db_Edge(selectNodeId, "");
-            defaultRecordThinkingProcess.delete_db_Edge("", selectNodeId);
-            const ontology_index = this.OntologyConnectNodeId.indexOf(selectNodeId);
-            if(ontology_index !== -1){
-                this.nodes.remove({ id: this.OntologyNodeId[ontology_index]});
-                defaultRecordThinkingProcess.delete_db_Node(this.OntologyNodeId[ontology_index]);
-                this.OntologyNodeId.splice(ontology_index, 1);
-                this.OntologyConnectNodeId.splice(ontology_index, 1);
-            }
-            const connect_net_index = [];
-            this.ConnectNetworkNodeId.map((n_id, index) => {
-                if(n_id === selectNodeId){
-                    connect_net_index.push(index);
-                }
-            });
-            connect_net_index.sort((a, b) => b - a);
-            connect_net_index.forEach(index => {
-                this.ConnectNetworkNodeId.splice(index, 1);
-                this.ConnectMindMapNodeId.splice(index, 1);
-            });
-            defaultRecordThinkingProcess.delete_connection(selectNodeId);
+            defaultRecordThinkingProcess.delete_db_Edge(null, selectNodeId, "");
+            defaultRecordThinkingProcess.delete_db_Edge(null, "", selectNodeId);
+            // const ontology_index = this.OntologyConnectNodeId.indexOf(selectNodeId);
+            // if(ontology_index !== -1){
+            //     this.nodes.remove({ id: this.OntologyNodeId[ontology_index]});
+            //     defaultRecordThinkingProcess.delete_db_Node(this.OntologyNodeId[ontology_index]);
+            //     this.OntologyNodeId.splice(ontology_index, 1);
+            //     this.OntologyConnectNodeId.splice(ontology_index, 1);
+            // }
+            // const connect_net_index = [];
+            // this.ConnectNetworkNodeId.map((n_id, index) => {
+            //     if(n_id === selectNodeId){
+            //         connect_net_index.push(index);
+            //     }
+            // });
+            // connect_net_index.sort((a, b) => b - a);
+            // connect_net_index.forEach(index => {
+            //     this.ConnectNetworkNodeId.splice(index, 1);
+            //     this.ConnectMindMapNodeId.splice(index, 1);
+            // });
+            // defaultRecordThinkingProcess.delete_connection(selectNodeId);
         }
     }
 
@@ -697,111 +567,111 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     }
 
     //概念をマップに追加（完了）
-    addontology (){
-        document.getElementById("labelselect").style.display = "none";
-        const nodeBoundingBox = this.ownNetwork.getBoundingBox(this.selectId);
-        const TopicTagId = this.generateUniqueNumberText();
-        const selectionlist = document.getElementById('selectionlist');
-        this.addNode(TopicTagId, selectionlist.value, "topic-tag", nodeBoundingBox.left, nodeBoundingBox.top);
-        this.OntologyConnectNodeId.push(this.selectId);
-        this.OntologyNodeId.push('topic-tag_'+TopicTagId);
-        defaultRecordThinkingProcess.record_ontology(this.selectId, 'topic-tag_'+TopicTagId);
-        selectionlist.options[2].selected = true;
-    }
+    // addontology (){
+    //     document.getElementById("labelselect").style.display = "none";
+    //     const nodeBoundingBox = this.ownNetwork.getBoundingBox(this.selectId);
+    //     const TopicTagId = this.generateUniqueNumberText();
+    //     const selectionlist = document.getElementById('selectionlist');
+    //     this.addNode(TopicTagId, selectionlist.value, "topic-tag", nodeBoundingBox.left, nodeBoundingBox.top);
+    //     this.OntologyConnectNodeId.push(this.selectId);
+    //     this.OntologyNodeId.push('topic-tag_'+TopicTagId);
+    //     defaultRecordThinkingProcess.record_ontology(this.selectId, 'topic-tag_'+TopicTagId);
+    //     selectionlist.options[2].selected = true;
+    // }
 
-    Recruit_Idea (){
-        document.getElementById('t_Process_conmenu').style.display = "none";
-        if(this.RecruitNodeId.indexOf(this.selectId) !== -1){
-            alert('このノードにはすでに採用不採用がつけられています');
-            document.getElementById("process_conmenu3").style.display = "none";
-            return;
-        }
-        const t_Process_recruitselect = document.getElementById("t_Process_recruitselect");
-        t_Process_recruitselect.style.display = "block";
-        t_Process_recruitselect.style.left = this.BoxDisplay.x;
-        t_Process_recruitselect.style.top = this.BoxDisplay.y;
-    }
+    // Recruit_Idea (){
+    //     document.getElementById('t_Process_conmenu').style.display = "none";
+    //     if(this.RecruitNodeId.indexOf(this.selectId) !== -1){
+    //         alert('このノードにはすでに採用不採用がつけられています');
+    //         document.getElementById("process_conmenu3").style.display = "none";
+    //         return;
+    //     }
+    //     const t_Process_recruitselect = document.getElementById("t_Process_recruitselect");
+    //     t_Process_recruitselect.style.display = "block";
+    //     t_Process_recruitselect.style.left = this.BoxDisplay.x;
+    //     t_Process_recruitselect.style.top = this.BoxDisplay.y;
+    // }
 
-    Selected_Recruit_Idea (){
-        const FeedBackReflectionText = [];
-        const FeedBackReflection = [];
-        document.getElementById("t_Process_recruitselect").style.display = "none";
-        const selectionlist = document.getElementById('t_Process_recruitselectionlist');
-        const Ontology_Node_Id = this.OntologyNodeId[this.OntologyConnectNodeId.indexOf(this.selectId)];
-        this.RecruitNodeId.push(this.selectId);
-        this.Feedback.push(this.selectId);
-        this.Recruit.push(selectionlist.value);
-        if (selectionlist.value === "採用") { // IDに相当するノードがある場合の中身を編集
-            this.nodes.update({
-                id : Ontology_Node_Id,
-                borderWidth: 5,
-                color: {
-                    border: "green",
-                },
-            });
-        }else if(selectionlist.value === "棄却"){
-            this.nodes.update({
-                id : Ontology_Node_Id,
-                borderWidth: 5,
-                color: {
-                    border: "red",
-                },
-            });
-        }
-        for(var i=0; i<this.RecruitNodeId.length-1; i++){
-            FeedBackReflectionText.push("text"+this.RecruitNodeId[i]);
-            FeedBackReflection.push(document.getElementById("text"+this.RecruitNodeId[i]).value);
-        }
-        const node_info = this.nodes.get(this.selectId);
-        document.getElementById("accordion_discussion").innerHTML += "<div id='"+this.selectId+"' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「"+node_info.label+"」は"+selectionlist.value+"されたのですか？</div><div class='accordion-content'><textarea id='text"+ this.selectId +"' class='accordion-input'></textarea></div></div>";
-        const accordionHeaders = document.querySelectorAll('#accordion_discussion .accordion-header');
-        accordionHeaders.forEach(header => {
-          header.addEventListener('click', function () {
-            const accordionItem = this.parentElement;
-            accordionItem.classList.toggle('active');
-          });
-        });
-        //追加したら消えてしまうからおいておく
-        for(var i=0; i<this.RecruitNodeId.length-1; i++){
-            document.getElementById("text"+this.RecruitNodeId[i]).innerHTML = FeedBackReflection[FeedBackReflectionText.indexOf("text"+this.RecruitNodeId[i])];
-        }
-        defaultRecordThinkingProcess.record_recruit(this.selectId, Ontology_Node_Id, selectionlist.value);
-        document.getElementById("process_conmenu3").style.display = "none";
-    }
+    // Selected_Recruit_Idea (){
+    //     const FeedBackReflectionText = [];
+    //     const FeedBackReflection = [];
+    //     document.getElementById("t_Process_recruitselect").style.display = "none";
+    //     const selectionlist = document.getElementById('t_Process_recruitselectionlist');
+    //     const Ontology_Node_Id = this.OntologyNodeId[this.OntologyConnectNodeId.indexOf(this.selectId)];
+    //     this.RecruitNodeId.push(this.selectId);
+    //     this.Feedback.push(this.selectId);
+    //     this.Recruit.push(selectionlist.value);
+    //     if (selectionlist.value === "採用") { // IDに相当するノードがある場合の中身を編集
+    //         this.nodes.update({
+    //             id : Ontology_Node_Id,
+    //             borderWidth: 5,
+    //             color: {
+    //                 border: "green",
+    //             },
+    //         });
+    //     }else if(selectionlist.value === "棄却"){
+    //         this.nodes.update({
+    //             id : Ontology_Node_Id,
+    //             borderWidth: 5,
+    //             color: {
+    //                 border: "red",
+    //             },
+    //         });
+    //     }
+    //     for(var i=0; i<this.RecruitNodeId.length-1; i++){
+    //         FeedBackReflectionText.push("text"+this.RecruitNodeId[i]);
+    //         FeedBackReflection.push(document.getElementById("text"+this.RecruitNodeId[i]).value);
+    //     }
+    //     const node_info = this.nodes.get(this.selectId);
+    //     document.getElementById("accordion_discussion").innerHTML += "<div id='"+this.selectId+"' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「"+node_info.label+"」は"+selectionlist.value+"されたのですか？</div><div class='accordion-content'><textarea id='text"+ this.selectId +"' class='accordion-input'></textarea></div></div>";
+    //     const accordionHeaders = document.querySelectorAll('#accordion_discussion .accordion-header');
+    //     accordionHeaders.forEach(header => {
+    //       header.addEventListener('click', function () {
+    //         const accordionItem = this.parentElement;
+    //         accordionItem.classList.toggle('active');
+    //       });
+    //     });
+    //     //追加したら消えてしまうからおいておく
+    //     for(var i=0; i<this.RecruitNodeId.length-1; i++){
+    //         document.getElementById("text"+this.RecruitNodeId[i]).innerHTML = FeedBackReflection[FeedBackReflectionText.indexOf("text"+this.RecruitNodeId[i])];
+    //     }
+    //     defaultRecordThinkingProcess.record_recruit(this.selectId, Ontology_Node_Id, selectionlist.value);
+    //     document.getElementById("process_conmenu3").style.display = "none";
+    // }
 
     ContentmenuCancel(){
         document.getElementById('t_Process_conmenu').style.display = "none";
     }
 
     //マインドマップとネットワークつなげる(今後動作確認はいる多分行けた)，(複雑なので何してるか聞きたいなら大槻まで)
-    connect_network (){
-        document.getElementById('t_Process_conmenu').style.display = "none";
-        this.nodeConnectEnabled = true;
-    }
+    // connect_network (){
+    //     document.getElementById('t_Process_conmenu').style.display = "none";
+    //     this.nodeConnectEnabled = true;
+    // }
 
     // マインドマップのノードがクリックされたときの処理
-    connect_mindmap (e) {
-        const Jsmind = new jsMind({container:'jsmind_container',
-                                editable: false});
-        if (!this.nodeConnectEnabled) {
-            return;
-        }else{
-            const mm_nodeid = Jsmind.view.get_binded_nodeid(e.target);
-            if(mm_nodeid == null){
-                alert('ノードのクリックがうまくできませんでした．もう一度試してみてください');
-                return;
-            }else{
-                if(this.ConnectNetworkNodeId.indexOf(this.selectId) !== -1 && this.ConnectMindMapNodeId.indexOf(mm_nodeid) !== -1){
-                    alert('このノードはすでに選択されています');
-                    return;
-                }
-                defaultRecordThinkingProcess.record_connection(this.selectId,mm_nodeid);
-                this.ConnectNetworkNodeId.push(this.selectId);
-                this.ConnectMindMapNodeId.push(mm_nodeid);
-                this.nodeConnectEnabled = false;
-            }
-        }
-    }
+    // connect_mindmap (e) {
+    //     const Jsmind = new jsMind({container:'jsmind_container',
+    //                             editable: false});
+    //     if (!this.nodeConnectEnabled) {
+    //         return;
+    //     }else{
+    //         const mm_nodeid = Jsmind.view.get_binded_nodeid(e.target);
+    //         if(mm_nodeid == null){
+    //             alert('ノードのクリックがうまくできませんでした．もう一度試してみてください');
+    //             return;
+    //         }else{
+    //             if(this.ConnectNetworkNodeId.indexOf(this.selectId) !== -1 && this.ConnectMindMapNodeId.indexOf(mm_nodeid) !== -1){
+    //                 alert('このノードはすでに選択されています');
+    //                 return;
+    //             }
+    //             defaultRecordThinkingProcess.record_connection(this.selectId,mm_nodeid);
+    //             this.ConnectNetworkNodeId.push(this.selectId);
+    //             this.ConnectMindMapNodeId.push(mm_nodeid);
+    //             this.nodeConnectEnabled = false;
+    //         }
+    //     }
+    // }
 
     //ノードがクリックされたときの処理
     networkClick (params){
@@ -815,109 +685,43 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             const jmnode = document.getElementsByTagName("jmnode");
             this.jmindex.map((n) => {
                 if(jmnode[n].getAttribute("type") == "answer"){
-                    jmnode[n].style.backgroundColor = "#ffa500";
+                    jmnode[n].style.backgroundColor = "#ffffff";
                 }else{
                     jmnode[n].style.backgroundColor = "#87cefa";
                 }
             })
             this.jmindex.length = 0;
         }
-        //ここ未完成
-        if(this.nodes.get(params.nodes[0]).group === "utterance"){
-            if(this.OntologyConnectNodeId.indexOf(params.nodes[0]) !== -1){
-                const node_infomation = this.nodes.get(this.OntologyNodeId[this.OntologyConnectNodeId.indexOf(params.nodes[0])]);
-                document.getElementById("ontology_feedback").innerHTML = "<div class='feedback_message'>この発言は「"+node_infomation.label + "」と「" + this.output_input[node_infomation.label] + "」<br>との合理性を意識して発言されたのかもしれません</div>";
-            } 
-        }
-        // if(this.OntologyConnectNodeId.indexOf(params.nodes[0]) !== -1){
-        //     const node_infomation = this.nodes.get(this.OntologyNodeId[this.OntologyConnectNodeId.indexOf(params.nodes[0])]);
-        //     document.getElementById("ontology_feedback").innerHTML = "「"+node_infomation.label + "」と「" + this.output_input[node_infomation.label] + "」との合理性を考えましょう";
-        // } 
-        if(this.RecruitNodeId.indexOf(params.nodes[0]) !== -1){
-            this.FeedbackNodeId = params.nodes[0];
-            document.getElementById(this.FeedbackNodeId).style.display = "block";
-        }
-        if(params.nodes.length == 1){
-            const net_index = this.ConnectNetworkNodeId.map((n_id, index) => {
-                return n_id === params.nodes[0] ? index : null;
-            }).filter(n => n !== null);
-            if(net_index == ""){
-                return;
-            }
-            const jmnode = document.getElementsByTagName("jmnode");
-            net_index.map((m_id) => {
-                for(var i = 0; i < jmnode.length; i++){
-                    if(jmnode[i].getAttribute("nodeid") == this.ConnectMindMapNodeId[m_id]){
-                        //ここいろかえる必要あるかも
-                        jmnode[i].style.backgroundColor = "white";
-                        this.jmindex.push(i);
-                        break;
-                    }
-                }
-            });
-        }
-    }
-
-    shownetworkClick (params){
-        if(this.jmindex2 != []){
-            const area2 = document.getElementById("jsmind_container2");
-            const jmnode2 = area2.getElementsByTagName("jmnode");
-            this.jmindex2.map((n) => {
-              if(jmnode2[n].getAttribute("type") == "answer"){
-                jmnode2[n].style.backgroundColor = "#ffa500";
-              }else{
-                jmnode2[n].style.backgroundColor = "#87cefa";
-              }
-            })
-            this.jmindex2.length = 0;
-          }
-          if(this.jmindex3 != []){
-            const area3 = document.getElementById("jsmind_container3");
-            const jmnode3 = area3.getElementsByTagName("jmnode");
-            this.jmindex3.map((n) => {
-              if(jmnode3[n].getAttribute("type") == "answer"){
-                jmnode3[n].style.backgroundColor = "#ffa500";
-              }else{
-                jmnode3[n].style.backgroundColor = "#87cefa";
-              }
-            })
-            this.jmindex3.length = 0;
-          }
-          if(params.nodes.length = 1){
-            const net_index_show = this.ConnectNetworkNodeId.map((n_id, index) => {
-              return n_id === params.nodes[0] ? index : null;
-            }).filter(n => n !== null);
-            if(net_index_show == ""){
-              return;
-            }
-            const area2 = document.getElementById("jsmind_container2");
-            const area3 = document.getElementById("jsmind_container3");
-            const jmnode2 = area2.getElementsByTagName("jmnode");
-            const jmnode3 = area3.getElementsByTagName("jmnode");
-            net_index_show.map((m_id) => {
-              for(var i = 0; i < jmnode2.length; i++){
-                if(jmnode2[i].getAttribute("nodeid") == this.ConnectMindMapNodeId[m_id]){
-                  //ここいろかえる必要あるかも
-                  jmnode2[i].style.backgroundColor = "white";
-                  this.jmindex2.push(i);
-                }
-              }
-              for(var i = 0; i < jmnode3.length; i++){
-                if(jmnode3[i].getAttribute("nodeid") == this.ConnectMindMapNodeId[m_id]){
-                  //ここいろかえる必要あるかも
-                  jmnode3[i].style.backgroundColor = "white";
-                  this.jmindex3.push(i);
-                  return;
-                }
-              }
-            });
-          }
-  
+        // if(this.RecruitNodeId.indexOf(params.nodes[0]) !== -1){
+        //     this.FeedbackNodeId = params.nodes[0];
+        //     document.getElementById(this.FeedbackNodeId).style.display = "block";
+        // }
+        // if(params.nodes.length == 1){
+        //     const net_index = this.ConnectNetworkNodeId.map((n_id, index) => {
+        //         return n_id === params.nodes[0] ? index : null;
+        //     }).filter(n => n !== null);
+        //     if(net_index == ""){
+        //         return;
+        //     }
+        //     const jmnode = document.getElementsByTagName("jmnode");
+        //     net_index.map((m_id) => {
+        //         for(var i = 0; i < jmnode.length; i++){
+        //             if(jmnode[i].getAttribute("nodeid") == this.ConnectMindMapNodeId[m_id]){
+        //                 //ここいろかえる必要あるかも
+        //                 jmnode[i].style.backgroundColor = "white";
+        //                 this.jmindex.push(i);
+        //                 break;
+        //             }
+        //         }
+        //     });
+        // }
     }
 
     addNewEdge(E_start, E_end){
-        this.edges.add({ from: E_start, to: E_end });
-        defaultRecordThinkingProcess.record_Edge(E_start, E_end);
+        let edge_id = this.generateUniqueNumberText();
+        console.log(edge_id)
+        this.edges.add({ id: edge_id ,from: E_start, to: E_end });
+        defaultRecordThinkingProcess.record_Edge(edge_id, E_start, E_end);
     }
 
     //ドラッグ開始(完成)
@@ -948,8 +752,10 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                 if(notable == false){
                     return;
                 }
-                this.edges.add({ from: this.dragStartNodeId, to: this.dragEndNodeId });
-                defaultRecordThinkingProcess.record_Edge(this.dragStartNodeId, this.dragEndNodeId);
+                let edge_id = this.generateUniqueNumberText();
+                this.edges.add({id: edge_id, from: this.dragStartNodeId, to: this.dragEndNodeId });
+                console.log(edge_id);
+                defaultRecordThinkingProcess.record_Edge(edge_id, this.dragStartNodeId, this.dragEndNodeId);
             }
             this.dragStartNodeId = null;
             this.dragEndNodeId = null;
@@ -959,19 +765,19 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                 //なぜか更新したら色変わってしまうから一時的に
                 let node_color = this.nodes.get(movedNodeId).color;
                 // let border_color = '#ffdb4f'; 
-                switch(this.nodes.get(movedNodeId).group) {
-                    case "process": // 自分で考えた要約に関するノードの場合
-                        node_color = '#ffdb4f';
-                        break;
-                    case "versions": // 議論内での発言ノードの場合
-                        node_color = '#ffbaa1';
-                        break;
-                    case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                        node_color = '#ffdb4f';
-                        break;
-                    default: // その他
-                        break;
-                }
+                // switch(this.nodes.get(movedNodeId).group) {
+                //     case "process": // 自分で考えた要約に関するノードの場合
+                //         node_color = '#ffdb4f';
+                //         break;
+                //     case "versions": // 議論内での発言ノードの場合
+                //         node_color = '#ffbaa1';
+                //         break;
+                //     case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
+                //         node_color = '#ffdb4f';
+                //         break;
+                //     default: // その他
+                //         break;
+                // }
                 this.nodes.update({ id: movedNodeId, color: node_color, x: params.pointer.x, y: params.pointer.y });
                 const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
                 //次に追加したノードの座標指定
@@ -979,20 +785,20 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                 this.latest_selected_node_info.y = nodeBoundingBox.bottom + 10;
                 
                 defaultRecordThinkingProcess.update_Node("point" ,movedNodeId, (nodeBoundingBox.right + nodeBoundingBox.left)/2, (nodeBoundingBox.bottom + nodeBoundingBox.top)/2)
-                const ontology_index = this.OntologyConnectNodeId.indexOf(movedNodeId);
-                if(ontology_index !== -1){
-                    const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
-                    const ontology_x = nodeBoundingBox.left;
-                    const ontology_y = nodeBoundingBox.top;
-                    console.log(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]);
-                    if(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]==="採用"){
-                        border_color = 'green'; 
-                    }else if(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]==="棄却"){
-                        border_color = 'red'; 
-                    }
-                    this.nodes.update({ id: this.OntologyNodeId[ontology_index], color: { background: 'blue', border: border_color}, x: ontology_x, y: ontology_y });
-                    defaultRecordThinkingProcess.update_Node("point" ,this.OntologyNodeId[ontology_index], ontology_x, ontology_y);
-                }
+                // const ontology_index = this.OntologyConnectNodeId.indexOf(movedNodeId);
+                // if(ontology_index !== -1){
+                //     const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
+                //     const ontology_x = nodeBoundingBox.left;
+                //     const ontology_y = nodeBoundingBox.top;
+                //     console.log(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]);
+                //     if(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]==="採用"){
+                //         border_color = 'green'; 
+                //     }else if(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]==="棄却"){
+                //         border_color = 'red'; 
+                //     }
+                //     this.nodes.update({ id: this.OntologyNodeId[ontology_index], color: { background: 'blue', border: border_color}, x: ontology_x, y: ontology_y });
+                //     defaultRecordThinkingProcess.update_Node("point" ,this.OntologyNodeId[ontology_index], ontology_x, ontology_y);
+                // }
             }
         }
     }
@@ -1004,62 +810,39 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         const endid = this.edges.get(selectEdgeId).to;
         if(selectEdgeId !== undefined){
             this.edges.remove({id: selectEdgeId});
-            defaultRecordThinkingProcess.delete_db_Edge(startid, endid);
-            const Edge_index = this.OntologyConnectNodeId.indexOf(startid);
-            if(Edge_index !== -1){
-                this.EdgeStartId.splice(Edge_index, 1);
-                this.EdgeEndId.splice(Edge_index, 1);
-            }
+            console.log(selectEdgeId);
+            defaultRecordThinkingProcess.delete_db_Edge(selectEdgeId, startid, endid);
+            // const Edge_index = this.OntologyConnectNodeId.indexOf(startid);
+            // if(Edge_index !== -1){
+            //     this.EdgeStartId.splice(Edge_index, 1);
+            //     this.EdgeEndId.splice(Edge_index, 1);
+            // }
         }
     }
 
-    feedback(){
-        defaultRecordThinkingProcess.record_Feedback(this.FeedbackNodeId,document.getElementById("text"+this.FeedbackNodeId).value);
-        const feedbacknode_index = this.Feedback.indexOf(this.FeedbackNodeId);
-        this.Feedback.splice(feedbacknode_index, 1);
-        const feedbacknode = this.nodes.get(this.FeedbackNodeId);
-        let node_color = '#ffdb4f'; // ノードの背景色
-        switch(feedbacknode.group) {
-            case "material-content": // 議論資料に書かれた内容に関するノードの場合
-                break;
-            case "process": // 自分で考えた要約に関するノードの場合
-                node_color = 'green';
-                break;
-            case "utterance": // 議論内での発言ノードの場合
-                node_color = 'pink';
-                break;
-            case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                node_color = 'blue';
-                break;
-            default: // その他
-                break;
-        }
-        this.nodes.update({ id: this.FeedbackNodeId, color: node_color, borderWidth: 0 });
-    }
-
-    Nodeblinking() {
-        this.Feedback.map((n) => {
-            const feedbacknode = this.nodes.get(n);
-            let node_color = '#ffdb4f'; // ノードの背景色
-            switch(feedbacknode.group) {
-                case "material-content": // 議論資料に書かれた内容に関するノードの場合
-                    break;
-                case "process": // 自分で考えた要約に関するノードの場合
-                    node_color = 'green';
-                    break;
-                case "utterance": // 議論内での発言ノードの場合
-                    node_color = 'pink';
-                    break;
-                case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                    node_color = 'blue';
-                    break;
-                default: // その他
-                    break;
-            }
-            const borderWidth = feedbacknode.borderWidth === 0 ? 5 : 0;
-            this.nodes.update({ id: n, color: { background: node_color, border: "red"}, borderWidth: borderWidth });
-        })
-    }
+    // Nodeblinking() {
+    //     this.Feedback.map((n) => {
+    //         const feedbacknode = this.nodes.get(n);
+    //         let node_color = '#ffdb4f'; // ノードの背景色
+    //         switch(feedbacknode.group) {
+    //             case "material-content": // 議論資料に書かれた内容に関するノードの場合
+    //                 break;
+    //             case "process": // 自分で考えた要約に関するノードの場合
+    //                 node_color = 'green';
+    //                 break;
+    //             case "utterance": // 議論内での発言ノードの場合
+    //                 node_color = 'pink';
+    //                 break;
+    //             case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
+    //                 node_color = 'blue';
+    //                 break;
+    //             default: // その他
+    //                 break;
+    //         }
+    //         const borderWidth = feedbacknode.borderWidth === 0 ? 5 : 0;
+    //         this.nodes.update({ id: n, color: { background: node_color, border: "red"}, borderWidth: borderWidth });
+    //     })
+    // }
 
     addMaterialOntology(material_id, concept_id){
         $.ajax({
@@ -1112,13 +895,13 @@ class RecordThinkingProcess{
         let selected_node_id = document.getElementById('conceptdisplay').getAttribute('nodeId');
         console.log(selected_node_id);
         $.ajax({
-            url: "php/thinking_edit_processmap_maneger.php",
+            url: "../php/thinking_edit_processmap_maneger.php",
             type: "POST",
             data: {node_id : id,
                 label : label,
+                node_type: node_type,
                 x : x,
                 y : y,
-                node_type : node_type,
                 selected_node_id: selected_node_id,
                 purpose : 'record',
                 record_thing: 'node'},
@@ -1126,48 +909,22 @@ class RecordThinkingProcess{
     }
 
     //エッジの記録(完了)
-    record_Edge (edge_start, edge_end){
-        let selected_node_id = document.getElementById('conceptdisplay').getAttribute('nodeId');
-        console.log(selected_node_id);
+    record_Edge (edge_id, edge_start, edge_end){
         $.ajax({
-            url: "php/thinking_edit_processmap_maneger.php",
+            url: "../php/thinking_edit_processmap_maneger.php",
             type: "POST",
-            data: {edge_start : edge_start,
+            data: {edge_id: edge_id,
+                edge_start : edge_start,
                 edge_end : edge_end,
-                selected_node_id: selected_node_id,
                 purpose : 'record',
                 record_thing: 'edge'},
-        });
-    }
-
-    //フィードバックの記録
-    record_Feedback (node_id, text){
-        $.ajax({
-            url: "php/thinking_edit_processmap_maneger.php",
-            type: "POST",
-            data: {purpose: "record",
-                record_thing: "reflectioncontent",
-                node_id : node_id,
-                text : text},
-        });
-    }
-
-    record_Material_Edge(edge_start, edge_end, edge_label){
-        $.ajax({
-            url: "php/thinking_edit_processmap_maneger.php",
-            type: "POST",
-            data: {edge_start : edge_start,
-                edge_end : edge_end,
-                edge_label: edge_label,
-                purpose : 'record',
-                record_thing: 'material_edge'},
         });
     }
 
     //ノードの更新(完了)
     update_Node (select_update, id, node_update_thing1, node_update_thing2){
         $.ajax({
-            url: "php/thinking_edit_processmap_maneger.php",
+            url: "../php/thinking_edit_processmap_maneger.php",
             type: "POST",
             data: {select_update : select_update,
                 node_id : id,
@@ -1186,7 +943,7 @@ class RecordThinkingProcess{
     //ノードの削除(完了)
     delete_db_Node (id){
         $.ajax({
-            url: "php/thinking_edit_processmap_maneger.php",
+            url: "../php/thinking_edit_processmap_maneger.php",
             type: "POST",
             data: {node_id : id,
                 purpose : 'delete',
@@ -1195,68 +952,74 @@ class RecordThinkingProcess{
     }
     
     //エッジの削除(完了)
-    delete_db_Edge (edge_start,edge_end){
+    delete_db_Edge (edge_id, edge_start,edge_end){
         $.ajax({
-            url: "php/thinking_edit_processmap_maneger.php",
+            url: "../php/thinking_edit_processmap_maneger.php",
             type: "POST",
-            data: {edge_start : edge_start,
+            data: {edge_id: edge_id,
+                edge_start : edge_start,
                 edge_end : edge_end,
                 purpose : 'delete',
                 delete_thing : 'edge'},
+                success: function(e){
+                    if(e){
+                        console.log(e);
+                    }
+                }
         });
     }
 
-    delete_connection (id){
-        $.ajax({
-            url: "php/thinking_edit_processmap_maneger.php",
-            type: "POST",
-            data: {node_id : id,
-                purpose : 'delete',
-                delete_thing : 'connection'},
-        });
-    }
+    // delete_connection (id){
+    //     $.ajax({
+    //         url: "../php/thinking_edit_processmap_maneger.php",
+    //         type: "POST",
+    //         data: {node_id : id,
+    //             purpose : 'delete',
+    //             delete_thing : 'connection'},
+    //     });
+    // }
 
-    //繋げたものをDBに記録
-    record_connection (NetworkNodeId,MindMapNodeId){
-        $.ajax({
-            url: "php/thinking_edit_processmap_maneger.php",
-            type: "POST",
-            data: {networknodeid : NetworkNodeId,
-                mindmapnodeid : MindMapNodeId,
-                purpose : 'record',
-                record_thing : 'connection'},
-        });
-    }
+    // //繋げたものをDBに記録
+    // record_connection (NetworkNodeId,MindMapNodeId){
+    //     $.ajax({
+    //         url: "../php/thinking_edit_processmap_maneger.php",
+    //         type: "POST",
+    //         data: {networknodeid : NetworkNodeId,
+    //             mindmapnodeid : MindMapNodeId,
+    //             purpose : 'record',
+    //             record_thing : 'connection'},
+    //     });
+    // }
 
-    // オントロジーの対応付けの記録
-    record_ontology (node_id, ontology_node_id){
-        $.ajax({
-            url: "php/thinking_edit_processmap_maneger.php",
-            type: "POST",
-            data: {node_id : node_id,
-                ontology_node_id : ontology_node_id,
-                purpose : 'record',
-                record_thing : 'ontology'},
-        });
-    }
+    // // オントロジーの対応付けの記録
+    // record_ontology (node_id, ontology_node_id){
+    //     $.ajax({
+    //         url: "../php/thinking_edit_processmap_maneger.php",
+    //         type: "POST",
+    //         data: {node_id : node_id,
+    //             ontology_node_id : ontology_node_id,
+    //             purpose : 'record',
+    //             record_thing : 'ontology'},
+    //     });
+    // }
 
-    // オントロジーの対応付けの記録
-    record_recruit (node_id, ontology_node, result){
-        $.ajax({
-            url: "php/thinking_edit_processmap_maneger.php",
-            type: "POST",
-            data: {node_id : node_id,
-                ontology_node : ontology_node,
-                result_recruit : result,
-                purpose : 'record',
-                record_thing : 'recruit'},
-        });
-    }
+    // // オントロジーの対応付けの記録
+    // record_recruit (node_id, ontology_node, result){
+    //     $.ajax({
+    //         url: "../php/thinking_edit_processmap_maneger.php",
+    //         type: "POST",
+    //         data: {node_id : node_id,
+    //             ontology_node : ontology_node,
+    //             result_recruit : result,
+    //             purpose : 'record',
+    //             record_thing : 'recruit'},
+    //     });
+    // }
 
     record_trigger(trigger_id, activity_id, from, to, time, activity_type, content, x, y){
         
         $.ajax({
-            url: "php/thinking_edit_processmap_maneger.php",
+            url: "../php/thinking_edit_processmap_maneger.php",
             type: "POST",
             data: {trigger_id : trigger_id,
                 activity_id : activity_id,
@@ -1289,39 +1052,20 @@ class RecordThinkingProcess{
  * データベースからの読み込み
  */
 let trigger_list;
-const getProcessMapDataFromDB = (target_time, end_time, callback) => {
+const getProcessMapDataFromDB = (callback) => {
     //選択されているノードIDとconcept_id
     const selected_node_id = _jm.get_selected_node().id;
     const selected_concept_id = Get_NodeInfo(selected_node_id, "concept_id");
 
     return new Promise((resolve, reject) => {
         try{
-            let data;
-            // データベースから発話ノードリストにあるノードデータ一覧を取得
-            if(target_time === null){
-                data =  {
-                        //読み込みたいnode_idを渡すように改変しよう
-                        purpose: "select_meeting_utterance",
-                        first_load_flag: true,
-                        selected_node_id: selected_node_id,
-                        selected_concept_id: selected_concept_id,
-                        };
-            }else if(end_time === null){
-                data =  {
-                        purpose: "select_version_discussionmap",
-                        first_load_flag: target_time,
-                        };
-            }else{
-                data =  {
-                        purpose: "select_past_discussionmap",
-                        discussion_start_time : target_time,
-                        discussion_end_time : end_time,
-                        };      
-            }
             return $.ajax({
-                url: "php/thinking_map_manager.php",
+                url: "../php/thinking_map_manager.php",
                 type: "POST",
-                data: data,
+                data: data =  {
+                    selected_node_id: selected_node_id,
+                    selected_concept_id: selected_concept_id,
+                },
             }).success((r) => {
                 trigger_list = JSON.parse(r);
                 callback(trigger_list);
@@ -1333,37 +1077,17 @@ const getProcessMapDataFromDB = (target_time, end_time, callback) => {
     
 }
 
-// 発言を発言エリアにdivとして表示
-// const makeUtteranceNodeInList = (utter_id, utter_content, speaker, JPNtime, network_on) => {
-//     // 左側の発話ノードのリストのところのノードのDOMを構成する
-//     let backColor = "white";
-//     if(network_on === "1"){
-//         backColor = "gray";
-//     }
-//     return $(`(<div id="${utter_id}"
-//                  style='border: solid 2px #000; font-size: 10px; line-height: 10px; background: ${backColor}; margin-bottom: 5px;'
-//                  class='trigger_in_list'
-//                  speaker='${speaker}'
-//                  utterance='${utter_content}'
-//                  timestamp='${JPNtime}'
-//                  network_on='${network_on}'
-//             >
-//                <!-- もし，Mouseoverとかの処理がノードの色をつけ変えるだけの話なら，JSじゃなくてCSSのover擬似クラスで処理するようにする -->
-//                【${speaker}さん】：<br>${utter_content}
-//             </div>`);
-// }
-
 const makeTriggerInList = (id, activity_type, concept_label, content, timestamp, trigger_on) => {
     // 左側の発話ノードのリストのところのノードのDOMを構成する
     let backColor = "white";
     let borderColor = "#67796b";
-    let borderWidth = 2;
+    let borderWidth = 1;
     if(trigger_on == 1){
         backColor = "#979997";
-        borderWidth = 3;
+        borderWidth = 2;
     }
     return $(`(<div id="${id}"
-                 style='border: solid "${borderWidth}"px "${borderColor}"; font-size: 13px; line-height: 15px; background: ${backColor}; margin-bottom: 5px; padding: 2px; padding-left: 2px; margin-bottom: 5px; padding: 2px;'
+                 style='border: solid "${borderWidth}"px "${borderColor}"; background: ${backColor};'
                  class='trigger_in_list'
                  trigger_content='${content}'
                  timestamp='${timestamp}'
@@ -1371,151 +1095,39 @@ const makeTriggerInList = (id, activity_type, concept_label, content, timestamp,
             >【${timestamp}：${activity_type}】<br>${concept_label}：<br>${content}</div>`);
 }
 
-// 発言をネットワークに反映
-// const update_text_on = (areaid) => {
-//     $.ajax({
-//         url: "php/update_network_text.php",
-//         type: "POST",
-//         data: {areaid: areaid,
-//               purpose : "trigger_on"},
-//     });
-// }
-
-// // くっつけた発言をDBに反映
-// const update_unit_text = (remain_id, delete_id, content) => {
-//   $.ajax({
-//     url: "php/update_network_text.php",
-//     type: "POST",
-//     data: {areaid : remain_id,
-//       delete_id : delete_id,
-//       content : content,
-//       purpose : 'union'},
-//   });
-// }
-
-// 発言をくっつけるための関数
-const union_utterance = (area1, area2) => {
-  //ここに発言者同じじゃないと進めないっていう制約いる
-    if(area1 > area2){
-      document.getElementById(area2).innerHTML = "【"+document.getElementById(area2).getAttribute('speaker')+"さん】：</br>"+document.getElementById(area2).getAttribute('utterance')+document.getElementById(area1).getAttribute('utterance');
-      document.getElementById(area2).setAttribute('utterance', document.getElementById(area2).getAttribute('utterance')+document.getElementById(area1).getAttribute('utterance'));
-      console.log(document.getElementById(area2).getAttribute('utterance'))
-      update_unit_text(area2, area1, document.getElementById(area2).getAttribute('utterance'));
-      document.getElementById(area1).remove();
-    }else{
-      document.getElementById(area2).innerHTML = "【"+document.getElementById(area2).getAttribute('speaker')+"さん】：</br>"+document.getElementById(area1).getAttribute('utterance')+document.getElementById(area2).getAttribute('utterance');
-      document.getElementById(area2).setAttribute('utterance', document.getElementById(area1).getAttribute('utterance')+document.getElementById(area2).getAttribute('utterance'));
-      console.log(document.getElementById(area2).getAttribute('utterance'));
-      update_unit_text(area2, area1, document.getElementById(area2).getAttribute('utterance'));
-      document.getElementById(area1).remove();
-    }
-}
-
-// アップロードする時
-const displayTriggerInList = (display_target_area_id, target_reflection_time) => {
-    // 選択したノードに対応するtrigger候補リストを取得して配置
-    let mousedownId = null;
-    const target_area = $(`#${display_target_area_id}`); // trigger候補リストのDOMエリア
-    const conceptdisplay_area = $(`#conceptdisplay`); // 選択したノードのconceptを表示するエリア
-    getProcessMapDataFromDB(target_reflection_time, null, (trigger_list_info) => {
-        // データの取得と挿入
-        trigger_list_info.trigger_candidate.map(u => {
-            const utter_dom = makeTriggerInList(u.id, u.activity_type, u.concept_label, u.content, u.appeared_at, u.trigger_on);
-            target_area.append(utter_dom); // 挿入
-        });
-        for(var i=0; i<trigger_list_info.document.length; i++){
-            defaultThinkingProcess.addmaterialNode(trigger_list_info.document[i].content_id, trigger_list_info.document[i].content);
-            document.getElementById("labelselect").style.display = "none";
-            defaultThinkingProcess.addMaterialOntology('material-content_'+trigger_list_info.document[i].content_id, trigger_list_info.document[i].concept_id);
-        }
-        trigger_list_info.document_relation.map(u => {
-            defaultThinkingProcess.addmaterialEdge("material-content_"+u.doc_con1_id, "material-content_"+u.doc_con2_id, u.doc_con1_label+"→"+u.doc_con2_label);    
-        });
-    }).then(() => {
-        $(`#trigger_area`).on('mousedown', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-            mousedownId = null;
-            const overed_node = e.target;
-            if(overed_node.getAttribute('trigger_on')==='0'){
-                mousedownId = overed_node.getAttribute('id');
-            }
-        });
-        $(`#trigger_area`).on('mouseleave', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-            $(`#trigger_click`).empty();
-        });
-        $(`.trigger_in_list`).on('mouseup', (e) => {
-            // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-            const overed_node = e.target;
-            if(overed_node.getAttribute('trigger_on') === '0' && mousedownId !== null && mousedownId !== overed_node.getAttribute('id') && overed_node.getAttribute('speaker') === document.getElementById(mousedownId).getAttribute('speaker')){
-                union_utterance(mousedownId, overed_node.getAttribute('id'))
-            }
-        });
-        // $(`.trigger_in_list`).on('mouseenter', (e) => {
-        //     // リスト内の発話ノードにマウスイベント（マウスが要素上に入った）を追加
-        //     const overed_node = e.target;
-        //     conceptdisplay_area.html(overed_node.getAttribute('timestamp'));
-        // });
-        // $(`.trigger_in_list`).on('mouseleave', (e) => {
-        //     // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-        //     const overed_node = e.target;
-        //     conceptdisplay_area.empty();
-        // });
-        $(`.trigger_in_list`).on('click', (e) => {
-            // リスト内の発話ノードにマウスイベント(右クリック)を追加
-            document.getElementById("trigger_click").innerHTML="";
-            const clicked_node = e.target;
-            if(clicked_node.getAttribute('trigger_on') === '0'){
-                document.getElementById("trigger_click").innerHTML="<input type='button' id='showpastmapbutton' value='マインドマップを表示'>";
-                $(`#showpastmapbutton`).on("click", () => {
-                    document.getElementById("trigger_click").innerHTML="";
-                    clicked_node.setAttribute('trigger_on', "1");
-                    document.getElementById(clicked_node.getAttribute('id')).style.background="gray";
-                    update_text_on(clicked_node.getAttribute('id'));
-                });
-            }
-        });      
-        $(`.trigger_in_list`).on('contextmenu', (e) => {
-            // リスト内の発話ノードにマウスイベント(右クリック)を追加
-            const clicked_node = e.target;
-            conceptdisplay_area.empty();
-            // rightclick()
-        });
-        document.getElementById("accordion_discussion").innerHTML = "";      
-    });
-}
-
-//ロードする時
-const displayTriggerData = (display_target_area_id, target_reflection_time) => {
+// 思考過程表出化マップを表示
+const displayTriggerData = (display_target_area_id) => {
     // 指定した時間（指定なしなら最新）のマップに対応する発話ノードリストを取得して画面上に配置
     const selected_node_id = _jm.get_selected_node().id;
     const target_area = $(`#${display_target_area_id}`); // 発話ノードリストのDOMエリア
     const conceptdisplay_area = $(`#conceptdisplay`); // 発話ノードの議論内での時間を表示するエリア
-    let mousedownId = null;
     let node_x = 0;
     let node_y = 0;
     let from_id = "";
 
-    getProcessMapDataFromDB(target_reflection_time, null, (trigger_list_info) => {
+    getProcessMapDataFromDB((trigger_list_info) => {
         //concept_labelを表示
         const concept_label = trigger_list_info['selected_concept'];
         conceptdisplay_area.html(concept_label);
         document.getElementById('conceptdisplay').setAttribute('nodeId', selected_node_id);
         let j = 0;
 
-        // データの取得と挿入
+        // versionノードの表示
         trigger_list_info.node_versions.forEach((v) => {
-            defaultThinkingProcess.addVersionNode(v.id, v.content, "versions", node_x, node_y);
+            console.log(v);
+            defaultThinkingProcess.addVersionNode(v.node_version_id, v.content, "versions", v.appeared_at, node_x, node_y);
             if(from_id != ""){
-                defaultThinkingProcess.addVersionEdge(from_id, v.id);
+                defaultThinkingProcess.addVersionEdge(from_id, v.node_version_id);
             }
-            from_id = v.id;
-            node_x += 400;
+            from_id = v.node_version_id;
+            node_x += 300;
         });
+        // triggerの候補一覧
         trigger_list_info.trigger_candidate.forEach((u) => {
-            const utter_dom = makeTriggerInList(u.id, u.activity_type, u.concept_label, u.content, u.appeared_at, u.trigger_on);
-            target_area.append(utter_dom); // 挿入            
+            const trigger_dom = makeTriggerInList(u.activity_id, u.activity_type, u.concept_label, u.content, u.appeared_at, u.trigger_on);
+            target_area.append(trigger_dom); // 挿入
         });
+        // triggerノードの表示
         trigger_list_info.trigger.forEach((u) => {
             j++;
             if(u){
@@ -1535,80 +1147,28 @@ const displayTriggerData = (display_target_area_id, target_reflection_time) => {
                 defaultThinkingProcess.addTriggerNode("Reload", u.trigger_id, edge_id, from_node, to_node, u.activity_id, u.content, u.activity_type, u.activity_time, u.x, u.y);
             }
         });
-        trigger_list_info.dnode.map((n) => {
-            defaultThinkingProcess.addReloadNode(n.node_id, n.label, n.node_type, n.node_x, n.node_y);
+        trigger_list_info.pnode.map((n) => {
+            defaultThinkingProcess.addReloadNode(n.process_node_id, n.content, n.process_node_type, n.node_x, n.node_y);
         });
-        trigger_list_info.dedge.map((n) => {
-            defaultThinkingProcess.addReloadEdge(n.edge_start, n.edge_end, n.edge_label);
+        trigger_list_info.pedge.map((n) => {
+            defaultThinkingProcess.addReloadEdge(n.process_edge_id, n.edge_start, n.edge_end, n.label);
         });
-        trigger_list_info.fnode_dnode_rel.map((n) => {
-            defaultThinkingProcess.ConnectNetworkNodeId.push(n.network_node_id);
-            defaultThinkingProcess.ConnectMindMapNodeId.push(n.mindmap_node_id);
-        });
-        trigger_list_info.dnode_ontology_rel.map((n) => {
-            defaultThinkingProcess.OntologyNodeId.push(n.ontology_id);
-            defaultThinkingProcess.OntologyConnectNodeId.push(n.node_id);
-        });
-        trigger_list_info.map_create_start_and_end.map((n) => {
-            const selectElement = document.getElementById("selectiontime");
-            const optionElement = document.createElement('option');
-            optionElement.value = JSON.stringify([n.start_time,n.end_time]);
-            optionElement.text = n.start_time;
-            selectElement.appendChild(optionElement);
-        });
-        trigger_list_info.recruit.map((n) => {
-            defaultThinkingProcess.RecruitNodeId.push(n.node_id);
-            defaultThinkingProcess.Recruit.push(n.result_recruit);
-            let back_color = "green";
-            if(n.result_recruit==="棄却"){
-                back_color = "red"
-            }
-            defaultThinkingProcess.nodes.update({
-                id : n.ontology_id,
-                borderWidth: 5,
-                color: {
-                    border: back_color,
-                }
-            });
-            if(n.reason === null){
-                defaultThinkingProcess.Feedback.push(n.node_id);
-            }
-            document.getElementById("accordion_discussion").innerHTML += "<div id='"+n.node_id+"' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「"+defaultThinkingProcess.nodes.get(n.node_id).label+"」は"+n.result_recruit+"されたのですか？</div><div class='accordion-content'><textarea id='text"+ n.node_id +"' class='accordion-input'>"+n.reason+"</textarea></div></div>";
-        });
-
-        const nodes = this.nodes;
-        const edges = this.edges;
-        // ThinkingProcess.ownNetwork = ThinkingProcess.generateMeetingReflectionNetworkCanvas(container, this.nodes, this.edges);
-
-        addeventdisplayTriggerData(target_area, conceptdisplay_area, mousedownId);
-
-        // // データの取得と挿入
-        // utterance_list_info.utterance.map(u => {
-        //     const utter_dom = makeUtteranceNodeInList(u.area_id, u.content, u.sender, u.JPNtime, u.network_on);
-        //     target_area.append(utter_dom); // 挿入            
-        // });
-        // utterance_list_info.dnode.map((n) => {
-        //     defaultThinkingProcess.addReloadNode(n.node_id, n.label, n.node_type, n.node_x, n.node_y);
-        // });
-        // utterance_list_info.dedge.map((n) => {
-        //     defaultThinkingProcess.addReloadEdge(n.edge_start, n.edge_end, n.edge_label);
-        // });
-        // utterance_list_info.fnode_dnode_rel.map((n) => {
+        // trigger_list_info.fnode_dnode_rel.map((n) => {
         //     defaultThinkingProcess.ConnectNetworkNodeId.push(n.network_node_id);
         //     defaultThinkingProcess.ConnectMindMapNodeId.push(n.mindmap_node_id);
         // });
-        // utterance_list_info.dnode_ontology_rel.map((n) => {
+        // trigger_list_info.pnode_ontology_rel.map((n) => {
         //     defaultThinkingProcess.OntologyNodeId.push(n.ontology_id);
         //     defaultThinkingProcess.OntologyConnectNodeId.push(n.node_id);
         // });
-        // utterance_list_info.map_create_start_and_end.map((n) => {
+        // trigger_list_info.map_create_start_and_end.map((n) => {
         //     const selectElement = document.getElementById("selectiontime");
         //     const optionElement = document.createElement('option');
         //     optionElement.value = JSON.stringify([n.start_time,n.end_time]);
         //     optionElement.text = n.start_time;
         //     selectElement.appendChild(optionElement);
         // });
-        // utterance_list_info.recruit.map((n) => {
+        // trigger_list_info.recruit.map((n) => {
         //     defaultThinkingProcess.RecruitNodeId.push(n.node_id);
         //     defaultThinkingProcess.Recruit.push(n.result_recruit);
         //     let back_color = "green";
@@ -1627,11 +1187,18 @@ const displayTriggerData = (display_target_area_id, target_reflection_time) => {
         //     }
         //     document.getElementById("accordion_discussion").innerHTML += "<div id='"+n.node_id+"' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「"+defaultThinkingProcess.nodes.get(n.node_id).label+"」は"+n.result_recruit+"されたのですか？</div><div class='accordion-content'><textarea id='text"+ n.node_id +"' class='accordion-input'>"+n.reason+"</textarea></div></div>";
         // });
-        // console.log(defaultThinkingProcess.Feedback);
+
+        const nodes = this.nodes;
+        const edges = this.edges;
+        // ThinkingProcess.ownNetwork = ThinkingProcess.generateThinkingProcessNetworkCanvas(container, this.nodes, this.edges);
+
+        addeventdisplayTriggerData();
+        
     });
 }
 
-const addeventdisplayTriggerData = (target_area, conceptdisplay_area, mousedownId) => {
+const addeventdisplayTriggerData = () => {
+    let mousedownId = null;
     const accordionHeaders = document.querySelectorAll('#accordion_discussion .accordion-header');
     accordionHeaders.forEach(header => {
         header.addEventListener('click', function () {
@@ -1653,25 +1220,8 @@ const addeventdisplayTriggerData = (target_area, conceptdisplay_area, mousedownI
     });
     $(`#trigger_area`).on('mouseleave', (e) => {
     // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-    $(`#trigger_click`).empty();
+        // $(`#trigger_click`).empty();
     });
-    $(`.trigger_in_list`).on('mouseup', (e) => {
-        // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-        const overed_node = e.target;
-        if(overed_node.getAttribute('trigger_on') === '0' && mousedownId !== null && mousedownId !== overed_node.getAttribute('id') && overed_node.getAttribute('speaker') === document.getElementById(mousedownId).getAttribute('speaker')){
-            union_utterance(mousedownId, overed_node.getAttribute('id'))
-        }
-    });
-    // $(`.trigger_in_list`).on('mouseenter', (e) => {
-    //     // リスト内の発話ノードにマウスイベント（マウスが要素上に入った）を追加
-    //     const overed_node = e.target;
-    //     conceptdisplay_area.html(overed_node.getAttribute('timestamp'));
-    // });
-    // $(`.trigger_in_list`).on('mouseleave', (e) => {
-    //     // リスト内の発話ノードにマウスイベント（マウスが要素上からでた）を追加
-    //     const overed_node = e.target;
-    //     conceptdisplay_area.empty();
-    // });
     $(`.trigger_in_list`).on('click', (e) => {
         // リスト内の発話ノードにマウスイベント(左クリック)を追加
         const clicked_trigger = e.target;
@@ -1731,17 +1281,6 @@ const addeventdisplayTriggerData = (target_area, conceptdisplay_area, mousedownI
             }
         });
     });
-        // const clicked_node = e.target;
-        // if(clicked_node.getAttribute('network_on') === '0'){
-        //     document.getElementById("trigger_click").innerHTML="<input type='button' id='utteranceNodebutton' value='ノードとして'>";
-        //     $(`#utteranceNodebutton`).on("click", () => {
-        //         defaultThinkingProcess.addutteranceNode(clicked_node.getAttribute('utterance'));
-        //         document.getElementById("trigger_click").innerHTML="";
-        //         clicked_node.setAttribute('network_on', "1");
-        //         document.getElementById(clicked_node.getAttribute('id')).style.background="gray";
-        //         update_text_on(clicked_node.getAttribute('id'));
-        //     });
-        // }
     $(`.trigger_in_list`).on('contextmenu', (e) => {
         // リスト内の発話ノードにマウスイベント(右クリック)を追加
         const clicked_trigger = e.target;
@@ -1904,147 +1443,14 @@ function inputTrigger(){
     }
 }
 
-/*
-* XMLファイルのアップロードとデータ取得処理
-*/
-const getXMLTagInfo = () => {
-  // アップロードされたXMLファイルの中身をJSONデータとして取得
-  parser = new DOMParser();
-  const meeting_utterances = parser.parseFromString($("#meeting_utterance_xml").html(),"text/xml");
-  const getTaggedInfo = (utter, tag) => {
-    return $(utter).find(tag).html()
-  }
-
-    /*
-     * ここで同じ発話者のやつなら統合するとかの前処理する
-     */
-
-  const utter_list = Array.prototype.slice.call(meeting_utterances.getElementsByTagName("messagedata")).map(u => {
-    return {
-      message_id: getTaggedInfo(u, "id"),
-      content: getTaggedInfo(u, "type"),
-      sender: getTaggedInfo(u, "sender_id"),
-      time: getTaggedInfo(u, "time"),
-      JPNtime: getTaggedInfo(u, "jpntime")
-    }
-  })
-  return utter_list;
-}
-
-// アップロードされたXMLを一旦別の場所においておく
-const setUploadedXMLData = (file_input_btn_id, xml_area_id) => {
-  // 読み込んだXMLファイルの中身を一度，HTML上にDisplayする（要素とかを取得する処理をしやすくするため）
-  const btn = document.getElementById(file_input_btn_id);
-  btn.addEventListener("click", () => {
-      btn.addEventListener("change", (evt) => {
-          const file = evt.target.files;
-          const reader = new FileReader();
-          reader.readAsText(file[0]);
-
-          reader.onload = () => {
-              const new_span = document.createElement('span');
-              new_span.setAttribute('id', 'meeting_utterance_xml');
-              new_span.innerHTML = reader.result;
-
-              const area = $('#'+xml_area_id);
-              area.append(new_span);
-                           
-              new Promise(() => {
-                  $("#uploaded_meeting_utterance_xml_concent_display_area").html(area.html());
-              });
-          }
-      }, false);
-  });
-  $(file_input_btn_id).off();
-}
-
-// 発言をアップロードする関数
-// const uploadMeetingUtteranceXML = () => {
-//   // フォームデータを作成
-//   //console.log(getXMLTagInfo())
-//   recordMeetingUtteranceNodes(getXMLTagInfo())
-// }
-  
-//過去のネットワークとマインドマップを開く関数
-//OpenNetWork(start,null)にすれば，バーションになる
-function OpenNetwork(start_time, end_time) {
-    defaultShowThinkingProcess = new ThinkingProcess('myProcessnetwork_show', 'pastmap');
-    getProcessMapDataFromDB(start_time, end_time,  (trigger_list_info) => {
-        // データの取得と挿入
-        trigger_list_info.dnode.map((n) => {
-            defaultShowThinkingProcess.addShowNode(n.node_id, n.label, n.node_type, n.node_x, n.node_y);
-        });
-        trigger_list_info.dedge.map((n) => {
-            defaultShowThinkingProcess.addReloadEdge(n.edge_start, n.edge_end, n.edge_label);
-        });
-        trigger_list_info.fnode_dnode_rel.map((n) => {
-            defaultShowThinkingProcess.ConnectNetworkNodeId.push(n.network_node_id);
-            defaultShowThinkingProcess.ConnectMindMapNodeId.push(n.mindmap_node_id);
-        });
-        trigger_list_info.dnode_ontology_rel.map((n) => {
-            defaultShowThinkingProcess.OntologyNodeId.push(n.ontology_id);
-            defaultShowThinkingProcess.OntologyConnectNodeId.push(n.node_id);
-        });
-        trigger_list_info.recruit.map((n) => {
-            defaultShowThinkingProcess.RecruitNodeId.push(n.node_id);
-            defaultShowThinkingProcess.Recruit.push(n.result_recruit);
-        });
-        trigger_list_info.recruit.map((n) => {
-            defaultShowThinkingProcess.RecruitNodeId.push(n.node_id);
-            defaultShowThinkingProcess.Recruit.push(n.result_recruit);
-            let back_color = "green";
-            if(n.result_recruit==="棄却"){
-                back_color = "red"
-            }
-            defaultShowThinkingProcess.nodes.update({
-                id : n.ontology_id,
-                borderWidth: 5,
-                color: {
-                    border: back_color,
-                }
-            });
-        });
-        if(end_time === null){
-            //バージョンが呼ばれた場合
-            GetPastMap2(trigger_list_info.result_discussionmap_create_start_time);
-            GetPastMap3(start_time);
-        }else{
-            //過去のマインドマップを表示する場合
-            GetPastMap2(start_time);
-            GetPastMap3(end_time);
-        }
-    });
-}
-
-// 過去のマインドマップを選んだ際の関数
-const select_time = () => {
-    const selectiontime = document.getElementById('selectiontime');
-    const selecttime = JSON.parse(selectiontime.value);
-    selectiontime.options[0].selected = true;
-    OpenNetwork(selecttime[0],selecttime[1]);
-}
-
-// // 議論時の発言を記録する関数
-// const recordMeetingUtteranceNodes = (utterances) => {
-//   $.ajax({
-//     url: "php/thinking_map_manager.php",
-//     type: "POST",
-//     data: {
-//       purpose: "record_meeting_utterance",
-//       utters: JSON.stringify(utterances),
-//     }
-//   }).success((r) => {
-//     console.log(r);
-//     displayTriggerInList("trigger_area2", null); 
-//   });
-// }
 
 function showThinkingProcessMap(){
   
     document.getElementById('feedback_area').style.display = "block";
     document.getElementById('xml_upload_area').style.display = "block";
     $('#process_network_container').css('display','flex');
-    $('#jsmind_container').css('width','calc(100vw - 350px)');
+    // $('#jsmind_container').css('width','calc(100vw - 350px)');
+    $('#jsmind_container').css('width','100%');
     $('#jsmind_container').css('height','50%');
     $('#mind').css('height','90%');
     $('#document').hide();
@@ -2056,7 +1462,7 @@ function showThinkingProcessMap(){
     });
   
     defaultThinkingProcess = new ThinkingProcess("myProcessnetwork", "load");
-    displayTriggerData("trigger_area_list", null); // 最新の議論内省マップの発話リストを表示
+    displayTriggerData("trigger_area_list"); // 最新の議論内省マップの発話リストを表示
   
 }
 
@@ -2066,40 +1472,7 @@ window.addEventListener('load', () => {
     // 初期表示時点でいくつかのオブジェクトを非表示にする
     document.getElementById("process_network_container").style.display="none";
     defaultThinkingProcess = new ThinkingProcess("myProcessnetwork", "load");
-    setUploadedXMLData("meetingUtteranceXmlFileUploader", "uploaded_meeting_utterance_xml_concent_display_area");
-    // $("#discussion_log_xml_file_upload_button").on("click", () => {
-    //     // ファイルアップロードボタンにアップロードイベントを付与
-    //     document.getElementById("myProcessnetwork").innerHTML="";
-    //     defaultThinkingProcess.removeEventLister();
-        
-    //     defaultThinkingProcess = new ThinkingProcess("myProcessnetwork", "load");
-    //     uploadMeetingUtteranceXML();
-    //     $('#process_addNode').off('click');
-    //     $('#process_removeNode').off('click');
-    //     $('#process_startEditEdge').off('click');
-    //     $('#process_removeEdge').off('click');
-    //     $('#process_ZoomIn').off('click');
-    //     $('#process_ZoomOut').off('click');
-    //     $(`#process_addNode`).on("click", e => {
-    //         defaultThinkingProcess.addNewNode();
-    //     });
-    //     $(`#process_removeNode`).on("click", e => {
-    //         defaultThinkingProcess.deleteNode();
-    //     });
-    //     $(`#process_startEditEdge`).on("click", e => {
-    //         defaultThinkingProcess.SelectEditEdge();
-    //     });
-    //     $(`#process_removeEdge`).on("click", e => {
-    //         defaultThinkingProcess.deleteEdge();
-    //     });
-    //     $(`#process_ZoomIn`).on("click", e => {
-    //         defaultThinkingProcess.zoomIn();
-    //     });
-    //     $(`#process_ZoomOut`).on("click", e => {
-    //         defaultThinkingProcess.zoomOut();
-    //     });
-    // });
-    // 内省マップ編集ボタンにイベント付与
+    // マップ編集ボタンにイベント付与
     $(`#process_addNode`).on("click", e => {
         defaultThinkingProcess.addNewNode();
     });
@@ -2119,10 +1492,6 @@ window.addEventListener('load', () => {
         defaultThinkingProcess.zoomOut();
     });
 
-    $("#past_time_select_button").on("click", () => {
-        // ファイルアップロードボタンにアップロードイベントを付与
-        select_time();
-    });
     const accordionHeaders = document.querySelectorAll('#accordion_discussion .accordion-header');
     accordionHeaders.forEach(header => {
       header.addEventListener('click', function () {
