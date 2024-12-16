@@ -372,6 +372,9 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             case "break": // 手段完了
                 node_color = 'LightCoral';
                 break;
+            case "end": // 手段完了
+                node_color = 'gray';
+                break;
             case null: //手段進行中
                 break;
             default: // その他
@@ -618,6 +621,8 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
         const fromNode = this.nodes.get(fromNodeId); // globalParams.nodes から元のノードを取得
         console.log("ここ確認する！！！！！！！", fromNode);
+        
+        Record_activities(this.selectId, null, "start", fromNode.label, null, "step", generateUniqueID(),object_map_id);
     
         // ノードを更新
         this.nodes.update({
@@ -648,8 +653,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             },
         });
         window.dispatchEvent(event); // グローバルイベントとして発火
-    
-        Record_activities(this.selectId, null, "start", fromNode.label, null, "step", generateUniqueID(),object_map_id);
     
         // 「fromNode.label 実行中．．．」を画面に表示
         const statusMessage = `${fromNode.label} 実行中．．．`;
@@ -720,39 +723,22 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     }
 
     //手段完了ボタン
-    step_end() {
-        document.getElementById('network_conmenu').style.display = "none";
-        console.log(`step_end() を呼び出しました。選択中のノードID: ${this.selectId}`); // デバッグ用ログ
+   step_end() {
+    document.getElementById('network_conmenu').style.display = "none";
+    console.log(`step_end() を呼び出しました。選択中のノードID: ${this.selectId}`); // デバッグ用ログ
 
-        defaultRecordForestMRN.update_NodeStatus("end", this.selectId, "", "");
-        
-        const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
-        const fromNode = this.nodes.get(fromNodeId); 
-        console.log(`step_end() を呼び出しました。選択中のノードID: ${fromNodeId}`);
-        console.log(`step_end() を呼び出しました。選択中のノードID: ${this.nodes}`);
-        console.log(`step_end() を呼び出しました。選択中のノードID: ${fromNodeId.object_node_id}`); // デバッグ用ログ
+    // ステータス更新
+    defaultRecordForestMRN.update_NodeStatus("end", this.selectId, "", "");
 
-        Record_activities(this.selectId, null, "end", fromNode.label, null, "step", generateUniqueID(),object_map_id);
-    
-        // ノードの色を灰色に更新
-        try {
-            this.nodes.update({
-                id: this.selectId, // 対象ノードID
-                color: 'gray',     // ノードの色を灰色に変更
-                borderWidth: 1,    // デフォルトの枠線幅
-                borderWidthSelected: 2, // 選択時の枠線幅
-                shapeProperties: {
-                    borderDashes: false // 点線を無効化
-                },
-            });
-            console.log(`ノード ${this.selectId} の色を灰色に変更しました。`);
-        } catch (error) {
-            console.error(`エラー: ノード ${this.selectId} の色を変更できませんでした。`, error);
-        }
-    
-        // 吹き出しを表示
-        this.showFeedbackTooltip();
-    }
+    const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
+    const fromNode = this.nodes.get(fromNodeId);
+    console.log(`step_end() 呼び出し: fromNodeId: ${fromNodeId}`, fromNode);
+
+    Record_activities(this.selectId, null, "end", fromNode.label, null, "step", generateUniqueID(), object_map_id);
+    // フィードバック吹き出しを表示
+    this.showFeedbackTooltip();
+}
+
     
     showFeedbackTooltip() {
         const tooltip = document.getElementById("tooltip");
@@ -1181,14 +1167,24 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 }
 
                 // "done"が設定されている場合は色をgrayに変更
-                switch (node.status) {
+                switch(node.status) {
+                    //目標ノードか手段ノードか
                     case "inProgress":
                         node_color = 'orange';
                         break;
-                    case "done":
-                        node_color = 'gray'; // "done"の場合は強制的に灰色に
+                    case "done": // 手段完了
+                        node_color = 'gray';
+                        text_color = 'white';
                         break;
-                    default:
+                    case "break": // 手段完了
+                        node_color = 'LightCoral';
+                        break;
+                    case "end": // 手段完了
+                        node_color = 'gray';
+                        break;
+                    case null: //手段進行中
+                        break;
+                    default: // その他
                         break;
                 }
 
