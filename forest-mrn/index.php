@@ -442,7 +442,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                 <div id="myProcessnetwork2">
                                     <div id="buttoncluster">
                                         <input type="button" class="thinkingProcess_network_button"
-                                                id="process_addNode" value="要約ノード追加" />
+                                                id="process_addNode" value="思考ノード追加" />
                                         <input type="button" class="thinkingProcess_network_button"
                                                 id="process_removeNode" value="ノード削除" />
                                         <input type="button" class="thinkingProcess_network_button"
@@ -621,7 +621,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             <div class="toi_menu">問い一覧</div> -->
 
                         <!--  hatakeyama  -->
-                        <div class="version_reason">
+                        <!-- <div class="version_reason">
                             <div class="correct_reason">バージョン更新理由</div>
                             <div id="comment_balloon"class="comment balloon-under" hidden>
                                 <p>バージョンを更新した理由が<br/>あれば記述しましょう！</p>
@@ -629,7 +629,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             <div id="reason" style="text-align:'center'"></div>
                         </div>
                         <div class="correct_reason">ノードバージョン履歴</div>
-                        <div id="node_version_log" class="node_version_log"></div>
+                        <div id="node_version_log" class="node_version_log"></div> -->
                         <!--  hatakeyama  -->
 
                         <div class="toi_list">

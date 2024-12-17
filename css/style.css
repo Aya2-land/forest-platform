@@ -1028,7 +1028,7 @@ h3 {
 }
 /* 問い一覧の全体 */
 .inquiry_area {
-	height: 40%;
+	height: 80%;
 	overflow-y: auto;
 	border:solid 5px #fbd393;
 	margin-bottom: 30px;

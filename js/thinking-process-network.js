@@ -455,6 +455,9 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         };
         defaultThinkingProcess.nodes.add(newNode);
 
+        console.log("From: "+from_node);
+        console.log("To: "+to_node)
+
         if(flag == "New"){
             defaultRecordThinkingProcess.record_trigger(trigger_id, activity_id, from_node, to_node, t_time, t_type, t_label, node_x, node_y);
         }
@@ -1301,15 +1304,6 @@ function inputTriggerAreaOpen(){
     document.getElementById('inputTriggerbutton').value = " × 閉じる";
     document.getElementById('inputTriggerbutton').onclick = inputTriggerAreaClose;
 
-    // 入力ボタン 
-    let input_button = document.createElement('input');
-    input_button.type = 'button';
-    input_button.className = 'triggerbutton';
-    input_button.id = 'triggerNew'
-    input_button.value = 'ノードとして追加';
-    input_button.onclick = inputTrigger;
-    document.getElementById("trigger_add").appendChild(input_button);
-
     // 日時入力欄
     let input_time = document.createElement('input');
     input_time.type = 'datetime-local';
@@ -1353,6 +1347,16 @@ function inputTriggerAreaOpen(){
     input_content.placeholder = '何をきっかけに思考が変化しましたか？';
     input_content.rows = 3
     document.getElementById("trigger_add").appendChild(input_content);
+    
+    // 入力ボタン 
+    let input_button = document.createElement('input');
+    input_button.type = 'button';
+    input_button.className = 'triggerbutton';
+    input_button.id = 'triggerNew'
+    input_button.value = 'ノードとして追加';
+    input_button.onclick = inputTrigger;
+    document.getElementById("trigger_add").appendChild(input_button);
+    
   }
 
 //   Trigger入力箇所を閉じる処理

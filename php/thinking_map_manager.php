@@ -13,10 +13,10 @@ $return_data = []; // DBアクセスの結果として返すキー・バリュ�
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 $selected_node_id = $_POST["selected_node_id"]; //マインドマップで選択されたノードID
+$xml_data = simplexml_load_file('../js/hozo.xml'); //法造データ取り出し
 
 // 選択されたノードのconcept_labelを取得
 if($selected_conID){
-    $xml_data = simplexml_load_file('../js/hozo.xml'); //法造データ取り出し
     $conLABEL = $xml_data->xpath('W_CONCEPTS/CONCEPT[@id="'.$selected_conID.'"]/LABEL/text()');
     $concept_name = !empty($conLABEL) ? (string)$conLABEL[0] : '';
     $return_data = array_merge($return_data, ['selected_concept' => $concept_name]);
