@@ -428,7 +428,7 @@ input:checked+label::after {
 
 /* マインドマップ上で右クリックしたときのメニュー */
 #mindmap_conmenu{
-  width:160px;
+  width:180px;
   background-color:#f8fffd;
   border:1px solid #B3E0D8;
   display:none;
@@ -1785,10 +1785,11 @@ select[name="user_list"] {
 .button4 {
 	background-color: #90B1AB;
 	color: #fff;
-	width: 100px;
+	/* width: 100px; */
 	height: 25px;
 	font-size: 12px;
 	margin-left: 10px;
+	margin-right: 8px;
 	margin-top: 5px;
 	overflow: auto;
 }
