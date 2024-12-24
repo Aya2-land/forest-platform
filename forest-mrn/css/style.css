@@ -130,7 +130,7 @@ table[type] {
 	background: #8fbc8f;
 	float: left;
 	margin-right: 10px;
-	overflow:auto;
+	overflow: auto;
 }
 
 #session .session_php {

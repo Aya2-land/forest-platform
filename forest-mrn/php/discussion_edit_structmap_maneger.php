@@ -25,6 +25,9 @@
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 			$mysqli->query("INSERT INTO network_nodes_activity (user_id, sheet_id, node_id, label, node_x, node_y, node_type, time, updated_time)
 			                VALUES ('$user_id', '$sheet_id', '$node_id', '$label', '$x', '$y', '$node_type', '$timestamp',  '$timestamp')");
+			if($mysqli->error){
+				echo "Error: ". $mysqli->error;
+			}
 		}else if($record_thing === 'edge'){
 			//エッジの記録
 			$edge_start = $_POST["edge_start"];          //エッジ開始

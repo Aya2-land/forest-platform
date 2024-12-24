@@ -955,6 +955,9 @@ class RecordForestMRN{
                 node_type : node_type,
                 purpose : 'record',
                 record_thing: 'node'},
+            success: function(e){
+                console.log(e);
+            }
         });
     }
 
@@ -1098,7 +1101,7 @@ const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
                 first_load_flag: target_time,
                 };
     }else{
-        data =  {
+        data =  {                                                                                                                                                                                                                   
                 purpose: "select_past_discussionmap",
                 discussion_start_time : target_time,
                 discussion_end_time : end_time
