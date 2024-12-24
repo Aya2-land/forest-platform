@@ -1185,13 +1185,12 @@ function CheckClick(){
   check = document.getElementById("checkbox");
   // checkboxがチェックされている時の処理 → 資料作成モードへの変更
   if(check.checked == true){
-    $('#jsmind_container').css('width','40vw');//横幅を全体の40％で表示？
+    $('#jsmind_container').css('width','50%');//横幅を全体の40％で表示？
     $('#document').show(); //Menu下の目標設定箇所
     $('#mind').css('height','50%');　//問い一覧箇所
     // $('#mind').toggle('fast');
     // $('#document').toggle('fast');
-    $('#document_area').css('width','calc(60vw - 350px)');　//資料作成箇所
-    // $('#document_area').css('width','620px');
+    $('#document_area').css('width','50%');　//資料作成箇所
     $('#document_area').toggle('fast'); //資料作成箇所を表示
     $('#node_slide').toggle('fast');  //
     $('#presen_menu').toggle('fast'); //資料作成用のボタン
@@ -1275,7 +1274,7 @@ function ModeChangeButtonClick() {
     $('.tspan').css('font-size', '20');
   
     $('.inquiry_area').css('height', '25vw');
-    $('#jsmind_container').css('width','40vw');//横幅を全体の40％で表示？
+    $('#jsmind_container').css('width','50%');//横幅を全体の40％で表示？
     $('#document').show(); //Menu下の目標設定箇所
     $('#mind').css('height','50%');　//問い一覧箇所
 
@@ -1284,8 +1283,8 @@ function ModeChangeButtonClick() {
     $('#scenario_title').css('width','90%');
 
     $('#scenario_title').css('border','Black');
-    $('#document_area').css('width','calc(60vw - 350px)');　//資料作成箇所
-    $('#document_area').css('height','84vh');
+    $('#document_area').css('width','50%');　//資料作成箇所
+    $('#document_area').css('height','100%');
     $('#document_area').css('overflow','scroll');
     // height:84vh;overflow: scroll;
 
@@ -1332,8 +1331,8 @@ function ModeChangeButtonClick() {
     for (var i = 0; i < text2.length; i++){
       // console.log(text2[i].nodeType);
     }
-    $('#document_area').css('width','calc(70vw - 350px)');//資料作成箇所
-    $('#document_area').css('height','auto');
+    $('#document_area').css('width','50%');//資料作成箇所
+    $('#document_area').css('height','100%'); //統合前はauto
     
     $('.content_delete').css('visibility', 'hidden');
     $('.simple_btn').css('visibility', 'hidden');

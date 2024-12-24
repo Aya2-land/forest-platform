@@ -392,7 +392,8 @@ input:checked+label::after {
 }
 #area{
 	width: 85vw;
-	height:98vh;
+	/* height:98vh; */
+	/* height: 100%; */
 	margin-bottom:2vh;
  	border:solid 5px #B3E0D8;
 	box-sizing: border-box;
@@ -631,15 +632,15 @@ input:checked+label::after {
 /* 文書を作成するエリア */
 #document_area {
 	/*（全体）ー（サイドメニュー */
-	width:calc(60vw - 350px); /* ここで設定しても意味がない */
+	width:40%; /* ここで設定しても意味がない */
 	position: relative;
 	z-index:3 ;	
 	/* チェックボックスが押されるたびにCSSを上書きしている  */
-	height:calc(100% - 34px);
+	height:100%;
 	/* font-size:25px; */
 	display: none;
 	float: left;
-	background-color:	#e2f8e5; 
+	background-color:	#ffffff; 
     border-left: 3px  #B3E0D8;
 	overflow: auto;
 	user-select: text;
@@ -664,7 +665,7 @@ input:checked+label::after {
 }
 /* 議論目的にマウスをのせたとき */
 #document_area .purpose:hover{
-	background-color: #FF6666;
+	background-color: #ffffff;
 }
 #document_area .thread-contents:hover{
 	background-color: #fedca6;

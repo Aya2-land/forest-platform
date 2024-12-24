@@ -700,8 +700,10 @@ function CreateThread(topic, id){
   var quot_setid = "\"" + setid + "\"";
   let selected_node = CheckSelectedNode(); // 現在選択されているノードのチェック
   let area = $("#document_area");
+  // let parent_id = parentUUID ? parentUUID : "root";
   console.log(uuid);
   console.log(quot_uuid);
+  // console.log(parent_id);
 
   let label = "<div class='thread' id='"+uuid+"' value='スレッド' data-node_id='"+node_id+"' style='background-color:white; padding:10px; margin-top:5px; margin-bottom:5px; margin-right:5px; margin-left:5px;'>"+
                     "<span class = 'tspan' tabindex='0'>ページタイトル</span>"+
@@ -722,7 +724,19 @@ function CreateThread(topic, id){
 
   area.append(label);
 
-  Record_slide(uuid);
+  // slide内のparent_idを指定
+  let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
+  let parentThread = newThread.prev('.thread'); // 親要素を取得
+  let brotherId;
+  if (parentThread.length > 0) {
+      brotherId = parentThread.attr('id'); // 親要素のIDを取得
+      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+  } else {
+      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      brotherId = "root";
+  }
+
+  Record_slide(uuid, node_id, brotherId);
 
   var conceptID = GetConceptId(id);
   var type = GetType(id);
@@ -807,7 +821,20 @@ function MakeSlide(){
                 "</div>";
 
     area.append(label);
-    Record_slide(uuid);
+
+    // slide内のparent_idを指定
+    let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
+    let parentThread = newThread.prev('.thread'); // 親要素を取得
+    let brotherId;
+    if (parentThread.length > 0) {
+        brotherId = parentThread.attr('id'); // 親要素のIDを取得
+        newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+    } else {
+        newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      brotherId = "root";
+    }
+
+    Record_slide(uuid, node_id, brotherId);
 
 
    $('#document_area').sortable({
@@ -855,6 +882,19 @@ function MakeNewPage(){
               "</div>";
 
   area.append(label);
+
+  // slide内のparent_idを指定
+  let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
+  let parentThread = newThread.prev('.thread'); // 親要素を取得
+  let brotherId;
+  if (parentThread.length > 0) {
+      brotherId = parentThread.attr('id'); // 親要素のIDを取得
+      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+  } else {
+      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      brotherId = "root";
+  }
+
   //2022-11-23 shimizu 中身を追加
   for(var LogicLabel in Base_ClassLabeltoConceptID){
     // console.log(LogicLabel);
@@ -866,7 +906,7 @@ function MakeNewPage(){
     // $("select[name='Logic_options_title']").append(new Option(Label, Base_ClassLabeltoConceptID[LogicLabel]));
   }
 
-  Record_slide(uuid);
+  Record_slide(uuid, node_id, brotherId);
   
  $('#document_area').sortable({
    update: function(){
@@ -934,7 +974,20 @@ function AddImage(){
               "</div>";
 
   area.append(label);
-  Record_slide(uuid);
+
+  // slide内のparent_idを指定
+  let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
+  let parentThread = newThread.prev('.thread'); // 親要素を取得
+  let brotherId;
+  if (parentThread.length > 0) {
+      brotherId = parentThread.attr('id'); // 親要素のIDを取得
+      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+  } else {
+      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      brotherId = "root";
+  }
+
+  Record_slide(uuid, node_id, brotherId);
 
 
  $('#document_area').sortable({
@@ -1239,6 +1292,19 @@ function ItemAddDocument(){
               "</div>";
 
   area.append(label);
+
+  // slide内のparent_idを指定
+  let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
+  let parentThread = newThread.prev('.thread'); // 親要素を取得
+  let brotherId;
+  if (parentThread.length > 0) {
+      brotherId = parentThread.attr('id'); // 親要素のIDを取得
+      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+  } else {
+      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      brotherId = "root";
+  }
+
   // //2022-11-23 shimizu 中身を追加
   for(var LogicLabel in Base_ClassLabeltoConceptID){
     // console.log(LogicLabel);
@@ -1251,7 +1317,7 @@ function ItemAddDocument(){
     // $("select[id="+LogicID+"]").append(new Option(Label, Base_ClassLabeltoConceptID[LogicLabel]));
   }
 
-  Record_slide(uuid);
+  Record_slide(uuid, node_id, brotherId);
   
  $('#document_area').sortable({
    update: function(){
@@ -1812,8 +1878,8 @@ function OutputFileS(){
 
   $('#scenario_title').css('width','calc(70vw - 350px)');
   
-  $('#jsmind_container').css('width','30vw');//横幅を全体の20％で表示？
-  $('#document_area').css('width','calc(70vw - 350px)');　//資料作成箇所
+  $('#jsmind_container').css('width','50%');//横幅を全体の20％で表示？
+  $('#document_area').css('width','50%');　//資料作成箇所
   $('#document_area').css('height','auto');
   $("select[name='Logic_options_contents']").css('font-size', '0.01');
   $("select[name='Logic_options_contents']").css('visibility', 'hidden');

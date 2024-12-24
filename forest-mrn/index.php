@@ -294,11 +294,11 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                         <!-- <li><a href="javascript:void(0);" onClick="NodeAppend()">資料に追加する</a></li> -->
                                         
                                         <li>
-                                            <button class="button4" onclick="showThinkingProcessMap()">
-                                                思考過程表出化マップ
+                                            <button class="button4" onclick="NodeVersionUpdate(null)">
+                                                ノードを更新
                                             </button>
                                         </li>
-                                        <!-- <li>
+                                        <li>
                                             <button class="button4" onclick="ItemAddDocument()">
                                                 項目として追加する
                                             </button>
@@ -307,10 +307,10 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                             <button class="button4" onclick="NodeAppendLogic()">
                                                 内容として追加する 
                                             </button>
-                                        </li> -->
+                                        </li>
                                         <li>
-                                            <button class="button4" onclick="NodeVersionUpdate(null)">
-                                                ノードを更新
+                                            <button class="button4" onclick="showThinkingProcessMap()">
+                                                思考過程表出化マップ
                                             </button>
                                         </li>
                                         <!-- <li>
@@ -690,6 +690,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                     
                 </div>
                 <!--サイドメニュー　finish-->
+            </div>
             <!--tab01 fin-->
 
             <!--  tab04メニュー　　hatakeyama　　-->
@@ -774,9 +775,6 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                 </div>
             </div>
             <!--履歴 yoshioka -->
-
-            
-        </div>
 
         </div>    
         

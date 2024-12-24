@@ -1,12 +1,17 @@
 //スライド作成を記録する関数
-function Record_slide(slideID){
-
+function Record_slide(slideID, nodeId, brotherId){
+  
   $.ajax({
       url: "php/slide_create.php",
       type: "POST",
-      data: {id : slideID,},
-      success: function () {
+      data: {id : slideID,
+            node_id: nodeId,
+            brother_id: brotherId},
+      success: function (e) {
         console.log("登録成功：　" +slideID );
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -23,8 +28,11 @@ function Delete_slide(slideID){
       url: "php/slide_delete.php",
       type: "POST",
       data: {id : slideID,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功：　" +slideID );
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -39,8 +47,11 @@ function Delete_Document(slideID){
       url: "php/Document_delete.php",
       type: "POST",
       data: {id : slideID,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功：　" +slideID );
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -57,8 +68,11 @@ function Delete_document_relation_node(doc_node_id){
       url: "php/LogicRelation_node_delete.php",
       type: "POST",
       data: {id : doc_node_id,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功：　" +doc_node_id );
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -74,8 +88,11 @@ function Delete_slide_relation(thread_id){
     url: "php/LogicRelationSlide_delete.php",
     type: "POST",
     data: {id : thread_id,},
-    success: function () {
+    success: function (e) {
       console.log("登録成功：　" +thread_id );
+      if(e){
+        console.log(e);
+      }
     },
     error: function () {
     console.log("登録失敗");},
@@ -91,8 +108,11 @@ function Delete_document_relation_slide(slide_id){
       url: "php/LogicRelation_slide_delete.php",
       type: "POST",
       data: {id : slide_id,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功：　" +slide_id );
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -104,8 +124,11 @@ function Delete_document_relation_slide(slide_id){
     url: "php/SlideLogicRelation_delete.php",
     type: "POST",
     data: {id : slide_id,},
-    success: function () {
+    success: function (e) {
       console.log("登録成功：　" +slide_id );
+      if(e){
+        console.log(e);
+      }
     },
     error: function () {
     console.log("登録失敗");},
@@ -121,8 +144,11 @@ function Delete_document_relation_concept(id){
       url: "php/LogicRelation_concept_delete.php",
       type: "POST",
       data: {id : id,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功：　" +id );
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -181,8 +207,11 @@ function Record_content(contentID, nodeID, conceptID, content, slideID, type){
              slide_id : slideID,
              type : type,
              },
-      success: function () {
+      success: function (e) {
         console.log("登録成功：　" +slideID );
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -207,7 +236,9 @@ async function Record_NodeLogicRelation(U_ID, node1_id,doc_con1_id,doc_con1_labe
             ont2_id : ont2_id,
             },
     success: function (r) {
-      console.log("これみろおおおお" +r);
+      if(e){
+        console.log(e);
+      }
     },
     error: function () {
     console.log("登録失敗");},
@@ -233,8 +264,11 @@ async function Record_SlideLogicRelation(U_ID, node_id1,thread1_id,thread1_label
             relation_label : relation_label,
             relation_concept : relation_concept
             },
-    success: function () {
+    success: function (e) {
       console.log("登録成功：　" +U_ID );
+      if(e){
+        console.log(e);
+      }
     },
     error: function () {
     console.log("登録失敗");},
@@ -276,8 +310,11 @@ function Delete_content(contentID){
       url: "php/content_delete.php",
       type: "POST",
       data: {id : contentID},
-      success: function () {
+      success: function (e) {
         console.log("登録成功：　" +contentID );
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -292,8 +329,11 @@ function Delete_Document_content(contentID){
       url: "php/Document_content_delete.php",
       type: "POST",
       data: {id : contentID},
-      success: function () {
+      success: function (e) {
         console.log("登録成功：　" +contentID );
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -312,8 +352,11 @@ function Edit_save(obj,id){
       type: "POST",
       data: {id : id,
              content : content,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -345,8 +388,11 @@ function Edit_slide(obj, slideID){
       type: "POST",
       data: {id : slideID,
              content : slidetitle,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -372,8 +418,11 @@ function Edit_title(obj){
       url: "php/title_edit.php",
       type: "POST",
       data: {title : title,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -385,8 +434,11 @@ function Edit_title(obj){
     url: "php/update_scenario_title.php",
     type: "POST",
     data: {title : title,},
-    success: function () {
+    success: function (e) {
       console.log("登録成功");
+      if(e){
+        console.log(e);
+      }
     },
     error: function () {
     console.log("登録失敗");},
@@ -403,8 +455,11 @@ function Edit_title_shimizu(obj){
       url: "php/title_edit_shimizu.php",
       type: "POST",
       data: {title : title,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -418,8 +473,11 @@ async function Update_slide_rank(){
 
       url: "php/update_slide_rank.php",
       type: "POST",
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
         return "ok";
       },
       error: function () {
@@ -436,8 +494,11 @@ async function Update_Document_rank(){
 
       url: "php/update_document_rank.php",
       type: "POST",
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
         return "ok";
       },
       error: function () {
@@ -452,8 +513,11 @@ async function Update_content_rank(){
 
       url: "php/update_content_rank.php",
       type: "POST",
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
         return "ok";
       },
       error: function () {
@@ -467,8 +531,11 @@ async function Update_Document_content_rank(){
   await $.ajax({
       url: "php/update_document_content_rank.php",
       type: "POST",
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
         return "ok";
       },
       error: function () {
@@ -487,8 +554,11 @@ function Record_slide_rank(slideID, rank, title){
             slide_id : slideID,
             rank : rank,
             title : title,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -509,8 +579,11 @@ function Record_document_rank(slideID, rank, title,logic_option,node_id,concept_
             logic_option : logic_option,
             node_id : node_id,
             concept_id : concept_id},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -533,8 +606,11 @@ function Record_content_rank(contentID, rank, slideID, content, nodeID, type, in
             type : type,
             indent : indent,
             concept_id : concept_id},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -560,8 +636,11 @@ function Record_document_content_rank(contentID, rank, slideID, content, nodeID,
             indent : indent,
             concept_id : concept_id,
             logic_option : logic_option_content},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -576,8 +655,11 @@ function Update_scenario_title(title){
       url: "php/update_scenario_title.php",
       type: "POST",
       data: {title : title,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -592,8 +674,11 @@ function Update_document_scenario_title(title){
       url: "php/update_document_scenario_title.php",
       type: "POST",
       data: {title : title,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -608,8 +693,11 @@ function Record_Timing(timing){
       url: "php/record_timing.php",
       type: "POST",
       data: {timing : timing,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
