@@ -1,13 +1,13 @@
 <?php
 
 //   各々のローカル
-	$db_host = "localhost";  // DBサーバのurl
+	$db_host = "localhost:8889";  // DBサーバのurl
 	$db_user = "root";
 	$db_password = "root";
 	$db_dbname = "forest_platform";
 
 	// 実験データ参照用
-	// $db_host = "localhost";  // DBサーバのurl
+	// $db_host = "localhost:8889";  // DBサーバのurl
 	// $db_user = "root";
 	// $db_password = "root";
 	// $db_dbname = "FCR-Experiment-Phase1";
