@@ -49,9 +49,21 @@ function showGeneration() {
 
 function addObjectMap() {
     const goalContent = document.getElementById("goalInput").value;
+    const startDate = document.getElementById("startDateInput").value; // 開始日
+    const endDate = document.getElementById("endDateInput").value;     // 終了日
 
     if (goalContent.trim() === "") {
         alert("目標の内容を入力してください");
+        return;
+    }
+
+    if (startDate === "" || endDate === "") {
+        alert("開始日と終了日を入力してください");
+        return;
+    }
+
+    if (new Date(startDate) > new Date(endDate)) {
+        alert("終了日は開始日より後の日付にしてください");
         return;
     }
 
@@ -63,11 +75,11 @@ function addObjectMap() {
     const newGoalButton = document.createElement("div");
     newGoalButton.classList.add('goal-item'); // CSSのクラスを追加
 
-	// メモの初期値を設定
-	newGoalButton.setAttribute('data-memo', 'メモがありません');
+    // メモの初期値を設定
+    newGoalButton.setAttribute('data-memo', 'メモがありません');
 
     // ボタンに目標情報を設定
-    initializeGoalButton(newGoalButton, goalContent, timeString, timeString, objectMapId);
+    initializeGoalButton(newGoalButton, goalContent, timeString, timeString, objectMapId, startDate, endDate);
 
     // 表示エリアに追加
     const goalListArea = document.getElementById("goalListArea");
@@ -75,15 +87,21 @@ function addObjectMap() {
 
     // 入力フィールドをクリア
     document.getElementById("goalInput").value = "";
+    document.getElementById("startDateInput").value = "";
+    document.getElementById("endDateInput").value = "";
 
     // サーバーに目標を保存
-    record_objectMap(goalContent, timeString, objectMapId);
-    
-    //活動ログに追加
-    Record_activities(objectMapId, null, "add", goalContent, null, "map", generateUniqueID(),null);
+    record_objectMap(goalContent, timeString, objectMapId, startDate, endDate);
+
+    // 活動ログに追加
+    Record_activities(objectMapId, null, "add", goalContent, null, "map", generateUniqueID(), {
+        startDate,
+        endDate
+    });
 }
 
-function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, objectMapId) {
+
+function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, objectMapId, startDate, endDate) {
     // ボタンのHTMLを設定
     goalButton.innerHTML = `
         <div class="goal-card compact">
@@ -91,6 +109,8 @@ function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, obj
                 <span class="goal-text">${goalContent}</span><br>
                 <span class="goal-date-updated" style="font-size: 0.7em; display: block;">更新: ${updatedAt}</span> 
                 <span class="goal-date-created" style="font-size: 0.7em; display: block;">作成: ${createdAt}</span>
+                <span class="goal-start-date" style="font-size: 0.7em; display: block;">開始日: ${startDate}</span> <!-- 開始日を表示 -->
+                <span class="goal-end-date" style="font-size: 0.7em; display: block;">終了日: ${endDate}</span> <!-- 終了日を表示 -->
             </div>
             <div class="goal-actions">
                 <button class="memo-btn" title="メモを追加/編集">📝</button>
@@ -110,50 +130,6 @@ function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, obj
             goalButton.setAttribute('data-memo', newMemo.trim() || 'メモがありません');
         }
     });
-
-    // エクスポートボタンのイベントリスナーを追加
-// エクスポートボタンのイベントリスナーを追加
-    const exportButton = goalButton.querySelector('.export-btn');
-    exportButton.addEventListener('click', () => {
-        // マップ名と時間を取得
-        const currentTime = new Date().toISOString().replace(/[:.-]/g, '_');  // ファイル名用にISO形式の日付を取得
-
-        // エクスポートするマップ（vis.jsのコンテナ）を取得
-        const networkContainer = document.querySelector('#mynetwork');  // マップのコンテナのIDを指定
-
-        // マップの全体の高さと幅を取得
-        const width = networkContainer.scrollWidth;  // 全体の幅
-        const height = networkContainer.scrollHeight;  // 全体の高さ
-
-        // html2canvasのオプション設定
-        html2canvas(networkContainer, {
-            scrollX: 0,
-            scrollY: 0,
-            width: width,
-            height: height,
-            useCORS: true,
-            allowTaint: true,
-            x: 0,
-            y: 0,
-            logging: true,  // デバッグ用
-            ignoreElements: (element) => {
-                // 不要な要素は無視する場合
-                return element.id === 'someIdToIgnore';
-            }
-        }).then(canvas => {
-            // キャプチャしたcanvasを画像として保存
-            canvas.toBlob(blob => {
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `${currentTime}_${goalContent}.png`;  // ファイル名に時間と目標内容を使用
-                link.click();
-            }, 'image/png');
-        }).catch(error => {
-            console.error('Error in capturing canvas:', error);
-        });
-    });
-
-
 
     // 削除ボタンのイベントリスナーを追加
     const deleteButton = goalButton.querySelector('.delete-btn');
@@ -342,26 +318,29 @@ function enableGoalEdit(newGoalButton, currentGoalContent, createdAt, objectMapI
 
 
 //目標マップの記録
-function record_objectMap(goalContent, timeString,objectMapId){
+function record_objectMap(goalContent, timeString, objectMapId, startDate, endDate) {
     $.ajax({
         url: "php/object_maneger.php",  // PHPファイルのパス
         type: "POST",  // HTTPメソッド
         data: {
             goalContent: goalContent,
             timeString: timeString,
-			object_map_id: objectMapId,  // ランダムIDを追加
-            purpose : 'record',  // パラメータ
+            object_map_id: objectMapId,  // ランダムIDを追加
+            startDate: startDate,  // 開始日を追加
+            endDate: endDate,  // 終了日を追加
+            purpose: 'record',  // パラメータ
             record_thing: 'map'  // パラメータ
         },
-		success: function(response) {
-			// responseをコンソールに表示
-			console.log("サーバーからのレスポンス:", response);
-		},
-		error: function(xhr, status, error) {
-			console.error('送信エラー:', status, error);
-		}
+        success: function(response) {
+            // responseをコンソールに表示
+            console.log("サーバーからのレスポンス:", response);
+        },
+        error: function(xhr, status, error) {
+            console.error('送信エラー:', status, error);
+        }
     });
 }
+
 
 function update_objectMap(updatedGoalContent, createdAt, objectMapId) {
    $.ajax({
@@ -418,7 +397,7 @@ function fetchGoals() {
                     goalButton.classList.add('goal-item'); // スタイル用クラスを追加
 
                     // ボタンに目標情報を設定
-                    initializeGoalButton(goalButton, goal.label, goal.created_at, goal.updated_at, goal.object_map_id);
+                    initializeGoalButton(goalButton, goal.label, goal.created_at, goal.updated_at, goal.object_map_id,goal.start_date, goal.end_date);
 
                     // 表示エリアにボタンを追加
                     goalListArea.appendChild(goalButton);

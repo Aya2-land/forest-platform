@@ -3,21 +3,27 @@
 //問いエリアの初期化とhozo.xmlの読み込み
 function choose_xmlLoad(){
 
-	$("#testxml").html("");
-	$("#intention").html("");
-	$("#rationality").html("");
+    $("#testxml").html("");
+    $("#intention").html("");
+    $("#rationality").html("");
 
-	$.ajax({
+    console.log("Starting AJAX request...");
 
-		url:'js/hozo.xml',
-		type:'get',
-		dataType:'xml',
-		timeout:1000,
-		success:choose_parse_xml
-
-	});
-
+    $.ajax({
+        url: 'js/hozo.xml',
+        type: 'get',
+        dataType: 'xml',
+        timeout: 1000,
+        success: function (data) {
+            console.log("検索　AJAX request succeeded:", data);
+            choose_parse_xml(data);
+        },
+        error: function (xhr, status, error) {
+            console.error("AJAX request failed:", status, error);
+        }
+    });
 }
+
 
 
 // hozo.xmlのパースが成功した場合に，<W_CONCEPTS>のそれぞれに指定関数を適用

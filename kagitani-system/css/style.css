@@ -1770,16 +1770,51 @@ select {
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.6);
 }
 
+.goal-input-container {
+    width: 75%; /* 横幅を75%に設定 */
+    max-width: 600px; /* 最大幅を600pxに制限 */
+    margin: 0 auto;
+    padding: 8px; /* パディングを少し小さく */
+    border-radius: 8px;
+    font-size: 12px; /* 全体的に小さめ */
+}
+
+.input-group {
+    width: 100%;
+    margin-bottom: 2px; /* 間隔をさらに小さく */
+    display: flex;
+    align-items: center;
+    gap: 3px; /* ラベルと入力欄の間隔を縮める */
+}
+
+.input-label {
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 12px; /* ラベルも小さく */
+}
+
+.input-field {
+    flex: 1;
+    font-size: 12px; /* 入力フィールドも小さく */
+    padding: 6px; /* パディングを少し小さく */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    height: 30px; /* 縦幅を狭く */
+}
+
 .setGoal_button {
     background-color: #007BFF;
     color: white;
-    padding: 8px 12px;
-    font-size: 14px;
+    padding: 8px 16px; /* ボタンのパディングを少し小さく */
+    font-size: 12px; /* ボタンのフォントサイズを小さく */
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
     width: 100%;
-    max-width: 280px; /* 入力フィールドと合わせる */
+    max-width: 240px; /* ボタンの最大幅を調整 */
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
@@ -1791,6 +1826,7 @@ select {
 .setGoal_button:active {
     transform: scale(1);
 }
+
 /* ボタンコンテナのフレックス設定 */
 #buttoncluster {
     display: flex; /* 横並びにする */

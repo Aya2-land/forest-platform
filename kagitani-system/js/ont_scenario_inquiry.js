@@ -16,6 +16,7 @@ function recommend_xmlLoad(){
 		success:recommend_parse_xml
 
 	});
+	console.log("検索　AJAX request succeeded:");
 
 }
 

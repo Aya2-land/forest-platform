@@ -23,6 +23,8 @@ function p_xmlLoad(){
 
 	});
 
+	console.log("testtttt");
+
 }
 
 // XMLデータを取得

@@ -12,8 +12,9 @@ function micro_xmlLoad(){
 		dataType:'xml',
 		timeout:1000,
 		success:micro_parse_xml
-
 	});
+
+	console.log("testtttt");
 
 }
 
@@ -247,6 +248,7 @@ function micro_parse_xml(xml,status){
 }*/
 
 function micro_disp() {
+	console.log("testtttt");
     var $concept_tag = $(this).find('CONCEPT');
     var $label = $(this).find('LABEL');
     var $isa = $(this).find('ISA');

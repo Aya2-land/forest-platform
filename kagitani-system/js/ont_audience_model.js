@@ -16,6 +16,8 @@ function audience_xmlLoad(){
 		success:audience_parse_xml
 
 	});
+	console.log("testtttt");
+	
 
 }
 

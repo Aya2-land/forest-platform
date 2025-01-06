@@ -2,7 +2,7 @@
 <OE_FILE filename="hozo.xml" ont_id="1509010690552ont" >
 <FILENAME_ONT>hozo.xml</FILENAME_ONT>
 <W_CONCEPTS hasAny="false">
-<CANVAS_SIZE w="256040" h="142814" x="12900" y="57740" />
+<CANVAS_SIZE w="186726" h="104140" x="13798" y="6610" />
 <CONCEPT id="1509010690552_n0" >
 <LABEL>Any</LABEL>
 <SUB_LABELS>
@@ -27,8 +27,7 @@
 <LABEL>活動</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="15560" y="7940"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="14268" y="7100"/>
 <SLOTS>
 <SLOT id="1509010690552_s3" 
  type="NW"  label="slot2"  kind="p/o"  num="1"  role="目的"  class_constraint="Any"  rh_name=""  value="" >
@@ -46,7 +45,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="14340" y="14340"/>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -95,7 +93,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="17280" y="17280"/>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -104,8 +101,7 @@
 <LABEL>認知活動</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="50200" y="28690"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="50200" y="28686"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -146,7 +142,7 @@
 <LABEL>反論を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="48960" y="46190"/>
+<POS x="48960" y="46186"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -193,7 +189,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="16440" y="47380"/>
-<SUB_TREE>open</SUB_TREE>
 <SLOTS>
 <SLOT id="1509010690552_s22" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="サブ認知活動"  class_constraint="実践のデザインを考える"  rh_name=""  value="" >
@@ -234,7 +229,7 @@
 <LABEL>論文に落とし込めるかを考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="18220" y="35970"/>
+<POS x="18220" y="35966"/>
 <SLOTS>
 <SLOT id="1509010690552_s28" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="サブ認知活動"  class_constraint="新規性を考える"  rh_name=""  value="" >
@@ -276,7 +271,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="52800" y="38240"/>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -285,8 +279,7 @@
 <LABEL>複合活動_認知活動</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="82870" y="39080"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="82866" y="39080"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -295,7 +288,7 @@
 <LABEL>妥当性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="28060" y="69850"/>
+<POS x="28060" y="69846"/>
 <SLOTS>
 <SLOT id="1509010690552_s40" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="アイディア"  rh_name=""  value="" >
@@ -398,7 +391,7 @@
 <LABEL>倫理に反していないかを考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="13150" y="19240"/>
+<POS x="13146" y="19240"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -550,7 +543,7 @@
 <LABEL>汎用性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="51230" y="63160"/>
+<POS x="51226" y="63160"/>
 <SLOTS>
 <SLOT id="1509010690552_s68" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="アイディア"  rh_name=""  value="" >
@@ -573,7 +566,7 @@
 <LABEL>新規性</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="60890" y="500"/>
+<POS x="60886" y="500"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -653,7 +646,7 @@
 <LABEL>妥当性</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="19730" y="1880"/>
+<POS x="19726" y="1880"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -680,8 +673,7 @@
 <LABEL>システムに落とし込めるかを考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="13150" y="57920"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="13146" y="57920"/>
 <SLOTS>
 <SLOT id="1509010690552_s77" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="サブ認知活動"  class_constraint="システムのデザインを考える"  rh_name=""  value="" >
@@ -769,8 +761,7 @@
 <LABEL>優先順位を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="28690" y="36160"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="28686" y="36160"/>
 <SLOTS>
 <SLOT id="1509010690552_s84" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="制約"  rh_name=""  value="" >
@@ -799,7 +790,7 @@
 <LABEL>条件</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="41570" y="3440"/>
+<POS x="41566" y="3440"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -808,7 +799,7 @@
 <LABEL>制約</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="28690" y="6740"/>
+<POS x="28686" y="6740"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -835,7 +826,7 @@
 <LABEL>能力的制約</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="32360" y="9510"/>
+<POS x="32360" y="9506"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -853,7 +844,7 @@
 <LABEL>自分の興味を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="64060" y="49690"/>
+<POS x="64060" y="49686"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -882,8 +873,7 @@
 <LABEL>前回のMT内容を振り返る</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="18820" y="21970"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="18820" y="21966"/>
 <SLOTS>
 <SLOT id="1509010690552_s97" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="サブ認知活動"  class_constraint="前提条件を考える"  rh_name=""  value="" >
@@ -900,8 +890,7 @@
 <LABEL>自分のスキルを見定める</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="15390" y="19540"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="15386" y="19540"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -910,8 +899,7 @@
 <LABEL>悩んでいることは何かを考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="51960" y="54590"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="51960" y="54586"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -977,7 +965,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="55340" y="42220"/>
-<SUB_TREE>open</SUB_TREE>
 <SLOTS>
 <SLOT id="1610582272000_s128" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="Any"  rh_name=""  value="" >
@@ -1020,7 +1007,7 @@
 <LABEL>教師の観点</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="70830" y="1580"/>
+<POS x="70826" y="1580"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -1029,7 +1016,7 @@
 <LABEL>学習者の観点</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="70830" y="1880"/>
+<POS x="70826" y="1880"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -1038,7 +1025,7 @@
 <LABEL>ユーザーの観点</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="70830" y="2400"/>
+<POS x="70826" y="2400"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -1115,7 +1102,7 @@
 <LABEL>議論目的を設定する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="51790" y="69940"/>
+<POS x="51786" y="69940"/>
 <SLOTS>
 <SLOT id="1509010690552_s124" 
  type="NW"  label="slot2"  kind="p/o"  num="1"  role="出力"  class_constraint="議論目的"  rh_name=""  value="" >
@@ -1132,9 +1119,8 @@
 <LABEL>対象者を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="60890" y="67500"/>
+<POS x="60886" y="67500"/>
 <PART_TREE>close</PART_TREE>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -1232,7 +1218,7 @@
 <LABEL>実践の仮説を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="44790" y="73400"/>
+<POS x="44786" y="73400"/>
 <SLOTS>
 <SLOT id="1509010690552_s138" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="実践目的"  rh_name=""  value="" >
@@ -1264,7 +1250,7 @@
 <LABEL>実践の手順を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="65060" y="90710"/>
+<POS x="65060" y="90706"/>
 <SLOTS>
 <SLOT id="1509010690552_s142" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="サブ認知活動"  class_constraint="実践の目的を考える"  rh_name=""  value="" >
@@ -1407,7 +1393,7 @@
 <LABEL>言葉の定義を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="41570" y="59540"/>
+<POS x="41566" y="59540"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -1426,7 +1412,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="78920" y="84940"/>
-<SUB_TREE>open</SUB_TREE>
 <SLOTS>
 <SLOT id="1509010690559_s174" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="問題"  rh_name=""  value="" >
@@ -1473,7 +1458,7 @@
 <LABEL>事実と推測を明確にする</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="49690" y="59540"/>
+<POS x="49686" y="59540"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -1482,7 +1467,7 @@
 <LABEL>理由を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="8620" y="20010"/>
+<POS x="8620" y="20006"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -1500,7 +1485,7 @@
 <LABEL>サブゴールを設定する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="46190" y="56900"/>
+<POS x="46186" y="56900"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -1510,7 +1495,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="35720" y="75080"/>
-<SUB_TREE>open</SUB_TREE>
 <SLOTS>
 <SLOT id="1509010690559_s185" 
  type="NW"  label="slot2"  kind="p/o"  num="1"  role="入力"  class_constraint="課題"  rh_name=""  value="" >
@@ -1533,7 +1517,7 @@
 <LABEL>学習目標を設定する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="46190" y="80460"/>
+<POS x="46186" y="80460"/>
 <SLOTS>
 <SLOT id="1509010690559_s189" 
  type="OR"  label="slot"  kind="p/o"  num="1"  role="出力"  class_constraint="学習目標"  rh_name=""  value="" >
@@ -1738,7 +1722,7 @@
 <LABEL>論文に落とし込む</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="115070" y="32050"/>
+<POS x="115066" y="32046"/>
 <SLOTS>
 <SLOT id="1509074143607_s219" 
  type="NW"  label="slot5"  kind="p/o"  num="1"  role="入力"  class_constraint="アイディア"  rh_name=""  value="" >
@@ -1807,7 +1791,7 @@
 <LABEL>解決手法を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="105380" y="85810"/>
+<POS x="105380" y="85806"/>
 <SLOTS>
 <SLOT id="1509010690559_s223" 
  type="NW"  label="slot"  kind="p/o"  num="1..."  role="入力"  class_constraint="課題"  rh_name=""  value="" >
@@ -1909,7 +1893,7 @@
 <LABEL>解決手法</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="58980" y="9510"/>
+<POS x="58980" y="9506"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -1964,8 +1948,7 @@
 <LABEL>学習支援の方法を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="123090" y="85840"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="123086" y="85840"/>
 <SLOTS>
 <SLOT id="1635376764000_s249" 
  type="NW"  label="slot5"  kind="p/o"  num="1"  role="入力"  class_constraint="学びの困難性"  rh_name=""  value="" >
@@ -2009,7 +1992,7 @@
 <LABEL>関連研究との違いを考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="89730" y="93370"/>
+<POS x="89726" y="93366"/>
 <SLOTS>
 <SLOT id="1608641547000_s257" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="アイディア"  rh_name=""  value="" >
@@ -2097,8 +2080,7 @@
 <LABEL>相違点を見つける</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="89140" y="48290"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="89140" y="48286"/>
 <SLOTS>
 <SLOT id="1509010690559_s256" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="サブ認知活動"  class_constraint="比較する"  rh_name=""  value="" >
@@ -2126,7 +2108,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="64060" y="71100"/>
-<SUB_TREE>open</SUB_TREE>
 <SLOTS>
 <SLOT id="1607521395000_s265" 
  type="NW"  label="slot2"  kind="p/o"  num="1"  role="出力"  class_constraint="学習者"  rh_name=""  value="" >
@@ -2390,7 +2371,7 @@
 <LABEL>研究MT資料を作成する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="116330" y="4660"/>
+<POS x="116326" y="4660"/>
 <SLOTS>
 <SLOT id="1509074143607_s315" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="出力"  class_constraint="研究MT資料"  rh_name=""  value="" >
@@ -2506,7 +2487,7 @@
 <LABEL>モジュール</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="49690" y="2400"/>
+<POS x="49686" y="2400"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -2654,7 +2635,7 @@
 <LABEL>他の選択肢は考えられますか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="14830" y="22160"/>
+<POS x="14826" y="22160"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -2672,7 +2653,7 @@
 <LABEL>これは倫理に反していませんか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="12590" y="19900"/>
+<POS x="12586" y="19900"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -2735,7 +2716,7 @@
 <LABEL>どのような汎用性がありますか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="51020" y="64390"/>
+<POS x="51020" y="64386"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -2745,7 +2726,7 @@
 <LABEL>原因は何ですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="55620" y="42970"/>
+<POS x="55620" y="42966"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -2835,7 +2816,7 @@
 <LABEL>この言葉の定義は何ですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="41570" y="59960"/>
+<POS x="41566" y="59960"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -2863,7 +2844,7 @@
 <LABEL>自分の興味は何ですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="64160" y="49830"/>
+<POS x="64160" y="49826"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -2872,7 +2853,7 @@
 <LABEL>悩んでいることは何ですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="52140" y="55010"/>
+<POS x="52140" y="55006"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -2926,7 +2907,7 @@
 <LABEL>実践の手順はどのようなものですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="65370" y="91760"/>
+<POS x="65366" y="91760"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -2935,7 +2916,7 @@
 <LABEL>実践の理想の結果は何ですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="27480" y="80210"/>
+<POS x="27480" y="80206"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -2953,7 +2934,7 @@
 <LABEL>研究仮説は何ですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="45840" y="54590"/>
+<POS x="45840" y="54586"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -2962,7 +2943,7 @@
 <LABEL>サブゴールは何ですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="46190" y="57920"/>
+<POS x="46186" y="57920"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -3091,7 +3072,7 @@
 <LABEL>共通点は何ですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="83990" y="44460"/>
+<POS x="83986" y="44460"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -3118,7 +3099,7 @@
 <LABEL>これは目的を達成できていますか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="20" y="54590"/>
+<POS x="20" y="54586"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -3128,7 +3109,7 @@
 <LABEL>時間的制約を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="15390" y="23540"/>
+<POS x="15386" y="23540"/>
 <SLOTS>
 <SLOT id="1509088161516_s420" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="時間的制約"  rh_name=""  value="" >
@@ -3145,7 +3126,7 @@
 <LABEL>時間的制約を考慮すると，その計画は現実的ですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="14830" y="24380"/>
+<POS x="14826" y="24380"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -3154,7 +3135,7 @@
 <LABEL>実践は行いましたか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="123440" y="28690"/>
+<POS x="123440" y="28686"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -3228,7 +3209,7 @@
 <LABEL>実践の目的を考える，実践の理想の結果を考えるの合理性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="9510" y="93620"/>
+<POS x="9506" y="93620"/>
 <SLOTS>
 <SLOT id="1544776957000_s414" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="実践の目的を考える"  rh_name=""  value="" >
@@ -3320,7 +3301,7 @@
 <LABEL>解決手法を考える，システムを実装するの合理性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="0" y="91970"/>
+<POS x="0" y="91966"/>
 <SLOTS>
 <SLOT id="1544776957000_s426" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="解決手法を考える"  rh_name=""  value="" >
@@ -3343,7 +3324,7 @@
 <LABEL>システムを実装する，実践を行うの合理性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="9510" y="80460"/>
+<POS x="9506" y="80460"/>
 <SLOTS>
 <SLOT id="1544776957000_s429" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="システムを実装する"  rh_name=""  value="" >
@@ -3389,7 +3370,7 @@
 <LABEL>問題を発見する，研究目的を設定するの合理性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="11400" y="99670"/>
+<POS x="11400" y="99666"/>
 <SLOTS>
 <SLOT id="1544781923000_s418" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="問題を発見する"  rh_name=""  value="" >
@@ -3435,7 +3416,7 @@
 <LABEL>問題を課題に分解する，研究目的を設定するの合理性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="10180" y="106250"/>
+<POS x="10180" y="106246"/>
 <SLOTS>
 <SLOT id="1544781923000_s424" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="問題を課題に分解する"  rh_name=""  value="" >
@@ -3458,7 +3439,7 @@
 <LABEL>研究資料作成活動</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="166310" y="3440"/>
+<POS x="166306" y="3440"/>
 <PART_TREE>close</PART_TREE>
 <SUB_TREE>open</SUB_TREE>
 <RELATIONS>
@@ -3510,7 +3491,7 @@
 <LABEL>資料作成＿認知活動＿素活動</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="168130" y="17040"/>
+<POS x="168126" y="17040"/>
 <SLOTS>
 <SLOT id="1669116656189_s434" 
  type="NW"  label="slot"  kind="p/o"  num="0.."  role="入力"  class_constraint="Any"  rh_name=""  value="" >
@@ -3534,7 +3515,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="178260" y="2400"/>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -3599,7 +3579,7 @@
 <LABEL>事実を記述する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="204220" y="19730"/>
+<POS x="204220" y="19726"/>
 <PART_TREE>close</PART_TREE>
 <SLOTS>
 <SLOT id="1548588455000_s444" 
@@ -3752,7 +3732,7 @@
 <LABEL>疑問を記述する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="203550" y="26820"/>
+<POS x="203546" y="26820"/>
 <PART_TREE>close</PART_TREE>
 <SLOTS>
 <SLOT id="1548588455000_s466" 
@@ -3788,7 +3768,7 @@
 <LABEL>定義を記述する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="206490" y="18500"/>
+<POS x="206486" y="18500"/>
 <SLOTS>
 <SLOT id="1548588455000_s470" 
  type="NW"  label="slot"  kind="p/o"  num="1.."  role="入力"  class_constraint="定義"  rh_name=""  value="" >
@@ -3896,9 +3876,8 @@
 <LABEL>資料作成＿認知活動</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="174990" y="11220"/>
+<POS x="174986" y="11220"/>
 <PART_TREE>close</PART_TREE>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -3916,7 +3895,7 @@
 <LABEL>資料作成＿メタ認知活動＿素活動</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="185880" y="13150"/>
+<POS x="185880" y="13146"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -3935,7 +3914,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="184700" y="27820"/>
-<SUB_TREE>open</SUB_TREE>
 <SLOTS>
 <SLOT id="1669116656189_s490" 
  type="NW"  label="slot"  kind="p/o"  num="1.."  role="サブ認知活動"  class_constraint="資料作成＿認知活動＿素活動"  rh_name=""  value="" >
@@ -3969,7 +3947,7 @@
 <LABEL>関連研究_2</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="194030" y="1880"/>
+<POS x="194026" y="1880"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -3988,7 +3966,7 @@
 <LABEL>記述理由</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="191930" y="1880"/>
+<POS x="191926" y="1880"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -4007,7 +3985,7 @@
 <LABEL>選択を記述する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="203550" y="22620"/>
+<POS x="203546" y="22620"/>
 <PART_TREE>close</PART_TREE>
 <SLOTS>
 <SLOT id="1548588455000_s494" 
@@ -4091,7 +4069,7 @@
 <LABEL>確認内容を記述する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="209570" y="26820"/>
+<POS x="209566" y="26820"/>
 <PART_TREE>close</PART_TREE>
 <SLOTS>
 <SLOT id="1548588455000_s504" 
@@ -4109,7 +4087,7 @@
 <LABEL>根拠を記述する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="210640" y="19730"/>
+<POS x="210640" y="19726"/>
 <PART_TREE>close</PART_TREE>
 <SLOTS>
 <SLOT id="1548588455000_s506" 
@@ -4251,7 +4229,7 @@
 <LABEL>疑問を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="164070" y="21480"/>
+<POS x="164066" y="21480"/>
 <SLOTS>
 <SLOT id="1548588455000_s523" 
  type="NW"  label="slot"  kind="p/o"  num="1.."  role="出力"  class_constraint="疑問"  rh_name=""  value="" >
@@ -4371,7 +4349,7 @@
 <LABEL>メリット</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="186890" y="4660"/>
+<POS x="186886" y="4660"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -4380,7 +4358,7 @@
 <LABEL>デメリット</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="194030" y="3440"/>
+<POS x="194026" y="3440"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -4523,7 +4501,7 @@
 <LABEL>研究の着想を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="30460" y="91970"/>
+<POS x="30460" y="91966"/>
 <SLOTS>
 <SLOT id="1607521395000_s563" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="課題"  rh_name=""  value="" >
@@ -4546,7 +4524,7 @@
 <LABEL>学習ドメインを考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="54590" y="93620"/>
+<POS x="54586" y="93620"/>
 <SLOTS>
 <SLOT id="1607521395000_s566" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="向上スキル"  rh_name=""  value="" >
@@ -4569,7 +4547,7 @@
 <LABEL>向上スキルを考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="41570" y="93620"/>
+<POS x="41566" y="93620"/>
 <SLOTS>
 <SLOT id="1607521395000_s569" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="出力"  class_constraint="向上スキル"  rh_name=""  value="" >
@@ -4596,7 +4574,7 @@
 <LABEL>学習ドメインはどのようなものですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="54590" y="94740"/>
+<POS x="54586" y="94740"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -4644,7 +4622,7 @@
 <LABEL>実践対象者はどのような人を想定していますか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="60840" y="77830"/>
+<POS x="60840" y="77826"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -4653,7 +4631,7 @@
 <LABEL>学習教材を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="36500" y="99670"/>
+<POS x="36500" y="99666"/>
 <SLOTS>
 <SLOT id="1607521395000_s590" 
  type="NW"  label="slot2"  kind="p/o"  num="1"  role="出力"  class_constraint="学習教材"  rh_name=""  value="" >
@@ -4680,7 +4658,7 @@
 <LABEL>研究の着想</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="19730" y="5360"/>
+<POS x="19726" y="5360"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -4710,7 +4688,7 @@
 <LABEL>学習者</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="19730" y="6060"/>
+<POS x="19726" y="6060"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -4720,7 +4698,7 @@
 <LABEL>向上スキル</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="19730" y="7600"/>
+<POS x="19726" y="7600"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -4739,7 +4717,7 @@
 <LABEL>学習者が取り組む活動を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="47080" y="99670"/>
+<POS x="47080" y="99666"/>
 <SLOTS>
 <SLOT id="1607765160000_s605" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="出力"  class_constraint="学習者が取り組む活動"  rh_name=""  value="" >
@@ -4756,7 +4734,7 @@
 <LABEL>学習者が取り組む活動はどのようなものですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="47080" y="99810"/>
+<POS x="47080" y="99806"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -4784,7 +4762,7 @@
 <LABEL>システム上での学習者の入力はどのようなものですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="37370" y="105100"/>
+<POS x="37366" y="105100"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -4794,8 +4772,7 @@
 <LABEL>システムの内部処理を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="48290" y="104540"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="48286" y="104540"/>
 <SLOTS>
 <SLOT id="1629325130000_s595" 
  type="NW"  label="slot2"  kind="p/o"  num="1"  role="入力"  class_constraint="システムへの入力情報"  rh_name=""  value="" >
@@ -4828,8 +4805,7 @@
 <LABEL>システムの出力情報を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="32050" y="112860"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="32046" y="112860"/>
 <SLOTS>
 <SLOT id="1607765160000_s619" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="システムへの入力情報"  rh_name=""  value="" >
@@ -4867,7 +4843,7 @@
 <LABEL>システムへの入力情報</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="40030" y="6060"/>
+<POS x="40026" y="6060"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -4877,7 +4853,7 @@
 <LABEL>システムの内部処理</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="40030" y="7600"/>
+<POS x="40026" y="7600"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -4887,7 +4863,7 @@
 <LABEL>システムの出力情報</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="40030" y="7940"/>
+<POS x="40026" y="7940"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -4897,7 +4873,7 @@
 <LABEL>聴衆モデル</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="174990" y="50200"/>
+<POS x="174986" y="50200"/>
 <PART_TREE>close</PART_TREE>
 <SLOTS>
 <SLOT id="1607765160000_s638" 
@@ -4928,7 +4904,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="117000" y="75260"/>
-<SUB_TREE>open</SUB_TREE>
 <SLOTS>
 <SLOT id="1609900576000_s642" 
  type="NW"  label="slot2"  kind="p/o"  num="1"  role="出力"  class_constraint="学びの困難性"  rh_name=""  value="" >
@@ -4951,7 +4926,7 @@
 <LABEL>技術的な困難性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="63160" y="85810"/>
+<POS x="63160" y="85806"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -4980,7 +4955,7 @@
 <LABEL>困難性</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="37020" y="9510"/>
+<POS x="37020" y="9506"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -5035,7 +5010,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="61480" y="104540"/>
-<SUB_TREE>open</SUB_TREE>
 <SLOTS>
 <SLOT id="1608641547000_s650" 
  type="NW"  label="slot2"  kind="p/o"  num="1"  role="出力"  class_constraint="学習者像"  rh_name=""  value="" >
@@ -5052,7 +5026,7 @@
 <LABEL>理想の学習者像はどのようなものですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="61500" y="104710"/>
+<POS x="61500" y="104706"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -5085,7 +5059,7 @@
 <LABEL>学びの困難性を考える、学習支援の方法を考えるの合理性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="9510" y="116330"/>
+<POS x="9506" y="116326"/>
 <SLOTS>
 <SLOT id="1608641547000_s656" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="学びの困難性を考える"  rh_name=""  value="" >
@@ -5131,7 +5105,7 @@
 <LABEL>学習者像を考える、実践の対象者を考えるの合理性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="13150" y="123080"/>
+<POS x="13146" y="123080"/>
 <SLOTS>
 <SLOT id="1608641547000_s662" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="理想の学習者像を考える"  rh_name=""  value="" >
@@ -5196,7 +5170,7 @@
 <LABEL>聴衆モデル1（学士/未システム）</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="177230" y="53820"/>
+<POS x="177226" y="53820"/>
 <PART_TREE>close</PART_TREE>
 <SLOTS>
 <SLOT id="1623117939000_s673" 
@@ -5336,7 +5310,7 @@
 <LABEL>分野外の人を想定する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="39080" y="46190"/>
+<POS x="39080" y="46186"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -5347,7 +5321,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="27480" y="63160"/>
-<SUB_TREE>open</SUB_TREE>
 <SLOTS>
 <SLOT id="1612447544000_s706" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="アイディア"  rh_name=""  value="" >
@@ -5383,7 +5356,6 @@
 </SUB_LABELS>
 <POS x="2400" y="5360"/>
 <PART_TREE>close</PART_TREE>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -5394,7 +5366,6 @@
 </SUB_LABELS>
 <POS x="1580" y="6740"/>
 <PART_TREE>close</PART_TREE>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -5423,7 +5394,7 @@
 <LABEL>研究目的を設定する，今後の課題を考えるの合理性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="14340" y="128790"/>
+<POS x="14340" y="128786"/>
 <SLOTS>
 <SLOT id="1623117939000_s721" 
  type="NW"  label="slot"  kind="p/o"  num="1.."  role="入力"  class_constraint="研究目的を設定する"  rh_name=""  value="" >
@@ -5466,7 +5437,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="239760" y="50200"/>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -5553,7 +5523,7 @@
 <LABEL>研究目的の達成に向けて未達成なことを，今後の課題として適切に位置付けること</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="245270" y="57920"/>
+<POS x="245266" y="57920"/>
 <SLOTS>
 <SLOT id="1623730284000_s733" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="メタ認知活動"  class_constraint="研究目的を設定する，今後の課題を考えるの合理性を考える"  rh_name=""  value="" >
@@ -5697,8 +5667,7 @@
 <LABEL>根拠を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="48290" y="39080"/>
-<SUB_TREE>open</SUB_TREE>
+<POS x="48286" y="39080"/>
 <SLOTS>
 <SLOT id="1623730284000_s751" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="主張"  rh_name=""  value="" >
@@ -5756,7 +5725,7 @@
 <LABEL>主題を設定する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="55340" y="40030"/>
+<POS x="55340" y="40026"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -5767,7 +5736,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="247880" y="53500"/>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -5778,7 +5746,6 @@
 </SUB_LABELS>
 <POS x="236240" y="53500"/>
 <PART_TREE>close</PART_TREE>
-<SUB_TREE>open</SUB_TREE>
 <SLOTS>
 <SLOT id="1624012815000_s743" 
  type="NW"  label="slot"  kind="p/o"  num="1.."  role="サブ目標"  class_constraint="素目標"  rh_name=""  value="" >
@@ -5815,7 +5782,7 @@
 <LABEL>研究目的に対して実践目的が妥当であること</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="243870" y="63740"/>
+<POS x="243866" y="63740"/>
 <SLOTS>
 <SLOT id="1624012815000_s751" 
  type="NW"  label="slot"  kind="p/o"  num="1.."  role="メタ認知活動"  class_constraint="研究目的を設定する、実践の目的を考えるの合理性を考える"  rh_name=""  value="" >
@@ -5874,7 +5841,7 @@
 <LABEL>信頼性</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="28690" y="3440"/>
+<POS x="28686" y="3440"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -5931,7 +5898,7 @@
 <LABEL>他の研究と比較して，提案内容が従来にない新しいものであると示すこと</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="245270" y="63160"/>
+<POS x="245266" y="63160"/>
 <SLOTS>
 <SLOT id="1624864941000_s757" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="認知活動"  class_constraint="新規性を考える"  rh_name=""  value="" >
@@ -5965,7 +5932,7 @@
 <LABEL>他の研究と比較して，提案内容が学習により役立つと示すこと</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="245270" y="59860"/>
+<POS x="245266" y="59860"/>
 <PART_TREE>close</PART_TREE>
 <SLOTS>
 <SLOT id="1624864941000_s761" 
@@ -6054,7 +6021,7 @@
 <LABEL>関連研究との違い</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="25260" y="9510"/>
+<POS x="25260" y="9506"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -6066,7 +6033,6 @@
 </SUB_LABELS>
 <POS x="61480" y="63340"/>
 <PART_TREE>close</PART_TREE>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -6075,7 +6041,7 @@
 <LABEL>研究の新しい進捗はどのようなものですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="61590" y="63740"/>
+<POS x="61586" y="63740"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -6084,7 +6050,7 @@
 <LABEL>学習者像</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="32050" y="10180"/>
+<POS x="32046" y="10180"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -6094,7 +6060,7 @@
 <LABEL>関連研究との違いはどのようなものですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="89870" y="95330"/>
+<POS x="89866" y="95326"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -6133,7 +6099,7 @@
 <LABEL>関連研究を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="61640" y="99670"/>
+<POS x="61640" y="99666"/>
 <SLOTS>
 <SLOT id="1629325130000_s770" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="出力"  class_constraint="関連研究"  rh_name=""  value="" >
@@ -6150,7 +6116,7 @@
 <LABEL>関連研究はどのようなものがありますか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="61640" y="99810"/>
+<POS x="61640" y="99806"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -6282,7 +6248,7 @@
 <LABEL>聴衆モデル3（修士1年/未システム）</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="167060" y="54590"/>
+<POS x="167060" y="54586"/>
 <PART_TREE>close</PART_TREE>
 <SLOTS>
 <SLOT id="1629325130000_s790" 
@@ -6429,7 +6395,7 @@
 <LABEL>学位論文に向けた研究計画を示すこと</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="245270" y="58980"/>
+<POS x="245266" y="58980"/>
 <PART_TREE>close</PART_TREE>
 <SLOTS>
 <SLOT id="1629325130000_s809" 
@@ -6465,7 +6431,7 @@
 <LABEL>研究計画はどのようなものですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="44140" y="51230"/>
+<POS x="44140" y="51226"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -6531,7 +6497,7 @@
 <LABEL>システムの知的さは何ですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="67080" y="41010"/>
+<POS x="67080" y="41006"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -6558,7 +6524,7 @@
 <LABEL>知的学習支援分野における，構想段階のシステムの特長を示すこと</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="221890" y="56900"/>
+<POS x="221886" y="56900"/>
 <PART_TREE>close</PART_TREE>
 <SLOTS>
 <SLOT id="1632105240000_s811" 
@@ -6584,7 +6550,7 @@
 <LABEL>知的学習支援分野における，システムの特長を示すこと</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="226930" y="59860"/>
+<POS x="226926" y="59860"/>
 <PART_TREE>close</PART_TREE>
 <SLOTS>
 <SLOT id="1632105240000_s814" 
@@ -6650,7 +6616,6 @@
 </SUB_LABELS>
 <POS x="220120" y="59860"/>
 <PART_TREE>close</PART_TREE>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -6681,7 +6646,6 @@
 </SUB_LABELS>
 <POS x="1880" y="12120"/>
 <PART_TREE>close</PART_TREE>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -6960,7 +6924,7 @@
 <LABEL>学習者モデルはどのようなものですか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="101490" y="99500"/>
+<POS x="101486" y="99500"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -6969,7 +6933,7 @@
 <LABEL>教授戦略</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="28690" y="4660"/>
+<POS x="28686" y="4660"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -7012,7 +6976,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="64060" y="109860"/>
-<SUB_TREE>open</SUB_TREE>
 <SLOTS>
 <SLOT id="1643936184000_s852" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="学びの困難性"  rh_name=""  value="" >
@@ -7154,7 +7117,7 @@
 <LABEL>学習目標に対して学習活動が合理的であること</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="245270" y="65060"/>
+<POS x="245266" y="65060"/>
 <SLOTS>
 <SLOT id="1643936184000_s869" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="メタ認知活動"  class_constraint="学習目標を設定する，学習者が取り組む活動を考えるの合理性を考える"  rh_name=""  value="" >
@@ -7236,7 +7199,7 @@
 <LABEL>学習課題を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="54590" y="112860"/>
+<POS x="54586" y="112860"/>
 <SLOTS>
 <SLOT id="1644147988000_s881" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="学習目標"  rh_name=""  value="" >
@@ -7259,7 +7222,7 @@
 <LABEL>学習課題</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="32050" y="0"/>
+<POS x="32046" y="0"/>
 <PART_TREE>close</PART_TREE>
 <RELATIONS>
 </RELATIONS>
@@ -7279,7 +7242,7 @@
 <LABEL>学習目標を設定する，学習者が取り組む活動を考えるの合理性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="20" y="133970"/>
+<POS x="20" y="133966"/>
 <SLOTS>
 <SLOT id="1644147988000_s886" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="学習目標を設定する"  rh_name=""  value="" >
@@ -7302,7 +7265,7 @@
 <LABEL>学習目標を設定する，学習課題を考えるの合理性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="14830" y="133640"/>
+<POS x="14826" y="133640"/>
 <SLOTS>
 <SLOT id="1644147988000_s889" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="学習目標を設定する"  rh_name=""  value="" >
@@ -7325,7 +7288,7 @@
 <LABEL>学習目標を設定する，教授戦略を考えるの合理性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="500" y="141390"/>
+<POS x="500" y="141386"/>
 <SLOTS>
 <SLOT id="1644147988000_s892" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="学習目標を設定する"  rh_name=""  value="" >
@@ -7371,7 +7334,7 @@
 <LABEL>提案を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="164070" y="16260"/>
+<POS x="164066" y="16260"/>
 <SLOTS>
 <SLOT id="1669116656189_s902" 
  type="OR"  label="slot2"  kind="p/o"  num="1"  role="出力"  class_constraint="提案"  rh_name=""  value="" >
@@ -7489,7 +7452,7 @@
 <LABEL>議論目的にそった指針を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="187420" y="32050"/>
+<POS x="187420" y="32046"/>
 <SLOTS>
 <SLOT id="1669116656189_s914" 
  type="OR"  label="slot"  kind="p/o"  num="1.."  role="サブ認知活動"  class_constraint="議論目的を考える"  rh_name=""  value="" >
@@ -7575,7 +7538,7 @@
 <LABEL>前提と提案の合理性を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="179470" y="37370"/>
+<POS x="179466" y="37366"/>
 <SLOTS>
 <SLOT id="1669116656189_s924" 
  type="OR"  label="slot"  kind="p/o"  num="1.."  role="サブ認知活動"  class_constraint="前提を考える"  rh_name=""  value="" >
@@ -7618,7 +7581,7 @@
 <LABEL>事実に基づいた推測をする</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="183810" y="35460"/>
+<POS x="183806" y="35460"/>
 <SLOTS>
 <SLOT id="1669116656189_s929" 
  type="OR"  label="slot"  kind="p/o"  num="1.."  role="サブ認知活動"  class_constraint="推測を考える"  rh_name=""  value="" >
@@ -7670,7 +7633,7 @@
 <LABEL>提案と前提の合理性について考えられていますか？</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="179470" y="39400"/>
+<POS x="179466" y="39400"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -7698,7 +7661,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="178260" y="3040"/>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -7734,7 +7696,7 @@
 <LABEL>推測</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="178910" y="3460"/>
+<POS x="178906" y="3460"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -7770,7 +7732,7 @@
 <LABEL>指針</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="179190" y="3440"/>
+<POS x="179186" y="3440"/>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -7802,7 +7764,7 @@
 <LABEL>推測する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="174990" y="14720"/>
+<POS x="174986" y="14720"/>
 <SLOTS>
 <SLOT id="1674484226255_s943" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="Any"  rh_name=""  value="" >
@@ -7825,7 +7787,7 @@
 <LABEL>提案する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="173030" y="16620"/>
+<POS x="173026" y="16620"/>
 <SLOTS>
 <SLOT id="1674484226255_s946" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="Any"  rh_name=""  value="" >
@@ -7871,7 +7833,7 @@
 <LABEL>判断する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="176530" y="17820"/>
+<POS x="176526" y="17820"/>
 <SLOTS>
 <SLOT id="1674484226255_s952" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="Any"  rh_name=""  value="" >
@@ -7905,7 +7867,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="182480" y="30820"/>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -8022,7 +7983,7 @@
 <LABEL>前提を根拠として主張する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="195220" y="37930"/>
+<POS x="195220" y="37926"/>
 <SLOTS>
 <SLOT id="1674484226255_s970" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="前提"  rh_name=""  value="" >
@@ -8154,7 +8115,7 @@
 <LABEL>仮説を根拠として主張する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="199210" y="38240"/>
+<POS x="199206" y="38240"/>
 <SLOTS>
 <SLOT id="1674484226255_s986" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="仮説"  rh_name=""  value="" >
@@ -8187,7 +8148,7 @@
 <LABEL>仮説を根拠として判断する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="199210" y="40640"/>
+<POS x="199206" y="40640"/>
 <SLOTS>
 <SLOT id="1674484226255_s990" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="仮説"  rh_name=""  value="" >
@@ -8319,7 +8280,7 @@
 <LABEL>事実を根拠として主張する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="203410" y="38240"/>
+<POS x="203406" y="38240"/>
 <SLOTS>
 <SLOT id="1674484226255_s1006" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="事実"  rh_name=""  value="" >
@@ -8352,7 +8313,7 @@
 <LABEL>事実を根拠として判断する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="203410" y="40640"/>
+<POS x="203406" y="40640"/>
 <SLOTS>
 <SLOT id="1674484226255_s1010" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="事実"  rh_name=""  value="" >
@@ -8649,7 +8610,7 @@
 <LABEL>推測を根拠として判断する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="207330" y="40640"/>
+<POS x="207326" y="40640"/>
 <SLOTS>
 <SLOT id="1674484226255_s1046" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="推測"  rh_name=""  value="" >
@@ -8880,7 +8841,7 @@
 <LABEL>主張を根拠として判断する</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="215310" y="40640"/>
+<POS x="215306" y="40640"/>
 <SLOTS>
 <SLOT id="1674484226255_s1076" 
  type="NW"  label="slot"  kind="p/o"  num="1"  role="入力"  class_constraint="主張"  rh_name=""  value="" >
@@ -9134,7 +9095,7 @@
 <LABEL>推測[自身]を考える</LABEL>
 <SUB_LABELS>
 </SUB_LABELS>
-<POS x="170510" y="19680"/>
+<POS x="170506" y="19680"/>
 <SLOTS>
 <SLOT id="1691808824861_s1105" 
  type="OR"  label="slot"  kind="p/o"  num="1"  role="出力"  class_constraint="推測[自身]"  rh_name=""  value="" >
@@ -9247,7 +9208,6 @@
 <SUB_LABELS>
 </SUB_LABELS>
 <POS x="178740" y="2820"/>
-<SUB_TREE>open</SUB_TREE>
 <RELATIONS>
 </RELATIONS>
 <SUB_L label="" def="" role_name="" class_const="" rh_name ="" value ="" />
@@ -9776,7 +9736,7 @@
 <ISA id="1692335292333_isa1640" parent="メタ認知的知識_単体的知識" child="仮説[世の中]" />
 </W_CONCEPTS>
 <R_CONCEPTS>
-<CANVAS_SIZE w="9488" h="9034" />
+<CANVAS_SIZE w="7080" h="6672" />
 <CONCEPT id="1509010690552_n241" >
 <LABEL>合理的</LABEL>
 <SUB_LABELS>

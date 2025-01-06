@@ -144,9 +144,26 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                     <div class="objectMap_area" id="objectMap_area" style="display: none;">
                         <!-- 目標内容を入力するフォーム -->
                         <div class="goal-input-container">
-                            <input type="text" id="goalInput" class="goal-input" placeholder="目標の内容を入力してください" />
-                            <input class="setGoal_button" type="button" onclick="addObjectMap();" value="新しい目標追加">
+                            <div class="input-group">
+                                <label for="goalInput" class="input-label">目標:</label>
+                                <textarea id="goalInput" placeholder="目標を入力してください" rows="3" class="input-field"></textarea>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="startDateInput" class="input-label">開始日:</label>
+                                <input type="date" id="startDateInput" class="input-field">
+                            </div>
+
+                            <div class="input-group">
+                                <label for="endDateInput" class="input-label">終了日:</label>
+                                <input type="date" id="endDateInput" class="input-field">
+                            </div>
+
+                            <button id="setGoal_button" onclick="addObjectMap()" class="setGoal_button">
+                                目標を追加
+                            </button>
                         </div>
+
 
                         <!-- 目標を一覧で表示するエリア -->
                         <div id="goalListArea">

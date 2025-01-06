@@ -9,7 +9,7 @@ $purpose = $_POST["purpose"]; //loadかfetchか
 
 if($purpose === 'fetch'){
     // object_mapsテーブルから目標データを取得
-    $sql = "SELECT object_map_id, label, created_at, updated_at FROM object_maps WHERE deleted = '0' ORDER BY created_at DESC";
+    $sql = "SELECT object_map_id, label, created_at, updated_at, start_date, end_date FROM object_maps WHERE deleted = '0' ORDER BY created_at DESC";
     $result = $mysqli->query($sql);
 
     $goals = [];

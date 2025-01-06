@@ -499,7 +499,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.addNode(this.generateUniqueNumberText(), utterance, "utterance", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
     }
 
-    //kagitani--ー目標ラベル編集
+    //kagitani--ーラベル編集
     editGoal(node_id, node_content) {
         const node = this.nodes.get(node_id);
         if (node) {
@@ -1786,11 +1786,23 @@ const makeLog = (timestamp, text, act, type, mapId) => {
         if (act === "add") {
             message = `<strong style="font-size: 13px; color: #d19a00;">🗺️ 新しいマップ追加</strong><br>${mapName}`;
         }
+    } else if (type === "answer") {
+        if (act === "add") {
+            message = `<strong>✅ 新しい答え追加</strong> ${mapNameElement}`;
+        } else if (act === "edit") {
+            message = `<strong>✅ 答え編集</strong><br>${text} ${mapNameElement}`;
+        }
+    } else if (type === "question") {
+        if (act === "add") {
+            message = `<strong>❓ 新しい問い追加</strong> ${mapNameElement}`;
+        } else if (act === "edit") {
+            message = `<strong>❓ 問い編集</strong><br>${text} ${mapNameElement}`;
+        }
     } else {
         console.error("Invalid type:", type);
         return null;
     }
-
+    
     const backColorMap = {
         add: '#d4edda',
         edit: '#d1ecf1',

@@ -22,7 +22,6 @@ function c_xmlLoad(){
 		success:c_parse_xml
 
 	});
-
 }
 
 // XMLデータを取得
@@ -165,7 +164,6 @@ function showGeneration(){
 	$("div#rationality").html("");	//[合理性]　を空白に
 	// console.log("showGeneration");
 	c_xmlLoad();
-
 }
 
 // index.phpを読み込むたびに関数実行

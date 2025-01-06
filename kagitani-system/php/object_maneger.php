@@ -84,14 +84,16 @@
 			$object_map_id = $_POST["object_map_id"];  // ユニークなIDを生成
 			$goalContent = $_POST["goalContent"];   // 目標内容を受け取る
 			$timeString = $_POST["timeString"];     // 時間を受け取る
+			$startDate = $_POST["startDate"]; 
+			$endDate = $_POST["endDate"]; 
 		
 			// データの確認
 			var_dump($goalContent);  // goalContent の確認
 			var_dump($timeString);   // timeString の確認
 		
 			// SQLクエリ
-			$query = "INSERT INTO object_maps(object_map_id,label, map_id, created_at, updated_at, deleted)
-					  VALUES ('$object_map_id','$goalContent' , null, '$timeString', '$timeString', 0)";
+			$query = "INSERT INTO object_maps(object_map_id,label, map_id, created_at, updated_at, start_date, end_date, deleted)
+					  VALUES ('$object_map_id','$goalContent' , null, '$timeString', '$timeString','$startDate','$endDate', 0)";
 		
 			// SQLクエリの確認
 			echo "実行するSQLクエリ: " . $query . "<br>";
