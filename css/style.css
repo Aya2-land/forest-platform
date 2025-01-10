@@ -392,15 +392,14 @@ input:checked+label::after {
 }
 #area{
 	width: 85vw;
-	/* height:98vh; */
+	/* height:80vh; */
 	/* height: 100%; */
 	margin-bottom:2vh;
  	border:solid 5px #B3E0D8;
 	box-sizing: border-box;
  	background:#fff;
 	float:left;
-	resize: horizontal;
-
+	/* resize: vertical; */
 }
 
 #jsmind_container{
@@ -412,7 +411,7 @@ input:checked+label::after {
 	float:left;
 	overflow-x: scroll;
 	box-sizing: border-box;
-	resize: horizontal;
+	resize: vertical;
 	
 }
 #jsmind_container2_menu{

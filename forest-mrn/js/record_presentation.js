@@ -1,14 +1,13 @@
 //スライド作成を記録する関数
-function Record_slide(slideID, nodeId, brotherId){
-  
+function Record_slide(itemID, nodeId, brotherId){
+
   $.ajax({
       url: "php/slide_create.php",
       type: "POST",
-      data: {id : slideID,
+      data: {id : itemID,
             node_id: nodeId,
             brother_id: brotherId},
       success: function (e) {
-        console.log("登録成功：　" +slideID );
         if(e){
           console.log(e);
         }
@@ -21,15 +20,14 @@ function Record_slide(slideID, nodeId, brotherId){
 }
 
 //スライド削除を記録する関数
-function Delete_slide(slideID){
+function Delete_slide(itemID){
 
   $.ajax({
 
       url: "php/slide_delete.php",
       type: "POST",
-      data: {id : slideID,},
+      data: {id : itemID,},
       success: function (e) {
-        console.log("登録成功：　" +slideID );
         if(e){
           console.log(e);
         }
@@ -40,15 +38,14 @@ function Delete_slide(slideID){
   });
 }
 //2022-12-16 shimizu
-function Delete_Document(slideID){
+function Delete_Document(itemID){
 
   $.ajax({
 
       url: "php/Document_delete.php",
       type: "POST",
-      data: {id : slideID,},
+      data: {id : itemID,},
       success: function (e) {
-        console.log("登録成功：　" +slideID );
         if(e){
           console.log(e);
         }
@@ -69,7 +66,6 @@ function Delete_document_relation_node(doc_node_id){
       type: "POST",
       data: {id : doc_node_id,},
       success: function (e) {
-        console.log("登録成功：　" +doc_node_id );
         if(e){
           console.log(e);
         }
@@ -89,7 +85,6 @@ function Delete_slide_relation(thread_id){
     type: "POST",
     data: {id : thread_id,},
     success: function (e) {
-      console.log("登録成功：　" +thread_id );
       if(e){
         console.log(e);
       }
@@ -109,7 +104,6 @@ function Delete_document_relation_slide(slide_id){
       type: "POST",
       data: {id : slide_id,},
       success: function (e) {
-        console.log("登録成功：　" +slide_id );
         if(e){
           console.log(e);
         }
@@ -125,7 +119,6 @@ function Delete_document_relation_slide(slide_id){
     type: "POST",
     data: {id : slide_id,},
     success: function (e) {
-      console.log("登録成功：　" +slide_id );
       if(e){
         console.log(e);
       }
@@ -145,7 +138,6 @@ function Delete_document_relation_concept(id){
       type: "POST",
       data: {id : id,},
       success: function (e) {
-        console.log("登録成功：　" +id );
         if(e){
           console.log(e);
         }
@@ -194,7 +186,7 @@ function Delete_concepts(doc_id){
 }
 
 //コンテンツ追加を記録する関数
-function Record_content(contentID, nodeID, conceptID, content, slideID, type){
+function Record_content(contentID, nodeID, conceptID, content, itemID, type){
 
   $.ajax({
 
@@ -204,11 +196,10 @@ function Record_content(contentID, nodeID, conceptID, content, slideID, type){
              node_id : nodeID,
              concept_id : conceptID,
              content : content,
-             slide_id : slideID,
+             slide_id : itemID,
              type : type,
              },
       success: function (e) {
-        console.log("登録成功：　" +slideID );
         if(e){
           console.log(e);
         }
@@ -377,16 +368,16 @@ function Edit_save(obj,id){
 
 
 //スライドタイトルの編集を記録する関数
-function Edit_slide(obj, slideID){
+function Edit_slide(obj, itemID){
   var slidetitle = obj.value;//変更されたテキストエリアの内容
-  console.log(slideID);
+  console.log(itemID);
   console.log(slidetitle);
 
   $.ajax({
 
       url: "php/slide_edit.php",
       type: "POST",
-      data: {id : slideID,
+      data: {id : itemID,
              content : slidetitle,},
       success: function (e) {
         console.log("登録成功");
@@ -467,25 +458,25 @@ function Edit_title_shimizu(obj){
   });
 }
 
-async function Update_slide_rank(){
+// async function Update_slide_rank(){
 
-  await $.ajax({
+//   await $.ajax({
 
-      url: "php/update_slide_rank.php",
-      type: "POST",
-      success: function (e) {
-        console.log("登録成功");
-        if(e){
-          console.log(e);
-        }
-        return "ok";
-      },
-      error: function () {
-      console.log("登録失敗");
-      return "err";},
+//       url: "php/update_slide_rank.php",
+//       type: "POST",
+//       success: function (e) {
+//         console.log("登録成功");
+//         if(e){
+//           console.log(e);
+//         }
+//         return "ok";
+//       },
+//       error: function () {
+//       console.log("登録失敗");
+//       return "err";},
 
-  });
-}
+//   });
+// }
 
 //2022-11-24 shimizu
 async function Update_Document_rank(){
@@ -544,18 +535,17 @@ async function Update_Document_content_rank(){
   });
 }
 
-function Record_slide_rank(slideID, rank, title){
+function Record_slide_rank(itemID, brotherId){
   var id = getUniqueStr();
 
   $.ajax({
       url: "php/slide_rank.php",
       type: "POST",
       data: {id : id,
-            slide_id : slideID,
-            rank : rank,
-            title : title,},
+            slide_id : itemID,
+            brother_id : brotherId,
+      },
       success: function (e) {
-        console.log("登録成功");
         if(e){
           console.log(e);
         }
@@ -566,14 +556,14 @@ function Record_slide_rank(slideID, rank, title){
 }
 
 //2022-11-24 shimizu
-function Record_document_rank(slideID, rank, title,logic_option,node_id,concept_id){
+function Record_document_rank(itemID, rank, title,logic_option,node_id,concept_id){
   var id = getUniqueStr();
 
   $.ajax({
       url: "php/document_rank.php",
       type: "POST",
       data: {id : id,
-            slide_id : slideID,
+            slide_id : itemID,
             rank : rank,
             title : title,
             logic_option : logic_option,
@@ -590,7 +580,7 @@ function Record_document_rank(slideID, rank, title,logic_option,node_id,concept_
   });
 }
 
-function Record_content_rank(contentID, rank, slideID, content, nodeID, type, indent, concept_id){
+function Record_content_rank(contentID, rank, itemID, content, nodeID, type, indent, concept_id){
   var id = getUniqueStr();
 
   $.ajax({
@@ -600,7 +590,7 @@ function Record_content_rank(contentID, rank, slideID, content, nodeID, type, in
       data: {id : id,
             content_id : contentID,
             rank : rank,
-            slide_id : slideID,
+            slide_id : itemID,
             content : content,
             node_id : nodeID,
             type : type,
@@ -619,7 +609,7 @@ function Record_content_rank(contentID, rank, slideID, content, nodeID, type, in
 }
 
 //2022-11-24 shimizu
-function Record_document_content_rank(contentID, rank, slideID, content, nodeID, type, indent, concept_id,logic_option_content){
+function Record_document_content_rank(contentID, rank, itemID, content, nodeID, type, indent, concept_id,logic_option_content){
   var id = getUniqueStr();
 
   $.ajax({
@@ -629,7 +619,7 @@ function Record_document_content_rank(contentID, rank, slideID, content, nodeID,
       data: {id : id,
             content_id : contentID,
             rank : rank,
-            slide_id : slideID,
+            slide_id : itemID,
             content : content,
             node_id : nodeID,
             type : type,

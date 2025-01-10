@@ -2030,13 +2030,22 @@ function Get_SlideRank(){
   var slide_dom = document.getElementsByClassName("thread");
   var slide_id =[];
 
-  Update_slide_rank().then(() => {
-    for(var i=0; i<slide_dom.length; i++){
-      slide_id.push(slide_dom[i].id);
-      const title = slide_dom[i].firstChild.innerHTML;
-      Record_slide_rank(slide_id[i], i, title);
-    }
-  });
+  let brotherId;
+  if (parentThread.length > 0) {
+      brotherId = parentThread.attr('id'); // 親要素のIDを取得
+      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+  } else {
+      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      brotherId = "root";
+  }
+  console.log(brotherId);
+
+  for(var i=0; i<slide_dom.length; i++){
+    slide_id.push(slide_dom[i].id);
+    const title = slide_dom[i].firstChild.innerHTML;
+    Record_slide_rank(slide_id[i], brotherId);
+  }
+
   // window.alert('スライドの保存が完了しました');
 }
 

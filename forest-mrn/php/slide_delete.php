@@ -10,42 +10,36 @@
 
     $user_id = $_SESSION['USERID'];      //ユーザID
     $map_id = $_SESSION['MAPID'];    //シートID
-    $slide_id = $_POST["id"]; //スライドID
+    $item_id = $_POST["id"]; //スライドID
     $activity_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-    $sql = "UPDATE slide SET updated_at='$timestamp', deleted=1 WHERE id='$slide_id'";
-
-
-		$result = $mysqli->query($sql);
-
+    $sql_item = "UPDATE items SET updated_at='$timestamp', deleted=1 WHERE item_id='$item_id'";
+	$result = $mysqli->query($sql_item);
     //クエリ($sql)のエラー処理
-    if($sql == TRUE){
-			echo "true";
-			error_log('$sql成功しています！'.$timestamp, 0);
-		}else if($sql == FALSE){
-			error_log($sql.'$sql失敗です', 0);
-			// error_log('失敗しました。'.mysqli_error($link), 0);
-		}else{
-			error_log('$sql不明なエラーです', 0);
-		}
+    if ($mysqli->error) {
+		echo "Error items: " . $mysqli->error;
+	}
 
-    //php($result)のエラー処理
-    if($result == TRUE){
-			echo "true";
-			error_log('$result成功しています！'.$timestamp, 0);
-		}else if($result == FALSE){
-			error_log($result.'$result失敗です'.$mysqli->error, 0);
-			// error_log('失敗しました。'.mysqli_error($link), 0);
-		}else{
-			error_log('$result不明なエラーです', 0);
-		}
+    $sql_item_v = "UPDATE item_versions SET disappeared_at='$timestamp' WHERE item_id='$item_id' order by appeared_at DESC LIMIT 1";
+	$result = $mysqli->query($sql_item_v);
+    //クエリ($sql)のエラー処理
+    if ($mysqli->error) {
+		echo "Error item_versions: " . $mysqli->error;
+	}
+
+	$sql_item_h = "UPDATE item_histories SET disappeared_at='$timestamp' WHERE item_version_id = (SELECT item_version_id FROM item_versions WHERE item_id='$item_id' order by appeared_at DESC LIMIT 1) order by appeared_at DESC LIMIT 1";
+	$result = $mysqli->query($sql_item_h);
+    //クエリ($sql)のエラー処理
+    if ($mysqli->error) {
+		echo "Error item_histories: " . $mysqli->error;
+	}
 
     //=================================activityログ===================================//
 
-		$sql = "INSERT INTO slide_activity (id, map_id, slide_id, slide_title, user_id, act, date, from_slide)
-		VALUES ('$activity_id', '$map_id', '$slide_id', NULL, '$user_id', 'delete', '$timestamp', '$map_id')";
+		// $sql = "INSERT INTO slide_activity (id, map_id, slide_id, slide_title, user_id, act, date, from_slide)
+		// VALUES ('$activity_id', '$map_id', '$slide_id', NULL, '$user_id', 'delete', '$timestamp', '$map_id')";
 
-		$result = $mysqli->query($sql);
+		// $result = $mysqli->query($sql);
 
 ?>

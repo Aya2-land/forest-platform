@@ -29,23 +29,23 @@
 		}
 		$result_update = $mysqli->query($sql_update);
 		if ($mysqli->error) {
-			echo "Error creating temporary table: " . $mysqli->error;
+			echo "Error node_his update: " . $mysqli->error;
 		}
 		$result_new_2 = $mysqli->query($sql_new_2);
 		if ($mysqli->error) {
-			echo "Error creating temporary table: " . $mysqli->error;
+			echo "Error tmp_node_his update: " . $mysqli->error;
 		}
 		$result_new_3 = $mysqli->query($sql_new_3);
 		if ($mysqli->error) {
-			echo "Error creating temporary table: " . $mysqli->error;
+			echo "Error node_his insert: " . $mysqli->error;
 		}
 		$result_act = $mysqli->query($sql_act);
 		if ($mysqli->error) {
-			echo "Error creating temporary table: " . $mysqli->error;
+			echo "Error node_act insert: " . $mysqli->error;
 		}
 		$result_drop = $mysqli->query($sql_drop);
 		if ($mysqli->error) {
-			echo "Error creating temporary table: " . $mysqli->error;
+			echo "Error drop temporary table: " . $mysqli->error;
 		}
 
 		//旧Forestではrootとそうでないもので分けて処理していた　なぜ？
