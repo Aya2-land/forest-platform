@@ -107,14 +107,11 @@
 				echo "データが正常に挿入されました<br>";
 			}
 		}else if($record_thing === 'memo'){
-			//エッジの記録
-			$object_memo_id = uniqid('memo_', true); // edge_で始まる一意のIDを生成
 			$object_map_id = $_POST["object_map_id"];          //エッジ開始
-			$label = $_POST["label"];            //エッジ終了
+			$memo = $_POST["memo"];            //エッジ終了
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-			$mysqli->query("INSERT INTO `object_memos`(`object_memo_id`, `object_map_id`, 
-														`label`, `created_at`, `updated_at`) 
-									VALUES ('$object_memo_id','$object_map_id','$label','$timestamp','$timestamp')");
+			$mysqli->query("INSERT INTO `object_maps`(`object_map_id`, `updated_at`, `memo`) 
+									VALUES ('$object_map_id','$timestamp','$memo')");
 		}
 	}else if($purpose === 'update'){
 		$update_thing = $_POST['update_thing'];
@@ -150,12 +147,12 @@
 				$mysqli->query("UPDATE object_maps SET label = '$label', updated_at = '$timestamp' WHERE object_map_id = '$object_map_id'");
 			}
 		}else if($update_thing === 'memo'){
-			$select_update = $_POST['select_update']; 
 			$object_map_id = $_POST["object_map_id"]; 
-			$label = $_POST['label']; 
-			if($select_update === 'label'){
+			$select_update = $_POST['select_update']; 
+			$memo = $_POST['memo']; 
+			if($select_update === 'memo'){
 				$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-				$mysqli->query("UPDATE object_memos SET label = '$label', updated_at = '$timestamp' WHERE object_map_id = '$object_map_id'");
+				$mysqli->query("UPDATE object_maps SET memo = '$memo', updated_at = '$timestamp' WHERE object_map_id = '$object_map_id'");
 			}
 		}else if($update_thing === 'status'){
 			$select_update = $_POST['select_update']; 

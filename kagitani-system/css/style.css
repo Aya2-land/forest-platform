@@ -967,6 +967,43 @@ h3 {
     background-color: #28a745;
     color: white;
 }
+.memo-section {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    position: relative;
+}
+
+.memo-display {
+    display: inline-block;
+    max-width: 200px; /* メモ表示エリアを制限 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+	cursor: pointer; /* テキストもクリック可能に */
+}
+
+.memo-display:hover {
+    text-decoration: underline; /* ホバー時に下線を表示 */
+}
+
+.toggle-memo {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 0.8em;
+    color: #007bff;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.memo-display.expanded {
+    white-space: normal; /* メモを全文表示 */
+    overflow: visible;
+}
+
 
 /* 削除ボタンのホバー時 */
 .delete-btn:hover {

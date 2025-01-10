@@ -79,7 +79,7 @@ function addObjectMap() {
     newGoalButton.setAttribute('data-memo', 'メモがありません');
 
     // ボタンに目標情報を設定
-    initializeGoalButton(newGoalButton, goalContent, timeString, timeString, objectMapId, startDate, endDate);
+    initializeGoalButton(newGoalButton, goalContent, timeString, timeString, objectMapId, startDate, endDate, memo);
 
     // 表示エリアに追加
     const goalListArea = document.getElementById("goalListArea");
@@ -100,71 +100,72 @@ function addObjectMap() {
     });
 }
 
-
-function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, objectMapId, startDate, endDate) {
-    // ボタンのHTMLを設定
+function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, objectMapId, startDate, endDate, memo) {
     goalButton.innerHTML = `
         <div class="goal-card compact">
             <div class="goal-content">
                 <span class="goal-text">${goalContent}</span><br>
-                <span class="goal-date-updated" style="font-size: 0.7em; display: block;">更新: ${updatedAt}</span> 
+                <span class="goal-date-updated" style="font-size: 0.7em; display: block;">更新: ${updatedAt}</span>
                 <span class="goal-date-created" style="font-size: 0.7em; display: block;">作成: ${createdAt}</span>
-                <span class="goal-start-date" style="font-size: 0.7em; display: block;">開始日: ${startDate}</span> <!-- 開始日を表示 -->
-                <span class="goal-end-date" style="font-size: 0.7em; display: block;">終了日: ${endDate}</span> <!-- 終了日を表示 -->
+                <span class="goal-start-date" style="font-size: 0.7em; display: block;">開始日: ${startDate}</span>
+                <span class="goal-end-date" style="font-size: 0.7em; display: block;">終了日: ${endDate}</span>
+                <div class="memo-section" style="margin-top: 10px;">
+                    <button class="memo-icon" title="メモを編集" style="font-size: 1.2em; background: none; border: none; cursor: pointer;">📝</button>
+                    <span class="memo-display" style="font-size: 0.9em; color: #555; cursor: pointer;">${memo}</span>
+                    <button class="toggle-memo" style="display: none; font-size: 0.8em; color: #007bff; background: none; border: none; cursor: pointer;">もっと見る</button>
+                </div>
             </div>
             <div class="goal-actions">
-                <button class="memo-btn" title="メモを追加/編集">📝</button>
                 <button class="export-btn" title="目標をエクスポート">📤</button>
                 <button class="delete-btn" title="目標を削除">🗑️</button>
             </div>
         </div>
     `;
 
-    // メモボタンを取得し、イベントリスナーを追加
-    const memoButton = goalButton.querySelector('.memo-btn');
-    memoButton.addEventListener('click', () => {
+    const memoIcon = goalButton.querySelector('.memo-icon');
+    const memoDisplay = goalButton.querySelector('.memo-display');
+    const toggleMemo = goalButton.querySelector('.toggle-memo');
+
+    // メモ編集ロジック
+    const editMemo = () => {
         const currentMemo = goalButton.getAttribute('data-memo') || 'メモがありません';
         const newMemo = prompt('メモを編集してください:', currentMemo);
 
         if (newMemo !== null) {
-            goalButton.setAttribute('data-memo', newMemo.trim() || 'メモがありません');
+            const trimmedMemo = newMemo.trim() || 'メモがありません';
+            goalButton.setAttribute('data-memo', trimmedMemo);
+            memoDisplay.textContent = trimmedMemo;
+            memoDisplay.classList.remove('expanded');
+
+            // メモアイコンの色変更
+            memoIcon.classList.toggle('active', trimmedMemo !== 'メモがありません');
+
+            // メモをDBに保存
+            saveMemo(objectMapId, trimmedMemo);
+
+            // 長いメモの場合、もっと見るボタンを表示
+            if (trimmedMemo.length > 50) {
+                toggleMemo.style.display = 'inline';
+            } else {
+                toggleMemo.style.display = 'none';
+            }
+        }
+    };
+
+    // メモアイコンとメモテキストのクリックで編集可能
+    memoIcon.addEventListener('click', editMemo);
+    memoDisplay.addEventListener('click', editMemo);
+
+    // もっと見るボタンの動作
+    toggleMemo.addEventListener('click', () => {
+        if (memoDisplay.classList.contains('expanded')) {
+            memoDisplay.classList.remove('expanded');
+            toggleMemo.textContent = 'もっと見る';
+        } else {
+            memoDisplay.classList.add('expanded');
+            toggleMemo.textContent = '折りたたむ';
         }
     });
-
-    // 削除ボタンのイベントリスナーを追加
-    const deleteButton = goalButton.querySelector('.delete-btn');
-    deleteButton.addEventListener('click', (event) => {
-        event.stopPropagation(); // 親要素のクリックイベントを防止
-        if (confirm('本当にこの目標を削除しますか？')) {
-            deleteGoal(objectMapId, goalButton);
-        }
-    });
-
-    // ボタンのクリック時の動作
-    goalButton.addEventListener('click', () => {
-        goalButton.focus(); // ボタンにフォーカスを当てる
-        handleGoalClick(goalButton, goalContent, createdAt, objectMapId);
-    });
-
-    // 編集機能を追加
-    enableGoalEdit(goalButton, goalContent, createdAt, objectMapId);
-}
-
-
-
-
-function handleMemoClick(goalButton, objectMapId) {
-    // メモ入力ダイアログを表示
-    const currentMemo = goalButton.getAttribute('data-memo') || ''; // 既存メモを取得
-    const newMemo = prompt('メモを入力してください:', currentMemo);
-
-    if (newMemo !== null) {
-        // メモを保存（要素属性に設定）
-        goalButton.setAttribute('data-memo', newMemo.trim());
-
-        // 必要であればサーバーに保存
-        saveMemo(objectMapId, newMemo.trim());
-    }
 }
 
 function saveMemo(objectMapId, memoContent) {
@@ -172,10 +173,11 @@ function saveMemo(objectMapId, memoContent) {
         url: "php/object_maneger.php",
         type: "POST",
         data: {
-            purpose: 'record',
-            record_thing: 'memo',
+            purpose: 'update',
+            update_thing: 'memo',
+            select_update:'memo',
             object_map_id: objectMapId,
-			label:memoContent,
+			memo:memoContent,
             node_update_thing1: null,
             node_update_thing2: null,
         },
@@ -195,49 +197,6 @@ function saveMemo(objectMapId, memoContent) {
         }
     });
 }
-
-// memoButton.addEventListener('click', () => {
-//     const currentMemo = goalButton.getAttribute('data-memo') || 'メモがありません';
-//     const newMemo = prompt('メモを編集してください:', currentMemo);
-
-//     if (newMemo !== null) {
-//         const updatedMemo = newMemo.trim() || 'メモがありません';
-//         goalButton.setAttribute('data-memo', updatedMemo);
-
-//         // サーバーにメモを更新するリクエストを送信
-//         $.ajax({
-//             url: "php/object_maneger.php",
-//             type: "POST",
-//             data: {
-//                 purpose: 'update',
-//                 select_update: 'label',
-//                 update_thing: 'memo',
-//                 object_map_id: goalButton.getAttribute('data-object-map-id'),  // object_map_idを送信
-//                 memo: updatedMemo,  // 修正したメモを送信
-//                 node_update_thing1: null,
-//                 node_update_thing2: null,
-//             },
-//             success: (response) => {
-//                 console.log("サーバーレスポンス:", response); // デバッグ用ログ
-//                 try {
-//                     const parsedResponse = JSON.parse(response);
-//                     console.log(parsedResponse); // 必要に応じてレスポンスを確認
-//                 } catch (e) {
-//                     console.error("JSONパースエラー: ", e);
-//                     alert('不明なエラーが発生しました');
-//                 }
-//             },
-//             error: (xhr, status, error) => {
-//                 console.error("AJAXエラー: ", error);
-//                 console.log("ステータス: ", status);
-//                 console.log("レスポンステキスト: ", xhr.responseText);
-//                 alert('通信エラーが発生しました: ' + xhr.responseText);
-//             }
-//         });
-//     }
-// });
-
-
 
 
 // 目標を削除する関数
@@ -397,7 +356,7 @@ function fetchGoals() {
                     goalButton.classList.add('goal-item'); // スタイル用クラスを追加
 
                     // ボタンに目標情報を設定
-                    initializeGoalButton(goalButton, goal.label, goal.created_at, goal.updated_at, goal.object_map_id,goal.start_date, goal.end_date);
+                    initializeGoalButton(goalButton, goal.label, goal.created_at, goal.updated_at, goal.object_map_id,goal.start_date, goal.end_date,goal.memo);
 
                     // 表示エリアにボタンを追加
                     goalListArea.appendChild(goalButton);
