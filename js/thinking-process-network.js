@@ -455,9 +455,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         };
         defaultThinkingProcess.nodes.add(newNode);
 
-        console.log("From: "+from_node);
-        console.log("To: "+to_node)
-
         if(flag == "New"){
             defaultRecordThinkingProcess.record_trigger(trigger_id, activity_id, from_node, to_node, t_time, t_type, t_label, node_x, node_y);
         }
@@ -722,7 +719,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
     addNewEdge(E_start, E_end){
         let edge_id = this.generateUniqueNumberText();
-        console.log(edge_id)
         this.edges.add({ id: edge_id ,from: E_start, to: E_end });
         defaultRecordThinkingProcess.record_Edge(edge_id, E_start, E_end);
     }
@@ -757,7 +753,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                 }
                 let edge_id = this.generateUniqueNumberText();
                 this.edges.add({id: edge_id, from: this.dragStartNodeId, to: this.dragEndNodeId });
-                console.log(edge_id);
                 defaultRecordThinkingProcess.record_Edge(edge_id, this.dragStartNodeId, this.dragEndNodeId);
             }
             this.dragStartNodeId = null;
@@ -813,7 +808,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         const endid = this.edges.get(selectEdgeId).to;
         if(selectEdgeId !== undefined){
             this.edges.remove({id: selectEdgeId});
-            console.log(selectEdgeId);
             defaultRecordThinkingProcess.delete_db_Edge(selectEdgeId, startid, endid);
             // const Edge_index = this.OntologyConnectNodeId.indexOf(startid);
             // if(Edge_index !== -1){
@@ -861,7 +855,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                 concept.map((content)=>{
                     if(content.getAttribute('id') === concept_id){
                         const slot_content = Array.from(content.getElementsByTagName("SLOT"));
-                        console.log(content)
                         slot_content.map((content_slot) => {
                             if(content_slot.getAttribute("role") === "出力"){
                                 const nodeBoundingBox = defaultThinkingProcess.ownNetwork.getBoundingBox(material_id);
@@ -896,7 +889,6 @@ class RecordThinkingProcess{
     //ノードの記録(完了)
     record_Node (id, label, node_type, x, y){
         let selected_node_id = document.getElementById('conceptdisplay').getAttribute('nodeId');
-        console.log(selected_node_id);
         $.ajax({
             url: "../php/thinking_edit_processmap_maneger.php",
             type: "POST",
@@ -1117,7 +1109,6 @@ const displayTriggerData = (display_target_area_id) => {
 
         // versionノードの表示
         trigger_list_info.node_versions.forEach((v) => {
-            console.log(v);
             defaultThinkingProcess.addVersionNode(v.node_version_id, v.content, "versions", v.appeared_at, node_x, node_y);
             if(from_id != ""){
                 defaultThinkingProcess.addVersionEdge(from_id, v.node_version_id);
@@ -1297,7 +1288,6 @@ const addeventdisplayTriggerData = () => {
 
 // 学習者がオリジナルのTriggerを入力できる箇所を作成
 function inputTriggerAreaOpen(){
-    console.log("input");
     $('#trigger_area_display').css('height','auto');
     $('#trigger_area_add').css('height','auto');
     $('#trigger_add').css('height','auto');
@@ -1361,7 +1351,6 @@ function inputTriggerAreaOpen(){
 
 //   Trigger入力箇所を閉じる処理
 function inputTriggerAreaClose(){
-    console.log("close");
     $('#trigger_area_display').css('height','100px');
     $('#trigger_area_add').css('height','20px');
     $('#trigger_add').css('height','0px');
@@ -1375,8 +1364,6 @@ function inputTriggerAreaClose(){
 
 // 入力されたTriggerをマップに表示
 function inputTrigger(){
-    console.log("addTrigger");
-
     let trigger_id = defaultThinkingProcess.generateUniqueNumberText();
     const t_type = document.getElementById("trigger_activity").value;
     const t_time = document.getElementById("trigger_time").value.replace('T', ' ');
@@ -1395,11 +1382,6 @@ function inputTrigger(){
     const selected_edge_id = defaultThinkingProcess.ownNetwork.getSelection().edges;
     let edge_id =selected_edge_id;
     let num = 0 ;
-
-    console.log(t_type);
-    console.log(t_time);
-    console.log(content)
-    console.log(t_label);
 
     if(selected_node_id && defaultThinkingProcess.nodes.get(selected_node_id).group == "versions"){
         //versionのノードが選択されている時，それにつながるedge_idを取得し，右側のedge_idにつながるnode_idを取得する

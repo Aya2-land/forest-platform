@@ -2671,7 +2671,7 @@ async function Rebuild_s(){
         let selectTitleLogic = document.querySelectorAll("[name='Logic_options_title']");
         selectTitleLogic.forEach(select => select.addEventListener('change', ChangeLogicSelectTitle));
         //選択ずみの値を設定
-        if(parse.length !== undefined){
+        if(parse !== undefined){
           for(var q=0; q<parse.length; q++){
             console.log(parse[q].slide_id);
             var selected_id = "SelectBox-"+parse[q].slide_id;

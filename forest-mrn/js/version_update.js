@@ -302,50 +302,50 @@ function NodeVersionLog(node_id){
 }
 //ノードversion履歴表示フォーム
 function ShowNodeVersionLog(array){ //arrayはノードバージョン最新順
-    var log = document.getElementById("node_version_log");
+    // var log = document.getElementById("node_version_log");
 
-    while(log.firstChild){  //一旦中身を空に
-        log.removeChild(log.firstChild);
-    };
+    // while(log.firstChild){  //一旦中身を空に
+    //     log.removeChild(log.firstChild);
+    // };
 
-    $("#log").html(""); //logに""を追加？
+    // $("#log").html(""); //logに""を追加？
 
-    for(i=0;i<array.length;i++){
-        var imgtag = document.createElement("img");
-        imgtag.src = "image/list6.png";
-        imgtag.style.width = 15;
-        imgtag.style.height = 15;
-        log.appendChild(imgtag);
+    // for(i=0;i<array.length;i++){
+    //     var imgtag = document.createElement("img");
+    //     imgtag.src = "image/list6.png";
+    //     imgtag.style.width = 15;
+    //     imgtag.style.height = 15;
+    //     log.appendChild(imgtag);
 
-        var atag = document.createElement("a");
-        var tab04 = document.getElementById('tab04');
-        var tab01 = document.getElementById('tab01');
-        atag.href = "#";
-        atag.id = "atag" + i;
+    //     var atag = document.createElement("a");
+    //     var tab04 = document.getElementById('tab04');
+    //     var tab01 = document.getElementById('tab01');
+    //     atag.href = "#";
+    //     atag.id = "atag" + i;
 
-        function atagClicked(e){  //なんでこれでできるかわからんができたー！！
-        // tab01.style.display = "none";  //下とどっちでも良さげ
-        // tab04.style.display = "block";
-        $("#tab01").hide().fadeOut(); //フェードではない
-        $("#tab04").show().fadeIn();
-        // $('.tabnav a:first').removeClass('active');
-        // $(tab04).addClass('active');  //できてない
-        console.log(array[this.num]["updated_reason_by_system"]);
-        GetPastMapFromNode(array[this.num]["appeared_at"], array[this.num]["updated_reason_by_learner"]);
-        };
+    //     function atagClicked(e){  //なんでこれでできるかわからんができたー！！
+    //     // tab01.style.display = "none";  //下とどっちでも良さげ
+    //     // tab04.style.display = "block";
+    //     $("#tab01").hide().fadeOut(); //フェードではない
+    //     $("#tab04").show().fadeIn();
+    //     // $('.tabnav a:first').removeClass('active');
+    //     // $(tab04).addClass('active');  //できてない
+    //     console.log(array[this.num]["updated_reason_by_system"]);
+    //     GetPastMapFromNode(array[this.num]["appeared_at"], array[this.num]["updated_reason_by_learner"]);
+    //     };
 
-        atag.addEventListener('click', {arr: array, num: i, handleEvent: atagClicked});
+    //     atag.addEventListener('click', {arr: array, num: i, handleEvent: atagClicked});
 
-        // $(function() {
-        //   $("#"+atag.id).on("click", function() {
-        //   console.log("!!");
-        //     $("#tab01").hide();
-        //     $("#tab04").show();
-        //   });
-        // });
-        atag.innerHTML = array[i]["appeared_at"] + "<br/>&emsp;テキスト：" + array[i]["content"] + "<br/>&emsp;更新理由：" + array[i]["updated_reason_by_learner"] + "<br/>";
-        log.appendChild(atag);
-    }
+    //     // $(function() {
+    //     //   $("#"+atag.id).on("click", function() {
+    //     //   console.log("!!");
+    //     //     $("#tab01").hide();
+    //     //     $("#tab04").show();
+    //     //   });
+    //     // });
+    //     atag.innerHTML = array[i]["appeared_at"] + "<br/>&emsp;テキスト：" + array[i]["content"] + "<br/>&emsp;更新理由：" + array[i]["updated_reason_by_learner"] + "<br/>";
+    //     log.appendChild(atag);
+    // }
 
 
 }
