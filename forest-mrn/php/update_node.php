@@ -155,7 +155,7 @@
 
 		$deleted = 0;
 
-		$sql = "UPDATE nodes SET updated_at = '".$updated_at."', deleted = '".$deleted."' WHERE id = '".$_POST['id']."'";
+		$sql = "UPDATE nodes SET deleted = '".$deleted."' WHERE id = '".$_POST['id']."'";
 
 		$i = 0;
 		$updated_array = array();

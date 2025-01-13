@@ -11,6 +11,7 @@
 	$map_id = $_SESSION['MAPID'];    //シートID
 	$item_id = $_POST["id"];             //スライドID
 	$node_id = $_POST["node_id"];
+	$title = $_POST["title"];
 	$brother_id = $_POST["brother_id"];
 	$item_version_id = uniqid();
 	$item_history_id = uniqid();
@@ -29,14 +30,14 @@
 	}
 
 	$sql_it_v = "INSERT INTO item_versions (item_version_id, item_id, item_bro_id, node_id, title, appeared_at, disappeared_at)
-		VALUES ('$item_version_id', '$item_id', '$brother_id', '$node_id', NULL, '$timestamp', NULL)";
+		VALUES ('$item_version_id', '$item_id', '$brother_id', '$node_id', '$title', '$timestamp', NULL)";
 	$result_it_v = $mysqli->query($sql_it_v);
 	if ($mysqli->error) {
 		echo "Error item_versions: " . $mysqli->error;
 	}
 
 	$sql_it_h = "INSERT INTO item_histories (item_history_id, item_version_id, item_bro_id, node_id, title, appeared_at, disappeared_at)
-		VALUES ('$item_history_id', '$item_version_id', '$brother_id', '$node_id', NULL, '$timestamp', NULL)";
+		VALUES ('$item_history_id', '$item_version_id', '$brother_id', '$node_id', '$title', '$timestamp', NULL)";
 	$result_it_h = $mysqli->query($sql_it_h);
 	if ($mysqli->error) {
 		echo "Error item_histories: " . $mysqli->error;

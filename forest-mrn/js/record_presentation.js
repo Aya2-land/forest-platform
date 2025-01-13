@@ -1,11 +1,12 @@
 //スライド作成を記録する関数
-function Record_slide(itemID, nodeId, brotherId){
+function Record_slide(itemID, nodeId, title, brotherId){
 
   $.ajax({
       url: "php/slide_create.php",
       type: "POST",
       data: {id : itemID,
             node_id: nodeId,
+            title: title,
             brother_id: brotherId},
       success: function (e) {
         if(e){
@@ -174,7 +175,6 @@ function Delete_concept(id){
         }
         
       }
-      console.log("登録成功：　" +id );
     },
     error: function () {
     console.log("登録失敗");},
@@ -256,7 +256,6 @@ async function Record_SlideLogicRelation(U_ID, node_id1,thread1_id,thread1_label
             relation_concept : relation_concept
             },
     success: function (e) {
-      console.log("登録成功：　" +U_ID );
       if(e){
         console.log(e);
       }
@@ -284,7 +283,6 @@ async function getContentID(doc_con_id){
           content_id = parse[i].slide_id;
         }
       }
-      console.log("取得成功：　" + content_id);
       return content_id;
     },
     error: function () {
@@ -302,7 +300,6 @@ function Delete_content(contentID){
       type: "POST",
       data: {id : contentID},
       success: function (e) {
-        console.log("登録成功：　" +contentID );
         if(e){
           console.log(e);
         }
@@ -321,7 +318,6 @@ function Delete_Document_content(contentID){
       type: "POST",
       data: {id : contentID},
       success: function (e) {
-        console.log("登録成功：　" +contentID );
         if(e){
           console.log(e);
         }
@@ -344,7 +340,6 @@ function Edit_save(obj,id){
       data: {id : id,
              content : content,},
       success: function (e) {
-        console.log("登録成功");
         if(e){
           console.log(e);
         }
@@ -380,7 +375,6 @@ function Edit_slide(obj, itemID){
       data: {id : itemID,
              content : slidetitle,},
       success: function (e) {
-        console.log("登録成功");
         if(e){
           console.log(e);
         }
@@ -410,7 +404,6 @@ function Edit_title(obj){
       type: "POST",
       data: {title : title,},
       success: function (e) {
-        console.log("登録成功");
         if(e){
           console.log(e);
         }
@@ -426,7 +419,6 @@ function Edit_title(obj){
     type: "POST",
     data: {title : title,},
     success: function (e) {
-      console.log("登録成功");
       if(e){
         console.log(e);
       }
@@ -447,7 +439,6 @@ function Edit_title_shimizu(obj){
       type: "POST",
       data: {title : title,},
       success: function (e) {
-        console.log("登録成功");
         if(e){
           console.log(e);
         }
@@ -479,6 +470,7 @@ function Edit_title_shimizu(obj){
 // }
 
 //2022-11-24 shimizu
+//2025-01-13 kawa 使わなくなった
 async function Update_Document_rank(){
 
   await $.ajax({
@@ -486,7 +478,6 @@ async function Update_Document_rank(){
       url: "php/update_document_rank.php",
       type: "POST",
       success: function (e) {
-        console.log("登録成功");
         if(e){
           console.log(e);
         }
@@ -505,7 +496,6 @@ async function Update_content_rank(){
       url: "php/update_content_rank.php",
       type: "POST",
       success: function (e) {
-        console.log("登録成功");
         if(e){
           console.log(e);
         }
@@ -523,7 +513,6 @@ async function Update_Document_content_rank(){
       url: "php/update_document_content_rank.php",
       type: "POST",
       success: function (e) {
-        console.log("登録成功");
         if(e){
           console.log(e);
         }
@@ -556,21 +545,15 @@ function Record_slide_rank(itemID, brotherId){
 }
 
 //2022-11-24 shimizu
-function Record_document_rank(itemID, rank, title,logic_option,node_id,concept_id){
+function Record_document_rank(itemID, brother_id){
   var id = getUniqueStr();
 
   $.ajax({
       url: "php/document_rank.php",
       type: "POST",
-      data: {id : id,
-            slide_id : itemID,
-            rank : rank,
-            title : title,
-            logic_option : logic_option,
-            node_id : node_id,
-            concept_id : concept_id},
+      data: {item_id : itemID,
+            brother_id: brother_id},
       success: function (e) {
-        console.log("登録成功");
         if(e){
           console.log(e);
         }

@@ -73,7 +73,7 @@ async function CreateSlide_Image(){
 
                 let label = "<div class='thread' id='"+uuid+"' value='スレッド'  data-node_id='"+ImageID+"' style='background-color:white; padding:5px; margin-top:5px; margin-bottom:5px; margin-right:5px; margin-left:5px;height:auto'>"+
                                 "<img id='preview-"+uuid+"' class=Image src='" +phpURL+"' alt='選択した画像' width='95%'>"+
-                                "<input id=DeleteButton-"+uuid+" class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");Record_rank();' style='width:20px; height:20px; font-size:10px; float:right;'>"+
+                                "<input id=DeleteButton-"+uuid+" class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");' style='width:20px; height:20px; font-size:10px; float:right;'>"+
                                 "<br>"+
                             "<div class='purpose'>"+
                             "</div>"+
@@ -89,7 +89,7 @@ async function CreateSlide_Image(){
                     console.log(log);
                     // MoveImageArea();
                     MoveAndExpensionImageArea();
-                    Record_rank();
+                    // Record_rank();
                 }
                 });
                 
@@ -99,14 +99,14 @@ async function CreateSlide_Image(){
                     console.log(log);
                     // MoveImageArea();
                     MoveAndExpensionImageArea();
-                    Record_rank();
+                    // Record_rank();
                 }
                 });
                 
                 // $('#'+uuid).data('node_id', node_id);
                 // MoveImageArea();
                 MoveAndExpensionImageArea();
-                Record_rank();
+                // Record_rank();
                 return uuid; // 作成したID（スレッドのID)を返す
             }else{
                 console.log("出力が空");

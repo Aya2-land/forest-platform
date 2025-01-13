@@ -325,7 +325,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             <div id="document_area" oncontextmenu="return false;">
                                 <div id="document_title">
                                     <div class="document_purpose">
-                                        <textarea id="scenario_title" class="document_title_area" class="statement" onfocus='TextboxClick()' onblur='Edit_title(this);Record_rank();' placeholder="資料タイトル" style='width:90%;'></textarea>
+                                        <textarea id="scenario_title" class="document_title_area" class="statement" onfocus='TextboxClick()' onblur='Edit_title(this);' placeholder="資料タイトル" style='width:90%;'></textarea>
                                     </div>
                                 </div>
                             </div>
