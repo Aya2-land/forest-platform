@@ -78,6 +78,8 @@ function addObjectMap() {
     // メモの初期値を設定
     newGoalButton.setAttribute('data-memo', 'メモがありません');
 
+    const memo = "メモがありません";
+
     // ボタンに目標情報を設定
     initializeGoalButton(newGoalButton, goalContent, timeString, timeString, objectMapId, startDate, endDate, memo);
 
@@ -150,6 +152,7 @@ function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, obj
                 toggleMemo.style.display = 'none';
             }
         }
+        
     };
 
     // メモアイコンとメモテキストのクリックで編集可能
@@ -166,6 +169,15 @@ function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, obj
             toggleMemo.textContent = '折りたたむ';
         }
     });
+
+    // ボタンのクリック時の動作
+    goalButton.addEventListener('click', () => {
+        goalButton.focus(); // ボタンにフォーカスを当てる
+        handleGoalClick(goalButton, goalContent, createdAt, objectMapId);
+    });
+
+    // 編集機能を追加
+    enableGoalEdit(goalButton, goalContent, createdAt, objectMapId);
 }
 
 function saveMemo(objectMapId, memoContent) {
@@ -436,7 +448,7 @@ function loadObjectMapData(objectMapId) {
 				objectMapData.node.forEach((n) => {
 					if (n.object_node_id) {
 						// object_node_id を node_id として渡す
-						defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y, n.status);
+						defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type, n.x, n.y, n.status);
 					} else {
 						console.warn("Node ID is undefined, skipping this node:", n);
 					}

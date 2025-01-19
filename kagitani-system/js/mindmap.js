@@ -1167,14 +1167,17 @@ function ModeChangeButtonClick() {
     $('#object_container').css('display','flex');
 
     // 画面全体に#object_containerを広げる
-    $('#object_container').css('width', '300vw');  // 画面全体に設定
+    $('#object_container').css('width', '600vw');  // 画面全体に設定
     $('#object_container').css('height', '60vh'); // 画面全体に設定
     $('#object_container').css('position', 'absolute'); // 絶対配置に設定
     $('#object_container').css('top', '80'); // 上端を0に設定
     $('#object_container').css('left', '0'); // 左端を0に設定
     $('#object_container').css('right', '0'); // 右端を0に設定
     $('#object_container').css('bottom', '100'); // 下端を0に設定
-    $('#object_container').css('grid-column', 'span 2'); // グリッドのカラムを跨るように設定
+    //$('#object_container').css('grid-column', 'span 2'); // グリッドのカラムを跨るように設定
+    const parentWidth = $('#object_container').parent().width();
+    $('#object_container').css('width', `${parentWidth * 1.0}px`);  // layoutの横幅を2倍に変更
+    $('#myobject').css('width', `${parentWidth * 1.008}px`);  // layoutの横幅を2倍に変更
 }
 
   jump_node("root");

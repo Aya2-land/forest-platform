@@ -1,0 +1,85 @@
+/* カスタムドロップダウン */
+.custom-dropdown {
+    position: relative;
+    width: 200px;
+    border-radius: 5px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.custom-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    font-size: 14px;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.custom-dropdown-toggle i {
+    margin-left: 10px;
+}
+
+/* ドロップダウンメニュー */
+.custom-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.option-tag {
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+}
+
+.option-tag:hover {
+    transform: scale(1.05);
+    background-color: #f0f0f0;
+}
+
+/* 色のカスタマイズ */
+.option-tag調べる { 
+    background-color: #e0f7e0; 
+}
+
+.option-tag考える { 
+    background-color: #fbe0e0; 
+}
+
+.option-tag表現する { 
+    background-color: #e0eaff; 
+}
+
+.option-tag相談する { 
+    background-color: #ffe0b3; 
+}
+
+/* ホバー時の色変更 */
+.option-tag調べる:hover { 
+    background-color: #c1e6c1; 
+}
+
+.option-tag考える:hover { 
+    background-color: #f7c6c6; 
+}
+
+.option-tag表現する:hover { 
+    background-color: #c1d9ff; 
+}
+
+.option-tag相談する:hover { 
+    background-color: #ffdfb3; 
+}

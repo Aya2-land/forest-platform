@@ -35,10 +35,10 @@
 			//$label = $_POST["label"];    //ラベル
 			$x = $_POST["x"];  //x座標
 			$y = $_POST["y"];  //y座標
-			$object_nodes_type_id = 0;
+			$object_nodes_type = "goal";
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-			$sql = $mysqli->query("INSERT INTO object_nodes(object_node_id, object_map_id, label, x, y, object_nodes_type_id, created_at, updated_at, deleted) 
-                    VALUES ('$object_node_id', '$object_map_id', 'NewNodes', '$x', '$y', '$object_nodes_type_id', '$timestamp', '$timestamp', 0)");
+			$sql = $mysqli->query("INSERT INTO object_nodes(object_node_id, object_map_id, label, x, y, object_nodes_type, created_at, updated_at, deleted) 
+                    VALUES ('$object_node_id', '$object_map_id', 'NewNodes', '$x', '$y', '$object_nodes_type', '$timestamp', '$timestamp', 0)");
 		//手順ノードの記録
 		}else if($record_thing === 'step'){
 			$object_node_id = $_POST["node_id"]; //ノードID
@@ -46,11 +46,11 @@
 			//$label = $_POST["label"];    //ラベル
 			$x = $_POST["x"];  //x座標
 			$y = $_POST["y"];  //y座標
-			$object_nodes_type_id = 1;
+			$object_nodes_type = "step";
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 			// SQL 文を文字列として定義
-			$sql = "INSERT INTO object_nodes(object_node_id, object_map_id, label, x, y, object_nodes_type_id, created_at, updated_at, deleted) 
-			VALUES ('$object_node_id', '$object_map_id', 'NewNodes', '$x', '$y', '$object_nodes_type_id', '$timestamp', '$timestamp', 0)";
+			$sql = "INSERT INTO object_nodes(object_node_id, object_map_id, label, x, y, object_nodes_type, created_at, updated_at, deleted) 
+			VALUES ('$object_node_id', '$object_map_id', 'NewNodes', '$x', '$y', '$object_nodes_type', '$timestamp', '$timestamp', 0)";
 
 			// クエリを実行
 			if ($mysqli->query($sql)) {
@@ -92,8 +92,8 @@
 			var_dump($timeString);   // timeString の確認
 		
 			// SQLクエリ
-			$query = "INSERT INTO object_maps(object_map_id,label, map_id, created_at, updated_at, start_date, end_date, deleted)
-					  VALUES ('$object_map_id','$goalContent' , null, '$timeString', '$timeString','$startDate','$endDate', 0)";
+			$query = "INSERT INTO object_maps(object_map_id,label, map_id, created_at, updated_at, start_date, end_date, deleted,memo)
+					  VALUES ('$object_map_id','$goalContent' , null, '$timeString', '$timeString','$startDate','$endDate', 0, 'メモがありません')";
 		
 			// SQLクエリの確認
 			echo "実行するSQLクエリ: " . $query . "<br>";

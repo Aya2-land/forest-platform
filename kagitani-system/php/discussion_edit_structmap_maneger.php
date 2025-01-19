@@ -47,8 +47,8 @@
 			$y = $_POST["y"];  //y座標
 			$node_type = $_POST["node_type"];
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-			$mysqli->query("INSERT INTO object_nodes(object_node_id, object_map_id, x, y, object_nodes_type_id, created_at, updated_at, deleted) 
-                VALUES ('$object_node_id', '$object_map_id', '$x', '$y', '$object_nodes_type_id', '$timestamp','$timestamp', 0)");
+			$mysqli->query("INSERT INTO object_nodes(object_node_id, object_map_id, x, y, object_nodes_type, created_at, updated_at, deleted) 
+                VALUES ('$object_node_id', '$object_map_id', '$x', '$y', '$object_nodes_type', '$timestamp','$timestamp', 0)");
 		}else if($record_thing === 'edge'){
 			//エッジの記録
 			$edge_start = $_POST["edge_start"];          //エッジ開始

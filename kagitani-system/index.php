@@ -73,6 +73,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <link rel="stylesheet" type="text/css" href="css/jquery.cleditor.css">
         <link rel="stylesheet" type="text/css" href="css/ui.css">
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" type="text/css" href="css/assignTagsToNode.css">
 
         <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui.min.js"></script>
@@ -293,13 +294,49 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <li><a href="javascript:void(0);" id="net_conmenu00"><i class="fa fa-play"></i> 手段開始</a></li> 
                                     <li><a href="javascript:void(0);" id="net_conmenu01"><i class="fa fa-pause"></i> 手段中断</a></li> 
                                     <li><a href="javascript:void(0);" id="net_conmenu02"><i class="fa fa-check"></i> 手段完了</a></li> 
-                                    <li><a href="javascript:void(0);" id="net_conmenu03"><i class="fa fa-eye"></i> 活動表示</a></li> 
+                                    <!-- <li><a href="javascript:void(0);" id="net_conmenu03"><i class="fa fa-eye"></i> 活動表示</a></li>  -->
+                                    <li><a href="javascript:void(0);" id="net_conmenu3"><i class="fa fa-tag"></i> 性質を選択</a></li>
                                     <li><a href="javascript:void(0);" id="net_conmenu4"><i class="fa fa-times"></i> キャンセル</a></li>
                                 </ul>
                             </div>
                             <div id="tooltip" style="position: absolute; display: none; padding: 10px; background: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">
                                 吹き出しの内容
                             </div>
+                            <div id="recruitselect">
+                                <select id="taggingSection">
+                                    <option value="考える">考える</option>
+                                    <option value="調べる">調べる</option>
+                                    <option value="表現する">表現する</option>
+                                    <option value="相談する">相談する</option>
+                                </select>
+                                <input type="button" value="選択完了" id="recruit_select">
+                            </div>
+                            
+                            <!-- <div id="taggingSection" class="tag-modal" style="display:none;">
+                                <div class="modal-content">
+                                    <h3>タグ付けを選択してください</h3>
+                                    <div>
+                                        <h4>手段そのものの性質</h4>
+                                        <select id="meansNature">
+                                            <option value="考える">考える（自分の中で考えを深める活動）</option>
+                                            <option value="調べる">調べる（情報収集やリサーチを行う活動）</option>
+                                            <option value="表現する">表現する（機能的な成果物を形にする活動）</option>
+                                            <option value="相談する">相談する（他者とコミュニケーションを取る活動）</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <h4>目標に対する手段の性質</h4>
+                                        <select id="meansGoalNature">
+                                            <option value="準備">準備（情報収集や基礎的な作業をする段階）</option>
+                                            <option value="実施">実施（実際に行動や作業を進める段階）</option>
+                                            <option value="評価">評価（進捗や成果を評価する段階）</option>
+                                            <option value="改善">改善（問題点を見つけて修正する段階）</option>
+                                        </select>
+                                    </div>
+                                    <button id="applyTagging">適用</button>
+                                    <button id="cancelTagging">キャンセル</button>
+                                </div>
+                            </div> -->
                             <div id="mynetwork"></div>
                         </div>
                 </div>

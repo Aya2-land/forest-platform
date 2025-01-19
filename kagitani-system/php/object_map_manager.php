@@ -23,7 +23,7 @@ if($purpose === "select_meeting_utterance") { //こいつを取ってきてい�
     $object_map_id = $latest_map_id_row['object_map_id']; // 実際の ID を取得
 
     // object_map_id を使って object_nodes を取得
-    $result_discussionmap_node = $mysqli->query("SELECT `object_node_id`, `object_map_id`, `label`, `x`, `y`, `object_nodes_type_id`, `created_at`, `status`
+    $result_discussionmap_node = $mysqli->query("SELECT `object_node_id`, `object_map_id`, `label`, `x`, `y`, `object_nodes_type`, `created_at`, `status`
         FROM `object_nodes`
         WHERE `deleted` = 0 AND `object_map_id` = '$object_map_id'
         ORDER BY `updated_at` DESC;

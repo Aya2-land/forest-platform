@@ -28,7 +28,7 @@ if($purpose === 'fetch'){
 }else if ($purpose === 'load') {
     $objectMapId = $_POST['object_map_id'];
 
-    $result_object_node = $mysqli->query("SELECT object_node_id, label, object_nodes_type_id, x, y, status FROM object_nodes WHERE object_map_id = '$objectMapId' AND deleted = '0'");
+    $result_object_node = $mysqli->query("SELECT object_node_id, label, object_nodes_type, x, y, status FROM object_nodes WHERE object_map_id = '$objectMapId' AND deleted = '0'");
 
     $node = [];
     while ($row = $result_object_node->fetch_assoc()) {

@@ -66,10 +66,10 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             this.addEventLister();
             // $(`#jsmind_container`).on('click',this.connect_mindmap.bind(this));
             // $(`#net_conmenu2`).on('click',this.connect_network.bind(this));
-            // $(`#net_conmenu3`).on('click',this.Recruit_Idea.bind(this));
+            $(`#net_conmenu3`).on('click',this.SelectTag.bind(this));
             // $(`#net_conmenu4`).on('click',this.ContentmenuCancel.bind(this));
             // $(`#ontology_select`).on('click',this.addontology.bind(this));
-            // $(`#recruit_select`).on('click',this.Selected_Recruit_Idea.bind(this));
+            $(`#recruit_select`).on('click',this.assignTagsToNode.bind(this));
             this.ownNetwork.on('click', this.networkClick.bind(this));
             this.ownNetwork.on('dragStart', this.dragstart.bind(this));
             this.ownNetwork.on('dragEnd', this.dragend.bind(this));
@@ -92,33 +92,35 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         }
     }
 
-    addEventLister(){
+    addEventLister() {
         this.bindconnect_mindmap = this.connect_mindmap.bind(this);
         this.bindstep_start = this.step_start.bind(this); //kagitani
         this.bindstep_break = this.step_break.bind(this); //kagitani
         this.bindstep_end = this.step_end.bind(this); //kagitani
         this.bindshow_select = this.show_select.bind(this);
         this.bindconnect_network = this.connect_network.bind(this);
-        this.bindRecruit_Idea = this.Recruit_Idea.bind(this);
+        this.bindSelectTag = this.SelectTag.bind(this);
         this.bindContentmenuCancel = this.ContentmenuCancel.bind(this);
         this.bindaddontology = this.addontology.bind(this);
-        this.bindSelected_Recruit_Idea = this.Selected_Recruit_Idea.bind(this);
+        this.bindassignTagsToNode = this.assignTagsToNode.bind(this);
         this.bindfeedback = this.feedback.bind(this);
         this.bindNodeblinking = this.Nodeblinking.bind(this);
-        $(`#jsmind_container`).on('click',this.bindconnect_mindmap);
-        $(`#net_conmenu00`).on('click',this.bindstep_start);
-        $(`#net_conmenu01`).on('click',this.bindstep_break);
-        $(`#net_conmenu02`).on('click',this.bindstep_end);
-        $(`#net_conmenu1`).on('click',this.bindshow_select);
-        $(`#net_conmenu2`).on('click',this.bindconnect_network);
-        $(`#net_conmenu3`).on('click',this.bindRecruit_Idea);
-        $(`#net_conmenu4`).on('click',this.bindContentmenuCancel);
-        $(`#ontology_select`).on('click',this.bindaddontology);
-        $(`#recruit_select`).on('click',this.bindSelected_Recruit_Idea);
-        $(`#feedbackrecord`).on('click',this.bindfeedback);
-        this.interval = setInterval(this.bindNodeblinking, 1000);
+    
+        // 既存のクリックイベント
+        $(`#jsmind_container`).on('click', this.bindconnect_mindmap);
+        $(`#net_conmenu00`).on('click', this.bindstep_start);
+        $(`#net_conmenu01`).on('click', this.bindstep_break);
+        $(`#net_conmenu02`).on('click', this.bindstep_end);
+        $(`#net_conmenu1`).on('click', this.bindshow_select);
+        $(`#net_conmenu2`).on('click', this.bindconnect_network);
+        $(`#net_conmenu3`).on('click', this.bindSelectTag);
+        $(`#net_conmenu4`).on('click', this.bindContentmenuCancel);
+        $(`#ontology_select`).on('click', this.bindaddontology);
+        $(`#recruit_select`).on('click', this.bindassignTagsToNode);
+        $(`#feedbackrecord`).on('click', this.bindfeedback);
     }
-
+    
+    
     removeEventLister(){
         $(`#jsmind_container`).off('click',this.bindconnect_mindmap);
         $(`#net_conmenu00`).off('click',this.bindstep_start);
@@ -126,10 +128,10 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         $(`#net_conmenu02`).off('click',this.bindstep_end);
         $(`#net_conmenu1`).off('click',this.bindshow_select);
         $(`#net_conmenu2`).off('click',this.bindconnect_network);
-        $(`#net_conmenu3`).off('click',this.bindRecruit_Idea);
+        $(`#net_conmenu3`).off('click',this.bindSelectTag);
         $(`#net_conmenu4`).off('click',this.bindContentmenuCancel);
         $(`#ontology_select`).off('click',this.bindaddontology);
-        $(`#recruit_select`).off('click',this.bindSelected_Recruit_Idea);
+        $(`#recruit_select`).off('click',this.bindassignTagsToNode);
         $(`#feedbackrecord`).off('click',this.bindfeedback);
         clearInterval(this.interval);
     }
@@ -279,6 +281,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.latest_selected_node_info.x = node_x;
         this.latest_selected_node_info.y = boundingBoxupdate.bottom + 10;
     
+        console.log(`${node_type}_${node_id}`, node_label, node_type, node_x, node_y);
         defaultRecordForestMRN.record_StepNode(`${node_type}_${node_id}`, node_label, node_type, node_x, node_y);
         Record_activities(`${node_type}_${node_id}`, null, "add", node_label, null, "step",generateUniqueID(),object_map_id);
         console.log("クリックされたノードの確認です:", globalParams);
@@ -333,35 +336,27 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     
 
     addReloadNode(node_id, node_label, node_type, node_x, node_y, done) {
-        // console.log("Received node data:");
-        // console.log("node_id:", node_id);
-        // console.log("node_label:", node_label);
-        // console.log("node_type:", node_type);
-        // console.log("node_x:", node_x);
-        // console.log("node_y:", node_y);
         console.log("status:", done);
-
+    
         let node_color = 'skyblue'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
         let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
-
+    
         switch(node_type) {
-            //目標ノードか手段ノードか
-            case "0": // 目標ノード
+            case "goal": // 目標ノード
                 node_color = 'red';
                 text_color = 'white';
                 break;
-            case "1": // 手段ノード
-                 node_color = 'green';
-                 text_color = 'white';
-                 break;
+            case "step": // 手段ノード
+                node_color = 'green';
+                text_color = 'white';
+                break;
             default: // その他
                 break;
         }
-
+    
         switch(done) {
-            //目標ノードか手段ノードか
             case "inProgress":
                 node_color = 'orange';
                 break;
@@ -380,44 +375,67 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             default: // その他
                 break;
         }
-
+    
         let result_label = '';
         for (let i = 0; i < node_label.length; i += 10) {
             result_label += node_label.substr(i, 10) + '\n';
         }
         result_label = result_label.trim(); // 末尾の不要な改行を除去
-
-        //実際にネットワークに追加するノードのデータを作成
+    
+        // 実際にネットワークに追加するノードのデータを作成
         const newNode = {
             id: `${node_id}`, label: result_label,
-            title: '出現',  // ここで「出現」を設定
+            title: '',  // ここで「出現」を設定
             group: node_type,
             color: node_color, shape: node_shape,
             font: { color: text_color },
             fixed: position_fixed,
             x: node_x, y: node_y, 
-            status:done,
-            size:30,
+            status: done,
+            size: 30,
         };
-        // newNodeが作成された時点で確認
-        //console.log("Created newNode:", newNode);
-
+    
         // ノードをthis.nodesに追加
         this.nodes.add(newNode);
-        //this.nodes.add(newNode) は、vis-network ライブラリのネットワークに新しいノード newNode を追加する処理
-
+    
         // ノードが追加された後に確認
-        //console.log("Nodes after addition:", this.nodes);
-
-        //ノードの位置調整
+        console.log("Created newNode:", newNode);
+    
+        // ノードの位置調整
         const boundingBox = this.ownNetwork.getBoundingBox(`${node_id}`);
         this.latest_selected_node_info.x = node_x;
-        this.latest_selected_node_info.y = boundingBox.bottom+10;
-
-        //最後に、ノードが追加された後、現在のノードリスト（this.nodes）を返します。
-        //これにより、他の場所で追加されたノードを利用したり、管理したりすることができます。
+        this.latest_selected_node_info.y = boundingBox.bottom + 10;
+    
+        // ノードの色が灰色の場合、右クリックとダブルクリックを無効化
+        if (node_color === 'gray') {
+            this.disableNodeRightClickAndDoubleClick(node_id);
+        }
+    
+        // 最後に、ノードが追加された後、現在のノードリスト（this.nodes）を返します。
         return this.nodes;
     }
+    
+    // 右クリックとダブルクリックを無効化する関数
+    disableNodeRightClickAndDoubleClick(nodeId) {
+        const nodeElement = document.getElementById(`node-${nodeId}`);
+        if (!nodeElement) {
+            console.error("ノードが見つかりません: ", nodeId);
+            return;
+        }
+    
+        // 右クリックイベントの無効化
+        nodeElement.addEventListener('contextmenu', (event) => {
+            event.preventDefault();  // 右クリックのデフォルト動作（コンテキストメニュー）を無効化
+            console.log(`右クリック無効化: ノードID: ${nodeId}`);
+        });
+    
+        // ダブルクリックイベントの無効化
+        nodeElement.addEventListener('dblclick', (event) => {
+            event.preventDefault();  // ダブルクリックのデフォルト動作（ノードの編集など）を無効化
+            console.log(`ダブルクリック無効化: ノードID: ${nodeId}`);
+        });
+    }
+    
 
     //操作できないノードを作る（過去のマインドマップのため）
     addShowNode(node_id, node_label, node_type, node_x, node_y) {
@@ -515,11 +533,11 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             console.log("Node Data:", node); // ノードの詳細データをログ出力
 
             switch (node.group) { // nullチェック付き
-                case "0": // 自分で考えた要約に関するノードの場合
+                case "goal": // 自分で考えた要約に関するノードの場合
                     console.log("ゴールを保存！！！！！！！！！！！！");
                     Record_activities(node_id, null, "edit", node_content, null, "goal", generateUniqueID(),object_map_id);
                     break;
-                case "1": // 議論内での発言ノードの場合
+                case "step": // 議論内での発言ノードの場合
                     console.log("手段を保存！！！！！！！！！！！！");
                     Record_activities(node_id, null, "edit", node_content, null, "step", generateUniqueID(),object_map_id);
                     break; 
@@ -565,11 +583,11 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         }
 
         switch (node?.group) { // nullチェック付き
-            case "0": // 自分で考えた要約に関するノードの場合
+            case "goal": // 自分で考えた要約に関するノードの場合
                 console.log("ゴールを保存！！！！！！！！！！！！");
                 Record_activities(node_id, null, "delete", node_content, null, "goal", generateUniqueID());
                 break;
-            case "1": // 議論内での発言ノードの場合
+            case "step": // 議論内での発言ノードの場合
                 console.log("手段を保存！！！！！！！！！！！！");
                 Record_activities(node_id, null, "delete", node_content, null, "step", generateUniqueID());
                 break;       
@@ -722,8 +740,8 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         Record_activities(this.selectId, null, "break",fromNode.label, null, "step", generateUniqueID(),object_map_id);
     }
 
-    //手段完了ボタン
-   step_end() {
+   // 手段完了ボタン
+step_end() {
     document.getElementById('network_conmenu').style.display = "none";
     console.log(`step_end() を呼び出しました。選択中のノードID: ${this.selectId}`); // デバッグ用ログ
 
@@ -732,109 +750,136 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
     const fromNode = this.nodes.get(fromNodeId);
+    console.log(fromNode);
     console.log(`step_end() 呼び出し: fromNodeId: ${fromNodeId}`, fromNode);
 
     Record_activities(this.selectId, null, "end", fromNode.label, null, "step", generateUniqueID(), object_map_id);
+    
+    // 右クリックとダブルクリックイベントを無効化
+    this.disableNodeRightClickAndDoubleClick(this.selectId);
+
     // フィードバック吹き出しを表示
     this.showFeedbackTooltip();
 }
 
-    
-    showFeedbackTooltip() {
-        const tooltip = document.getElementById("tooltip");
-        if (!tooltip) {
-            console.error("吹き出しの要素が見つかりませんでした。");
-            return;
-        }
-    
-        // ノードの位置を取得
-        const positions = this.ownNetwork.getPositions(this.selectId);
-        if (!positions || !positions[this.selectId]) {
-            console.error("選択されたノードの位置情報が取得できませんでした。");
-            return;
-        }
-        const nodePosition = positions[this.selectId];
-        const canvasPosition = this.ownNetwork.canvasToDOM({
-            x: nodePosition.x,
-            y: nodePosition.y
-        });
-    
-        // 吹き出しの内容を設定
-        tooltip.style.left = `${canvasPosition.x}px`;
-        tooltip.style.top = `${canvasPosition.y + 20}px`; // ノードの下に表示
-        tooltip.innerHTML = `
-            <div id="tooltipHeader" style="cursor: move; background: #ccc; padding: 5px;">
-                <strong>【この手段を評価】</strong>
-            </div>
-            <div style="padding: 10px;">
-                <form id="evaluationForm">
-                    <label for="rating">総合評価：</label>
-                    <select id="rating" name="rating">
-                        <option value="1">1点</option>
-                        <option value="2">2点</option>
-                        <option value="3">3点</option>
-                        <option value="4" selected>4点</option>
-                        <option value="5">5点</option>
-                    </select><br><br>
-                    <label for="goodPoints">良かった点：</label><br>
-                    <textarea id="goodPoints" name="goodPoints" rows="3" placeholder="自由に記述できます"></textarea><br><br>
-                    <label for="badPoints">悪かった点：</label><br>
-                    <textarea id="badPoints" name="badPoints" rows="3" placeholder="自由に記述できます"></textarea><br><br>
-                    <button type="button" id="saveFeedback">保存</button>
-                </form>
-            </div>
-        `;
-        tooltip.style.display = "block";
-    
-        // 保存ボタンのイベントリスナーを設定
-        this.setupTooltipSaveButton(tooltip);
-        this.setupTooltipDrag(tooltip);
+// 右クリックとダブルクリックを無効化する関数
+disableNodeRightClickAndDoubleClick(nodeId) {
+    const nodeElement = document.getElementById(`node-${nodeId}`);
+    if (!nodeElement) {
+        console.error("ノードが見つかりません: ", nodeId);
+        return;
     }
 
-    setupTooltipSaveButton(tooltip) {
-        const saveButton = document.getElementById("saveFeedback");
-        saveButton.addEventListener("click", () => {
-            const rating = document.getElementById("rating").value;
-            const goodPoints = document.getElementById("goodPoints").value;
-            const badPoints = document.getElementById("badPoints").value;
+    // 右クリックイベントの無効化
+    nodeElement.addEventListener('contextmenu', (event) => {
+        event.preventDefault();  // 右クリックのデフォルト動作（コンテキストメニュー）を無効化
+        console.log(`右クリック無効化: ノードID: ${nodeId}`);
+    });
+
+    // ダブルクリックイベントの無効化
+    nodeElement.addEventListener('dblclick', (event) => {
+        event.preventDefault();  // ダブルクリックのデフォルト動作（ノードの編集など）を無効化
+        console.log(`ダブルクリック無効化: ノードID: ${nodeId}`);
+    });
+}
+
     
-            // サーバーにデータを送信
-            $.ajax({
-                url: "php/object_maneger.php",
-                type: "POST",
-                data: {
-                    rating: rating,
-                    good_text: goodPoints,
-                    bad_text: badPoints,
-                    object_node_id: this.selectId,
-                    purpose: 'record',
-                    record_thing: 'reflection'
-                },
-                success: (response) => {
-                    console.log("サーバーの応答:", response);
-    
-                    // ノードの title を更新（フィードバック内容を設定）
-                    const feedbackTitle = `
-                        評価: ${rating}点
-                        良かった点: ${goodPoints || "なし"}
-                        悪かった点: ${badPoints || "なし"}
-                    `;
-                    this.nodes.update({
-                        id: this.selectId,
-                        color: 'gray',
-                        title: feedbackTitle // フィードバック内容をタイトルに設定
-                    });
-    
-                    console.log(`ノード ${this.selectId} のタイトルを更新しました。`);
-                    tooltip.style.display = "none"; // 保存後に吹き出しを閉じる
-                },
-                error: (error) => {
-                    console.error("フィードバック保存中にエラーが発生しました:", error);
-                    alert("フィードバックの保存に失敗しました。");
-                }
-            });
+showFeedbackTooltip() {
+    const tooltip = document.getElementById("tooltip");
+    if (!tooltip) {
+        console.error("吹き出しの要素が見つかりませんでした。");
+        return;
+    }
+
+    // ノードの位置を取得
+    const positions = this.ownNetwork.getPositions(this.selectId);
+    if (!positions || !positions[this.selectId]) {
+        console.error("選択されたノードの位置情報が取得できませんでした。");
+        return;
+    }
+    const nodePosition = positions[this.selectId];
+    const canvasPosition = this.ownNetwork.canvasToDOM({
+        x: nodePosition.x,
+        y: nodePosition.y
+    });
+
+    // 吹き出しの内容を設定
+    tooltip.style.left = `${canvasPosition.x}px`;
+    tooltip.style.top = `${canvasPosition.y + 20}px`; // ノードの下に表示
+    tooltip.style.width = "400px"; // ツールチップの横幅を設定（必要に応じて調整）
+    tooltip.style.minWidth = "300px"; // 最小幅を設定（小さすぎないように）
+    tooltip.innerHTML = `
+        <div id="tooltipHeader" style="cursor: move; background: #ccc; padding: 5px;">
+            <strong>【行動記録入力】</strong>
+        </div>
+        <div style="padding: 10px;">
+            <form id="feedbackForm">
+                <label for="actionReason">行動意図：なぜこの手段を実行しましたか？</label><br>
+                <textarea id="actionReason" name="actionReason" rows="3" placeholder="例：実験対象者を選定するための参考基準を得るため．" style="width: 100%;"></textarea><br><br>
+
+                <label for="completionReason">完了基準：なぜ完了と判断しましたか？</label><br>
+                <textarea id="completionReason" name="completionReason" rows="3" placeholder="例：必要な研究事例（5つ）を確認し，比較表を作成できたから．" style="width: 100%;"></textarea><br><br>
+
+                <label for="challengesAndLearnings">経験の活用：困難や学びはありますか？</label><br>
+                <textarea id="challengesAndLearnings" name="challengesAndLearnings" rows="4" placeholder="例：他の研究事例を調べる過程で混乱が生じた．関連論文を追加調査し共通点を抽出した．" style="width: 100%;"></textarea><br><br>
+
+                <button type="button" id="saveFeedback">保存</button>
+            </form>
+        </div>
+    `;
+    tooltip.style.display = "block";
+
+    // 保存ボタンのイベントリスナーを設定
+    this.setupTooltipSaveButton(tooltip);
+    this.setupTooltipDrag(tooltip);
+}
+
+
+setupTooltipSaveButton(tooltip) {
+    const saveButton = document.getElementById("saveFeedback");
+    saveButton.addEventListener("click", () => {
+        const actionReason = document.getElementById("actionReason").value.trim();
+        const completionReason = document.getElementById("completionReason").value.trim();
+        const challengesAndLearnings = document.getElementById("challengesAndLearnings").value.trim();
+
+        // サーバーにデータを送信
+        $.ajax({
+            url: "php/object_maneger.php",
+            type: "POST",
+            data: {
+                action_reason: actionReason,
+                completion_reason: completionReason,
+                challenges_learnings: challengesAndLearnings,
+                object_node_id: this.selectId,
+                purpose: 'record',
+                record_thing: 'feedback'
+            },
+            success: (response) => {
+                console.log("サーバーの応答:", response);
+
+                // ノードの title を更新（入力内容を簡略化して表示）
+                const title = `
+                    行動意図: ${actionReason || "未記入"}\n
+                    完了基準: ${completionReason || "未記入"}\n
+                    学び: ${challengesAndLearnings || "未記入"}
+                `;
+                this.nodes.update({
+                    id: this.selectId,
+                    color: 'gray',
+                    title: title
+                });
+
+                console.log(`ノード ${this.selectId} のタイトルを更新しました。`);
+                tooltip.style.display = "none"; // 保存後に吹き出しを閉じる
+            },
+            error: (error) => {
+                console.error("記録保存中にエラーが発生しました:", error);
+                alert("記録の保存に失敗しました。");
+            }
         });
-    }    
+    });
+}
+
     
     setupTooltipDrag(tooltip) {
         const header = document.getElementById("tooltipHeader");
@@ -883,66 +928,102 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     }
     
 
-    Recruit_Idea (){
+    SelectTag (){
         document.getElementById('network_conmenu').style.display = "none";
-        if(this.RecruitNodeId.indexOf(this.selectId) !== -1){
-            alert('このノードにはすでに採用不採用がつけられています');
-            document.getElementById("net_conmenu3").style.display = "none";
-            return;
-        }
         const recruitselect = document.getElementById("recruitselect");
         recruitselect.style.display = "block";
         recruitselect.style.left = this.BoxDisplay.x;
         recruitselect.style.top = this.BoxDisplay.y;
     }
 
-    Selected_Recruit_Idea (){
+    assignTagsToNode() {
         const FeedBackReflectionText = [];
         const FeedBackReflection = [];
         document.getElementById("recruitselect").style.display = "none";
-        const selectionlist = document.getElementById('recruitselectionlist');
+        const selectionlist = document.getElementById('taggingSection');  // 修正した部分
         const Ontology_Node_Id = this.OntologyNodeId[this.OntologyConnectNodeId.indexOf(this.selectId)];
         this.RecruitNodeId.push(this.selectId);
         this.Feedback.push(this.selectId);
         this.Recruit.push(selectionlist.value);
-        if (selectionlist.value === "採用") { // IDに相当するノードがある場合の中身を編集
+    
+        if (selectionlist.value === "調べる") {
             this.nodes.update({
-                id : Ontology_Node_Id,
+                id: Ontology_Node_Id,
                 borderWidth: 5,
                 color: {
                     border: "green",
+                    background: "#e0f7e0",
                 },
+                label: "調べる",
+                shape: "box", // サポートされる形状に変更
             });
-        }else if(selectionlist.value === "棄却"){
+            console.log("調べるノードを更新しました");
+        } else if (selectionlist.value === "考える") {
             this.nodes.update({
-                id : Ontology_Node_Id,
+                id: Ontology_Node_Id,
                 borderWidth: 5,
                 color: {
                     border: "red",
+                    background: "#fbe0e0",
                 },
+                label: "考える",
+                shape: "box",
             });
+            console.log("考えるノードを更新しました");
+        } else if (selectionlist.value === "表現する") {
+            this.nodes.update({
+                id: Ontology_Node_Id,
+                borderWidth: 5,
+                color: {
+                    border: "blue",
+                    background: "#e0eaff",
+                },
+                label: "表現する",
+                shape: "box",
+            });
+            console.log("表現するノードを更新しました");
+        } else if (selectionlist.value === "相談する") {
+            this.nodes.update({
+                id: Ontology_Node_Id,
+                borderWidth: 5,
+                color: {
+                    border: "orange",
+                    background: "#ffe0b3",
+                },
+                label: "相談する",
+                shape: "box", // 星形をサポートされる形状に変更
+            });
+            console.log("相談するノードを更新しました");
         }
-        for(var i=0; i<this.RecruitNodeId.length-1; i++){
-            FeedBackReflectionText.push("text"+this.RecruitNodeId[i]);
-            FeedBackReflection.push(document.getElementById("text"+this.RecruitNodeId[i]).value);
+    
+        for (var i = 0; i < this.RecruitNodeId.length - 1; i++) {
+            FeedBackReflectionText.push("text" + this.RecruitNodeId[i]);
+            FeedBackReflection.push(document.getElementById("text" + this.RecruitNodeId[i]).value);
         }
+    
         const node_info = this.nodes.get(this.selectId);
-        document.getElementById("accordion_discussion").innerHTML += "<div id='"+this.selectId+"' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「"+node_info.label+"」は"+selectionlist.value+"されたのですか？</div><div class='accordion-content'><textarea id='text"+ this.selectId +"' class='accordion-input'></textarea></div></div>";
+        document.getElementById("accordion_discussion").innerHTML += "<div id='" + this.selectId + "' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「" + node_info.label + "」は" + selectionlist.value + "されたのですか？</div><div class='accordion-content'><textarea id='text" + this.selectId + "' class='accordion-input'></textarea></div></div>";
+        
         const accordionHeaders = document.querySelectorAll('#accordion_discussion .accordion-header');
         accordionHeaders.forEach(header => {
-          header.addEventListener('click', function () {
-            const accordionItem = this.parentElement;
-            accordionItem.classList.toggle('active');
-          });
+            header.addEventListener('click', function () {
+                const accordionItem = this.parentElement;
+                accordionItem.classList.toggle('active');
+            });
         });
-        //追加したら消えてしまうからおいておく
-        for(var i=0; i<this.RecruitNodeId.length-1; i++){
-            document.getElementById("text"+this.RecruitNodeId[i]).innerHTML = FeedBackReflection[FeedBackReflectionText.indexOf("text"+this.RecruitNodeId[i])];
+    
+        // 追加したら消えてしまうからおいておく
+        for (var i = 0; i < this.RecruitNodeId.length - 1; i++) {
+            document.getElementById("text" + this.RecruitNodeId[i]).innerHTML = FeedBackReflection[FeedBackReflectionText.indexOf("text" + this.RecruitNodeId[i])];
         }
-        defaultRecordForestMRN.record_recruit(this.selectId, Ontology_Node_Id, selectionlist.value);
+    
+        // ここを修正したらいいよ！！！！！
+        defaultRecordForestMRN.record_tagForObject(this.selectId, Ontology_Node_Id, selectionlist.value);
         document.getElementById("net_conmenu3").style.display = "none";
+        
     }
-
+    
+    
     ContentmenuCancel(){
         document.getElementById('network_conmenu').style.display = "none";
     }
@@ -1011,10 +1092,10 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 document.getElementById("ontology_feedback").innerHTML = "<div class='feedback_message'>この発言は「"+node_infomation.label + "」と「" + this.output_input[node_infomation.label] + "」<br>との合理性を意識して発言されたのかもしれません</div>";
             } 
         }
-        if(this.RecruitNodeId.indexOf(params.nodes[0]) !== -1){
-            this.FeedbackNodeId = params.nodes[0];
-            document.getElementById(this.FeedbackNodeId).style.display = "block";
-        }
+        // if(this.RecruitNodeId.indexOf(params.nodes[0]) !== -1){
+        //     this.FeedbackNodeId = params.nodes[0];
+        //     document.getElementById(this.FeedbackNodeId).style.display = "block";
+        // }
         if(params.nodes.length == 1){
             const net_index = this.ConnectNetworkNodeId.map((n_id, index) => {
                 return n_id === params.nodes[0] ? index : null;
@@ -1153,11 +1234,11 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 let node_color;
                 // ノードのグループに応じて色を設定
                 switch (node?.group) { // nullチェック付き
-                    case "0": // 自分で考えた要約に関するノードの場合
+                    case "goal": // 自分で考えた要約に関するノードの場合
                         node_color = 'red';
                         //console.log("Group is '0', setting color to red");
                         break;
-                    case "1": // 議論内での発言ノードの場合
+                    case "step": // 議論内での発言ノードの場合
                         node_color = 'green';
                         //console.log("Group is '1', setting color to green");
                         break;
@@ -1408,6 +1489,25 @@ class RecordForestMRN{
     }
 
     record_NodeStatus (id, status){
+        $.ajax({
+            url: "php/object_maneger.php",
+            type: "POST",
+            data: {node_id : id,
+                status : status,
+                label : label,
+                purpose : 'update',
+                record_thing: 'status'
+            },
+            success: function(response) {
+                console.log("データが正常に送信されました:", response);
+            },
+            error: function(xhr, status, error) {
+                console.error("エラーが発生しました:", error);
+            }
+        });
+    }
+
+    record_tagForObject (id, status){
         $.ajax({
             url: "php/object_maneger.php",
             type: "POST",
@@ -2177,7 +2277,7 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
             utterance_list_info.dnode.forEach((n) => {
                 if (n.object_node_id) {
                     // object_node_id を node_id として渡す
-                    defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type_id, n.x, n.y, n.status);
+                    defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type, n.x, n.y, n.status);
                 } else {
                     console.warn("Node ID is undefined, skipping this node:", n);
                 }
