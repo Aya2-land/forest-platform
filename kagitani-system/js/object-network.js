@@ -6,8 +6,13 @@ let globalParams = null; //クリックされたネットワークノード
 
 //Record_activitiesのためにユニークな値を作り出す．
 function generateUniqueID() {
-    return crypto.randomUUID();
+    return 'xxxx-xxxx-4xxx-yxxx-xxxx-yyyy'.replace(/[xy]/g, function(c) {
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
 }
+
 
 class ForestMRN { // forestMRN: forest Meeting Reflection Network
     constructor(container, load) {
@@ -221,7 +226,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         const newNode = {
             id: `${node_type}_${node_id}`, 
             label: result_label,
-            title: '出現',  // ここで「出現」を設定
+            title: '',  // ここで「出現」を設定
             group: node_type,
             color: node_color, shape: node_shape,
             font: { color: text_color },
@@ -268,7 +273,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         const newNode = {
             id: `${node_type}_${node_id}`, label: result_label,
             group: node_type,
-            title: '出現',  // ここで「出現」を設定
+            title: '',  // ここで「出現」を設定
             color: node_color, shape: node_shape,
             font: { color: text_color },
             fixed: position_fixed,
@@ -335,7 +340,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     }
     
 
-    addReloadNode(node_id, node_label, node_type, node_x, node_y, done) {
+    addReloadNode(node_id, node_label, node_type, node_x, node_y, done, action_reason, completion_reason, challenges_learnings) {
         console.log("status:", done);
     
         let node_color = 'skyblue'; // ノードの背景色
@@ -356,6 +361,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 break;
         }
     
+        let title = ''; // 初期値は空
         switch(done) {
             case "inProgress":
                 node_color = 'orange';
@@ -364,13 +370,19 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 node_color = 'gray';
                 text_color = 'white';
                 break;
-            case "break": // 手段完了
+            case "break": // 中断
                 node_color = 'LightCoral';
                 break;
-            case "end": // 手段完了
+            case "end": // 完了
                 node_color = 'gray';
+                // `done` が "end" の場合のみ title を設定
+                title = `
+                    行動意図: ${action_reason || "未記入"}\n
+                    完了基準: ${completion_reason || "未記入"}\n
+                    学び: ${challenges_learnings || "未記入"}
+                `;
                 break;
-            case null: //手段進行中
+            case null: // 手段進行中
                 break;
             default: // その他
                 break;
@@ -385,7 +397,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         // 実際にネットワークに追加するノードのデータを作成
         const newNode = {
             id: `${node_id}`, label: result_label,
-            title: '',  // ここで「出現」を設定
+            title: title,  // `done` が "end" の場合のみ設定された値
             group: node_type,
             color: node_color, shape: node_shape,
             font: { color: text_color },
@@ -406,37 +418,10 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.latest_selected_node_info.x = node_x;
         this.latest_selected_node_info.y = boundingBox.bottom + 10;
     
-        // ノードの色が灰色の場合、右クリックとダブルクリックを無効化
-        if (node_color === 'gray') {
-            this.disableNodeRightClickAndDoubleClick(node_id);
-        }
-    
         // 最後に、ノードが追加された後、現在のノードリスト（this.nodes）を返します。
         return this.nodes;
     }
     
-    // 右クリックとダブルクリックを無効化する関数
-    disableNodeRightClickAndDoubleClick(nodeId) {
-        const nodeElement = document.getElementById(`node-${nodeId}`);
-        if (!nodeElement) {
-            console.error("ノードが見つかりません: ", nodeId);
-            return;
-        }
-    
-        // 右クリックイベントの無効化
-        nodeElement.addEventListener('contextmenu', (event) => {
-            event.preventDefault();  // 右クリックのデフォルト動作（コンテキストメニュー）を無効化
-            console.log(`右クリック無効化: ノードID: ${nodeId}`);
-        });
-    
-        // ダブルクリックイベントの無効化
-        nodeElement.addEventListener('dblclick', (event) => {
-            event.preventDefault();  // ダブルクリックのデフォルト動作（ノードの編集など）を無効化
-            console.log(`ダブルクリック無効化: ノードID: ${nodeId}`);
-        });
-    }
-    
-
     //操作できないノードを作る（過去のマインドマップのため）
     addShowNode(node_id, node_label, node_type, node_x, node_y) {
         let node_color = 'skyblue'; // ノードの背景色
@@ -463,7 +448,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         const newNode = {
             id: `${node_id}`, label: node_label,
             group: node_type,
-            title: '出現',  // ここで「出現」を設定
+            title: '',  // ここで「出現」を設定
             color: node_color, shape: node_shape,
             font: { color: text_color },
             fixed: true,
@@ -610,9 +595,9 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             NetworkMenu.style.left = this.BoxDisplay.x;
             NetworkMenu.style.top = this.BoxDisplay.y;
             NetworkMenu.style.display = "block";//ここようわからん未完成かも
-            if(this.OntologyConnectNodeId.indexOf(this.selectId) !== -1){
-                document.getElementById("net_conmenu3").style.display = "block";
-            }
+            // if(this.OntologyConnectNodeId.indexOf(this.selectId) !== -1){
+            //     document.getElementById("net_conmenu3").style.display = "block";
+            // }
         }
     }
 
@@ -754,33 +739,8 @@ step_end() {
     console.log(`step_end() 呼び出し: fromNodeId: ${fromNodeId}`, fromNode);
 
     Record_activities(this.selectId, null, "end", fromNode.label, null, "step", generateUniqueID(), object_map_id);
-    
-    // 右クリックとダブルクリックイベントを無効化
-    this.disableNodeRightClickAndDoubleClick(this.selectId);
-
     // フィードバック吹き出しを表示
     this.showFeedbackTooltip();
-}
-
-// 右クリックとダブルクリックを無効化する関数
-disableNodeRightClickAndDoubleClick(nodeId) {
-    const nodeElement = document.getElementById(`node-${nodeId}`);
-    if (!nodeElement) {
-        console.error("ノードが見つかりません: ", nodeId);
-        return;
-    }
-
-    // 右クリックイベントの無効化
-    nodeElement.addEventListener('contextmenu', (event) => {
-        event.preventDefault();  // 右クリックのデフォルト動作（コンテキストメニュー）を無効化
-        console.log(`右クリック無効化: ノードID: ${nodeId}`);
-    });
-
-    // ダブルクリックイベントの無効化
-    nodeElement.addEventListener('dblclick', (event) => {
-        event.preventDefault();  // ダブルクリックのデフォルト動作（ノードの編集など）を無効化
-        console.log(`ダブルクリック無効化: ノードID: ${nodeId}`);
-    });
 }
 
     
@@ -834,7 +794,7 @@ showFeedbackTooltip() {
     this.setupTooltipDrag(tooltip);
 }
 
-
+//内省の評価をDBに保存する．
 setupTooltipSaveButton(tooltip) {
     const saveButton = document.getElementById("saveFeedback");
     saveButton.addEventListener("click", () => {
@@ -851,8 +811,9 @@ setupTooltipSaveButton(tooltip) {
                 completion_reason: completionReason,
                 challenges_learnings: challengesAndLearnings,
                 object_node_id: this.selectId,
+                object_map_id: object_map_id,
                 purpose: 'record',
-                record_thing: 'feedback'
+                record_thing: 'reflection'
             },
             success: (response) => {
                 console.log("サーバーの応答:", response);
@@ -1002,7 +963,7 @@ setupTooltipSaveButton(tooltip) {
         }
     
         const node_info = this.nodes.get(this.selectId);
-        document.getElementById("accordion_discussion").innerHTML += "<div id='" + this.selectId + "' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「" + node_info.label + "」は" + selectionlist.value + "されたのですか？</div><div class='accordion-content'><textarea id='text" + this.selectId + "' class='accordion-input'></textarea></div></div>";
+        // document.getElementById("accordion_discussion").innerHTML += "<div id='" + this.selectId + "' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「" + node_info.label + "」は" + selectionlist.value + "されたのですか？</div><div class='accordion-content'><textarea id='text" + this.selectId + "' class='accordion-input'></textarea></div></div>";
         
         const accordionHeaders = document.querySelectorAll('#accordion_discussion .accordion-header');
         accordionHeaders.forEach(header => {
@@ -1018,7 +979,9 @@ setupTooltipSaveButton(tooltip) {
         }
     
         // ここを修正したらいいよ！！！！！
-        defaultRecordForestMRN.record_tagForObject(this.selectId, Ontology_Node_Id, selectionlist.value);
+        console.log("記録します");
+        defaultRecordForestMRN.record_tagForObject(this.selectId, selectionlist.value);
+        console.log("記録できました");
         document.getElementById("net_conmenu3").style.display = "none";
         
     }
@@ -1507,15 +1470,15 @@ class RecordForestMRN{
         });
     }
 
-    record_tagForObject (id, status){
+    record_tagForObject (id, tag_type){
         $.ajax({
             url: "php/object_maneger.php",
             type: "POST",
-            data: {node_id : id,
-                status : status,
-                label : label,
-                purpose : 'update',
-                record_thing: 'status'
+            data: {object_node_id : id,
+                object_map_id: object_map_id,
+                tag_type : tag_type,
+                purpose : 'record',
+                record_thing: 'tag'
             },
             success: function(response) {
                 console.log("データが正常に送信されました:", response);
@@ -1545,7 +1508,7 @@ class RecordForestMRN{
                     const parsedResponse = JSON.parse(response); // JSONレスポンスの解析を試みる
                     console.log("Parsed response:", parsedResponse);
                 } catch (error) {
-                    //console.error("Failed to parse response as JSON:", error);
+                    console.error("Failed to parse response as JSON:", error);
                 }
             },
             error: function(xhr, status, error) {
@@ -2277,7 +2240,7 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
             utterance_list_info.dnode.forEach((n) => {
                 if (n.object_node_id) {
                     // object_node_id を node_id として渡す
-                    defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type, n.x, n.y, n.status);
+                    defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type, n.x, n.y, n.status,n.action_reason,n.completion_reason,n.challenges_learnings);
                 } else {
                     console.warn("Node ID is undefined, skipping this node:", n);
                 }
@@ -2298,15 +2261,7 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
         } else {
             console.error("deges is undefined or not an array:", utterance_list_info.dnode);
         }
-        // データの取得と挿入
-        utterance_list_info.objectLog.map(u => {
-            // 関数呼び出し前のデバッグログ
-            // console.log(`makeLogに渡すデータ:
-            //     node_id: ${u.node_id},
-            //     timestamp: ${u.timestamp},
-            //     text: ${u.text},
-            //     act: ${u.act}`);
-        
+        utterance_list_info.objectLog.map(u => {        
             const log = makeLog(u.timestamp, u.text, u.act, u.type,u.object_map_id);
         
             // 関数呼び出し後のデバッグログ

@@ -47,6 +47,7 @@ function showGeneration() {
     }
 }
 
+//目標マップ作成する
 function addObjectMap() {
     const goalContent = document.getElementById("goalInput").value;
     const startDate = document.getElementById("startDateInput").value; // 開始日
@@ -102,6 +103,7 @@ function addObjectMap() {
     });
 }
 
+//目標マップのカードを作成する．
 function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, objectMapId, startDate, endDate, memo) {
     goalButton.innerHTML = `
         <div class="goal-card compact">
@@ -176,38 +178,25 @@ function initializeGoalButton(goalButton, goalContent, createdAt, updatedAt, obj
         handleGoalClick(goalButton, goalContent, createdAt, objectMapId);
     });
 
-    // 編集機能を追加
-    enableGoalEdit(goalButton, goalContent, createdAt, objectMapId);
-}
-
-function saveMemo(objectMapId, memoContent) {
-	$.ajax({
-        url: "php/object_maneger.php",
-        type: "POST",
-        data: {
-            purpose: 'update',
-            update_thing: 'memo',
-            select_update:'memo',
-            object_map_id: objectMapId,
-			memo:memoContent,
-            node_update_thing1: null,
-            node_update_thing2: null,
-        },
-        success: (response) => {
-            console.log("サーバーレスポンス:", response); // デバッグ用ログ
-            try {
-            } catch (e) {
-                console.error("JSONパースエラー: ", e);
-                alert('不明なエラーが発生しました');
-            }
-        },
-        error: (xhr, status, error) => {
-            console.error("AJAXエラー: ", error);
-            console.log("ステータス: ", status);
-            console.log("レスポンステキスト: ", xhr.responseText);
-            alert('通信エラーが発生しました: ' + xhr.responseText);
+    // 削除ボタンのイベントリスナーを追加
+    const deleteButton = goalButton.querySelector('.delete-btn');
+    deleteButton.addEventListener('click', (event) => {
+        console.log("削除対象の目標カード:", goalButton);
+        event.stopPropagation(); // 親要素のクリックイベントを防止
+        if (confirm('本当にこの目標を削除しますか？')) {
+            deleteGoal(objectMapId, goalButton);
         }
     });
+
+    // ボタンのクリック時の動作
+    goalButton.addEventListener('click', () => {
+        console.log("これをクリック:", goalButton);
+        goalButton.focus(); // ボタンにフォーカスを当てる
+        handleGoalClick(goalButton, goalContent, createdAt, objectMapId);
+    });
+
+    // 編集機能を追加
+    enableGoalEdit(goalButton, goalContent, createdAt, objectMapId);
 }
 
 
@@ -226,6 +215,37 @@ function deleteGoal(objectMapId, goalButton) {
         success: (response) => {
             console.log("サーバーレスポンス:", response); // デバッグ用ログ
 			goalButton.remove();
+            try {
+            } catch (e) {
+                console.error("JSONパースエラー: ", e);
+                alert('不明なエラーが発生しました');
+            }
+        },
+        error: (xhr, status, error) => {
+            console.error("AJAXエラー: ", error);
+            console.log("ステータス: ", status);
+            console.log("レスポンステキスト: ", xhr.responseText);
+            alert('通信エラーが発生しました: ' + xhr.responseText);
+        }
+    });
+}
+
+//メモを保存する．
+function saveMemo(objectMapId, memoContent) {
+	$.ajax({
+        url: "php/object_maneger.php",
+        type: "POST",
+        data: {
+            purpose: 'update',
+            update_thing: 'memo',
+            select_update:'memo',
+            object_map_id: objectMapId,
+			memo:memoContent,
+            node_update_thing1: null,
+            node_update_thing2: null,
+        },
+        success: (response) => {
+            console.log("サーバーレスポンス:", response); // デバッグ用ログ
             try {
             } catch (e) {
                 console.error("JSONパースエラー: ", e);
@@ -421,8 +441,8 @@ function handleGoalClick(goalButton, goalContent, timeString, objectMapId) {
 }
 
 
-//ここ改善したら良さそう．
 // object_map_idに紐づけられたobject_mapのデータを取得する関数
+//マップの切り替えを行うために，データを取得する．
 function loadObjectMapData(objectMapId) {
 
     $.ajax({

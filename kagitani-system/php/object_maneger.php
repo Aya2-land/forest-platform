@@ -69,16 +69,19 @@
 			$mysqli->query("INSERT INTO object_edges(object_edges_id, edge_start, edge_end, time, object_map_id)
 			                VALUES ('$object_edges_id', '$edge_start', '$edge_end', '$timestamp','$object_map_id')");
 		}else if($record_thing === 'reflection'){
-			//エッジの記録
+			//内省の記録
 			$object_reflection_id = uniqid('reflection_', true); // edge_で始まる一意のIDを生成
-			$object_node_id = $_POST["object_node_id"];          //エッジ開始
-			$score = $_POST["rating"];   
-			$good_text = $_POST["good_text"];     
-			$bad_text = $_POST["bad_text"];                //エッジ終了
+			$object_node_id = $_POST["object_node_id"]; 
+			$object_map_id = $_POST["object_map_id"];
+			$action_reason = $_POST["action_reason"];   
+			$completion_reason = $_POST["completion_reason"];     
+			$challenges_learnings = $_POST["challenges_learnings"];                //エッジ終了
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-			$mysqli->query("INSERT INTO `object_reflection`(`object_reflection_id`, `object_node_id`, 
-														`score`, `good_text`, `bad_text`, `created_at`, `updated_at`) 
-									VALUES ('$object_reflection_id','$object_node_id','$score','$good_text','$bad_text','$timestamp','$timestamp')");
+			$mysqli->query("INSERT INTO `object_node_reflections`(`object_reflection_id`, `object_node_id`, 
+														`action_reason`, `completion_reason`, `challenges_learnings`, `object_map_id`,`created_at`, `updated_at`) 
+									VALUES ('$object_reflection_id','$object_node_id','$action_reason','$completion_reason','$challenges_learnings','$object_map_id','$timestamp','$timestamp')");
+			$mysqli->query("UPDATE object_nodes SET action_reason = '$action_reason', completion_reason = '$completion_reason',challenges_learnings = '$challenges_learnings',updated_at = '$timestamp' 
+				WHERE  object_node_id = '$object_node_id' ");
 		}else if($record_thing === 'map'){
 			// マップの記録
 			$object_map_id = $_POST["object_map_id"];  // ユニークなIDを生成
@@ -112,6 +115,14 @@
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 			$mysqli->query("INSERT INTO `object_maps`(`object_map_id`, `updated_at`, `memo`) 
 									VALUES ('$object_map_id','$timestamp','$memo')");
+		}else if($record_thing === 'tag'){
+			$object_tag_id = uniqid('tag_', true); // tag_で始まる一意のIDを生成
+			$object_node_id = $_POST["object_node_id"]; 
+			$object_map_id = $_POST["object_map_id"];          //エッジ開始
+			$tag_type = $_POST["tag_type"];            //エッジ終了
+			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+			$mysqli->query("INSERT INTO `object_tags`(`object_tag_id`,`tag_type`,`object_node_id`, `timestamp`, `object_map_id`) 
+									VALUES ('$object_tag_id','$tag_type','$object_node_id','$timestamp','$object_map_id')");
 		}
 	}else if($purpose === 'update'){
 		$update_thing = $_POST['update_thing'];

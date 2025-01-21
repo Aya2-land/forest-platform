@@ -14,7 +14,7 @@ $target_map_created_start_times = null;  // リフレクションの開始時間
 
 $return_data = []; // DBアクセスの結果として返すキー・バリューのペア
 
-if($purpose === "select_meeting_utterance") { //こいつを取ってきていることが判明したぞお
+if($purpose === "select_meeting_utterance") { 
     //updated_atが最新のマップIDを獲得する．
     // 最新の map_id を取得
     // 最新の object_map_id を取得
@@ -23,7 +23,8 @@ if($purpose === "select_meeting_utterance") { //こいつを取ってきてい�
     $object_map_id = $latest_map_id_row['object_map_id']; // 実際の ID を取得
 
     // object_map_id を使って object_nodes を取得
-    $result_discussionmap_node = $mysqli->query("SELECT `object_node_id`, `object_map_id`, `label`, `x`, `y`, `object_nodes_type`, `created_at`, `status`
+    $result_discussionmap_node = $mysqli->query("SELECT `object_node_id`, `object_map_id`, `label`, `x`, `y`, 
+                    `object_nodes_type`, `created_at`, `status`,`action_reason`,`completion_reason`,`challenges_learnings`
         FROM `object_nodes`
         WHERE `deleted` = 0 AND `object_map_id` = '$object_map_id'
         ORDER BY `updated_at` DESC;
@@ -37,9 +38,7 @@ if($purpose === "select_meeting_utterance") { //こいつを取ってきてい�
     // $return_data にノード情報を追加
     $return_data = array_merge($return_data, ['dnode' => $discussionmap_node]);
 
-    /*
-     * 議論内省マップのエッジデータの取得
-     */
+    //エッジ
     $result_discussionmap_edge = $mysqli->query("SELECT object_edges_id, edge_start, edge_end FROM object_edges
                 WHERE `object_map_id` = '$object_map_id'
               ORDER BY time DESC ");
@@ -48,10 +47,7 @@ if($purpose === "select_meeting_utterance") { //こいつを取ってきてい�
         array_push($discussionmap_edge, $row);
     }
     $return_data = array_merge($return_data, ['dedge' => $discussionmap_edge]);
-
-    /*
-     * 議論における発話パーツ一覧
-     */
+    
     //活動ログの表示
     $result_objectLog = $mysqli->query("SELECT timestamp, node_id, type, act, text, object_map_id FROM activities
             WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND type != 'question' ORDER BY timestamp DESC");
