@@ -285,7 +285,12 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                   <button class="button4" onclick="add_Cnode('criticism');">
                     批評ノード追加
                   </button> 
-                </li>     
+                </li>
+                <li>
+                  <button class="button4" onclick="add_Label('primary_label');">
+                    ラベル追加
+                  </button> 
+                </li>
                 <li>  
                   
                   <button class="button6 other" onclick="test_show_other_mindmap()">
@@ -734,7 +739,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
       </div>
         <!-- メインメニュー　Finish -->
         <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
-        <script type="text/javascript" src="js/node_tag.js"></script>
+        <script type="text/javascript" src="../js/node_tag.js"></script>
         <script type="text/javascript" src="js/add_annotations.js"></script>
         <script type="text/javascript" src="js/version.js"></script>
         <script type="text/javascript" src="js/node_change.js"></script>

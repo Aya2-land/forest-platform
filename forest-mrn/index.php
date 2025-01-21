@@ -172,6 +172,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <button class="button4" onclick="add_Anode();">
                                         答えノード追加
                                     </button>
+                                    <button class="button4" onclick="add_Label('primary_label');">
+                                        ラベル追加
+                                    </button>
                                     <!-- <li><button onclick="horisage();">掘り下げる</button></li>
                                         horisage()関数は現在存在しない-->
                                     <button class="button4" onclick="remove_node();">
@@ -801,6 +804,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/second_advice.js"></script>
         <script type="text/javascript" src="js/mindmap.js"></script>
         <script type="text/javascript" src="js/add_node.js"></script>
+        <script type="text/javascript" src="../js/node_tag.js"></script>
         <script type="text/javascript" src="js/past_sheet.js"></script>
         <script type="text/javascript" src="js/record_presentation.js"></script>
         <script type="text/javascript" src="js/presentation.js"></script>

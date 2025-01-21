@@ -117,7 +117,7 @@ function show_node(id,pid,str,cid,type,cname){
 // });
 
 
-//type_idを取得する関数
+//node_type_idを取得する関数
 async function get_Typeid(class_name, type_name) {
   return new Promise((resolve, reject) => {
     $.ajax({
@@ -170,11 +170,11 @@ async function add_node(){
     //XMLデータを取得して問いを絞って提示
     choose_xmlLoad();
 
-    //問いノードのtype_idを取得
+    //問いノードのnode_type_idを取得
     try {
       var type_name = "toi";
       // get_typeid の非同期処理が完了するまで待つ
-      var type_id = await get_Typeid("", type_name);
+      var node_type_id = await get_Typeid("", type_name);
     } catch (error) {
       console.log("エラーが発生しました:", error);
     }
@@ -230,7 +230,7 @@ async function add_node(){
                 data: { insert : "node",
                         id : thisId,
                         parent_id : parent_id,
-                        type : type_id['type_id'],
+                        type : node_type_id['node_type_id'],
                         concept_id : jmnode[i].getAttribute("concept_id"),
                         x : jmnode[i].style.left,
                         y : jmnode[i].style.top,
@@ -319,11 +319,11 @@ async function add_Qnode(){
     var topic = 'New Node';
     var node = _jm.add_node(parent_node, nodeid, topic);
 
-    //問いノードのtype_idを取得
+    //問いノードのnode_type_idを取得
     try {
       var type_name = "toi";
       // get_typeid の非同期処理が完了するまで待つ
-      var type_id = await get_Typeid("", type_name);
+      var node_type_id = await get_Typeid("", type_name);
     } catch (error) {
       console.log("エラーが発生しました:", error);
     }
@@ -345,7 +345,7 @@ async function add_Qnode(){
               data: { insert : "node",
                       id : nodeid,
                       parent_id : parent_id,
-                      type : type_id['type_id'],
+                      type : node_type_id['node_type_id'],
                       concept_id : jmnode[i].getAttribute("concept_id"),
                       x : jmnode[i].style.left,
                       y : jmnode[i].style.top,
@@ -437,11 +437,11 @@ async function add_Anode(){
     var topic = 'New Node';
     var node = _jm.add_node(selected_node, nodeid, topic);
 
-    //ノードのtype_idを取得
+    //ノードのnode_type_idを取得
     try {
       var type_name = "answer";
       // get_typeid の非同期処理が完了するまで待つ
-      var type_id = await get_Typeid("", type_name);
+      var node_type_id = await get_Typeid("", type_name);
     } catch (error) {
       console.log("エラーが発生しました:", error);
     }
@@ -472,7 +472,7 @@ async function add_Anode(){
               data: { insert : "node",
                       id : nodeid,
                       parent_id : parent_id,
-                      type : type_id['type_id'],
+                      type : node_type_id['node_type_id'],
                       concept_id : p_concept,
                       x : jmnode[j].style.left,
                       y : jmnode[j].style.top,
@@ -587,11 +587,11 @@ async function add_Pnode(){//マップへ反映ボタンでノードを追加す
     toi_type = "s_prepared_question";
   }
 
-  //問いノードのtype_idを取得
+  //問いノードのnode_type_idを取得
   try {
     var type_name = p_type;
     // get_typeid の非同期処理が完了するまで待つ
-    var type_id = await get_Typeid("", type_name);
+    var node_type_id = await get_Typeid("", type_name);
   } catch (error) {
     console.log("エラーが発生しました:", error);
   }
@@ -630,7 +630,7 @@ async function add_Pnode(){//マップへ反映ボタンでノードを追加す
                     data: { insert : "node",
                             id : nodeid,
                             parent_id : parent_id,
-                            type : type_id['type_id'],
+                            type : node_type_id['node_type_id'],
                             concept_id : p_concept,
                             x : jmnode[j].style.left,
                             y : jmnode[j].style.top,
@@ -696,7 +696,7 @@ async function add_Pnode(){//マップへ反映ボタンでノードを追加す
                     data: { insert : "node",
                             id : nodeid,
                             parent_id : parent_id,
-                            type : type_id['type_id'],
+                            type : node_type_id['node_type_id'],
                             concept_id : p_concept_id,
                             x : jmnode[i].style.left,
                             y : jmnode[i].style.top,
@@ -738,26 +738,126 @@ async function add_Pnode(){//マップへ反映ボタンでノードを追加す
   // Record_rank();
 }
 
+async function add_Label(node_type){
 
+  console.log(node_type);
 
-
-
-
-//答えノードのショートカット
-$(window).keydown(function(e){
-
-    if(event.shiftKey){
-      //Aキー：65
-      if(e.keyCode === 65){
-
-        add_Anode();
-
-        return false;
+  if(node_type=="primary_label"){
+    try {
+        // get_typeid の非同期処理が完了するまで待つ
+        var node_type_id = await get_Typeid(node_type, "pl_0");
+      } catch (error) {
+        console.log("エラーが発生しました:", error);
+      }
+  }else if(node_type=="issue_label"){
+    try {
+        // get_typeid の非同期処理が完了するまで待つ
+        var node_type_id = await get_Typeid(node_type, "il_non_0");
+      } catch (error) {
+        console.log("エラーが発生しました:", error);
       }
 
-    }
+  }else if(node_type=="consistency_label"){
+    try {
+        // get_typeid の非同期処理が完了するまで待つ
+        var node_type_id = await get_Typeid(node_type, "cl_0");
+      } catch (error) {
+        console.log("エラーが発生しました:", error);
+      }
+  }else{
+    try {
+        // get_typeid の非同期処理が完了するまで待つ
+        var node_type_id = await get_Typeid("", node_type);
+      } catch (error) {
+        console.log("エラーが発生しました:", error);
+      }
+  }
 
-});
+  var selected_node = _jm.get_selected_node();
+
+  for(key in selected_node){
+
+      if(key == "id"){
+
+          var parent_id = selected_node[key];
+
+      }
+
+  }
+  var topic = '<select name="change_labels" id="select_labels"><optgroup label="ラベル付与"><option value="node_labels">ラベル選択</option>          <option value="primary_label">主軸</option><optgroup label="----L主軸"><option value="pl_1">---L有用性</option><option value="pl_2">---L新規性</option> <option value="pl_3">---L信頼性</option><option value="pl_0">---Lその他</option>                   </optgroup>              <option value="issue_label">課題</option> <optgroup label="----L未検討"> <option value="il_non_1">---L語の妥当性</option><option value="il_non_2">---L証拠の十分性</option><option value="il_non_3">---L論理の整合性</option><option value="il_non_0">---Lその他</option><optgroup label="----L再検討"> <option value="il_re_1">---L語の妥当性</option><option value="il_re_2">---L証拠の十分性</option><option value="il_re_3">---L論理の整合性</option><option value="il_re_0">---Lその他</option></optgroup><option value="cl_0">整合性</option></select>'
+
+  var nodeid = jsMind.util.uuid.newid();//idの生成
+ 
+  var node = _jm.add_node(selected_node, nodeid, topic);
+
+  var jmnode = document.getElementsByTagName("jmnode");
+
+  for(var i=0; i<jmnode.length; i++){
+
+      if(parent_id == jmnode[i].getAttribute("nodeid")){
+
+          var concept = jmnode[i].getAttribute("concept_id");
+
+      }
+
+  }
+  change_select_Nlabel("add", nodeid);
+
+  for(var j=0; j<jmnode.length; j++){
+
+      if(nodeid == jmnode[j].getAttribute("nodeid")){
+
+          jmnode[j].setAttribute("concept_id",concept);
+          jmnode[j].setAttribute("parent_id",parent_id);
+
+          if(node_type=="primary_label"){
+            jmnode[j].setAttribute("class", node_type);
+            jmnode[j].setAttribute("type", "pl_0");
+          }else if(node_type=="issue_label"){
+            jmnode[j].setAttribute("class",node_type);
+            jmnode[j].setAttribute("type","il_non_0");
+          }else if(node_type=="consistency_label"){
+            jmnode[j].setAttribute("class",node_type);
+            jmnode[j].setAttribute("type", "cl_0");
+          }else{
+            jmnode[j].setAttribute("class","");
+            jmnode[j].setAttribute("type",node_type);
+          }
+
+          console.log(node_type_id['node_type_id']);
+          $.ajax({
+
+              url: "php/insert_node.php",
+              type: "POST",
+              data: { insert : "node",
+                      id : nodeid,
+                      parent_id : parent_id,
+                      type : node_type_id['node_type_id'],
+                      concept_id : concept,
+                      x : jmnode[j].style.left,
+                      y : jmnode[j].style.top,
+                      content : jmnode[j].innerHTML,
+                  },
+                  success:function(result){
+                    if(result){ console.log(result);}
+                  },
+                  error: function(error) {
+                    console.log("エラー:", error);
+                  }
+
+          });
+      }
+  }
+
+  $.ajax({
+
+      url: "php/update_node.php",
+      type: "POST",
+      data: { update : "map" }
+
+  });
+
+}
 
 //ノード削除
 function remove_node(){

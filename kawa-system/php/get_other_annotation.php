@@ -11,7 +11,7 @@ require "connect_db.php";
         $i = 0;
         $node_id_array = array();
 
-        $sql = "SELECT * FROM node_latest WHERE node_id = '".$id."' AND type_id = 1";
+        $sql = "SELECT * FROM node_latest WHERE node_id = '".$id."' AND node_type_id = 1";
 
         if($result = $mysqli->query($sql)){
 

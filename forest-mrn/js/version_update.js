@@ -69,15 +69,15 @@ function NodeVersionUpdate(nodes){
     var x = node._data.view.abs_x;
     var y = node._data.view.abs_y;
 
-    //　type_idを取得
+    //　node_type_idを取得
     $.ajax({
       url: "php/get_Typeid.php",
       type: "POST",
       data: { class: class_name, type: type_name },
       success: function(response) {
-        const typeID = JSON.parse(response)['type_id'];
+        const typeID = JSON.parse(response)['node_type_id'];
         
-        //　type_idを取得できたらversion更新
+        //　node_type_idを取得できたらversion更新
         $.ajax({
           url: "php/version_update.php",
           type: "POST",
@@ -85,7 +85,7 @@ function NodeVersionUpdate(nodes){
                   data : "node",
                   node_version_id : nodeVERSION,
                   node_id : nodeID,
-                  type_id: typeID,
+                  node_type_id: typeID,
                   parent_id : parentID,
                   content : nodeTEXT,
                   concept_id: conceptID,
@@ -120,7 +120,7 @@ function NodeVersionUpdate(nodes){
               data : "node",
               node_version_id : nodeVERSION,
               node_id : nodes['node_id'],
-              type_id: nodes['type_id'],
+              node_type_id: nodes['node_type_id'],
               parent_id : nodes['parent_id'],
               content : nodes['content'],
               concept_id: nodes['concept_id'],

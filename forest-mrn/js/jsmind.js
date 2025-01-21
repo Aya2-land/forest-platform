@@ -1237,15 +1237,15 @@
                             if(jmnode[i].getAttribute("nodeid") == thisId){//回ってきたidが選択中ノードの時
 
                                 // console.log(thisId);
-                                jmnode[i].style.backgroundColor = "#ff69b4";
-                                jmnode[i].style.border = "5px solid #9fd94f";
+                                // jmnode[i].style.backgroundColor = "#ff69b4";
+                                // jmnode[i].style.border = "5px solid #9fd94f";
 
                                 parent_concept_id = jmnode[i].getAttribute("concept_id");//コンセプトidを代入（答えノードは問いのコンセプトidを持つ）
                                 GetNodeId_ContentRelationTable(thisId);
 
                             }else{
 
-                                jmnode[i].style.backgroundColor = "#ffa500";
+                                // jmnode[i].style.backgroundColor = "#ffa500";
 
                             }
 
@@ -3110,7 +3110,7 @@
                 try {
                     var type_name = n_type_name;
                     // get_typeid の非同期処理が完了するまで待つ
-                    var type_id = await get_Typeid("", type_name);
+                    var node_type_id = await get_Typeid("", type_name);
                   } catch (error) {
                     console.log("エラーが発生しました:", error);
                   }
@@ -3130,7 +3130,7 @@
                             data: { insert : "node",
                                     id : nodeid,
                                     parent_id : selected_node.id,
-                                    type : type_id['type_id'],
+                                    type : node_type_id['node_type_id'],
                                     concept_id : n_concept,
                                     x : jmnode[j].style.left,
                                     y : jmnode[j].style.top,
@@ -3247,7 +3247,7 @@
                 try {
                     var type_name = n_type;
                     // get_typeid の非同期処理が完了するまで待つ
-                    var type_id = await get_Typeid("", type_name);
+                    var node_type_id = await get_Typeid("", type_name);
                   } catch (error) {
                     console.log("エラーが発生しました:", error);
                   }
@@ -3267,7 +3267,7 @@
                             data: { insert : "node",
                                     id : nodeid,
                                     parent_id : parent_id,
-                                    type : type_id['type_id'],
+                                    type : node_type_id['node_type_id'],
                                     concept_id : n_concept,
                                     x : jmnode[j].style.left,
                                     y : jmnode[j].style.top,

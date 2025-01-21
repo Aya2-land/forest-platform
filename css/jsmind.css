@@ -27,9 +27,9 @@ jmnode{position:absolute;cursor:default;max-width:1000px;white-space:nowrap;over
 jmexpander{position:absolute;width:11px;height:11px;display:block;overflow:hidden;line-height:12px;font-size:12px;text-align:center;border-radius:12px;border-width:1px;border-style:solid;cursor:pointer;}
 
 /* default theme */
-jmnode{padding:10px;background-color:#fff;color:#333;border-radius:12px;box-shadow:1px 1px 1px #666;font:12px/1.125 Verdana,Arial,Helvetica,sans-serif;}
-jmnode:hover{box-shadow:2px 2px 8px #000;background-color:#ebebeb;color:#333;}
-jmnode.selected{background-color:#11f;color:#fff;box-shadow:2px 2px 8px #000;}
+jmnode{padding:10px;border-radius:12px;box-shadow:1px 1px 1px #666;font:12px/1.125 Verdana,Arial,Helvetica,sans-serif;}
+jmnode:hover{box-shadow:2px 2px 8px #000;}
+jmnode.selected{box-shadow:2px 2px 8px #000;}
 jmnode.root{font-size:12px;}
 jmexpander{border-color:gray;}
 jmexpander:hover{border-color:#000;}
@@ -163,7 +163,7 @@ jmnodes.theme-asbestos jmexpander:hover{}
 jmnodes.theme-past_sheet jmnode.root{background-color:#bdc3c7;color:#fff;}
 jmnodes.theme-past_sheet jmnode{background-color:#e0ffff;color:#000;}
 jmnodes.theme-past_sheet jmnode:hover{background-color:#e0ffff;}
-jmnodes.theme-past_sheet jmnode.selected{background-color:#bee2f9;color:#000;}
+jmnodes.theme-past_sheet jmnode.selected{background-color:#6dc7ff;color:#000;}
 jmnodes.theme-past_sheet jmnode[type="answer"]{background-color:#ffa07a;color:#000;}
 jmnodes.theme-past_sheet jmnode[type="answer"]:hover{background-color:#ffa07a;}
 jmnodes.theme-past_sheet jmnode[type="answer"].selected{background-color:#dc143c;color:#000;}
@@ -194,78 +194,75 @@ jmnode.horisage.selected{
 jmnode.root{background-color:#47ff3a;color:#fff;}
 jmnode[type="toi"]{background-color:#bee2f9;color:#000;} /*bee2f9　*/
 jmnode[type="toi"]:hover{background-color:#bee2f9;}
-jmnode[type="toi"].selected{border:5px dashed #fcd743;}
+jmnode[type="toi"].selected{background-color:#6dc7ff;border:5px dashed #4b7893;}
 
 
-jmnode[type="toi_s"]{background-color:#bee2f9;color:#000; border: 5px solid #9fd94f;} /*bee2f9　*/
-jmnode[type="toi_s"]:hover{background-color:#bee2f9;border: 5px solid #9fd94f;}
-jmnode[type="toi_s"].selected{background-color:#bee2f9;color:#000;border: 5px solid #9fd94f;}
+jmnode[type="toi_s"]{background-color:#bee2f9;color:#000; border: 5px solid #4b7893;} /*bee2f9　*/
+jmnode[type="toi_s"]:hover{background-color:#bee2f9;border: 5px solid #4b7893;}
+jmnode[type="toi_s"].selected{background-color:#6dc7ff;color:#000;border: 5px solid #4b7893;}
 
 
 jmnode[type="prepared_question"]{background-color:#bee2f9;color:#000;} /*bee2f9　*/
 jmnode[type="prepared_question"]:hover{background-color:#bee2f9;}
-jmnode[type="prepared_question"].selected{background-color:#bee2f9;color:#000;}
+jmnode[type="prepared_question"].selected{background-color:#6dc7ff;color:#000;}
 
 
 jmnode[type="question"]{background-color:#bee2f9;color:#000;} /*bee2f9　*/
 jmnode[type="question"]:hover{background-color:#bee2f9;}
-jmnode[type="question"].selected{background-color:#bee2f9;color:#000;}
+jmnode[type="question"].selected{background-color:#6dc7ff;color:#000;}
 
 
 jmnode[type="toi_deep"]{background-color:#bee2f9;color:#000;} /*bee2f9　*/
 jmnode[type="toi_deep"]:hover{background-color:#bee2f9;}
-jmnode[type="toi_deep"].selected{background-color:#bee2f9;color:#000;}
+jmnode[type="toi_deep"].selected{background-color:#6dc7ff;color:#000;}
 
 
 /* 根拠ノード */
 jmnode[type="konkyo"]{background-color:#fbdae1;color:#000;} /*bee2f9　*/
 jmnode[type="konkyo"]:hover{background-color:#fbdae1;}
-jmnode[type="konkyo"].selected{background-color:#fbdae1;color:#000;}
+jmnode[type="konkyo"].selected{background-color:#ff8fa7;color:#000;}
 
 
 /* 解釈ノード */
 jmnode[type="predict"]{background-color:#ffbaa1;color:#000;}
 jmnode[type="predict"]:hover{background-color:#ffbaa1;}
-jmnode[type="predict"].selected{background-color:#ffbaa1;color:#000;}
+jmnode[type="predict"].selected{background-color:#f99571;color:#000;}
 
 jmnode[type="answer"]{background-color:#ffbaa1;color:#000;} 
-/* jmnode[type="answer"]{background-color:#ff69b4;color:#000;border: 5px solid #9fd94f;}  */
-/*                                 jmnode[i].style.backgroundColor = "#ff69b4";
-                                jmnode[i].style.border = "5px solid #9fd94f"; */
 jmnode[type="answer"]:hover{background-color:#ffbaa1;}
-jmnode[type="answer"].selected{background-color:#ffbaa1;color:#000;}
+jmnode[type="answer"].selected{background-color:#f99571;color:#000;}
 
 
 /* 他者から取り入れたノードたち */
 jmnode[type="other_answer"]{background-color:#ffbaa1;color:#000;border: 5px dashed red;} /*bee2f9　*/
 jmnode[type="other_answer"]:hover{background-color:#ffbaa1;border: 5px solid dashed red;}
-jmnode[type="other_answer"].selected{background-color:#ffbaa1;color:#000;border: 5px solid dashed red;}
+jmnode[type="other_answer"].selected{background-color:#f99571;color:#000;border: 5px solid dashed red;}
 
 jmnode[type="other_question"]{background-color:#bee2f9;color:#000;border: 5px dashed red;} /*bee2f9　*/
 jmnode[type="other_question"]:hover{background-color:#bee2f9;border: 5px solid dashed red;}
-jmnode[type="other_question"].selected{background-color:#bee2f9;color:#000;border: 5px solid dashed red;}
+jmnode[type="other_question"].selected{background-color:#6dc7ff;color:#000;border: 5px solid dashed red;}
 
 jmnode[type="other_to_myanswer"]{background-color:#ffbaa1;color:#000;border: 5px dashed rgb(0, 149, 255);}
 jmnode[type="other_to_myanswer"]:hover{background-color:#ffbaa1;border: 5px dashed rgb(0, 149, 255);}
-jmnode[type="other_to_myanswer"].selected{background-color:#ffbaa1;color:#000;border: 5px dashed rgb(0, 149, 255);}
+jmnode[type="other_to_myanswer"].selected{background-color:#f99571;color:#000;border: 5px dashed rgb(0, 149, 255);}
 
 jmnode[type="other_to_myquestion"]{background-color:#bee2f9;color:#000;border: 5px dashed rgb(0, 149, 255);}
 jmnode[type="other_to_myquestion"]:hover{background-color:#bee2f9;border: 5px dashed rgb(0, 149, 255);}
-jmnode[type="other_to_myquestion"].selected{background-color:#bee2f9;color:#000;border: 5px dashed rgb(0, 149, 255);}
+jmnode[type="other_to_myquestion"].selected{background-color:#6dc7ff;color:#000;border: 5px dashed rgb(0, 149, 255);}
 
 jmnode[class="commented"]{background-color:#ffbaa1;color:#000;border: 5px dashed #ec3f1d;} /*bee2f9　*/
 jmnode[class="commented"]:hover{background-color:#ffbaa1;border: 5px solid dashed #ec3f1d;}
-jmnode[class="commented"].selected{background-color:#ffbaa1;color:#000;border: 5px solid dashed #ec3f1d;}
+jmnode[class="commented"].selected{background-color:#f99571;color:#000;border: 5px solid dashed #ec3f1d;}
 
 
 
 /* 批評 add_Cnode();*/
 
-jmnode[class="criticism"]{background-color:#ff7792;color:#000;border-radius: 0px;}
-jmnode[class="criticism"]:hover{background-color:#ff7792;border-radius: 0px;}
-jmnode[class="criticism"].selected{background-color:#ff7792;color:#000;border-radius: 0px;}
+jmnode[class="criticism"]{background-color:#ff89a1;color:#000;border-radius: 0px;}
+jmnode[class="criticism"]:hover{background-color:#ff89a1;border-radius: 0px;}
+jmnode[class="criticism selected"]{background-color:#ff89a1;color:#000;border-radius: 0px;}
 
-
+/* classで指定しているのでおそらくいらない
 jmnode[type="evaluation"]{background-color:#ff7792;color:#000;border-radius: 0px;}
 jmnode[type="evaluation"]:hover{background-color:#ff7792;border-radius: 0px;}
 jmnode[type="evaluation"].selected{background-color:#ff7792;color:#000;border-radius: 0px;}
@@ -312,11 +309,20 @@ jmnode[type="m_2"].selected{background-color:#ff7792;color:#000;border-radius: 0
 
 jmnode[type="m_3"]{background-color:#ff7792;color:#000;border-radius: 0px;}
 jmnode[type="m_3"]:hover{background-color:#ff7792;border-radius: 0px;}
-jmnode[type="m_3"].selected{background-color:#ff7792;color:#000;border-radius: 0px;}
+jmnode[type="m_3"].selected{background-color:#ff7792;color:#000;border-radius: 0px;} */
 
+/* ラベル */
+jmnode[class="primary_label"]{background-color:#a7c19b;color:#000;border-radius: 0px;}
+jmnode[class="primary_label"]:hover{background-color:#a7c19b;border-radius: 0px;}
+jmnode[class="primary_label selected"]{background-color:#92ad86;color:#000;border: 10px solid #7e9574;border-radius: 0px;}
 
+jmnode[class="issue_label"]{background-color:#a7c19b;color:#000;border-radius: 0px;}
+jmnode[class="issue_label"]:hover{background-color:#a7c19b;border-radius: 0px;}
+jmnode[class="issue_label selected"]{background-color:#92ad86;color:#000;border: 5px solid #378c12;border-radius: 0px;}
 
-
+jmnode[class="consistency_label"]{background-color:#a7c19b;color:#000;border-radius: 0px;}
+jmnode[class="consistency_label"]:hover{background-color:#a7c19b;border-radius: 0px;}
+jmnode[class="consistency_label selected"]{background-color:#7e9574;color:#000;border-radius: 0px;}
 
 /* 以下は過去使用されていたと思われるtype */
 

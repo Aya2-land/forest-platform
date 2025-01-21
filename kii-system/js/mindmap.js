@@ -170,7 +170,7 @@ function show_node2(id,pid,str,cid,type,cname, sid, eid, psid){
 
 }
 
-//type_idを取得する関数
+//node_type_idを取得する関数
 async function get_Typeid(class_name, type_name) {
     return new Promise((resolve, reject) => {
       $.ajax({
@@ -271,11 +271,11 @@ async function add_node(){
             var x = jmnode[i].style.left;
             var y = jmnode[i].style.top;
             
-            //ノードのtype_idを取得
+            //ノードのnode_type_idを取得
             try {
                 var type_name = "toi";
                 // get_typeid の非同期処理が完了するまで待つ
-                var type_id = await get_Typeid("", type_name);
+                var node_type_id = await get_Typeid("", type_name);
             } catch (error) {
                 console.log("エラーが発生しました:", error);
             }
@@ -287,7 +287,7 @@ async function add_node(){
                 data: { insert : "node",
                         id : thisId,
                         parent_id : parent_id,
-                        type : type_id['type_id'],
+                        type : node_type_id['node_type_id'],
                         concept_id : concept_id,
                         x : x,
                         y : y,
@@ -358,11 +358,11 @@ async function add_node(){
             var x = jmnode[j].style.left;
             var y = jmnode[j].style.top;
 
-            //ノードのtype_idを取得
+            //ノードのnode_type_idを取得
             try {
                 var type_name = "predict";
                 // get_typeid の非同期処理が完了するまで待つ
-                var type_id = await get_Typeid("", type_name);
+                var node_type_id = await get_Typeid("", type_name);
             } catch (error) {
                 console.log("エラーが発生しました:", error);
             }
@@ -373,7 +373,7 @@ async function add_node(){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : type_id['type_id'],
+                        type : node_type_id['node_type_id'],
                         concept_id : p_concept,
                         x : x,
                         y : y,
@@ -438,11 +438,11 @@ async function add_Anode_parentid(parent_id){
 
     var jmnode = document.getElementsByTagName("jmnode");
 
-    //ノードのtype_idを取得
+    //ノードのnode_type_idを取得
     try {
         var type_name = "answer";
         // get_typeid の非同期処理が完了するまで待つ
-        var type_id = await get_Typeid("", type_name);
+        var node_type_id = await get_Typeid("", type_name);
     } catch (error) {
         console.log("エラーが発生しました:", error);
     }
@@ -476,7 +476,7 @@ async function add_Anode_parentid(parent_id){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : type_id['type_id'],
+                        type : node_type_id['node_type_id'],
                         concept_id : p_concept,
                         x : jmnode[j].style.left,
                         y : jmnode[j].style.top,
@@ -543,11 +543,11 @@ async function add_Qnode(){
 
     var jmnode = document.getElementsByTagName("jmnode");
 
-    //問いノードのtype_idを取得
+    //問いノードのnode_type_idを取得
     try {
         var type_name = "toi";
         // get_typeid の非同期処理が完了するまで待つ
-        var type_id = await get_Typeid("", type_name);
+        var node_type_id = await get_Typeid("", type_name);
       } catch (error) {
         console.log("エラーが発生しました:", error);
       }
@@ -567,7 +567,7 @@ async function add_Qnode(){
               data: { insert : "node",
                       id : nodeid,
                       parent_id : parent_id,
-                      type : type_id['type_id'],
+                      type : node_type_id['node_type_id'],
                       concept_id : "",
                       x : jmnode[i].style.left,
                       y : jmnode[i].style.top,
@@ -652,10 +652,10 @@ async function add_Anode(node_class, node_type){
 
     var jmnode = document.getElementsByTagName("jmnode");
 
-    //ノードのtype_idを取得
+    //ノードのnode_type_idを取得
     try {
         // get_typeid の非同期処理が完了するまで待つ
-        var type_id = await get_Typeid(node_class, node_type);
+        var node_type_id = await get_Typeid(node_class, node_type);
     } catch (error) {
         console.log("エラーが発生しました:", error);
     }
@@ -685,7 +685,7 @@ async function add_Anode(node_class, node_type){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : type_id['type_id'],
+                        type : node_type_id['node_type_id'],
                         concept_id : p_concept,
                         x : jmnode[j].style.left,
                         y : jmnode[j].style.top,
@@ -768,11 +768,11 @@ async function add_Pnode(){
 
     var jmnode = document.getElementsByTagName("jmnode");
 
-    //問いノードのtype_idを取得
+    //問いノードのnode_type_idを取得
     try {
         var type_name = "predict";
         // get_typeid の非同期処理が完了するまで待つ
-        var type_id = await get_Typeid("", type_name);
+        var node_type_id = await get_Typeid("", type_name);
     } catch (error) {
         console.log("エラーが発生しました:", error);
     }
@@ -801,7 +801,7 @@ async function add_Pnode(){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : type_id['type_id'],
+                        type : node_type_id['node_type_id'],
                         concept_id : p_concept,
                         x : jmnode[j].style.left,
                         y : jmnode[j].style.top,
@@ -867,7 +867,7 @@ async function add_Cnode_parentid(parent_id,node_type){
 
     try {
         // get_typeid の非同期処理が完了するまで待つ
-        var type_id = await get_Typeid("criticism", node_type);
+        var node_type_id = await get_Typeid("criticism", node_type);
       } catch (error) {
         console.log("エラーが発生しました:", error);
       }
@@ -906,7 +906,7 @@ async function add_Cnode_parentid(parent_id,node_type){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : type_id['type_id'],
+                        type : node_type_id['node_type_id'],
                         concept_id : p_concept,
                         x : jmnode[j].style.left,
                         y : jmnode[j].style.top,
@@ -955,7 +955,7 @@ async function add_Cnode(node_type){
 
     try {
         // get_typeid の非同期処理が完了するまで待つ
-        var type_id = await get_Typeid("criticism", node_type);
+        var node_type_id = await get_Typeid("criticism", node_type);
       } catch (error) {
         console.log("エラーが発生しました:", error);
       }
@@ -1006,7 +1006,7 @@ async function add_Cnode(node_type){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : type_id['type_id'],
+                        type : node_type_id['node_type_id'],
                         concept_id : p_concept,
                         x : jmnode[j].style.left,
                         y : jmnode[j].style.top,

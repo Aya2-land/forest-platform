@@ -600,6 +600,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
         <script type="text/javascript" src="js/second_advice.js"></script>
         <script type="text/javascript" src="js/mindmap.js"></script>
         <script type="text/javascript" src="js/past_sheet.js"></script>
+        <script type="text/javascript" src="../js/node_tag.js"></script>
         <script type="text/javascript" src="js/record_presentation.js"></script>
         <script type="text/javascript" src="js/presentation.js"></script>
         <script type="text/javascript" src="js/micro.js"></script>

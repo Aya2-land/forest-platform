@@ -11,7 +11,7 @@ require "connect_db.php";
         $i = 0;
         $node_id_array = array();
 
-        $sql = "SELECT * FROM node_latest WHERE node_id = '".$id."' AND (type_id = 1 OR type_id = 3)";
+        $sql = "SELECT * FROM node_latest WHERE node_id = '".$id."' AND (node_type_id = 1 OR node_type_id = 3)";
 
         if($result = $mysqli->query($sql)){
 
@@ -95,7 +95,7 @@ require "connect_db.php";
         $i = 0;
         $node_id_array = array();
 
-        $sql = "SELECT * FROM node_latest WHERE (type_id = 1 OR type_id = 2 OR type_id = 3) AND node_id IN (SELECT node_id FROM map_node_links WHERE map_id = '".$s_id."')";
+        $sql = "SELECT * FROM node_latest WHERE (node_type_id = 1 OR node_type_id = 2 OR node_type_id = 3) AND node_id IN (SELECT node_id FROM map_node_links WHERE map_id = '".$s_id."')";
 
         if ($result = $mysqli->query($sql)) {
             while ($row = mysqli_fetch_assoc($result)) {
@@ -120,7 +120,7 @@ require "connect_db.php";
         
        $sql = "SELECT DISTINCT concept_id, content 
                     FROM node_latest 
-                    WHERE (type_id = 1 OR type_id = 2) AND node_id IN (SELECT node_id FROM map_node_links WHERE map_id IN (SELECT map_id FROM maps WHERE paper_id = ".$paper_id.") )";
+                    WHERE (node_type_id = 1 OR node_type_id = 2) AND node_id IN (SELECT node_id FROM map_node_links WHERE map_id IN (SELECT map_id FROM maps WHERE paper_id = ".$paper_id.") )";
 
         if ($result = $mysqli->query($sql)) {
             while ($row = mysqli_fetch_assoc($result)) {

@@ -139,8 +139,22 @@
 		}
 
 	}else if($_POST["update"] == "type"){
-		$sql = "UPDATE nodes SET type = '".$_POST['type']."' updated_at = '".$updated_at."' WHERE id = '".$_POST['id']."'";
-		$result = $mysqli->query($sql);
+		$sql_n = "UPDATE nodes SET node_type_id = (SELECT node_type_id FROM node_types WHERE type = '".$_POST['type']."') WHERE node_id = '".$_POST['id']."'";
+		$sql_nv = "UPDATE node_versions SET node_type_id = (SELECT node_type_id FROM node_types WHERE type = '".$_POST['type']."') WHERE node_id = '".$_POST['id']."' ORDER BY appeared_at DESC LIMIT 1";
+		$sql_nh = "UPDATE node_histories SET node_type_id = (SELECT node_type_id FROM node_types WHERE type = '".$_POST['type']."') WHERE node_version_id = (SELECT node_version_id from node_versions WHERE node_id = '".$_POST['id']."') ORDER BY appeared_at DESC LIMIT 1 ";
+		
+		$result_n = $mysqli->query($sql_n);	
+		if ($mysqli->error) {
+			echo "Error updating nodes: " . $mysqli->error;
+		}
+		$result_v_update = $mysqli->query($sql_nv);
+		if ($mysqli->error) {
+			echo "Error updating node_versions: " . $mysqli->error;
+		}
+		$result_h_update = $mysqli->query($sql_nh);
+		if ($mysqli->error) {
+			echo "Error updating node_histories: " . $mysqli->error;
+		}
 	}
 	else if($_POST["update"] == "map"){
 

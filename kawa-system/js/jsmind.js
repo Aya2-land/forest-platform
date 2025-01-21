@@ -3234,7 +3234,7 @@
                 try {
                     var type_name = n_type;
                     // get_typeid の非同期処理が完了するまで待つ
-                    var type_id = await get_Typeid("", type_name);
+                    var node_type_id = await get_Typeid("", type_name);
                   } catch (error) {
                     console.log("エラーが発生しました:", error);
                   }
@@ -3254,7 +3254,7 @@
                             data: { insert : "node",
                                     id : nodeid,
                                     parent_id : selected_node.id,
-                                    type : type_id['type_id'],
+                                    type : node_type_id['node_type_id'],
                                     concept_id : n_concept,
                                     x : jmnode[j].style.left,
                                     y : jmnode[j].style.top,
@@ -3352,7 +3352,7 @@
                 try {
                     var type_name = n_type;
                     // get_typeid の非同期処理が完了するまで待つ
-                    var type_id = await get_Typeid("", type_name);
+                    var node_type_id = await get_Typeid("", type_name);
                   } catch (error) {
                     console.log("エラーが発生しました:", error);
                   }
@@ -3372,7 +3372,7 @@
                             data: { insert : "node",
                                     id : nodeid,
                                     parent_id : parent_id,
-                                    type : type_id['type_id'],
+                                    type : node_type_id['node_type_id'],
                                     concept_id : n_concept,
                                     x : jmnode[j].style.left,
                                     y : jmnode[j].style.top,

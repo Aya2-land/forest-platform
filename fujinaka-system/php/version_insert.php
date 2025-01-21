@@ -31,8 +31,8 @@ if (!empty($_POST['content'])) {
 
         $result = $mysqli->query($sql);
 
-        $sql = "INSERT INTO node_versions (node_version_id, node_id, parent_id, type_id, appeared_at, content, concept_id, x, y) 
-                SELECT '".$node_version_id."' AS node_version_id, node_id, '".$map_version_id."' AS map_version_id, parent_id, type_id, appeared_at, content, concept_id, x, y
+        $sql = "INSERT INTO node_versions (node_version_id, node_id, parent_id, node_type_id, appeared_at, content, concept_id, x, y) 
+                SELECT '".$node_version_id."' AS node_version_id, node_id, '".$map_version_id."' AS map_version_id, parent_id, node_type_id, appeared_at, content, concept_id, x, y
                 FROM node_latest WHERE node_id IN (SELECT node_id FROM map_node_links WHERE map_id='$map_id')";
 
         $result = $mysqli->query($sql);
@@ -102,8 +102,8 @@ if($_POST["data"] == "map"){
         }
 
         //node_versionsにINSERTする
-        $sql_nvi = "INSERT INTO node_versions(node_version_id, node_id, parent_id, type_id, appeared_at, disappeared_at, content, concept_id, x, y)
-                VALUES ('".$_POST['node_version_id']."', '".$_POST['node_id']."', '".$_POST['parent_id']."', ".$_POST['type_id'].", '".$timestamp."', NULL, '".$_POST['content']."', '".$_POST['concept_id']."', '".$_POST['x']."', '".$_POST['y']."')";
+        $sql_nvi = "INSERT INTO node_versions(node_version_id, node_id, parent_id, node_type_id, appeared_at, disappeared_at, content, concept_id, x, y)
+                VALUES ('".$_POST['node_version_id']."', '".$_POST['node_id']."', '".$_POST['parent_id']."', ".$_POST['node_type_id'].", '".$timestamp."', NULL, '".$_POST['content']."', '".$_POST['concept_id']."', '".$_POST['x']."', '".$_POST['y']."')";
         $result_nvi = $mysqli->query($sql_nvi);
         if($mysqli->error){
                 echo "Error insert node_version: ". $mysqli->error;

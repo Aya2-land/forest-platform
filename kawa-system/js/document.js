@@ -247,7 +247,7 @@ async function AddOriginalNode(data1, data2){
           });
         };
         // get_typeid の非同期処理が完了するまで待つ
-        var type_id = await get_Typeid("", type_name);
+        var node_type_id = await get_Typeid("", type_name);
       } catch (error) {
         console.log("エラーが発生しました:", error);
       }
@@ -258,7 +258,7 @@ async function AddOriginalNode(data1, data2){
         data: { insert : "node",
                 id : nodeid,
                 parent_id : parent_id,
-                type : type_id['type_id'],
+                type : node_type_id['node_type_id'],
                 concept_id : p_concept,
                 x : jmnode[j].style.left,
                 y : jmnode[j].style.top,

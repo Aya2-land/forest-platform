@@ -2614,20 +2614,15 @@ async function Rebuild_s(){
 	    url: "php/document_rebuild.php",
 	    type: "POST",
 	    success: function(arr){
-        if(arr == "[]"){
-          // console.log(arr);
+        if(arr == "[]" || arr == ""){
+          console.log(arr);
         }else{
-          // console.log(arr);
           var parse = JSON.parse(arr);
-          // console.log(parse);//スライドの内容
-          // console.log(parse.length);
+          console.log(parse);
           
           for(var i=0; i<parse.length; i++){
             for(var j=0; j<parse.length; j++){
-              // console.log(String(i));
-              // console.log(parse[j].rank);
               if(String(i) == parse[j].rank){
-                // console.log(parse[j]);
                 if(parse[j].concept_id == "notid"){
                   const image = new SlideImage({
                     slide_title: parse[j].title,

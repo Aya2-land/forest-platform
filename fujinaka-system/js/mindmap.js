@@ -164,11 +164,11 @@ async function add_node(){
     //XMLデータを取得して問いを絞って提示
     choose_xmlLoad();
 
-    //問いノードのtype_idを取得
+    //問いノードのnode_type_idを取得
     try {
       var type_name = "toi";
       // get_typeid の非同期処理が完了するまで待つ
-      var type_id = await get_Typeid("", type_name);
+      var node_type_id = await get_Typeid("", type_name);
     } catch (error) {
       console.log("エラーが発生しました:", error);
     }
@@ -260,7 +260,7 @@ async function add_node(){
                 data: { insert : "node",
                         id : thisId,
                         parent_id : parent_id,
-                        type : type_id['type_id'],
+                        type : node_type_id['node_type_id'],
                         concept_id : jmnode[i].getAttribute("concept_id"),
                         x : jmnode[i].style.left,
                         y : jmnode[i].style.top,
@@ -323,11 +323,11 @@ async function add_Qnode(){
     var topic = 'New Node';
     var node = _jm.add_node(parent_node, nodeid, topic);
 
-    //問いノードのtype_idを取得
+    //問いノードのnode_type_idを取得
     try {
       var type_name = "toi";
       // get_typeid の非同期処理が完了するまで待つ
-      var type_id = await get_Typeid("", type_name);
+      var node_type_id = await get_Typeid("", type_name);
     } catch (error) {
       console.log("エラーが発生しました:", error);
     }
@@ -350,7 +350,7 @@ async function add_Qnode(){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : type_id['type_id'],
+                        type : node_type_id['node_type_id'],
                         concept_id : "",
                         x : jmnode[i].style.left,
                         y : jmnode[i].style.top,
@@ -420,11 +420,11 @@ async function add_Anode(){
     var topic = 'New Node';
     var node = _jm.add_node(parent_node, nodeid, topic);
 
-    //ノードのtype_idを取得
+    //ノードのnode_type_idを取得
     try {
       var type_name = "answer";
       // get_typeid の非同期処理が完了するまで待つ
-      var type_id = await get_Typeid("", type_name);
+      var node_type_id = await get_Typeid("", type_name);
     } catch (error) {
       console.log("エラーが発生しました:", error);
     }
@@ -456,7 +456,7 @@ async function add_Anode(){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : type_id['type_id'],
+                        type : node_type_id['node_type_id'],
                         concept_id : p_concept,
                         x : jmnode[j].style.left,
                         y : jmnode[j].style.top,
@@ -571,11 +571,11 @@ async function add_Pnode(dom_target){ //fujinaka変更
 
     var parent_id = parent_node.id;
 
-    //問いノードのtype_idを取得
+    //問いノードのnode_type_idを取得
     try {
       var type_name = p_type;
       // get_typeid の非同期処理が完了するまで待つ
-      var type_id = await get_Typeid("", type_name);
+      var node_type_id = await get_Typeid("", type_name);
     } catch (error) {
       console.log("エラーが発生しました:", error);
     }
@@ -610,7 +610,7 @@ async function add_Pnode(dom_target){ //fujinaka変更
                 data: { insert : "node",
                         id : p_nodeid,
                         parent_id : parent_id,
-                        type : type_id['type_id'],
+                        type : node_type_id['node_type_id'],
                         concept_id : parent_concept,
                         x : jmnode[j].style.left,
                         y : jmnode[j].style.top,
@@ -660,7 +660,7 @@ async function add_Pnode(dom_target){ //fujinaka変更
                   data: { insert : "node",
                           id : p_nodeid,
                           parent_id : parent_id,
-                          type : type_id['type_id'],
+                          type : node_type_id['node_type_id'],
                           concept_id : "",
                           x : jmnode[i].style.left,
                           y : jmnode[i].style.top,
@@ -713,7 +713,7 @@ async function add_Pnode(dom_target){ //fujinaka変更
               data: { insert : "node",
                       id : p_nodeid,
                       parent_id : parent_id,
-                      type : type_id['type_id'],
+                      type : node_type_id['node_type_id'],
                       concept_id : p_concept,
                       x : jmnode[j].style.left,
                       y : jmnode[j].style.top,
@@ -758,7 +758,7 @@ async function add_Pnode(dom_target){ //fujinaka変更
                   data: { insert : "node",
                           id : p_nodeid,
                           parent_id : parent_id,
-                          type : type_id['type_id'],
+                          type : node_type_id['node_type_id'],
                           concept_id : p_concept,
                           x : jmnode[i].style.left,
                           y : jmnode[i].style.top,

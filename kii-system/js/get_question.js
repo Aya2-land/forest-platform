@@ -170,7 +170,7 @@ async function add_node2(cid, content){
     try {
         var type_name1 = "other_question";
         // get_typeid の非同期処理が完了するまで待つ
-        var type_id1 = await get_Typeid("", type_name1);
+        var node_type_id1 = await get_Typeid("", type_name1);
     } catch (error) {
         console.log("エラーが発生しました:", error);
     }
@@ -187,7 +187,7 @@ async function add_node2(cid, content){
                 data: { insert : "node",
                         id : thisId,
                         parent_id : parent_id,
-                        type : type_id1['type_id'],
+                        type : node_type_id1['node_type_id'],
                         concept_id : jmnode[i].getAttribute("concept_id"),
                         x : jmnode[i].style.left,
                         y : jmnode[i].style.top,
@@ -237,7 +237,7 @@ async function add_node2(cid, content){
     try {
         var type_name2 = "predict";
         // get_typeid の非同期処理が完了するまで待つ
-        var type_id2 = await get_Typeid("", type_name2);
+        var node_type_id2 = await get_Typeid("", type_name2);
     } catch (error) {
         console.log("エラーが発生しました:", error);
     }
@@ -258,7 +258,7 @@ async function add_node2(cid, content){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : type_id2['type_id'],
+                        type : node_type_id2['node_type_id'],
                         concept_id : p_concept,
                         x : jmnode[j].style.left,
                         y : jmnode[j].style.top,

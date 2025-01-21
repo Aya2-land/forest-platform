@@ -36,8 +36,8 @@ if($_POST["data"] == "map"){
         }
 
         //node_versionsにINSERTする
-        $sql_nvi = "INSERT INTO node_versions(node_version_id, node_id, parent_id, type_id, appeared_at, disappeared_at, content, concept_id, x, y)
-                VALUES ('".$_POST['node_version_id']."', '".$_POST['node_id']."', '".$_POST['parent_id']."', ".$_POST['type_id'].", '".$timestamp."', NULL, '".$_POST['content']."', '".$_POST['concept_id']."', '".$_POST['x']."', '".$_POST['y']."')";
+        $sql_nvi = "INSERT INTO node_versions(node_version_id, node_id, parent_id, node_type_id, appeared_at, disappeared_at, content, concept_id, x, y)
+                VALUES ('".$_POST['node_version_id']."', '".$_POST['node_id']."', '".$_POST['parent_id']."', ".$_POST['node_type_id'].", '".$timestamp."', NULL, '".$_POST['content']."', '".$_POST['concept_id']."', '".$_POST['x']."', '".$_POST['y']."')";
         $result_nvi = $mysqli->query($sql_nvi);
         if($mysqli->error){
                 echo "Error insert node_version: ". $mysqli->error;

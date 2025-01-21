@@ -646,7 +646,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
       </div>
         <!-- メインメニュー　Finish -->
         <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
-        <script type="text/javascript" src="js/node_tag.js"></script>
+        <script type="text/javascript" src="../js/node_tag.js"></script>
         <script type="text/javascript" src="js/add_annotations.js"></script>
         <script type="text/javascript" src="js/node_change.js"></script>
         <script type="text/javascript" src="js/add_node.js"></script>
