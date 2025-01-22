@@ -83,3 +83,29 @@
 .option-tag相談する:hover { 
     background-color: #ffdfb3; 
 }
+
+.tag-element {
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border: 2px solid;
+    border-radius: 10px;
+    color: #000;
+    display: inline-block;
+    text-align: center;
+    pointer-events: none; /* タグをクリックできないようにする */
+    z-index: 1000; /* タグを他の要素の上に表示 */
+}
+
+#recruitselect input[type="button"]:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+
+#recruitselect input[type="button"]:active {
+    transform: scale(1.01);
+}
+
+#taggingSection {
+    font-size: 14px;
+}

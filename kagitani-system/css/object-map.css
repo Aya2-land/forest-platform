@@ -1,0 +1,12 @@
+.tag-element {
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border: 2px solid;
+    border-radius: 10px;
+    color: #000;
+    display: inline-block;
+    text-align: center;
+    pointer-events: none; /* タグをクリックできないようにする */
+    z-index: 1000; /* タグを他の要素の上に表示 */
+}

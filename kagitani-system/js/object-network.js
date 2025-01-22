@@ -3,6 +3,7 @@ let defaultRecordForestMRN;
 let defaultShowForestMRN;
 let autoRecordFlag = false; // 自動記録フラグ
 let globalParams = null; //クリックされたネットワークノード
+let tagsLoaded = false; // タグがロードされたかどうかを管理するフラグ
 
 //Record_activitiesのためにユニークな値を作り出す．
 function generateUniqueID() {
@@ -71,11 +72,11 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             this.addEventLister();
             // $(`#jsmind_container`).on('click',this.connect_mindmap.bind(this));
             // $(`#net_conmenu2`).on('click',this.connect_network.bind(this));
-            $(`#net_conmenu3`).on('click',this.SelectTag.bind(this));
+            //$(`#net_conmenu3`).on('click',this.selectTag.bind(this));
             // $(`#net_conmenu4`).on('click',this.ContentmenuCancel.bind(this));
             // $(`#ontology_select`).on('click',this.addontology.bind(this));
-            $(`#recruit_select`).on('click',this.assignTagsToNode.bind(this));
-            this.ownNetwork.on('click', this.networkClick.bind(this));
+            $(`#recruit_tag`).on('click',this.assignTagsToNode.bind(this));
+            this.ownNetwork.on('click', this.objectClick.bind(this));
             this.ownNetwork.on('dragStart', this.dragstart.bind(this));
             this.ownNetwork.on('dragEnd', this.dragend.bind(this));
             this.ownNetwork.on('doubleClick', this.doubleclick.bind(this));
@@ -104,10 +105,11 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.bindstep_end = this.step_end.bind(this); //kagitani
         this.bindshow_select = this.show_select.bind(this);
         this.bindconnect_network = this.connect_network.bind(this);
-        this.bindSelectTag = this.SelectTag.bind(this);
+        this.bindselectTag = this.selectTag.bind(this);
         this.bindContentmenuCancel = this.ContentmenuCancel.bind(this);
         this.bindaddontology = this.addontology.bind(this);
         this.bindassignTagsToNode = this.assignTagsToNode.bind(this);
+        this.bindremoveTagFromNode = this.removeTagFromNode.bind(this);
         this.bindfeedback = this.feedback.bind(this);
         this.bindNodeblinking = this.Nodeblinking.bind(this);
     
@@ -116,13 +118,14 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         $(`#net_conmenu00`).on('click', this.bindstep_start);
         $(`#net_conmenu01`).on('click', this.bindstep_break);
         $(`#net_conmenu02`).on('click', this.bindstep_end);
+        $(`#net_conmenu04`).on('click', this.bindselectTag);//性質を選択
         $(`#net_conmenu1`).on('click', this.bindshow_select);
         $(`#net_conmenu2`).on('click', this.bindconnect_network);
-        $(`#net_conmenu3`).on('click', this.bindSelectTag);
+        $(`#net_conmenu3`).on('click', this.bindselectTag);
         $(`#net_conmenu4`).on('click', this.bindContentmenuCancel);
         $(`#ontology_select`).on('click', this.bindaddontology);
-        $(`#recruit_select`).on('click', this.bindassignTagsToNode);
-        $(`#feedbackrecord`).on('click', this.bindfeedback);
+        $(`#removeTagButton`).on('click', this.removeTagFromNode);
+        // $(`#feedbackrecord`).on('click', this.bindfeedback);
     }
     
     
@@ -131,12 +134,14 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         $(`#net_conmenu00`).off('click',this.bindstep_start);
         $(`#net_conmenu01`).off('click',this.bindstep_break);
         $(`#net_conmenu02`).off('click',this.bindstep_end);
+        $(`#net_conmenu04`).off('click', this.bindselectTag);//性質を選択
         $(`#net_conmenu1`).off('click',this.bindshow_select);
         $(`#net_conmenu2`).off('click',this.bindconnect_network);
-        $(`#net_conmenu3`).off('click',this.bindSelectTag);
+        $(`#net_conmenu3`).off('click',this.bindselectTag);
         $(`#net_conmenu4`).off('click',this.bindContentmenuCancel);
         $(`#ontology_select`).off('click',this.bindaddontology);
-        $(`#recruit_select`).off('click',this.bindassignTagsToNode);
+        $(`#recruit_tag`).off('click',this.bindassignTagsToNode);
+        $(`#remove_tag`).off('click', this.removeTagFromNode);
         $(`#feedbackrecord`).off('click',this.bindfeedback);
         clearInterval(this.interval);
     }
@@ -340,15 +345,15 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     }
     
 
-    addReloadNode(node_id, node_label, node_type, node_x, node_y, done, action_reason, completion_reason, challenges_learnings) {
+    addReloadNode(node_id, node_label, node_tag, node_type, node_x, node_y, done, action_reason, completion_reason, challenges_learnings) {
         console.log("status:", done);
     
         let node_color = 'skyblue'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
-        let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
+        let position_fixed = false; // ノードを動かせるかどうか（Falseなら動かせる）
     
-        switch(node_type) {
+        switch (node_type) {
             case "goal": // 目標ノード
                 node_color = 'red';
                 text_color = 'white';
@@ -362,7 +367,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         }
     
         let title = ''; // 初期値は空
-        switch(done) {
+        switch (done) {
             case "inProgress":
                 node_color = 'orange';
                 break;
@@ -388,10 +393,23 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 break;
         }
     
+        // node_tag が null ではない場合、先頭に追加
+        let full_label = node_tag !== null ? `【${node_tag}】` : '';
+    
+        // ラベルを10文字ごとに改行する
         let result_label = '';
-        for (let i = 0; i < node_label.length; i += 10) {
-            result_label += node_label.substr(i, 10) + '\n';
+        const lines = node_label.split('\n'); // 改行ごとに分割
+        for (let line of lines) {
+            // ラベルがnode_tagを持っていない場合、先頭に改行なしで追加
+            if (full_label && result_label === '') {
+                result_label += full_label + '\n';
+            }
+            // 10文字ごとに改行
+            for (let i = 0; i < line.length; i += 10) {
+                result_label += line.substring(i, i + 10) + '\n';
+            }
         }
+    
         result_label = result_label.trim(); // 末尾の不要な改行を除去
     
         // 実際にネットワークに追加するノードのデータを作成
@@ -402,7 +420,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             color: node_color, shape: node_shape,
             font: { color: text_color },
             fixed: position_fixed,
-            x: node_x, y: node_y, 
+            x: node_x, y: node_y,
             status: done,
             size: 30,
         };
@@ -888,104 +906,236 @@ setupTooltipSaveButton(tooltip) {
         console.log(`OntologyNodeId after addition: ${JSON.stringify(this.OntologyNodeId)}`);
     }
     
-
-    SelectTag (){
+    selectTag() {
+        console.log("タグを作る準備をするよ");
         document.getElementById('network_conmenu').style.display = "none";
         const recruitselect = document.getElementById("recruitselect");
         recruitselect.style.display = "block";
         recruitselect.style.left = this.BoxDisplay.x;
         recruitselect.style.top = this.BoxDisplay.y;
-    }
-
-    assignTagsToNode() {
-        const FeedBackReflectionText = [];
-        const FeedBackReflection = [];
-        document.getElementById("recruitselect").style.display = "none";
-        const selectionlist = document.getElementById('taggingSection');  // 修正した部分
-        const Ontology_Node_Id = this.OntologyNodeId[this.OntologyConnectNodeId.indexOf(this.selectId)];
-        this.RecruitNodeId.push(this.selectId);
-        this.Feedback.push(this.selectId);
-        this.Recruit.push(selectionlist.value);
     
-        if (selectionlist.value === "調べる") {
-            this.nodes.update({
-                id: Ontology_Node_Id,
-                borderWidth: 5,
-                color: {
-                    border: "green",
-                    background: "#e0f7e0",
-                },
-                label: "調べる",
-                shape: "box", // サポートされる形状に変更
-            });
-            console.log("調べるノードを更新しました");
-        } else if (selectionlist.value === "考える") {
-            this.nodes.update({
-                id: Ontology_Node_Id,
-                borderWidth: 5,
-                color: {
-                    border: "red",
-                    background: "#fbe0e0",
-                },
-                label: "考える",
-                shape: "box",
-            });
-            console.log("考えるノードを更新しました");
-        } else if (selectionlist.value === "表現する") {
-            this.nodes.update({
-                id: Ontology_Node_Id,
-                borderWidth: 5,
-                color: {
-                    border: "blue",
-                    background: "#e0eaff",
-                },
-                label: "表現する",
-                shape: "box",
-            });
-            console.log("表現するノードを更新しました");
-        } else if (selectionlist.value === "相談する") {
-            this.nodes.update({
-                id: Ontology_Node_Id,
-                borderWidth: 5,
-                color: {
-                    border: "orange",
-                    background: "#ffe0b3",
-                },
-                label: "相談する",
-                shape: "box", // 星形をサポートされる形状に変更
-            });
-            console.log("相談するノードを更新しました");
+        // DBからタグを取得して表示（初回のみ）
+        if (!tagsLoaded) {
+            this.fetchTagsFromDatabase();
+            tagsLoaded = true; // タグがロードされたことを記録
         }
     
-        for (var i = 0; i < this.RecruitNodeId.length - 1; i++) {
-            FeedBackReflectionText.push("text" + this.RecruitNodeId[i]);
-            FeedBackReflection.push(document.getElementById("text" + this.RecruitNodeId[i]).value);
-        }
+        // 追加ボタンのクリックイベントを設定
+        document.getElementById('addTagButton').addEventListener('click', () => {
+            const customTagInput = document.getElementById('customTagInput');
+            const customTag = customTagInput.value.trim();
+            console.log("入力されたタグ:", customTag); // デバッグ用に入力値を確認
     
-        const node_info = this.nodes.get(this.selectId);
-        // document.getElementById("accordion_discussion").innerHTML += "<div id='" + this.selectId + "' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「" + node_info.label + "」は" + selectionlist.value + "されたのですか？</div><div class='accordion-content'><textarea id='text" + this.selectId + "' class='accordion-input'></textarea></div></div>";
-        
-        const accordionHeaders = document.querySelectorAll('#accordion_discussion .accordion-header');
-        accordionHeaders.forEach(header => {
-            header.addEventListener('click', function () {
-                const accordionItem = this.parentElement;
-                accordionItem.classList.toggle('active');
-            });
+            if (customTag !== "") {
+                // 新しいタグを選択肢に追加
+                const selectElement = document.getElementById('taggingSection');
+                const newOption = document.createElement('option');
+                newOption.value = customTag;
+                newOption.textContent = customTag;
+                selectElement.appendChild(newOption);
+    
+                // 入力フィールドをクリア
+                customTagInput.value = '';
+                console.log(`新しいタグ「${customTag}」を追加しました。`);
+    
+                // タグをデータベースに保存する
+                this.saveTagToDatabase(customTag); // タグを保存する関数を呼び出し
+            } else {
+                alert("タグ名を入力してください。");
+            }
         });
     
-        // 追加したら消えてしまうからおいておく
-        for (var i = 0; i < this.RecruitNodeId.length - 1; i++) {
-            document.getElementById("text" + this.RecruitNodeId[i]).innerHTML = FeedBackReflection[FeedBackReflectionText.indexOf("text" + this.RecruitNodeId[i])];
-        }
-    
-        // ここを修正したらいいよ！！！！！
-        console.log("記録します");
-        defaultRecordForestMRN.record_tagForObject(this.selectId, selectionlist.value);
-        console.log("記録できました");
-        document.getElementById("net_conmenu3").style.display = "none";
-        
+        // キャンセルボタンのクリックイベントを設定
+        document.getElementById('cancelTagButton').addEventListener('click', () => {
+            console.log("タグ作成をキャンセルします");
+            recruitselect.style.display = "none"; // タグ作成フォームを非表示にする
+        });
     }
     
+    
+    // DBからタグを取得して表示する関数
+    fetchTagsFromDatabase() {
+        $.ajax({
+            url: 'php/object_tag.php',
+            method: 'GET',
+            type: "POST",
+            data: { purpose: 'fetch' },
+            success: function (data) {
+                console.log("レスポンスの内容:", data);
+    
+                try {
+                    const jsonData = JSON.parse(data); // JSONデータをパース
+                    console.log("パースしたデータ:", jsonData);
+    
+                    // タグを選択リストに追加
+                    const selectElement = document.getElementById('taggingSection');
+                    jsonData.forEach(tag => {
+                        if (tag.tag_type) { // tag_typeが存在する場合のみ処理
+                            const option = document.createElement('option');
+                            option.value = tag.tag_type;       // value属性を設定
+                            option.textContent = tag.tag_type; // 表示内容を設定
+                            selectElement.appendChild(option); // selectタグに追加
+                        }
+                    });
+                } catch (e) {
+                    console.error("JSONパースに失敗しました:", e);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("タグの取得に失敗しました:", error);
+            }
+        });
+    }
+    
+    // DBにタグを保存する関数
+    saveTagToDatabase(tag) {
+        console.log(tag);
+        $.ajax({
+            url: 'php/object_tag.php',
+            method: 'GET',
+            type: "POST",
+            data: { purpose: 'save',
+                tag_type:tag,
+             },
+             success: function (response) {
+                console.log(response);
+                try {
+                    const jsonResponse = JSON.parse(response);
+                    if (jsonResponse.status === 'success') {
+                        console.log(jsonResponse.message);
+                    } else {
+                        console.error(jsonResponse.message);
+                    }
+                } catch (e) {
+                    //console.error('レスポンスの解析に失敗しました:', e);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('サーバーエラー:', error);
+            }
+        });
+    }
+
+    
+    assignTagsToNode() {
+        console.log("タグを作るよ");
+        document.getElementById("recruitselect").style.display = "none";
+        const selectionlist = document.getElementById('taggingSection');
+        const parentNodeId = globalParams.nodes[0]; // 選択された親ノードID
+        console.log("選択されたノード:", parentNodeId);
+    
+        // ノードデータを取得
+        const parentNode = this.nodes.get(parentNodeId);
+    
+        if (!parentNode) {
+            console.error("選択されたノードが見つかりません。");
+            return;
+        }
+    
+        // 現在のラベルを取得
+        const currentLabel = parentNode.label || "";
+    
+        // 既存のタグを削除して新しいタグを設定
+        let updatedLabel = currentLabel.replace(/【[^】]*】/g, "");  // 既存のタグを削除
+        const selectedTag = selectionlist.value;
+    
+        if (selectedTag) {
+            // 新しいタグを先頭に追加
+            updatedLabel = `【${selectedTag}】\n${updatedLabel}`;
+        }
+    
+        // ノードのラベルを更新
+        this.nodes.update({
+            id: parentNodeId,
+            label: updatedLabel,
+            color: parentNode.color, // 既存の色を維持
+            borderWidth: parentNode.borderWidth,
+            font: parentNode.font,
+            shape: parentNode.shape,
+        });
+    
+        console.log("ラベルが更新されました:", updatedLabel);
+    
+        // 記録処理
+        console.log("記録します");
+        defaultRecordForestMRN.record_tagForObject(this.selectId, selectedTag);
+        console.log("記録できました");
+    
+        document.getElementById("net_conmenu3").style.display = "none";
+        
+        // タグ削除ボタンの処理
+        document.getElementById('removeTagButton').addEventListener('click', () => {
+            // 現在選択されているタグを削除
+            const currentTag = selectionlist.value;
+            if (currentTag) {
+                let labelWithoutTag = updatedLabel.replace(`【${currentTag}】`, "");
+                
+                // ノードのラベルを更新
+                this.nodes.update({
+                    id: parentNodeId,
+                    label: labelWithoutTag,
+                    color: parentNode.color, // 既存の色を維持
+                    borderWidth: parentNode.borderWidth,
+                    font: parentNode.font,
+                    shape: parentNode.shape,
+                });
+    
+                console.log(`タグ「${currentTag}」が削除されました`);
+                
+                // 記録処理
+                console.log("タグ削除を記録します");
+                defaultRecordForestMRN.record_tagForObject(this.selectId, null); // タグ削除の記録
+                console.log("タグ削除を記録できました");
+            }
+        });
+    }
+    
+    removeTagFromNode() {
+        console.log("タグを削除します");
+    
+        // 選択された親ノードIDを取得
+        const parentNodeId = globalParams.nodes[0]; // 選択された親ノードID
+        console.log("選択されたノード:", parentNodeId);
+    
+        // ノードデータを取得
+        const parentNode = this.nodes.get(parentNodeId);
+    
+        if (!parentNode) {
+            console.error("選択されたノードが見つかりません。");
+            return;
+        }
+    
+        // 現在のラベルを取得
+        const currentLabel = parentNode.label || "";
+    
+        // 既存のタグを削除
+        let updatedLabel = currentLabel.replace(/【[^】]*】/g, ""); // タグ部分を削除
+    
+        // ラベルが空白の場合、改行を追加して空でない状態にする
+        if (updatedLabel.trim() === "") {
+            updatedLabel = "\n";
+        }
+    
+        // ノードのラベルを更新
+        this.nodes.update({
+            id: parentNodeId,
+            label: updatedLabel,
+            color: parentNode.color, // 既存の色を維持
+            borderWidth: parentNode.borderWidth,
+            font: parentNode.font,
+            shape: parentNode.shape,
+        });
+    
+        console.log("タグが削除されました:", updatedLabel);
+    
+        // 記録処理（タグ削除の記録）
+        console.log("タグ削除を記録します");
+        defaultRecordForestMRN.record_tagForObject(this.selectId, null); // タグ削除の記録
+        console.log("タグ削除を記録できました");
+    
+        // コンテキストメニューを閉じる
+        document.getElementById("net_conmenu3").style.display = "none";
+    }
     
     ContentmenuCancel(){
         document.getElementById('network_conmenu').style.display = "none";
@@ -1020,8 +1170,8 @@ setupTooltipSaveButton(tooltip) {
     }
 
 
-    //ネットワークノードがクリックされたときの処理
-    networkClick (params){
+    //手段目標マップのノードがクリックされたときの処理
+    objectClick (params){
         // ノード選択後、手段追加ボタンを有効にする
         //console.log("クリックされたノード:", params.nodes);  // クリックされたノード情報をログ出力
 
@@ -1048,17 +1198,6 @@ setupTooltipSaveButton(tooltip) {
             })
             this.jmindex.length = 0;
         }
-        //ここ未完成
-        if(this.nodes.get(params.nodes[0]).group === "utterance"){
-            if(this.OntologyConnectNodeId.indexOf(params.nodes[0]) !== -1){
-                const node_infomation = this.nodes.get(this.OntologyNodeId[this.OntologyConnectNodeId.indexOf(params.nodes[0])]);
-                document.getElementById("ontology_feedback").innerHTML = "<div class='feedback_message'>この発言は「"+node_infomation.label + "」と「" + this.output_input[node_infomation.label] + "」<br>との合理性を意識して発言されたのかもしれません</div>";
-            } 
-        }
-        // if(this.RecruitNodeId.indexOf(params.nodes[0]) !== -1){
-        //     this.FeedbackNodeId = params.nodes[0];
-        //     document.getElementById(this.FeedbackNodeId).style.display = "block";
-        // }
         if(params.nodes.length == 1){
             const net_index = this.ConnectNetworkNodeId.map((n_id, index) => {
                 return n_id === params.nodes[0] ? index : null;
@@ -1182,101 +1321,78 @@ setupTooltipSaveButton(tooltip) {
             }
             this.dragStartNodeId = null;
             this.dragEndNodeId = null;
-        }else {
+        } else {
             const movedNodeId = params.nodes[0];
-            //console.log("Moved Node ID:", movedNodeId); // ノードIDをログ出力
-            //console.log("param:", params); 
-        
-            // ノードが正しく選択されている場合にのみ処理を進める
             if (movedNodeId !== undefined) {
                 // ノードデータを取得
                 const node = this.nodes.get(movedNodeId);
-                console.log("Node Data:", node); // ノードの詳細データをログ出力
         
-                // なぜか更新したら色変わってしまうから一時的に
+                if (!node) {
+                    console.error(`ノードID ${movedNodeId} に該当するノードが見つかりません。`);
+                    return;
+                }
+        
+                // console.log(`ノードが移動されました: ID = ${movedNodeId}`);
+                // console.log("現在のノードデータ:", node);
+        
                 let node_color;
+        
                 // ノードのグループに応じて色を設定
-                switch (node?.group) { // nullチェック付き
-                    case "goal": // 自分で考えた要約に関するノードの場合
+                switch (node.group) {
+                    case "goal":
                         node_color = 'red';
-                        //console.log("Group is '0', setting color to red");
+                        // console.log("ノードのグループは 'goal' です。色を red に設定します。");
                         break;
-                    case "step": // 議論内での発言ノードの場合
+                    case "step":
                         node_color = 'green';
-                        //console.log("Group is '1', setting color to green");
+                        // console.log("ノードのグループは 'step' です。色を green に設定します。");
                         break;
-                    default: // その他
-                        //console.log("Group does not match, using default color");
+                    default:
+                        // console.log(`ノードのグループは未指定または特別な処理が不要です: group = ${node.group}`);
                         break;
                 }
-
-                // "done"が設定されている場合は色をgrayに変更
-                switch(node.status) {
-                    //目標ノードか手段ノードか
+        
+                // "done" または "inProgress" ステータスに基づいて色を変更
+                switch (node.status) {
                     case "inProgress":
                         node_color = 'orange';
+                        // console.log("ノードのステータスは 'inProgress' です。色を orange に設定します。");
                         break;
-                    case "done": // 手段完了
+                    case "end":
                         node_color = 'gray';
-                        text_color = 'white';
+                        // console.log("ノードのステータスは 'done' です。色を gray に設定します。");
                         break;
-                    case "break": // 手段完了
-                        node_color = 'LightCoral';
-                        break;
-                    case "end": // 手段完了
-                        node_color = 'gray';
-                        break;
-                    case null: //手段進行中
-                        break;
-                    default: // その他
+                    default:
+                        // console.log(`ノードのステータスは未指定または特別な処理が不要です: status = ${node.status}`);
                         break;
                 }
-
-                // 設定されたnode_colorをノードに適用
-                //console.log("Node Color to be set:", node_color);
+        
+                // ノードの位置と色を更新
+                console.log("ノードの位置と色を更新します...");
                 this.nodes.update({
                     id: movedNodeId,
                     color: { background: node_color },
+                    x: params.pointer.x,
+                    y: params.pointer.y
                 });
+        
+                // console.log(`ノードの更新が完了しました: ID = ${movedNodeId}`);
+                // console.log("更新後のノードデータ:", this.nodes.get(movedNodeId));
+        
 
-                // ノードを更新
-                try {
-                    this.nodes.update({ 
-                        id: movedNodeId, 
-                        color: { background: node_color }, // 背景色を設定
-                        x: params.pointer.x, 
-                        y: params.pointer.y 
-                    });
-                    //console.log("Node successfully updated.");
-                } catch (error) {
-                    //console.error("Error updating node:", error); // エラー時のログ
-                }
-        
-                // ノードの境界ボックスを取得
+                // ノードの境界ボックス取得
                 const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
-                //console.log("Node Bounding Box:", nodeBoundingBox); // 境界ボックスの情報をログ出力
-        
-                // 次に追加したノードの座標指定
                 this.latest_selected_node_info.x = (nodeBoundingBox.right + nodeBoundingBox.left) / 2;
                 this.latest_selected_node_info.y = nodeBoundingBox.bottom + 10;
-                //console.log("Updated latest_selected_node_info:", this.latest_selected_node_info); // 更新した座標情報をログ出力
-        
+    
                 // 外部更新処理
                 try {
-                    defaultRecordForestMRN.update_Goal(
-                        "point", 
-                        movedNodeId, 
-                        (nodeBoundingBox.right + nodeBoundingBox.left) / 2, 
-                        (nodeBoundingBox.bottom + nodeBoundingBox.top) / 2
-                    );
-                    //console.log("defaultRecordForestMRN successfully updated.");
+                    defaultRecordForestMRN.update_Goal("point", movedNodeId, (nodeBoundingBox.right + nodeBoundingBox.left) / 2, (nodeBoundingBox.bottom + nodeBoundingBox.top) / 2);
                 } catch (error) {
-                    //console.error("Error updating defaultRecordForestMRN:", error); // エラー時のログ
+                    console.error("Error updating defaultRecordForestMRN:", error);
                 }
-            } else {
-                //console.warn("No node was moved.");
             }
-        }       
+        }
     }
     
     // エッジの削除（完了）
@@ -1408,6 +1524,7 @@ setupTooltipSaveButton(tooltip) {
     }
 
 }
+
 
 
 // ネットワーク関係の記録
@@ -2240,7 +2357,7 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
             utterance_list_info.dnode.forEach((n) => {
                 if (n.object_node_id) {
                     // object_node_id を node_id として渡す
-                    defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type, n.x, n.y, n.status,n.action_reason,n.completion_reason,n.challenges_learnings);
+                    defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.tag,n.object_nodes_type, n.x, n.y, n.status,n.action_reason,n.completion_reason,n.challenges_learnings);
                 } else {
                     console.warn("Node ID is undefined, skipping this node:", n);
                 }

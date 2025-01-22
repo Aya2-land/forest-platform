@@ -1,5 +1,7 @@
 //目標マップの切り替えを行う
 let object_map_id = null; // グローバル変数の定義
+let isObjectMapVisible = false;  // オブジェクトマップが表示されているかどうかを管理するフラグ
+
 
 // "過去の目標" ボタンをクリックした時に実行される関数
 function showObjectMap() {
@@ -19,29 +21,8 @@ function showObjectMap() {
     if (objectMapArea) {
         objectMapArea.style.display = "block";
         console.log("objectMap_areaを表示しました");
-    } else {
-        console.error("objectMap_areaが見つかりません");
-    }
-}
-
-// "問い一覧" ボタンをクリックした時に実行される関数
-function showGeneration() {
-    console.log("showGeneration関数が実行されました");
-
-    // inquiry_areaを表示
-    const inquiryArea = document.getElementById("inquiry_area");
-    if (inquiryArea) {
-        inquiryArea.style.display = "block";
-        console.log("inquiry_areaを表示しました");
-    } else {
-        console.error("inquiry_areaが見つかりません");
-    }
-
-    // objectMap_areaを非表示に
-    const objectMapArea = document.getElementById("objectMap_area");
-    if (objectMapArea) {
-        objectMapArea.style.display = "none";
-        console.log("objectMap_areaを非表示にしました");
+        isObjectMapVisible = true; // オブジェクトマップが表示されている状態を記録
+        console.log(isObjectMapVisible);
     } else {
         console.error("objectMap_areaが見つかりません");
     }

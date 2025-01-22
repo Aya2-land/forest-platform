@@ -24,7 +24,7 @@ if($purpose === "select_meeting_utterance") {
 
     // object_map_id を使って object_nodes を取得
     $result_discussionmap_node = $mysqli->query("SELECT `object_node_id`, `object_map_id`, `label`, `x`, `y`, 
-                    `object_nodes_type`, `created_at`, `status`,`action_reason`,`completion_reason`,`challenges_learnings`
+                    `object_nodes_type`, `tag`, `created_at`, `status`,`action_reason`,`completion_reason`,`challenges_learnings`
         FROM `object_nodes`
         WHERE `deleted` = 0 AND `object_map_id` = '$object_map_id'
         ORDER BY `updated_at` DESC;

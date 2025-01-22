@@ -116,13 +116,11 @@
 			$mysqli->query("INSERT INTO `object_maps`(`object_map_id`, `updated_at`, `memo`) 
 									VALUES ('$object_map_id','$timestamp','$memo')");
 		}else if($record_thing === 'tag'){
-			$object_tag_id = uniqid('tag_', true); // tag_で始まる一意のIDを生成
-			$object_node_id = $_POST["object_node_id"]; 
-			$object_map_id = $_POST["object_map_id"];          //エッジ開始
+			$object_node_id = $_POST["object_node_id"];         //エッジ開始
 			$tag_type = $_POST["tag_type"];            //エッジ終了
 			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-			$mysqli->query("INSERT INTO `object_tags`(`object_tag_id`,`tag_type`,`object_node_id`, `timestamp`, `object_map_id`) 
-									VALUES ('$object_tag_id','$tag_type','$object_node_id','$timestamp','$object_map_id')");
+			$mysqli->query("UPDATE object_nodes SET tag = '$tag_type', updated_at = '$timestamp' WHERE object_node_id = '$object_node_id'");
+			
 		}
 	}else if($purpose === 'update'){
 		$update_thing = $_POST['update_thing'];

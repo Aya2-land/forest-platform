@@ -90,7 +90,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/change_tab.js"></script>
         <script type="text/javascript" src="./js/vis-network.min.js"></script>
         <script type="text/javascript" src="js/show_objectMap.js"></script>
-        <script type="text/javascript" src="js/horizontal.js"></script>
+        <script type="text/javascript" src="js/object_tag.js"></script>
         <!-- <script type="text/javascript" src="./js/meeting-reflection-network.js"></script> -->
         <link rel="stylesheet" type="text/css" href="css/meeting-reflection-network.css" />
         <script type="text/javascript">
@@ -295,23 +295,40 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <li><a href="javascript:void(0);" id="net_conmenu01"><i class="fa fa-pause"></i> 手段中断</a></li> 
                                     <li><a href="javascript:void(0);" id="net_conmenu02"><i class="fa fa-check"></i> 手段完了</a></li> 
                                     <!-- <li><a href="javascript:void(0);" id="net_conmenu03"><i class="fa fa-eye"></i> 活動表示</a></li>  -->
-                                    <li><a href="javascript:void(0);" id="net_conmenu3"><i class="fa fa-tag"></i> 性質を選択</a></li>
+                                    <!-- <li><a href="javascript:void(0);" id="net_conmenu3"><i class="fa fa-tag"></i> 性質を選択</a></li> -->
+                                    <li><a href="javascript:void(0);" id="net_conmenu04"><i class="fa fa-tag"></i> 性質を選択</a></li>
                                     <li><a href="javascript:void(0);" id="net_conmenu4"><i class="fa fa-times"></i> キャンセル</a></li>
                                 </ul>
                             </div>
                             <div id="tooltip" style="position: absolute; display: none; padding: 10px; background: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">
                                 吹き出しの内容
                             </div>
-                            <div id="recruitselect">
-                                <select id="taggingSection">
-                                    <option value="考える">考える</option>
-                                    <option value="調べる">調べる</option>
-                                    <option value="表現する">表現する</option>
-                                    <option value="相談する">相談する</option>
-                                </select>
-                                <input type="button" value="選択完了" id="recruit_select">
+
+                            <!-- 手段の性質(タグ)選択メニュー-->
+                            <div id="recruitselect" style="width: 400px; padding: 20px; border: 1px solid #ccc; border-radius: 10px; background-color: #f9f9f9; position: absolute; top: 100px; left: 100px;">
+
+                                <!-- タグ選択 -->
+                                <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+                                    <label for="taggingSection" style="font-weight: bold;">タグ:</label>
+                                    <select id="taggingSection" style="width: 50%; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                                    </select>
+                                    <button id="recruit_tag" style="padding: 8px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">選択</button>
+                                </div>
+
+                                <!-- タグ生成 -->
+                                <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+                                    <label for="customTagInput" style="font-weight: bold;">タグ生成:</label>
+                                    <input type="text" id="customTagInput" placeholder="タグ名を入力" style="width: 45%; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                                    <button id="addTagButton" style="padding: 8px 15px; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer;">生成</button>
+                                </div>
+
+                                <!-- キャンセルボタン -->
+                                <div style="text-align: center;">
+                                    <button id="cancelTagButton" style="margin-top: 10px; padding: 8px 15px; width: 100%; background-color: #6C757D; color: white; border: none; border-radius: 5px; cursor: pointer;">キャンセル</button>
+                                </div>
                             </div>
-                            
+
+               
                             <!-- <div id="taggingSection" class="tag-modal" style="display:none;">
                                 <div class="modal-content">
                                     <h3>タグ付けを選択してください</h3>
