@@ -258,19 +258,21 @@ table[type] {
 }
 
  /* 手段目標マップモードのためのスタイル */
-.num-2 #object_container {
-    position: absolute; /* 絶対配置で画面全体に表示 */
+ .num-2 #object_container {
+    position: absolute; /* Absolute positioning for full screen */
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    width: 100vw; /* 幅を画面全体に */
-    height: 100vh; /* 高さを画面全体に */
-    min-width: 100vw; /* 最小幅も画面全体に */
-    min-height: 100vh; /* 最小高さも画面全体に */
-    border: none; /* 枠線を削除 */
-    overflow: hidden; /* オーバーフローを隠す */
+    width: 100vw; /* Set the width to cover the entire viewport */
+    height: 100vh; /* Set the height to cover the entire viewport */
+    min-width: 100vw; /* Minimum width as full screen */
+    min-height: 100vh; /* Minimum height as full screen */
+    border: none; /* Remove border */
+    overflow: hidden; /* Hide overflow */
+    display: block; /* Use block display to ensure full width/height */
 }
+
 
 #myobject{
 	resize: horizontal; /* 横幅のリサイズを許可 */

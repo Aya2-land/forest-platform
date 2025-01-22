@@ -18,7 +18,7 @@ if($purpose === "select_meeting_utterance") {
     //updated_atが最新のマップIDを獲得する．
     // 最新の map_id を取得
     // 最新の object_map_id を取得
-    $latest_map_id_result = $mysqli->query("SELECT `object_map_id` FROM `object_maps` ORDER BY `updated_at` DESC LIMIT 1;");
+    $latest_map_id_result = $mysqli->query("SELECT `object_map_id` FROM `object_maps` WHERE `map_id` = '$sheet_id' ORDER BY `updated_at` DESC LIMIT 1;");
     $latest_map_id_row = $latest_map_id_result->fetch_assoc();
     $object_map_id = $latest_map_id_row['object_map_id']; // 実際の ID を取得
 

@@ -425,7 +425,6 @@ function handleGoalClick(goalButton, goalContent, timeString, objectMapId) {
 // object_map_idに紐づけられたobject_mapのデータを取得する関数
 //マップの切り替えを行うために，データを取得する．
 function loadObjectMapData(objectMapId) {
-
     $.ajax({
         url: 'php/get_goals.php', // PHPファイルのパス
         type: 'POST',
@@ -449,7 +448,7 @@ function loadObjectMapData(objectMapId) {
 				objectMapData.node.forEach((n) => {
 					if (n.object_node_id) {
 						// object_node_id を node_id として渡す
-						defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.object_nodes_type, n.x, n.y, n.status);
+						defaultForestMRN.addReloadNode(n.object_node_id, n.label, n.tag,n.object_nodes_type, n.x, n.y, n.status,n.action_reason,n.completion_reason,n.challenges_learnings);
 					} else {
 						console.warn("Node ID is undefined, skipping this node:", n);
 					}

@@ -9,23 +9,6 @@
     $sheet_id = $_SESSION['SHEETID'];    //シートID
 	$purpose = $_POST['purpose'];  //記録(record)か，更新(update)か，削除(delete)か
 
-	$result_struct_start_time = $mysqli->query("SELECT MAX(start_time) FROM network_sturuct_activity WHERE user_id = $user_id AND sheet_id = $sheet_id ORDER BY start_time DESC");
-	// echo "SELECT MAX(start_time) FROM network_sturuct_activity WHERE user_id = $user_id AND sheet_id = $sheet_id ORDER BY start_time DESC";
-	// echo ",  ";
-
-	if ($result_struct_start_time) {
-        $row = $result_struct_start_time->fetch_assoc();
-        $struct_start_time = $row['MAX(start_time)'];
-        echo $struct_start_time;
-    } else {
-        //echo "Error: " . $mysqli->error;
-    }
-
-    $struct_start_time = $row['MAX(start_time)'];  //更新するときの議論内省開始時間
-
-	// echo ",                       ";
-	// echo "PHP,";
-
 	if($purpose === 'record'){
 		$record_thing = $_POST['record_thing'];  //nodeか，edgeか，ネットワークとマインドマップの繋がり(connection)，オントロジーとのつながり(ontology)，採用不採用(recruit)
 		//目標ノードの記録
@@ -96,7 +79,7 @@
 		
 			// SQLクエリ
 			$query = "INSERT INTO object_maps(object_map_id,label, map_id, created_at, updated_at, start_date, end_date, deleted,memo)
-					  VALUES ('$object_map_id','$goalContent' , null, '$timeString', '$timeString','$startDate','$endDate', 0, 'メモがありません')";
+					  VALUES ('$object_map_id','$goalContent' , $sheet_id, '$timeString', '$timeString','$startDate','$endDate', 0, 'メモがありません')";
 		
 			// SQLクエリの確認
 			echo "実行するSQLクエリ: " . $query . "<br>";

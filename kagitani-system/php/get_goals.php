@@ -4,12 +4,15 @@
 session_start();
 require("connect_db.php");
 
+$user_id = $_SESSION['USERID'];      //ユーザID
+$sheet_id = $_SESSION['SHEETID'];    //シートID
+
 $return_data = [];
 $purpose = $_POST["purpose"]; //loadかfetchか
 
 if($purpose === 'fetch'){
     // object_mapsテーブルから目標データを取得
-    $sql = "SELECT object_map_id, label, created_at, updated_at, start_date, end_date, memo FROM object_maps WHERE deleted = '0' ORDER BY created_at DESC";
+    $sql = "SELECT object_map_id, label, created_at, updated_at, start_date, end_date, memo FROM object_maps WHERE `map_id` = '$sheet_id' AND deleted = '0' ORDER BY created_at DESC";
     $result = $mysqli->query($sql);
 
     $goals = [];
@@ -28,7 +31,7 @@ if($purpose === 'fetch'){
 }else if ($purpose === 'load') {
     $objectMapId = $_POST['object_map_id'];
 
-    $result_object_node = $mysqli->query("SELECT object_node_id, label, object_nodes_type, x, y, status FROM object_nodes WHERE object_map_id = '$objectMapId' AND deleted = '0'");
+    $result_object_node = $mysqli->query("SELECT object_node_id, label, object_nodes_type,tag, x, y, status FROM object_nodes WHERE object_map_id = '$objectMapId' AND deleted = '0'");
 
     $node = [];
     while ($row = $result_object_node->fetch_assoc()) {
