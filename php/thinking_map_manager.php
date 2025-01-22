@@ -8,7 +8,23 @@ require("connect_db.php");
 $user_id = $_SESSION['USERID'];      //ユーザID
 $map_id = $_SESSION['MAPID'];    //マップID
 $selected_conID = $_POST['selected_concept_id'];
+
 $return_data = []; // DBアクセスの結果として返すキー・バリューのペア
+
+// 配列で渡されるので変換
+$conIDs_base = $_POST['concept_ids'];
+if (!empty($conIDs_base)) {
+    $conIDs_base = array_map(function($id) use ($mysqli) {
+        // 各IDをエスケープして安全に挿入
+        return "'" . $mysqli->real_escape_string($id) . "'";
+    }, $conIDs_base);
+    
+    // 配列をカンマ区切りの文字列に変換
+    $conIDs = implode(',', $conIDs_base);
+} else {
+    // $conIDsが空の場合は空の文字列を使用
+    $conIDs = "''"; // 空配列の場合は、SQL文が正しく評価されるように
+}
 
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
@@ -25,24 +41,23 @@ if($selected_conID){
 /*
     * triggerの候補一覧
 */
+
+
 $result_t_candidate = $mysqli->query("SELECT activity_id, activity_type, concept_id, content, appeared_at, trigger_on FROM trigger_candidates
-WHERE map_id = '$map_id' ORDER BY appeared_at DESC");
+                                                    WHERE map_id = '$map_id' AND (concept_id IN ($conIDs) OR concept_id = '$selected_conID') ORDER BY appeared_at DESC");
 $t_candidate = [];
 $t_candidate_concept = [];
 
-if (!$result_t_candidate) {
-    echo "SELECT id, activity_type, concept_id, content, appeared_at, trigger_on FROM trigger_candidates WHERE map_id = '$map_id' ORDER BY appeared_at DESC";
-    return;
+if ($result_t_candidate) {
+    // concept名を取り出し
+    while ($row = $result_t_candidate->fetch_assoc()) {
+        $conID = $row["concept_id"];
+        $conLABEL = $xml_data->xpath('W_CONCEPTS/CONCEPT[@id="'.$conID.'"]/LABEL/text()');
+        $row['concept_label'] = !empty($conLABEL) ? (string)$conLABEL[0] : '';
+        array_push($t_candidate, $row);
+    }
+    $return_data = array_merge($return_data, ['trigger_candidate' => $t_candidate]);
 }
-
-// concept名を取り出し
-while ($row = $result_t_candidate->fetch_assoc()) {
-    $conID = $row["concept_id"];
-    $conLABEL = $xml_data->xpath('W_CONCEPTS/CONCEPT[@id="'.$conID.'"]/LABEL/text()');
-    $row['concept_label'] = !empty($conLABEL) ? (string)$conLABEL[0] : '';
-    array_push($t_candidate, $row);
-}
-$return_data = array_merge($return_data, ['trigger_candidate' => $t_candidate]);
 
 /*
     * 思考過程表出化マップのノードデータの取得    	

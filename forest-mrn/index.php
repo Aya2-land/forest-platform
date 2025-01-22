@@ -77,7 +77,6 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/jsmind.js"></script>
         <script type="text/javascript" src="js/jsmind.draggable.js"></script>
         <script type="text/javascript" src="../js/vis-network.min.js"></script>
-        <script type="text/javascript" src="../js/thinking-process-network.js"></script>
 
         <script src="js/jquery.autosize.js"></script>
         <script src="js/jquery.autosize.min.js"></script>
@@ -312,7 +311,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                             </button>
                                         </li>
                                         <li>
-                                            <button class="button4" onclick="showThinkingProcessMap()">
+                                            <button class="button4" onclick="showThinkingProcessMap();">
                                                 思考過程表出化マップ
                                             </button>
                                         </li>
@@ -805,6 +804,8 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/mindmap.js"></script>
         <script type="text/javascript" src="js/add_node.js"></script>
         <script type="text/javascript" src="../js/node_tag.js"></script>
+        <script type="text/javascript" src="../js/ont_choose_thinking.js"></script>
+        <script type="text/javascript" src="../js/thinking-process-network.js"></script>
         <script type="text/javascript" src="js/past_sheet.js"></script>
         <script type="text/javascript" src="js/record_presentation.js"></script>
         <script type="text/javascript" src="js/presentation.js"></script>

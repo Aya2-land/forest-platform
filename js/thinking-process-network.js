@@ -1051,25 +1051,28 @@ const getProcessMapDataFromDB = (callback) => {
     //選択されているノードIDとconcept_id
     const selected_node_id = _jm.get_selected_node().id;
     const selected_concept_id = Get_NodeInfo(selected_node_id, "concept_id");
-
-    return new Promise((resolve, reject) => {
-        try{
-            return $.ajax({
-                url: "../php/thinking_map_manager.php",
-                type: "POST",
-                data: data =  {
-                    selected_node_id: selected_node_id,
-                    selected_concept_id: selected_concept_id,
-                },
-            }).success((r) => {
-                trigger_list = JSON.parse(r);
-                callback(trigger_list);
-            });
-        } catch (error){
-            reject(error);
-        }
+    choose_trigger_xmlLoad().then(conceptIds => {
+        return new Promise((resolve, reject) => {
+            try{
+                return $.ajax({
+                    url: "../php/thinking_map_manager.php",
+                    type: "POST",
+                    data: data =  {
+                        selected_node_id: selected_node_id,
+                        selected_concept_id: selected_concept_id,
+                        concept_ids: conceptIds
+                    },
+                }).success((r) => {
+                    trigger_list = JSON.parse(r);
+                    callback(trigger_list);
+                });
+            } catch (error){
+                reject(error);
+            }
+        });
+    }).catch(error => {
+        console.error(error); // エラー処理
     });
-    
 }
 
 const makeTriggerInList = (id, activity_type, concept_label, content, timestamp, trigger_on) => {
@@ -1094,8 +1097,17 @@ const makeTriggerInList = (id, activity_type, concept_label, content, timestamp,
 const displayTriggerData = (display_target_area_id) => {
     // 指定した時間（指定なしなら最新）のマップに対応する発話ノードリストを取得して画面上に配置
     const selected_node_id = _jm.get_selected_node().id;
-    const target_area = $(`#${display_target_area_id}`); // 発話ノードリストのDOMエリア
-    const conceptdisplay_area = $(`#conceptdisplay`); // 発話ノードの議論内での時間を表示するエリア
+    var jmnode = document.getElementsByTagName("jmnode");
+    for(var i=0; i<jmnode.length; i++){
+        if(selected_node_id == jmnode[i].getAttribute("nodeid")){
+            var selected_concept_id = jmnode[i].getAttribute("concept_id");
+        }
+    }
+    const target_area = $(`#${display_target_area_id}`); // DOMエリア
+    $('#trigger_area_list').html("");
+    const conceptdisplay_area = $(`#conceptdisplay`); // 何の認知活動かを表示するエリア
+    document.getElementById('conceptdisplay').setAttribute('nodeId', selected_node_id);
+    document.getElementById('conceptdisplay').setAttribute('conceptId', selected_concept_id);
     let node_x = 0;
     let node_y = 0;
     let from_id = "";
@@ -1104,7 +1116,6 @@ const displayTriggerData = (display_target_area_id) => {
         //concept_labelを表示
         const concept_label = trigger_list_info['selected_concept'];
         conceptdisplay_area.html(concept_label);
-        document.getElementById('conceptdisplay').setAttribute('nodeId', selected_node_id);
         let j = 0;
 
         // versionノードの表示
@@ -1118,8 +1129,10 @@ const displayTriggerData = (display_target_area_id) => {
         });
         // triggerの候補一覧
         trigger_list_info.trigger_candidate.forEach((u) => {
-            const trigger_dom = makeTriggerInList(u.activity_id, u.activity_type, u.concept_label, u.content, u.appeared_at, u.trigger_on);
-            target_area.append(trigger_dom); // 挿入
+            if(u){
+                const trigger_dom = makeTriggerInList(u.activity_id, u.activity_type, u.concept_label, u.content, u.appeared_at, u.trigger_on);
+                target_area.append(trigger_dom); // 挿入
+            }
         });
         // triggerノードの表示
         trigger_list_info.trigger.forEach((u) => {
