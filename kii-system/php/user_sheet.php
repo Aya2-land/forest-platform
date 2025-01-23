@@ -11,7 +11,7 @@
 
   $user = $_POST["user"];
   $user_id = $_SESSION["USERID"];
-  $sheet_id = $_SESSION["SHEETID"];
+  $map_id = $_SESSION["MAPID"];
   // $user = filter_input(INPUT_POST, 'user');
 
   // // 下記の「3」はファイル出力する指定
@@ -33,10 +33,10 @@
 
   // updated_atが$userより遅い場合，過去の編集を遡る
   // ノード編集履歴はactivitiesテーブルに管理しているので，そちらからデータを取得する
-  // activitiesテーブルのsheet_idと$sheet_idを照合
+  // activitiesテーブルのmap_idと$map_idを照合
   // timestampが$userよりも小さいものを取得・最新のものに並び替え
   $sql = "SELECT * FROM activities
-          WHERE sheet_id=$user 
+          WHERE map_id=$user 
           ORDER BY timestamp DESC ";
 
   if($result = $mysqli->query($sql)){

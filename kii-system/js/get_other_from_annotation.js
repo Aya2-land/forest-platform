@@ -90,7 +90,7 @@ function judge_charid(callback) {
 }
 
 // judge は annotation か node
-function create_mindmapbutton(sheet_id_Array, judge, concept_id=null){
+function create_mindmapbutton(map_id_Array, judge, concept_id=null){
     $('#mindmap_tab').empty();
     show_selected_sheet("on");
     var arrayDisplay = document.getElementById("mindmap_tab");
@@ -110,23 +110,23 @@ function create_mindmapbutton(sheet_id_Array, judge, concept_id=null){
         arrayDisplay.appendChild(jm2_menu);
 
     }
-    console.log(sheet_id_Array);
+    console.log(map_id_Array);
     var n = 0;
 
 
-    for (var i = 0; i < sheet_id_Array.length; i++) {
+    for (var i = 0; i < map_id_Array.length; i++) {
         
         var button = document.createElement("button"); // 新しいボタン要素を作成
-        sheet_id = sheet_id_Array[i]["sheet_id"];
-        var result = hasSheetId(sheet_id);
+        map_id = map_id_Array[i]["map_id"];
+        var result = hasSheetId(map_id);
         console.log(result);
         if (!result){
             button.innerHTML = n + 1;
-            button.setAttribute("data-sheet_id", sheet_id);
-            button.setAttribute("data-content", sheet_id_Array[i]["content"]);
-            button.setAttribute("data-parent_id", sheet_id_Array[i]["parent_id"]);
+            button.setAttribute("data-map_id", map_id);
+            button.setAttribute("data-content", map_id_Array[i]["content"]);
+            button.setAttribute("data-parent_id", map_id_Array[i]["parent_id"]);
             button.setAttribute("class", "button10");
-            button.setAttribute("onClick", "show_other_mindmap(this, "+sheet_id+", '"+sheet_id_Array[i]["parent_id"]+"');");
+            button.setAttribute("onClick", "show_other_mindmap(this, "+map_id+", '"+map_id_Array[i]["parent_id"]+"');");
             arrayDisplay.appendChild(button); // ボタンを表示用の要素に追加
             n++;
         }       
@@ -155,15 +155,15 @@ function create_mindmapbutton(sheet_id_Array, judge, concept_id=null){
 
 }
 
-function hasSheetId(sheet_id) {
-    var elements = document.querySelectorAll('[data-sheet_id]');
+function hasSheetId(map_id) {
+    var elements = document.querySelectorAll('[data-map_id]');
     console.log(elements);
   
     for (var i = 0; i < elements.length; i++) {
       var element = elements[i];
-      var dataSheetId = element.getAttribute('data-sheet_id');
+      var dataSheetId = element.getAttribute('data-map_id');
   
-      if (dataSheetId === sheet_id) {
+      if (dataSheetId === map_id) {
         return true;
       }
     }

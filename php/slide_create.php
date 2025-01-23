@@ -8,17 +8,17 @@
 	date_default_timezone_set('Asia/Tokyo');
 	// $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);//日時をマイクロ秒まで取得するようにしてみる
 	$user_id = $_SESSION['USERID'];      //ユーザID
-	$sheet_id = $_SESSION['SHEETID'];    //シートID
+	$map_id = $_SESSION['MAPID'];    //シートID
 	$slide_id = $_POST["id"];             //スライドID
 	$activity_id = uniqid();
 
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-	// $sql = "INSERT INTO slide (id, sheet_id, slide_title, user_id, created_at, updated_at, deleted, from_slide)
-	// VALUES ('$slide_id', '$sheet_id', '研究目的', '$user_id','$timestamp', '$timestamp', 0, '$sheet_id')";
+	// $sql = "INSERT INTO slide (id, map_id, slide_title, user_id, created_at, updated_at, deleted, from_slide)
+	// VALUES ('$slide_id', '$map_id', '研究目的', '$user_id','$timestamp', '$timestamp', 0, '$map_id')";
 
-	$sql = "INSERT INTO slide (id, sheet_id, slide_title, user_id, created_at, updated_at, deleted, from_slide)
-	VALUES ('$slide_id', '$sheet_id', NULL, '$user_id','$timestamp', '$timestamp', 0, '$sheet_id')";
+	$sql = "INSERT INTO slide (id, map_id, slide_title, user_id, created_at, updated_at, deleted, from_slide)
+	VALUES ('$slide_id', '$map_id', NULL, '$user_id','$timestamp', '$timestamp', 0, '$map_id')";
 
 
 	$result = $mysqli->query($sql);
@@ -47,8 +47,8 @@
 
 	//==============================activityログ===============================//
 
-	$sql = "INSERT INTO slide_activity (id, sheet_id, slide_id, slide_title, user_id, act, date, from_slide)
-	VALUES ('$activity_id', '$sheet_id', '$slide_id', NULL, '$user_id', 'add', '$timestamp', NULL)";
+	$sql = "INSERT INTO slide_activity (id, map_id, slide_id, slide_title, user_id, act, date, from_slide)
+	VALUES ('$activity_id', '$map_id', '$slide_id', NULL, '$user_id', 'add', '$timestamp', NULL)";
 
 	$result = $mysqli->query($sql);
 

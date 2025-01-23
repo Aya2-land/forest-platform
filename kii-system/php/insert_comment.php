@@ -11,9 +11,9 @@ if($_POST["insert"] == "comment"){
     $user_id = $_SESSION["USERID"];
     $nodeid = $_POST["nodeid"];
     $comment = $_POST["comment"];
-    $sheet_id = $_POST["sheet_id"];
+    $map_id = $_POST["map_id"];
     
-    $sql = "INSERT INTO comments (id, user_id, node_id, comment, sheet_id) VALUES ($id, $user_id, '$nodeid','$comment',$sheet_id)";
+    $sql = "INSERT INTO comments (id, user_id, node_id, comment, map_id) VALUES ($id, $user_id, '$nodeid','$comment',$map_id)";
     $result = $mysqli->query($sql);
     echo $result;
 }

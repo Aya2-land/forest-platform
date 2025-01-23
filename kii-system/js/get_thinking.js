@@ -14,15 +14,15 @@ function Record_activities(nodeID, parentID, nodeACT, nodeTEXT, nodeCONCEPT, nod
               primary : primaryID},
 
       success: function () {
-        console.log("\n");
-        console.log("登録成功");
-        console.log("ノードID：" +nodeID );
-        console.log("操作：　" +nodeACT );
-        console.log("コンセプトID：　" +nodeCONCEPT );
-        console.log("ノードTYPE：　" +nodeTYPE );
-        console.log("ノードテキスト：　" +nodeTEXT );
-        console.log("親ノードID：　" +parentID );
-        console.log("\n");
+        // console.log("\n");
+        // console.log("登録成功");
+        // console.log("ノードID：" +nodeID );
+        // console.log("操作：　" +nodeACT );
+        // console.log("コンセプトID：　" +nodeCONCEPT );
+        // console.log("ノードTYPE：　" +nodeTYPE );
+        // console.log("ノードテキスト：　" +nodeTEXT );
+        // console.log("親ノードID：　" +parentID );
+        // console.log("\n");
       },
 
       error: function () {
@@ -50,13 +50,13 @@ function Get_NodeInfo(id, want_info){
 
               get_info = jmnode[i].getAttribute(want_info);
 
-                  if(get_info == "toi"){ //取得したい情報がタイプの場合，"toi"や"prepared_question"の修正を行う
-                      if(jmnode[i].getAttribute("concept_id") != ""){ //concept_idがあるならprepared_question
-                            get_info = "prepared_question";
-                      }else{
-                            get_info = "question"; //ないなら自作の問いでquestion
-                      }
-                  }
+                  // if(get_info == "toi"){ //取得したい情報がタイプの場合，"toi"や"prepared_question"の修正を行う
+                  //     if(jmnode[i].getAttribute("concept_id") != ""){ //concept_idがあるならprepared_question
+                  //           get_info = "prepared_question";
+                  //     }else{
+                  //           get_info = "question"; //ないなら自作の問いでquestion
+                  //     }
+                  // }
      }
 
       return get_info;

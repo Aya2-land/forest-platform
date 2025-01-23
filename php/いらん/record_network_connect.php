@@ -12,14 +12,14 @@ date_default_timezone_set('Asia/Tokyo');
 
 //ここ未完成（ノードにもっと情報追加しないといけないかも）
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['SHEETID'];    //シートID
+$map_id = $_SESSION['MAPID'];    //シートID
 $net_node_id = $_POST["net_nodeid"];             //ノードID
 $mm_node_id = $_POST["mm_nodeid"];              //ラベル
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 
-	$sql = "INSERT INTO network_mindmap_connect(user_id, sheet_id, network_node_id, mindmap_node_id, time)
-	VALUES ('$user_id', '$sheet_id', '$net_node_id', '$mm_node_id', '$timestamp')";
+	$sql = "INSERT INTO network_mindmap_connect(user_id, map_id, network_node_id, mindmap_node_id, time)
+	VALUES ('$user_id', '$map_id', '$net_node_id', '$mm_node_id', '$timestamp')";
 
 	$result = $mysqli->query($sql);
 

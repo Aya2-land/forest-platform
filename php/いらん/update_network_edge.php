@@ -6,20 +6,20 @@
 	date_default_timezone_set('Asia/Tokyo');
 
 	$user_id = $_SESSION['USERID'];      //ユーザID
-    $sheet_id = $_SESSION['SHEETID'];    //シートID
+    $map_id = $_SESSION['MAPID'];    //シートID
 	$st_time = $_POST['st_time'];
 	$start = $_POST['start'];
 	$end = $_POST['end'];
 
 	//時間設定はいる
 	if($start == 0){
-		$sql = "DELETE FROM network_edges_activity WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND edge_end = '$end' AND time > '$st_time'";
+		$sql = "DELETE FROM network_edges_activity WHERE user_id = '$user_id' AND map_id = '$map_id' AND edge_end = '$end' AND time > '$st_time'";
 		$result = $mysqli->query($sql);
 	}else if($end == 0){
-		$sql = "DELETE FROM network_edges_activity WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND edge_start = '$start' AND time > '$st_time'";
+		$sql = "DELETE FROM network_edges_activity WHERE user_id = '$user_id' AND map_id = '$map_id' AND edge_start = '$start' AND time > '$st_time'";
 		$result = $mysqli->query($sql);
 	}else{
-		$sql = "DELETE FROM network_edges_activity WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND edge_start = '$start' AND edge_end = '$end' AND time > '$st_time'";
+		$sql = "DELETE FROM network_edges_activity WHERE user_id = '$user_id' AND map_id = '$map_id' AND edge_start = '$start' AND edge_end = '$end' AND time > '$st_time'";
 		$result = $mysqli->query($sql);
 	}
 	//クエリ($sql)のエラー処理

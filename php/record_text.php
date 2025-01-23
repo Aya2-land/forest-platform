@@ -9,7 +9,7 @@ require("connect_db.php");
 
 //ここ未完成（ノードにもっと情報追加しないといけないかも）
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['SHEETID'];    //シートID
+$map_id = $_SESSION['MAPID'];    //シートID
 $sttime = $_POST["sttime"]; 
 $jsonDataArray = json_decode($_POST['jsonData'], true);
 
@@ -20,8 +20,8 @@ foreach ($jsonDataArray as $jsonData) {
     $time = $mysqli->real_escape_string($jsonData['time']);
 	$JPNtime = $mysqli->real_escape_string($jsonData['JPNtime']);
     
-    $query = "INSERT INTO network_text (user_id, sheet_id, area_id, sender, content, time, JPNtime, ST_Time) 
-	VALUES ($user_id, $sheet_id, $id, '$sender', '$content', $time, '$JPNtime', '$sttime')";
+    $query = "INSERT INTO network_text (user_id, map_id, area_id, sender, content, time, JPNtime, ST_Time) 
+	VALUES ($user_id, $map_id, $id, '$sender', '$content', $time, '$JPNtime', '$sttime')";
     
     if ($mysqli->query($query) !== TRUE) {
         // 失敗時の処理

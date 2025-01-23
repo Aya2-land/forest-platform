@@ -20,7 +20,7 @@ $request_param = $_GET["request"];
 $user_name = $_GET["user_name"];
 // $node_id = $_GET["node_id"];
 
-// $sql = "SELECT * FROM nodes WHERE sheet_id='".$sheet_id."' and id='".$node_id."'";
+// $sql = "SELECT * FROM nodes WHERE map_id='".$map_id."' and id='".$node_id."'";
 $sql = "SELECT * FROM users WHERE name = '".$user_name."'";
 
 $data = array();

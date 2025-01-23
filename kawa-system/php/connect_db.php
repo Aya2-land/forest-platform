@@ -1,10 +1,10 @@
 <?php
 
 //   各々のローカル
-	$db_host = "localhost";  // DBサーバのurl
+	$db_host = "localhost:8889";  // DBサーバのurl
 	$db_user = "root";
 	$db_password = "root";
-	$db_dbname = "forest";
+	$db_dbname = "forest_platform";
 
 	// 　統合環境1
 	// $db_host = "192.168.0.82:3306";  // DBサーバのurl

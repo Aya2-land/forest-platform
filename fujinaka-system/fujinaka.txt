@@ -1,0 +1,31 @@
+aiueo
+
+Kakikukeko
+
+//20221207shimizu ノードを選択して資料の項目を追加
+function ItemAddDocument(){
+  console.log("項目追加");
+  var content = document.getElementsByClassName("aradio");
+  console.log(content);
+
+  var node_id = id;
+  var uuid = getUniqueStr(); // Threadのidをランダム生成
+  var setid = getUniqueStr();
+  var quot_uuid = "\"" + uuid + "\""; // quotationをつけたuuid　labelを書く時に欲しかった
+  var quot_setid = "\"" + setid + "\"";
+  let area = $("#document_area");
+  console.log(uuid);
+  console.log(quot_uuid);
+
+  let label = "<div class='thread' id='"+uuid+"' value='スレッド' data-node_id='"+node_id+"' data-concept_id='"+c_id+"' style='background-color:white; padding:5px; margin-top:5px; margin-bottom:5px; margin-right:5px; margin-left:5px;height:auto'>"+
+                    "<span class = 'tspan' tabindex='0'>"+content+"</span>"+
+                    "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_uuid+");Record_rank();' placeholder='ページタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
+                    "<input id=DeleteButton-"+uuid+" class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");Record_rank();' style='width:20px; height:20px; font-size:10px; float:right;'>"+
+                    "<select id=SelectBox-"+uuid+"  class='cp_ipselect cp_sl04' name='Logic_options_title'>"+"</select>"+
+                    "<br>"+
+                "<div class='purpose'>"+
+                 "</div>"+
+              "</div>";
+
+  area.append(label);
+}

@@ -2,7 +2,7 @@
 let select_c = document.querySelector('[name="add_criticism"]');
 
 select_c.onchange = event => { 
-    value = select_c.value;
+  value = select_c.value;
   console.log(value);
 
   switch (value){

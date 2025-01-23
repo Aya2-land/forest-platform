@@ -1,7 +1,6 @@
 var clickedType="";
 
 function make_micro_strat(node) {
-	console.log(node);
     node.addEventListener('click', function(event) {
         
         clickedType = event.target.getAttribute('type');
@@ -15,7 +14,6 @@ function make_micro_strat(node) {
             var nodeid = event.target.getAttribute('nodeid');
             var text = "この解釈について，①なぜこのような解釈に至らなかったのか②どのようなことを意識して読解することで考えられるようになるか考えてみましょう";
             $("#ref_guidance").text(text);
-            console.log($("#ref_guidance"));
             $("#make_micro_strat_form").css("display", "block");
             
 			
@@ -25,7 +23,6 @@ function make_micro_strat(node) {
             var nodeid = event.target.getAttribute('nodeid');
             var text = "この問いについて，①なぜ思いつけなかったのか，②どのようなことを意識して読解することで立てられるようになるか考えてみましょう";
             $("#ref_guidance").text(text);
-            console.log($("#ref_guidance"));
             $("#make_micro_strat_form").css("display", "block");		
         }
     });    
@@ -50,12 +47,11 @@ function getData(){
 	    type: "POST",
 	    data: { val : "id"},
 	    success: function(arr){
-
-	    	var parse = JSON.parse(arr);
+			var parse = JSON.parse(arr);
 	    	id_array = parse;
 	    	showNode(id_array,"id");
 
-			},
+		},
 			error: function(){
 				console.log("ajaxエラー");
 	    }
@@ -68,14 +64,12 @@ function getData(){
 	    type: "POST",
 	    data: { val : "concept_id" },
 	    success: function(arr){
+			var parse = JSON.parse(arr);
+			concept_id_array = parse;
+			showNode(concept_id_array,"concept_id");
 
-	    	var parse = JSON.parse(arr);
-	    	concept_id_array = parse;
-	    	showNode(concept_id_array,"concept_id");
-
-
-			},
-			error: function(){
+		},
+		error: function(){
 			console.log("ajaxエラー");
 
 	    }
@@ -88,13 +82,12 @@ function getData(){
 	    type: "POST",
 	    data: { val : "content" },
 	    success: function(arr){
-
-	    	var parse = JSON.parse(arr);
+			var parse = JSON.parse(arr);
 	    	content_array = parse;
 	    	showNode(content_array,"content");
 
-			},
-			error: function(){
+		},
+		error: function(){
 			console.log("ajaxエラー");
 
 	    }
@@ -107,16 +100,12 @@ function getData(){
 	    type: "POST",
 	    data: { val : "type" },
 	    success: function(arr){
-
-	    	var parse = JSON.parse(arr);
+			var parse = JSON.parse(arr);
 	    	type_array = parse;
-				//	console.log(parse);
 	    	showNode(type_array,"type");
-
-			},
+		},
  		error: function(){
-	 	console.log("ajaxエラー");
-
+	 		console.log("ajaxエラー");
 	    }
 
 	});
@@ -127,14 +116,11 @@ function getData(){
 	    type: "POST",
 	    data: { val : "parent_id" },
 	    success: function(arr){
-
-	    	var parse = JSON.parse(arr);
+			var parse = JSON.parse(arr);
 	    	parent_id_array = parse;
-			//	console.log(parse);
 	    	showNode(parent_id_array,"parent_id");
-
-			},
-			error: function(){
+		},
+		error: function(){
 			console.log("ajaxエラー");
 
 	    }
@@ -147,13 +133,11 @@ function getData(){
 	    type: "POST",
 	    data: { val : "class" },
 	    success: function(arr){
-
-	    	var parse = JSON.parse(arr);
+			var parse = JSON.parse(arr);
 	    	class_array = parse;
 	    	showNode(class_array,"class");
-
-			},
-			error: function(){
+		},
+		error: function(){
 			console.log("ajaxエラー");
 
 	    }
@@ -166,17 +150,13 @@ function getData(){
 	    type: "POST",
 	    data: { val : "start_char_id" },
 	    success: function(arr){
-		
-
-	    	var parse = JSON.parse(arr);
-	    	s_id_array = parse;
-			console.log(parse);
-	    	showNode(s_id_array,"start_char_id");
-
-			},
-			error: function(){
+			var parse = JSON.parse(arr);
+			s_id_array = parse;
+			showNode(s_id_array,"start_char_id");
+				
+		},
+		error: function(){
 			console.log("ajaxエラー");
-
 	    }
 
 	});
@@ -186,16 +166,12 @@ function getData(){
 	    type: "POST",
 	    data: { val : "end_char_id" },
 	    success: function(arr){
-
-	    	var parse = JSON.parse(arr);
-	    	e_id_array = parse;
-			console.log(parse);
-	    	showNode(e_id_array,"end_char_id");
-
-			},
-			error: function(){
+			var parse = JSON.parse(arr);
+			s_id_array = parse;
+			showNode(s_id_array,"start_char_id");
+		},
+		error: function(){
 			console.log("ajaxエラー");
-
 	    }
 
 	});
@@ -260,7 +236,6 @@ function showNode(arr,mode){
 	}
 
 	if(count >= 8){
-		console.log(e_id_array);
 
 		var n = 1;
 
@@ -316,7 +291,7 @@ function showNode(arr,mode){
 
 }
 
-function getData2(sheetid){
+function getData2(mapid){
 	$("#jsmind_container2").empty();
 	open_empty2();
 
@@ -328,14 +303,14 @@ function getData2(sheetid){
 		type_array = new Array();
 		parent_id_array = new Array();
 		class_array = new Array();
-		psheet_id_array = new Array();
+		pmap_id_array = new Array();
 
 	$.ajax({
 
 	    url: "php/open_data2.php",
 	    type: "POST",
 	    data: { val : "id",
-				sheetid : sheetid},
+				mapid : mapid},
 	    success: function(arr){
 
 	    	var parse = JSON.parse(arr);
@@ -354,7 +329,7 @@ function getData2(sheetid){
 		url: "php/open_data2.php",
 	    type: "POST",
 	    data: { val : "concept_id" ,
-				sheetid : sheetid},
+				mapid : mapid},
 	    success: function(arr){
 
 	    	var parse = JSON.parse(arr);
@@ -375,7 +350,7 @@ function getData2(sheetid){
 	    url: "php/open_data2.php",
 	    type: "POST",
 	    data: { val : "content",
-				sheetid : sheetid },
+				mapid : mapid },
 	    success: function(arr){
 
 	    	var parse = JSON.parse(arr);
@@ -395,7 +370,7 @@ function getData2(sheetid){
 	    url: "php/open_data2.php",
 	    type: "POST",
 	    data: { val : "type",
-				sheetid : sheetid },
+				mapid : mapid },
 	    success: function(arr){
 
 	    	var parse = JSON.parse(arr);
@@ -416,7 +391,7 @@ function getData2(sheetid){
 	    url: "php/open_data2.php",
 	    type: "POST",
 	    data: { val : "parent_id",
-				sheetid : sheetid },
+				mapid : mapid },
 	    success: function(arr){
 
 	    	var parse = JSON.parse(arr);
@@ -437,7 +412,7 @@ function getData2(sheetid){
 	    url: "php/open_data2.php",
 	    type: "POST",
 	    data: { val : "class",
-				sheetid : sheetid },
+				mapid : mapid },
 	    success: function(arr){
 
 	    	var parse = JSON.parse(arr);
@@ -457,7 +432,7 @@ function getData2(sheetid){
 	    url: "php/open_data2.php",
 	    type: "POST",
 	    data: { val : "start_char_id",
-				sheetid : sheetid },
+				mapid : mapid },
 	    success: function(arr){
 
 	    	var parse = JSON.parse(arr);
@@ -477,7 +452,7 @@ function getData2(sheetid){
 	    url: "php/open_data2.php",
 	    type: "POST",
 	    data: { val : "end_char_id",
-				sheetid : sheetid },
+				mapid : mapid },
 	    success: function(arr){
 
 	    	var parse = JSON.parse(arr);
@@ -496,14 +471,14 @@ function getData2(sheetid){
 
 	    url: "php/open_data2.php",
 	    type: "POST",
-	    data: { val : "parent_sheet_id",
-				sheetid : sheetid },
+	    data: { val : "parent_map_id",
+				mapid : mapid },
 	    success: function(arr){
 
 	    	var parse = JSON.parse(arr);
-	    	psheet_id_array = parse;
-			console.log(psheet_id_array);
-	    	showNode2(psheet_id_array,"parent_sheet_id");
+	    	pmap_id_array = parse;
+			console.log(pmap_id_array);
+	    	showNode2(pmap_id_array,"parent_map_id");
 
 			},
 			error: function(){
@@ -525,7 +500,7 @@ var id_array = new Array();
 	content_array = new Array();
 	type_array = new Array();
 	class_array = new Array();
-	psheet_id_array = new Array();
+	pmap_id_array = new Array();
 
 
 function showNode2(arr,mode){
@@ -572,9 +547,9 @@ function showNode2(arr,mode){
 		count += 1;
 
 	}
-	else if(mode == "parent_sheet_id"){
+	else if(mode == "parent_map_id"){
 
-		psheet_id_array = arr;
+		pmap_id_array = arr;
 		count += 1;
 
 	}
@@ -589,7 +564,7 @@ function showNode2(arr,mode){
 
 				// rootを親に持つノードを表示
 				// mindmap.jsへ受け渡す
-				show_node2(id_array[i],parent_id_array[i],content_array[i],concept_id_array[i],type_array[i],class_array[i],s_id_array[i], e_id_array[i],psheet_id_array[i]);
+				show_node2(id_array[i],parent_id_array[i],content_array[i],concept_id_array[i],type_array[i],class_array[i],s_id_array[i], e_id_array[i],pmap_id_array[i]);
 				n++;
 				// console.log(content_array[i]);
 				// console.log("a");
@@ -612,7 +587,7 @@ function showNode2(arr,mode){
 					// rootを親に持たないノードを表示
 					if(parent_id_array[j] != "root"){
 						//mindmap.jsへ受け渡す
-						show_node2(id_array[j],parent_id_array[j],content_array[j],concept_id_array[j],type_array[j],class_array[j],s_id_array[j],e_id_array[j], psheet_id_array[j]);
+						show_node2(id_array[j],parent_id_array[j],content_array[j],concept_id_array[j],type_array[j],class_array[j],s_id_array[j],e_id_array[j], pmap_id_array[j]);
 						jmnode = document.getElementsByTagName("jmnode");
 						n++;
 

@@ -43,7 +43,7 @@ function get_question(){
                             button.setAttribute("id", "answer_button"+i);
                         }
                         button.innerHTML = questionArray[i]["content"]; // ボタンのテキストを配列の要素に設定
-                        button.setAttribute("data-sheet_id", questionArray[i]["sheet_id"]);
+                        button.setAttribute("data-map_id", questionArray[i]["map_id"]);
                         button.setAttribute("class", "b_que");
                         
 

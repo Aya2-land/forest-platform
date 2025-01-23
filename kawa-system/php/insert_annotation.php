@@ -6,7 +6,7 @@
 	require("connect_db.php");
 	date_default_timezone_set('Asia/Tokyo');
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-	$sheet_id = $_SESSION['SHEETID'];    //シートID
+	$map_id = $_SESSION['MAPID'];    //シートID
 	
 	$send_annotation_id = $_POST["id"]; //nishida
 	$start_char_id = $_POST["start_char_id"]; //nishida
@@ -16,11 +16,11 @@
     $paper_content = $_POST["content"];
 	$node_id= $_POST["node_id"];
 
-	// $sql = "INSERT INTO annotations (id, start_char_id, end_char_id, type, content, created_at, deleted, sheet_id)
-	// VALUES ('$send_annotation_id','$start_char_id','$end_char_id','$type','$paper_content', '$timestamp', 0, '.$sheet_id.')";
+	// $sql = "INSERT INTO annotations (id, start_char_id, end_char_id, type, content, created_at, deleted, map_id)
+	// VALUES ('$send_annotation_id','$start_char_id','$end_char_id','$type','$paper_content', '$timestamp', 0, '.$map_id.')";
 
-	$sql = "INSERT INTO annotations (id, start_char_id, end_char_id, type, content, created_at, deleted, sheet_id, node_id)
-	VALUES ('$send_annotation_id','$start_char_id','$end_char_id','$type','$paper_content', '$timestamp', 0, '$sheet_id', '$node_id')";
+	$sql = "INSERT INTO annotations (id, start_char_id, end_char_id, type, content, created_at, deleted, map_id, node_id)
+	VALUES ('$send_annotation_id','$start_char_id','$end_char_id','$type','$paper_content', '$timestamp', 0, '$map_id', '$node_id')";
 
 	$result = $mysqli->query($sql);
 

@@ -11,11 +11,11 @@ require("connect_db.php");
 //タイムゾーンの設定
 date_default_timezone_set('Asia/Tokyo');
 $today_date = date("Y-m-d");
-$sheet_id = $_POST['sheet'];    //シートID
+$map_id = $_POST['map'];    //シートID
 
 if($_POST["val"] == "all"){
   $sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM annotations 
-        WHERE deleted=0 and sheet_id='$sheet_id' 
+        WHERE deleted=0 and map_id='$map_id' 
         ORDER BY 'created_at' DESC"; 
 
 $reflections = array();
@@ -33,7 +33,7 @@ if($result = $mysqli->query($sql)){
       'type' => $row["type"],
       'node_id' => $row["node_id"],
       'content' => $row["content"],
-      // 'sheet_id' => $row["sheet_id"]
+      // 'map_id' => $row["map_id"]
       
     );
   }
@@ -55,7 +55,7 @@ else if($_POST['val'] == 'one'){
   /* and user_id=${user_id} */
 
   $sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM annotations 
-          WHERE deleted=0 and sheet_id='$sheet_id' and parent_id='$parent_id'
+          WHERE deleted=0 and map_id='$map_id' and parent_id='$parent_id'
           ORDER BY 'created_at' DESC"; 
 
   $reflections = array();
@@ -73,7 +73,7 @@ else if($_POST['val'] == 'one'){
         'type' => $row["type"],
         'node_id' => $row["node_id"],
         'content' => $row["content"],
-        // 'sheet_id' => $row["sheet_id"]
+        // 'map_id' => $row["map_id"]
         
       );
     }

@@ -17,7 +17,7 @@ function input_comment(){
                 id : comment_id,
                 comment : comment,
                 nodeid : commented_node_id,
-                sheet_id : parent_sheet_id,
+                map_id : parent_map_id,
             },
         success: function(result){
             console.log(result);

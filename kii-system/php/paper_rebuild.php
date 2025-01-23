@@ -11,8 +11,8 @@ require("connect_db.php");
 //タイムゾーンの設定
 date_default_timezone_set('Asia/Tokyo');
 $today_date = date("Y-m-d");
-$sheet_id = $_SESSION['SHEETID'];    //シートID
-$paper_id_sql = "SELECT paper_id FROM sheets WHERE id=$sheet_id ";
+$map_id = $_SESSION['MAPID'];    //シートID
+$paper_id_sql = "SELECT paper_id FROM maps WHERE map_id=$map_id ";
 
 $result_paper_id = $mysqli->query($paper_id_sql);
 $data_paper_id = mysqli_fetch_assoc($result_paper_id);

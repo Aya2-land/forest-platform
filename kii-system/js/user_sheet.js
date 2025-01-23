@@ -3,7 +3,7 @@
 let annotations_s=[]; //annotation_text_object
 let annotations_m=[]; //annotation_text_object
      annotations_m=annotations; //annotation_text_object
-let sheet_id_tmp = new Number(); 
+let map_id_tmp = new Number(); 
 
 let past_array = [];
 let now_array = [];
@@ -30,7 +30,7 @@ $('#user_list').change(function() { // セレクトボックスから選ばれ�
 
 
 // なぜかarea_idを引数にしとかないと狂う
-function Rebuild_paper2(area_id,sheet){
+function Rebuild_paper2(area_id,map){
   $.ajax({
       url: "php/paper_rebuild.php",
       type: "POST",
@@ -42,14 +42,14 @@ function Rebuild_paper2(area_id,sheet){
           span.innerHTML = paper; //html要素に変換   
           area.append(span); //bodyに追加
 
-          console.log(sheet);
+          console.log(map);
           $.ajax({
                          
             url: "php/annotation_user_rebuild.php",
             type: "POST",
             data: { 
               val : "all",
-              sheet : sheet,
+              map : map,
             },
             success:function(annotation){
         
@@ -71,7 +71,7 @@ function Rebuild_paper2(area_id,sheet){
   });
 }
 
-function Rebuild_paper3(area_id,sheet, parent_id){
+function Rebuild_paper3(area_id,map, parent_id){
   $.ajax({
       url: "php/paper_rebuild.php",
       type: "POST",
@@ -83,14 +83,14 @@ function Rebuild_paper3(area_id,sheet, parent_id){
           span.innerHTML = paper; //html要素に変換   
           area.append(span); //bodyに追加
 
-          console.log(sheet);
+          console.log(map);
           $.ajax({
                          
             url: "php/annotation_user_rebuild.php",
             type: "POST",
             data: { 
               val : "one",
-              sheet : sheet,
+              map : map,
               parent_id : parent_id
             },
             success:function(annotation){
@@ -151,8 +151,8 @@ function OpenPastSheet(array){
 
   console.log("更新");
 
-  var sheet_id = $('#user_list option:selected').val(); // selectboxから選択
-  // $('#jsmind_container2').prepend("<div>"+sheet_id+"のマインドマップ</div>");
+  var map_id = $('#user_list option:selected').val(); // selectboxから選択
+  // $('#jsmind_container2').prepend("<div>"+map_id+"のマインドマップ</div>");
 
   // テーマ設定
   var options = {
@@ -449,7 +449,7 @@ function show_annotation(){
   if(check.checked == true){
     addHightlightSentences2(annotations,"user_m");
   }else{
-    Rebuild_paper2("paper_area",sheet_id_tmp);
+    Rebuild_paper2("paper_area",map_id_tmp);
     // removeAnnotationSentences(annotations);
   }
 }

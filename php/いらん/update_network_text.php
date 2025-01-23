@@ -6,15 +6,15 @@
 	date_default_timezone_set('Asia/Tokyo');
 
 	$user_id = $_SESSION['USERID'];      //ユーザID
-    $sheet_id = $_SESSION['SHEETID'];    //シートID
+    $map_id = $_SESSION['MAPID'];    //シートID
 	$sttime = $_POST['sttime'];
 	$remain_id = $_POST['remain_id'];
 	$delete_id = $_POST['delete_id'];
 	$content = $_POST['content'];
 
-	$sql1 = "UPDATE network_text SET content = '$content' WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND ST_Time = '$sttime' AND area_id = '$remain_id'";
+	$sql1 = "UPDATE network_text SET content = '$content' WHERE user_id = '$user_id' AND map_id = '$map_id' AND ST_Time = '$sttime' AND area_id = '$remain_id'";
 	$result1 = $mysqli->query($sql1);
-	$sql2 = "DELETE FROM network_text WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND ST_Time = '$sttime' AND area_id = '$delete_id'";
+	$sql2 = "DELETE FROM network_text WHERE user_id = '$user_id' AND map_id = '$map_id' AND ST_Time = '$sttime' AND area_id = '$delete_id'";
 	$result2 = $mysqli->query($sql2);
 
 	//クエリ($sql)のエラー処理

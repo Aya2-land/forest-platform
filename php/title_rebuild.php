@@ -5,14 +5,14 @@ session_start();
 require("connect_db.php");
 
 // s$user_id = $_SESSION["USERID"];//"26943"; //
-$sheet_id = $_SESSION["SHEETID"];//"102774749"; //
+$map_id = $_SESSION["MAPID"];//"102774749"; //
 
 //タイムゾーンの設定
 date_default_timezone_set('Asia/Tokyo');
 $today_date = date("Y-m-d");
 
 
-$sql = "SELECT scenario_title FROM sheets WHERE id='$sheet_id'";
+$sql = "SELECT scenario_title FROM maps WHERE map_id='$map_id'";
 
 if($result = $mysqli->query($sql)){
 

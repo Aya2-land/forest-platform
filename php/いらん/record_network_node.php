@@ -12,7 +12,7 @@ date_default_timezone_set('Asia/Tokyo');
 
 //ここ未完成（ノードにもっと情報追加しないといけないかも）
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['SHEETID'];    //シートID
+$map_id = $_SESSION['MAPID'];    //シートID
 $node_id = $_POST["node_id"];             //ノードID
 $label = $_POST["label"];              //ラベル
 $x = $_POST["x"];  //x座標
@@ -22,8 +22,8 @@ $shape = $_POST["shape"];  //形
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 
-	$sql = "INSERT INTO network_nodes_activity (user_id, sheet_id, node_id, label, node_x, node_y, color, shape, time, updated_time)
-	VALUES ('$user_id', '$sheet_id', '$node_id', '$label', '$x', '$y', '$color', '$shape', '$timestamp',  '$timestamp')";
+	$sql = "INSERT INTO network_nodes_activity (user_id, map_id, node_id, label, node_x, node_y, color, shape, time, updated_time)
+	VALUES ('$user_id', '$map_id', '$node_id', '$label', '$x', '$y', '$color', '$shape', '$timestamp',  '$timestamp')";
 	$result = $mysqli->query($sql);
 
 //クエリ($sql)のエラー処理

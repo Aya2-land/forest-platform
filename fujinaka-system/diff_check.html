@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diff Example</title>
+    <script type="text/javascript" src="diff-match-patch-master/javascript/diff_match_patch.js" ></script>
+</head>
+<body>
+    <div id="oldElement">
+        <p id="a">This is some <b id="18882iu">old bigboss</b> content.</p>
+    </div>
+
+    <div id="newElement">
+        <p id="a">This is some <b id="18ie882">bigboss new</b> content.</p>
+    </div>
+
+    <div id="diffElement"></div>
+
+    <script>
+        var dmp = new diff_match_patch();
+
+        var oldHTML = document.getElementById("oldElement").innerHTML;
+        var newHTML = document.getElementById("newElement").innerHTML;
+
+        var diff = dmp.diff_main(oldHTML, newHTML);
+
+        var diffHTML = '';
+        for (var i = 0; i < diff.length; i++) {
+            var change = diff[i];
+            if (change[0] === 0) {
+                diffHTML += change[1];
+            } else if (change[0] === -1) {
+                diffHTML += '<del>' + change[1] + '</del>';
+            } else if (change[0] === 1) {
+                diffHTML += '<ins>' + change[1] + '</ins>';
+            }
+        }
+
+        document.getElementById("diffElement").innerHTML = diffHTML;
+    </script>
+</body>
+</html>

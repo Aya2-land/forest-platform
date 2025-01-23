@@ -8,7 +8,7 @@
 // date_default_timezone_set('Asia/Tokyo');
 // $image_id = uniqid();
 // $user_id = $_SESSION['USERID'];      //ユーザID
-// $sheet_id = $_SESSION['SHEETID'];    //シートID
+// $map_id = $_SESSION['MAPID'];    //シートID
 // $slide_id = $_POST["slide_id"];             //スライドID
 // $type = $_POST["type"];                 //ノードのタイプ
 // $activity_id = uniqid();
@@ -22,8 +22,8 @@
 //     $content = file_get_contents($_FILES['image']['tmp_name']);
 //     $size = $_FILES['image']['size'];
 
-//     $sql = "INSERT INTO images(image_id, image_name, image_type, image_content, image_size, user_id, sheet_id, created_at,)
-//             VALUES ('$image_id', :image_name, :image_type, :image_content, :image_size, '$user_id', '$sheet_id' , now())";
+//     $sql = "INSERT INTO images(image_id, image_name, image_type, image_content, image_size, user_id, map_id, created_at,)
+//             VALUES ('$image_id', :image_name, :image_type, :image_content, :image_size, '$user_id', '$map_id' , now())";
 //     $stmt = $pdo->prepare($sql);
 //     $stmt->bindValue(':image_name', $name, PDO::PARAM_STR);
 //     $stmt->bindValue(':image_type', $type, PDO::PARAM_STR);

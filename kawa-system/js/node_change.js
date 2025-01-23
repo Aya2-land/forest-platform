@@ -2,7 +2,7 @@
 
 
 
-function add_Test_node(){
+async function add_Test_node(){
 
     
     var selected_node = _jm.get_selected_node();
@@ -44,6 +44,30 @@ function add_Test_node(){
             jmnode[j].setAttribute("type","answer");
             jmnode[j].setAttribute("parent_id",parent_id);
 
+            try {
+                var type_name = async function() {
+                  return new Promise((resolve, reject) => {
+                    $.ajax({
+                      url: "php/get_Typeid.php",
+                      type: "POST",
+                      data: { class: "", type: "answer" },
+                      success: function(response) {
+                        const result = JSON.parse(response);
+                        resolve(result); 
+                      },
+                      error: function(error) {
+                        console.log("エラー:", error);
+                        reject(error);
+                      }
+                    });
+                  });
+                };
+                // get_typeid の非同期処理が完了するまで待つ
+                var node_type_id = await get_Typeid("", type_name);
+              } catch (error) {
+                console.log("エラーが発生しました:", error);
+              }
+
             $.ajax({
 
                 url: "php/insert_node.php",
@@ -51,12 +75,12 @@ function add_Test_node(){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : "answer",
+                        type : node_type_id['node_type_id'],
                         concept_id : p_concept,
                         x : jmnode[j].style.left,
                         y : jmnode[j].style.top,
                         content : jmnode[j].innerHTML,
-                        class : "" },
+                    },
 
             });
 
@@ -99,7 +123,7 @@ function add_Test_node(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 

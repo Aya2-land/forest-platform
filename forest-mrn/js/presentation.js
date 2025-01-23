@@ -700,19 +700,21 @@ function CreateThread(topic, id){
   var quot_setid = "\"" + setid + "\"";
   let selected_node = CheckSelectedNode(); // 現在選択されているノードのチェック
   let area = $("#document_area");
+  // let parent_id = parentUUID ? parentUUID : "root";
   console.log(uuid);
   console.log(quot_uuid);
+  // console.log(parent_id);
 
   let label = "<div class='thread' id='"+uuid+"' value='スレッド' data-node_id='"+node_id+"' style='background-color:white; padding:10px; margin-top:5px; margin-bottom:5px; margin-right:5px; margin-left:5px;'>"+
                     "<span class = 'tspan' tabindex='0'>ページタイトル</span>"+
-                    "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_uuid+");Record_rank();'  placeholder='ページタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
-                    "<input class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");Record_rank();' style='width:25px; height:25px; font-size:10px; float:right;'>"+
+                    "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_uuid+");'  placeholder='ページタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
+                    "<input class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");' style='width:25px; height:25px; font-size:10px; float:right;'>"+
                     "<br>"+
                 "<div class='purpose'>"+
                     "<div id='"+setid+"' class='scenario_content'>"+
                       "<span node_id='"+id+"' concept_id='"+concept_id+"' class = 'cspan' name = '0' style = 'width:calc(100% - 25px)' tabindex='0'>"+statement+"</span>"+
-                      "<textarea id='contents-"+setid+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_setid+");Record_rank();' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'>"+statement+"</textarea>"+
-                      "<input class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_setid+");Record_rank();'>"+
+                      "<textarea id='contents-"+setid+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_setid+");' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'>"+statement+"</textarea>"+
+                      "<input class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_setid+");'>"+
                     "</div>"+
                  "</div>"+
               "</div>";
@@ -722,7 +724,19 @@ function CreateThread(topic, id){
 
   area.append(label);
 
-  Record_slide(uuid);
+  // slide内のparent_idを指定
+  let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
+  let parentThread = newThread.prev('.thread'); // 親要素を取得
+  let brotherId;
+  if (parentThread.length > 0) {
+      brotherId = parentThread.attr('id'); // 親要素のIDを取得
+      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+  } else {
+      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      brotherId = "root";
+  }
+
+  Record_slide(uuid, node_id, statement, brotherId);
 
   var conceptID = GetConceptId(id);
   var type = GetType(id);
@@ -732,7 +746,7 @@ function CreateThread(topic, id){
  $('#document_area').sortable({
    update: function(){
        var log = $(this).sortable("toArray");
-       console.log(log);
+      //  console.log(log);
        // console.log("OK");
        Record_rank();
    }
@@ -742,7 +756,7 @@ function CreateThread(topic, id){
  $('.purpose').sortable({
    update: function(){
        var log = $(this).sortable("toArray");
-       console.log(log);
+      //  console.log(log);
        // console.log("OK!");
        Record_rank();
    }
@@ -765,7 +779,7 @@ if(type=="toi"){
   dom_target.style.border = "0.3px solid #ffeeba";
   dom_target.setAttribute("type","answer");
 }
-Record_rank();
+// Record_rank();
 
  return uuid; // 作成したID（スレッドのID)を返す
 }
@@ -794,26 +808,38 @@ function MakeSlide(){
     var quot_uuid = "\"" + uuid + "\""; // quotationをつけたuuid　labelを書く時に欲しかった
     var quot_setid = "\"" + setid + "\"";
     let area = $("#document_area");
-    console.log(uuid);
-    console.log(quot_uuid);
+    let statement = "スライドタイトル";
 
     let label = "<div class='thread' id='"+uuid+"' value='スレッド' data-node_id='"+node_id+"' style='background-color:white; padding:10px; margin-top:5px; margin-bottom:5px; margin-right:18px; margin-left:35px;'>"+
-                      "<span class = 'tspan' tabindex='0'>スライドタイトル</span>"+
-                      "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_uuid+");Record_rank();' placeholder='スライドタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
-                      "<input class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");Record_rank();' style='width:25px; height:25px; font-size:10px; float:right;'>"+
+                      "<span class = 'tspan' tabindex='0'>"+statement+"</span>"+
+                      "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_uuid+");' placeholder='スライドタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
+                      "<input class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");' style='width:25px; height:25px; font-size:10px; float:right;'>"+
                       "<br>"+
                   "<div class='purpose'>"+
                    "</div>"+
                 "</div>";
 
     area.append(label);
-    Record_slide(uuid);
+
+    // slide内のparent_idを指定
+    let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
+    let parentThread = newThread.prev('.thread'); // 親要素を取得
+    let brotherId;
+    if (parentThread.length > 0) {
+        brotherId = parentThread.attr('id'); // 親要素のIDを取得
+        newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+    } else {
+        newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      brotherId = "root";
+    }
+
+    Record_slide(uuid, node_id, statement, brotherId);
 
 
    $('#document_area').sortable({
      update: function(){
          var log = $(this).sortable("toArray");
-         console.log(log);
+        //  console.log(log);
          Record_rank();
      }
    });
@@ -822,14 +848,14 @@ function MakeSlide(){
    $('.purpose').sortable({
      update: function(){
          var log = $(this).sortable("toArray");
-         console.log(log);
+        //  console.log(log);
          Record_rank();
      }
     });
 
   $('#'+uuid).data('node_id', node_id);
 
-  Record_rank();
+  // Record_rank();
   return uuid; // 作成したID（スレッドのID)を返す
 }
 
@@ -841,20 +867,32 @@ function MakeNewPage(){
   var quot_uuid = "\"" + uuid + "\""; // quotationをつけたuuid　labelを書く時に欲しかった
   var quot_setid = "\"" + setid + "\"";
   let area = $("#document_area");
-  console.log(uuid);
-  console.log(quot_uuid);
+  let statement = "ページタイトル";
 
   let label = "<div class='thread' id='"+uuid+"' value='スレッド' data-node_id='"+node_id+"' style='background-color:white; padding:5px; margin-top:5px; margin-bottom:5px; margin-right:5px; margin-left:5px;height:auto'>"+
-                    "<span class = 'tspan' tabindex='0'>ページタイトル</span>"+
-                    "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_uuid+");Record_rank();' placeholder='ページタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
+                    "<span class = 'tspan' tabindex='0'>"+statement+"</span>"+
+                    "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_uuid+");' placeholder='ページタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
                     "<select id=SelectBox-"+uuid+" name='Logic_options_title'>"+"</select>"+
-                    "<input class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");Record_rank();' style='width:20px; height:20px; font-size:10px; float:right;'>"+
+                    "<input class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");' style='width:20px; height:20px; font-size:10px; float:right;'>"+
                     "<br>"+
                 "<div class='purpose'>"+
                  "</div>"+
               "</div>";
 
   area.append(label);
+
+  // slide内のparent_idを指定
+  let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
+  let parentThread = newThread.prev('.thread'); // 親要素を取得
+  let brotherId;
+  if (parentThread.length > 0) {
+      brotherId = parentThread.attr('id'); // 親要素のIDを取得
+      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+  } else {
+      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      brotherId = "root";
+  }
+
   //2022-11-23 shimizu 中身を追加
   for(var LogicLabel in Base_ClassLabeltoConceptID){
     // console.log(LogicLabel);
@@ -866,12 +904,12 @@ function MakeNewPage(){
     // $("select[name='Logic_options_title']").append(new Option(Label, Base_ClassLabeltoConceptID[LogicLabel]));
   }
 
-  Record_slide(uuid);
+  Record_slide(uuid, node_id, statement, brotherId);
   
  $('#document_area').sortable({
    update: function(){
        var log = $(this).sortable("toArray");
-       console.log(log);
+      //  console.log(log);
        Record_rank();
    }
  });
@@ -879,14 +917,14 @@ function MakeNewPage(){
  $('.purpose').sortable({
    update: function(){
        var log = $(this).sortable("toArray");
-       console.log(log);
+      //  console.log(log);
        Record_rank();
    }
  });
 
   $('#'+uuid).data('node_id', node_id);
 
-  Record_rank();
+  // Record_rank();
   return uuid; // 作成したID（スレッドのID)を返す
 }
 
@@ -922,25 +960,37 @@ function AddImage(){
   var quot_uuid = "\"" + uuid + "\""; // quotationをつけたuuid　labelを書く時に欲しかった
   var quot_setid = "\"" + setid + "\"";
   let area = $("#document_area");
-  console.log(uuid);
-  console.log(quot_uuid);
+  let statement = "ページタイトル";
 
   let label = "<div class='thread' id='"+uuid+"' value='スレッド' data-node_id='"+node_id+"' style='background-color:white; padding:10px; margin-top:10px; margin-bottom:10px; margin-right:30px; margin-left:30px;'>"+
-                    "<span class = 'tspan' tabindex='0'>ページタイトル</span>"+
-                    "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_uuid+");Record_rank();' placeholder='ページタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
-                    "<input class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");Record_rank();' style='width:25px; height:25px; font-size:10px; float:right;'>"+
+                    "<span class = 'tspan' tabindex='0'>"+statement+"</span>"+
+                    "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_uuid+");' placeholder='ページタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
+                    "<input class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");' style='width:25px; height:25px; font-size:10px; float:right;'>"+
                 "<div class='purpose'>"+
                  "</div>"+
               "</div>";
 
   area.append(label);
-  Record_slide(uuid);
+
+  // slide内のparent_idを指定
+  let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
+  let parentThread = newThread.prev('.thread'); // 親要素を取得
+  let brotherId;
+  if (parentThread.length > 0) {
+      brotherId = parentThread.attr('id'); // 親要素のIDを取得
+      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+  } else {
+      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      brotherId = "root";
+  }
+
+  Record_slide(uuid, node_id, statement, brotherId);
 
 
  $('#document_area').sortable({
    update: function(){
        var log = $(this).sortable("toArray");
-       console.log(log);
+      //  console.log(log);
        Record_rank();
    }
  });
@@ -949,14 +999,14 @@ function AddImage(){
  $('.purpose').sortable({
    update: function(){
        var log = $(this).sortable("toArray");
-       console.log(log);
+      //  console.log(log);
        Record_rank();
    }
  });
 
 $('#'+uuid).data('node_id', node_id);
 
-Record_rank();
+// Record_rank();
 return uuid; // 作成したID（スレッドのID)を返す
 }
 
@@ -998,9 +1048,9 @@ function NodeAppend(){
     let area = document.getElementById("target")
     let label = "<div id='"+setid+"' class='scenario_content'>"+
                   "<span node_id='"+id+"' concept_id='"+c_id+"' class = 'cspan' name = '0' style = 'width:calc(100% - 25px)' tabindex='0'>"+selected_node.topic+"</span>"+
-                  "<textarea id='contents-"+setid+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_setid+");Record_rank();' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'>"+selected_node.topic+"</textarea>"+
+                  "<textarea id='contents-"+setid+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_setid+");' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'>"+selected_node.topic+"</textarea>"+
                   "<select id=SelectBox-"+setid+" name='Logic_options_contents'>"+"</select>"+
-                  "<input class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_setid+");Record_rank();'>"+
+                  "<input class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_setid+");'>"+
                 "</div>";
 
     const c_dom = document.getElementsByClassName("cspan");
@@ -1064,7 +1114,7 @@ function NodeAppend(){
     }
   }
   SetIndent();
-  Record_rank();
+  // Record_rank();
 
 }
 
@@ -1112,8 +1162,8 @@ function NodeAppendLogic(){
     let area = document.getElementById("target")
     let label = "<div id='"+setid+"' class='scenario_content'>"+
                   "<span id='"+setid+"' node_id='"+id+"' concept_id='"+c_id+"' class = 'cspan' name = '0' style = 'width:calc(100% - 25px)' tabindex='0'>"+selected_node.topic+"</span>"+
-                  "<textarea id='contents-"+setid+"' class='text_border' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_setid+");Record_rank();' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'>"+selected_node.topic+"</textarea>"+
-                  "<input id=DeleteButton-"+setid+" class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_setid+");Record_rank();'>"+
+                  "<textarea id='contents-"+setid+"' class='text_border' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_setid+");' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'>"+selected_node.topic+"</textarea>"+
+                  "<input id=DeleteButton-"+setid+" class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_setid+");'>"+
                   "<select id=SelectBox-"+setid+" class='cp_ipselect cp_sl05' name='Logic_options_contents'>"+"</select>"+
                 "</div>";
 
@@ -1194,7 +1244,7 @@ function NodeAppendLogic(){
   }
 
   SetIndent();
-  Record_rank();
+  // Record_rank();
 
 }
 
@@ -1225,13 +1275,11 @@ function ItemAddDocument(){
   var quot_uuid = "\"" + uuid + "\""; // quotationをつけたuuid　labelを書く時に欲しかった
   var quot_setid = "\"" + setid + "\"";
   let area = $("#document_area");
-  console.log(uuid);
-  console.log(quot_uuid);
 
   let label = "<div class='thread' id='"+uuid+"' value='スレッド' data-node_id='"+node_id+"' data-concept_id='"+c_id+"' style='background-color:white; padding:5px; margin-top:5px; margin-bottom:5px; margin-right:5px; margin-left:5px;height:auto'>"+
                     "<span class = 'tspan' tabindex='0'>"+content+"</span>"+
-                    "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_uuid+");Record_rank();' placeholder='ページタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
-                    "<input id=DeleteButton-"+uuid+" class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");Record_rank();' style='width:20px; height:20px; font-size:10px; float:right;'>"+
+                    "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_uuid+");' placeholder='ページタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
+                    "<input id=DeleteButton-"+uuid+" class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_uuid+");' style='width:20px; height:20px; font-size:10px; float:right;'>"+
                     "<select id=SelectBox-"+uuid+"  class='cp_ipselect cp_sl04' name='Logic_options_title'>"+"</select>"+
                     "<br>"+
                 "<div class='purpose'>"+
@@ -1239,6 +1287,19 @@ function ItemAddDocument(){
               "</div>";
 
   area.append(label);
+
+  // slide内のparent_idを指定
+  let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
+  let parentThread = newThread.prev('.thread'); // 親要素を取得
+  let brotherId;
+  if (parentThread.length > 0) {
+      brotherId = parentThread.attr('id'); // 親要素のIDを取得
+      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+  } else {
+      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      brotherId = "root";
+  }
+
   // //2022-11-23 shimizu 中身を追加
   for(var LogicLabel in Base_ClassLabeltoConceptID){
     // console.log(LogicLabel);
@@ -1251,12 +1312,12 @@ function ItemAddDocument(){
     // $("select[id="+LogicID+"]").append(new Option(Label, Base_ClassLabeltoConceptID[LogicLabel]));
   }
 
-  Record_slide(uuid);
+  Record_slide(uuid, node_id, content, brotherId);
   
  $('#document_area').sortable({
    update: function(){
        var log = $(this).sortable("toArray");
-       console.log(log);
+      //  console.log(log);
        Record_rank();
       //  MoveImageArea();
       MoveAndExpensionImageArea(); 
@@ -1266,7 +1327,7 @@ function ItemAddDocument(){
  $('.purpose').sortable({
    update: function(){
        var log = $(this).sortable("toArray");
-       console.log(log);
+      //  console.log(log);
        Record_rank();
       //  MoveImageArea();
       MoveAndExpensionImageArea();
@@ -1275,7 +1336,7 @@ function ItemAddDocument(){
 
   $('#'+uuid).data('node_id', node_id);
 
-  Record_rank();
+  // Record_rank();
   return uuid; // 作成したID（スレッドのID)を返す
 }
 
@@ -1530,8 +1591,8 @@ function NewContent_Append(type){
   let area = document.getElementById(data);
   let label = "<div id='"+setid+"' class='scenario_content'>"+
                 "<span class='cspan' name = '0' style = 'width:calc(100% - 25px)' tabindex='0'></span>"+
-                "<textarea id='contents-"+setid+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_setid+");Record_rank();' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
-                "<input class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_setid+");Record_rank();'>"+
+                "<textarea id='contents-"+setid+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_setid+");' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
+                "<input class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_setid+");'>"+
                 "<select id=SelectBox-"+setid+" class='cp_ipselect cp_sl05' name='Logic_options_contents'>"+"</select>"+
               "</div>";
 
@@ -1598,7 +1659,7 @@ function NewContent_Append(type){
   }
 
   SetIndent();
-  Record_rank();
+  // Record_rank();
 }
 
 //問いエリアからシナリオに埋め込む関数
@@ -1629,8 +1690,8 @@ function Toi_Append(){
   console.log(area);
   let label = "<div id='"+setid+"' class='scenario_content'>"+
                 "<span class='cspan' name = '0' concept_id = '"+conceptid+"' style = 'width:calc(100% - 25px)' tabindex='0'>"+content+"</span>"+
-                "<textarea id='contents-"+setid+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_setid+");Record_rank();' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'>"+content+"</textarea>"+
-                "<input class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_setid+");Record_rank();'>"+
+                "<textarea id='contents-"+setid+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_setid+");' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'>"+content+"</textarea>"+
+                "<input class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_setid+");'>"+
                 "<select id=SelectBox-"+setid+" class='cp_ipselect cp_sl05' name='Logic_options_contents'>"+"</select>"+
               "</div>";
 
@@ -1688,7 +1749,7 @@ function Toi_Append(){
   }
 
   SetIndent();
-  Record_rank();
+  // Record_rank();
 }
 
 
@@ -1812,8 +1873,8 @@ function OutputFileS(){
 
   $('#scenario_title').css('width','calc(70vw - 350px)');
   
-  $('#jsmind_container').css('width','30vw');//横幅を全体の20％で表示？
-  $('#document_area').css('width','calc(70vw - 350px)');　//資料作成箇所
+  $('#jsmind_container').css('width','50%');//横幅を全体の20％で表示？
+  $('#document_area').css('width','50%');　//資料作成箇所
   $('#document_area').css('height','auto');
   $("select[name='Logic_options_contents']").css('font-size', '0.01');
   $("select[name='Logic_options_contents']").css('visibility', 'hidden');
@@ -1893,11 +1954,11 @@ async function CreateMindmapNodeXML(){
           // console.log(parse[i].concept_id);
           // console.log(parse[i].parent_id);
           console.log("node_type : "+parse[i].type)
-          xmlSource += '<Node node_id="'+parse[i].id+'" ';
+          xmlSource += '<Node node_id="'+parse[i].node_id+'" ';
           xmlSource += 'node_label="'+parse[i].content+'" ';
           xmlSource += 'node_concept_id="'+parse[i].concept_id+'" ';
           xmlSource += 'node_parent_id="'+parse[i].parent_id+'" ';
-          xmlSource += 'type="'+parse[i].type+'" />\n';
+          xmlSource += 'type="'+parse[i].type_id+'" />\n';
         }
       }
       xmlSource += '</Information>\n';
@@ -1964,13 +2025,25 @@ function Get_SlideRank(){
   var slide_dom = document.getElementsByClassName("thread");
   var slide_id =[];
 
-  Update_slide_rank().then(() => {
-    for(var i=0; i<slide_dom.length; i++){
-      slide_id.push(slide_dom[i].id);
-      const title = slide_dom[i].firstChild.innerHTML;
-      Record_slide_rank(slide_id[i], i, title);
-    }
-  });
+  // slide内のparent_idを指定
+  let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
+  let parentThread = newThread.prev('.thread'); // 親要素を取得
+  let brotherId;
+  if (parentThread.length > 0) {
+      brotherId = parentThread.attr('id'); // 親要素のIDを取得
+      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+  } else {
+      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      brotherId = "root";
+  }
+  console.log(brotherId);
+
+  for(var i=0; i<slide_dom.length; i++){
+    slide_id.push(slide_dom[i].id);
+    const title = slide_dom[i].firstChild.innerHTML;
+    Record_slide_rank(slide_id[i], brotherId);
+  }
+
   // window.alert('スライドの保存が完了しました');
 }
 
@@ -1978,42 +2051,25 @@ function Get_SlideRank(){
 function Get_DocumentRank(){
   var slide_dom = document.getElementsByClassName("thread");
   var slide_id =[];
-  var selected_id = [];
+  console.log(slide_dom);
 
-  Update_Document_rank().then(() => {
-    for(var i=0; i<slide_dom.length; i++){
-      slide_id.push(slide_dom[i].id);
-      var document_selected = document.getElementById("SelectBox-"+slide_id[i]);
-      var logic_option_slide;
-      if(document_selected == undefined){
-        console.log("セレクトなし");
-        const title = "Image";
-        var node_id = slide_dom[i].getAttribute("data-node_id");
-        console.log(node_id);
-        var concept_id = "notid";
-        logic_option_slide = 0;
-        Record_document_rank(slide_id[i], i, title,logic_option_slide,node_id,concept_id);
-      }else{
-        console.log("セレクトあり");
-        if(document_selected.selectedIndex == null){
-          // console.log("nullだった");
-          logic_option_slide = 0;
-        }else{
-          // console.log("選択されてた");
-          logic_option_slide = document_selected.selectedIndex;
-        }
-        console.log(logic_option_slide);
-        //var logic_option = document_selected.selectedIndex;
-        const title = slide_dom[i].firstChild.innerHTML;
-        var node_id = slide_dom[i].getAttribute("data-node_id");
-        var concept_id = slide_dom[i].getAttribute("data-concept_id");
-        console.log(node_id);
-        console.log(concept_id);
-        Record_document_rank(slide_id[i], i, title,logic_option_slide,node_id,concept_id);
-      }
+  for(var i=0; i<slide_dom.length; i++){
+    slide_id.push(slide_dom[i].id);
+    
+    let parentThread = $(slide_dom[i]).closest('.thread').prev('.thread'); // 親要素を取得
+    let brotherId;
+    if (parentThread.length > 0) {
+        brotherId = parentThread.attr('id'); // 親要素のIDを取得
+    } else {
+        brotherId = 'root'; // 親がいない場合はrootを設定
     }
-  });
-  // window.alert('スライドの保存が完了しました');
+
+    // 親IDを設定
+    $(slide_dom[i]).attr('data-parent_id', brotherId); // 対象のスレッドにparent_idを設定
+    
+    // document_rankを記録する
+    Record_document_rank(slide_id[i], brotherId);
+  }
 }
 
 function Get_ContentRank(){
@@ -2346,8 +2402,8 @@ class Slide{
     // console.log(quot_slide_id);
     let label = "<div class='thread' id='"+slide_id+"' value='スレッド' data-node_id='"+node_id+"' data-concept_id='"+concept_id+"' style='background-color:white; padding:5px; margin-top:5px; margin-bottom:5px; margin-right:5px; margin-left:5px;height:auto; '>"+
                       "<span class = 'tspan' tabindex='0'>"+slide_title+"</span>"+
-                      "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_slide_id+");Record_rank();' style='font-size: 30px;' placeholder='ページタイトル' onkeypress='Keypress(event.keyCode, this);'>"+slide_title+"</textarea>"+
-                      "<input id=DeleteButton-"+slide_id+" class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_slide_id+");Record_rank();' style='width:20px; height:20px; font-size:10px; float:right;'>"+
+                      "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Edit_slide(this,"+quot_slide_id+");' style='font-size: 30px;' placeholder='ページタイトル' onkeypress='Keypress(event.keyCode, this);'>"+slide_title+"</textarea>"+
+                      "<input id=DeleteButton-"+slide_id+" class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_slide_id+");' style='width:20px; height:20px; font-size:10px; float:right;'>"+
                       "<br>"+
                       "<select id=SelectBox-"+slide_id+" class='cp_ipselect cp_sl04' name='Logic_options_title'>"+"</select>"+
                   "<div class='purpose'>"+
@@ -2392,7 +2448,7 @@ class SlideImage{
     
     let label = "<div class='thread' id='"+slide_id+"' value='スレッド' data-node_id='"+image_ID+"' data-concept_id='"+concept_id+"' style='background-color:white; padding:5px; margin-top:5px; margin-bottom:5px; margin-right:5px; margin-left:5px;height:auto'>"+
     "<img id='preview-"+slide_id+"' class=Image src='"+phpURL+"' alt='選択した画像' width='95%'>"+
-    "<input id=DeleteButton-"+slide_id+" class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_slide_id+");Record_rank();' style='width:20px; height:20px; font-size:10px; float:right;'>"+
+    "<input id=DeleteButton-"+slide_id+" class='simple_btn' type='button' value='×' onclick='RemoveThread("+quot_slide_id+");' style='width:20px; height:20px; font-size:10px; float:right;'>"+
     "<br>"+
     "<div class='purpose'>"+
     "</div>"+
@@ -2454,8 +2510,8 @@ class Content{
     // console.log(quot_slide_id);
     let label = "<div id='"+content_id+"' class='scenario_content'>"+
                   "<span id='"+content_id+"' class = 'cspan' name = '"+indent+"' style = 'width:calc(100% - 25px)' type='"+type+"' tabindex='0'>"+content+"</span>"+
-                  "<textarea id='contents-"+content_id+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_contentid+");Record_rank();' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'>"+content+"</textarea>"+
-                  "<input id=DeleteButton-"+content_id+" class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_contentid+");Record_rank();'>"+
+                  "<textarea id='contents-"+content_id+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_contentid+");' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'>"+content+"</textarea>"+
+                  "<input id=DeleteButton-"+content_id+" class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_contentid+");'>"+
                   "<select id=SelectBox-"+content_id+" class='cp_ipselect cp_sl05' name='Logic_options_contents'>"+"</select>"+
                 "</div>";
     // console.log(label);
@@ -2558,20 +2614,15 @@ async function Rebuild_s(){
 	    url: "php/document_rebuild.php",
 	    type: "POST",
 	    success: function(arr){
-        if(arr == "[]"){
-          // console.log(arr);
+        if(arr == "[]" || arr == ""){
+          console.log(arr);
         }else{
-          // console.log(arr);
           var parse = JSON.parse(arr);
-          // console.log(parse);//スライドの内容
-          // console.log(parse.length);
+          console.log(parse);
           
           for(var i=0; i<parse.length; i++){
             for(var j=0; j<parse.length; j++){
-              // console.log(String(i));
-              // console.log(parse[j].rank);
               if(String(i) == parse[j].rank){
-                // console.log(parse[j]);
                 if(parse[j].concept_id == "notid"){
                   const image = new SlideImage({
                     slide_title: parse[j].title,
@@ -2615,7 +2666,7 @@ async function Rebuild_s(){
         let selectTitleLogic = document.querySelectorAll("[name='Logic_options_title']");
         selectTitleLogic.forEach(select => select.addEventListener('change', ChangeLogicSelectTitle));
         //選択ずみの値を設定
-        if(parse.length !== undefined){
+        if(parse !== undefined){
           for(var q=0; q<parse.length; q++){
             console.log(parse[q].slide_id);
             var selected_id = "SelectBox-"+parse[q].slide_id;
@@ -3479,7 +3530,7 @@ function ChangeLogicSelectTitle(e){
   console.log(e.target.selectedIndex);
 
   //20230130shimizu 追記
-  Record_rank();
+  // Record_rank();
   Edit_logic(e.target)
 }
 
@@ -3839,7 +3890,7 @@ function ChangeLogicSelectContent(e){
   // SelectBoxー
   
   //20230130shimizu 追記
-  Record_rank();
+  // Record_rank();
   Edit_logic(e.target)
 }
 
@@ -3874,7 +3925,6 @@ function Rebuild_title(){
 	    url: "php/title_rebuild.php",
 	    type: "POST",
 	    success: function(title){
-        console.log(title);
         var parse = JSON.parse(title);
         var scenario_title = parse[0].scenario_title;
         const title_value = document.getElementById("scenario_title");
@@ -3971,7 +4021,7 @@ function Unreflected_node(){
 function Record_rank(){
   // Get_SlideRank();
   // Get_ContentRank();
-  Get_SlideTitle();
+  // Get_SlideTitle();
   //2022-11-24 shimizu
   Get_DocumentRank();
   Get_DocumentContentRank();

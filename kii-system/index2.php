@@ -1,24 +1,24 @@
 <?php
 session_start();
-require("php/connect_db.php");
+require("../php/connect_db.php");
 require("php/sheet.php");
 
 // ログイン状態のチェック
 if (!isset($_SESSION["USERID"]) ) { //ログイン出来ていない
-    header("Location: logout.php");
+    header("Location: ../logout.php");
     exit;
 }
 
 if( (isset($_POST["sheetbtn"])) ||   //シート選択ボタンが押された
-    (isset($_SESSION["USERID"]) && !isset($_SESSION["SHEETID"]) )) { //ログインは出来ているがシート未選択の場合
+    (isset($_SESSION["USERID"]) && !isset($_SESSION["MAPID"]) )) { //ログインは出来ているがシート未選択の場合
   header("Location: select_sheet.php");
-  $_SESSION["SHEETID"] = null; //シート選択画面に遷移させた時にSHEETIDをリセット
+  $_SESSION["MAPID"] = null; //シート選択画面に遷移させた時にMAPIDをリセット
 }
 
 if(isset($_POST["logout"])){ //logoutボタンが押された
     // alert("本当にログアウトしますか？");
     // 時間があれば確認ダイアログを作る
-    header("Location: logout.php");
+    header("Location: ../logout.php");
 }
 
 // if(isset($_POST["mt"])){ // mt.phpなんてない
@@ -34,12 +34,12 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
         <meta charset="utf-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>自己内対話活性化支援システム</title>
-        <link type="text/css" rel="stylesheet" href="css/jsmind.css" />
-        <link rel="stylesheet" type="text/css" href="css/item.css">
-        <link rel="stylesheet" type="text/css" href="css/font.css">
-        <link rel="stylesheet" type="text/css" href="css/jquery.cleditor.css">
-        <link rel="stylesheet" type="text/css" href="css/ui.css">
-        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link type="text/css" rel="stylesheet" href="../css/jsmind.css" />
+        <link rel="stylesheet" type="text/css" href="../css/item.css">
+        <link rel="stylesheet" type="text/css" href="../css/font.css">
+        <link rel="stylesheet" type="text/css" href="../css/jquery.cleditor.css">
+        <link rel="stylesheet" type="text/css" href="../css/ui.css">
+        <link rel="stylesheet" type="text/css" href="../css/style.css">
 
         <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui.min.js"></script>
@@ -74,7 +74,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
           <?php echo("ユーザ名：");
                 echo($_SESSION["USERNAME"]);
                 echo("  　シート名：");
-                getSheetname();?>
+                getMapname();?>
           </span>
           <span>
             <a href="#modal" class="modal"><input type="button" id="js-show-popup" class="button9"  onclick="OperateDescription();" value="操作確認"></a>

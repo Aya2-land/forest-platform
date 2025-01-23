@@ -12,14 +12,14 @@ date_default_timezone_set('Asia/Tokyo');
 
 //ここ未完成（ノードにもっと情報追加しないといけないかも）
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['SHEETID'];    //シートID
+$map_id = $_SESSION['MAPID'];    //シートID
 $start = $_POST["start"];             //エッジ開始
 $end = $_POST["end"];              //エッジ終了
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 
-	$sql = "INSERT INTO network_edges_activity (user_id, sheet_id, edge_start, edge_end, time)
-	VALUES ('$user_id', '$sheet_id', '$start', '$end', '$timestamp')";
+	$sql = "INSERT INTO network_edges_activity (user_id, map_id, edge_start, edge_end, time)
+	VALUES ('$user_id', '$map_id', '$start', '$end', '$timestamp')";
 
 	$result = $mysqli->query($sql);
 

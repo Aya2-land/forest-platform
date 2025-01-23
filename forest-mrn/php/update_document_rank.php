@@ -1,5 +1,5 @@
 <?php
-
+	//2025-01-13 kawa 使わなくなった
 	session_start();
 
 	/*ノード情報をDBに格納する際に使用*/
@@ -9,12 +9,12 @@
     date_default_timezone_set('Asia/Tokyo');
 
     $user_id = $_SESSION['USERID'];      //ユーザID
-    $sheet_id = $_SESSION['SHEETID'];    //シートID
+    $map_id = $_SESSION['MAPID'];    //シートID
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
     $status = $_POST["status"];         //スライドのアップデートかコンテントかの判別
 
 
-    $sql = "UPDATE document_rank SET updated_at='$timestamp', deleted=1 WHERE sheet_id='$sheet_id' AND deleted=0";
+    $sql = "UPDATE document_rank SET updated_at='$timestamp', deleted=1 WHERE map_id='$map_id' AND deleted=0";
 
 		$result = $mysqli->query($sql);
 

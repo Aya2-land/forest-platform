@@ -7,7 +7,7 @@ session_start();
 require("connect_db.php");
 
 $user_id = $_SESSION["USERID"];//"26943"; //
-$sheet_id = $_SESSION["SHEETID"];//"102774749"; //
+$map_id = $_SESSION["MAPID"];//"102774749"; //
 
 //タイムゾーンの設定
 date_default_timezone_set('Asia/Tokyo');
@@ -22,10 +22,10 @@ $finish_time = $sdfssdvd .' ' .'23:59:59.999999';
 // $sql = "SELECT *  FROM reflections
 //         WHERE activity NOT IN ('not_record')
 //                AND user_id = '$user_id'
-//                AND sheet_id = '$sheet_id'
+//                AND map_id = '$map_id'
 //                AND timestamp BETWEEN '$start_time' AND '$finish_time'";
 
-$sql = "SELECT timestamp,reflection_text,activity,activity_later,ref_reason FROM reflections WHERE timestamp BETWEEN '$start_time' AND '$finish_time' AND activity NOT IN ('not_record') AND user_id = '$user_id' AND sheet_id = '$sheet_id'";
+$sql = "SELECT timestamp,reflection_text,activity,activity_later,ref_reason FROM reflections WHERE timestamp BETWEEN '$start_time' AND '$finish_time' AND activity NOT IN ('not_record') AND user_id = '$user_id' AND map_id = '$map_id'";
 
 // var_dump($sql);
 // echo nl2br("\n");

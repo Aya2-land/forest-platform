@@ -8,9 +8,9 @@
 
 	if($_POST["val"] == "id"){
 
-		$id = $_POST["sheetid"];
+		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE sheet_id = ".$id."  ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -35,9 +35,9 @@
 
 	}else if($_POST["val"] == "concept_id"){
 
-		$id = $_POST["sheetid"];
+		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE sheet_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -62,9 +62,9 @@
 
 	}else if($_POST["val"] == "content"){
 
-		$id = $_POST["sheetid"];
+		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE sheet_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -89,9 +89,9 @@
 
 	}else if($_POST["val"] == "type"){
 
-		$id = $_POST["sheetid"];
+		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE sheet_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -116,9 +116,9 @@
 
 	}else if($_POST["val"] == "parent_id"){
 
-		$id = $_POST["sheetid"];
+		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE sheet_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -143,9 +143,9 @@
 
 	}else if($_POST["val"] == "class"){
 
-		$id = $_POST["sheetid"];
+		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE sheet_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -171,9 +171,9 @@
 	}
 	else if($_POST["val"] == "start_char_id"){
 
-		$id = $_POST["sheetid"];
+		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE sheet_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -199,9 +199,9 @@
 	}
 	else if($_POST["val"] == "end_char_id"){
 
-		$id = $_POST["sheetid"];
+		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE sheet_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -224,11 +224,11 @@
 		echo json_encode($array);
 
 	}
-	else if($_POST["val"] == "parent_sheet_id"){
+	else if($_POST["val"] == "parent_map_id"){
 
-		$id = $_POST["sheetid"];
+		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE sheet_id = ".$id." ORDER BY created_at asc";
+		$sql = "SELECT * FROM node_latest WHERE node_id IN(SELECT node_id FROM map_node_links WHERE map_id = '$map_id')";
 
 		$i = 0;
 		$array = array();
@@ -239,7 +239,7 @@
 
 				if($row["deleted"] == 0){
 
-					$array = $array + array($i=>$row["parent_sheet_id"]);
+					$array = $array + array($i=>$row["parent_map_id"]);
 
 					$i += 1;
 
@@ -254,9 +254,9 @@
 	
 	else if($_POST["val"] == "root"){
 
-		$id = $_POST["sheetid"];
+		$id = $_POST["mapid"];
 
-		$sql = "SELECT * FROM nodes WHERE sheet_id = ".$id." AND type = 'root'";
+		$sql = "SELECT * FROM nodes WHERE map_id = ".$id." AND type = 'root'";
 
 		if($result = $mysqli->query($sql)){
 

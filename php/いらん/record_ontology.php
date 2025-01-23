@@ -12,7 +12,7 @@ date_default_timezone_set('Asia/Tokyo');
 
 //ここ未完成（ノードにもっと情報追加しないといけないかも）
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['SHEETID'];    //シートID
+$map_id = $_SESSION['MAPID'];    //シートID
 $node_id = $_POST["node_id"];             //ノードID
 $ontology_id = $_POST["ontology_id"];   //オントロジーのノードID
 $label = $_POST["label"];              //ラベル
@@ -23,10 +23,10 @@ $shape = $_POST["shape"];  //形
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 
-	$sql1 = "INSERT INTO network_nodes_activity (user_id, sheet_id, node_id, label, node_x, node_y, color, shape, time, updated_time)
-	VALUES ('$user_id', '$sheet_id', '$ontology_id', '$label', '$x', '$y', '$color', '$shape', '$timestamp', '$timestamp')";
-	$sql2 = "INSERT INTO network_ontology_activity (user_id, sheet_id, ontology_id, node_id, time)
-	VALUES ('$user_id', '$sheet_id', '$ontology_id', '$node_id', '$timestamp')";
+	$sql1 = "INSERT INTO network_nodes_activity (user_id, map_id, node_id, label, node_x, node_y, color, shape, time, updated_time)
+	VALUES ('$user_id', '$map_id', '$ontology_id', '$label', '$x', '$y', '$color', '$shape', '$timestamp', '$timestamp')";
+	$sql2 = "INSERT INTO network_ontology_activity (user_id, map_id, ontology_id, node_id, time)
+	VALUES ('$user_id', '$map_id', '$ontology_id', '$node_id', '$timestamp')";
 	$result1 = $mysqli->query($sql1);
 	$result2 = $mysqli->query($sql2);
 

@@ -1,12 +1,17 @@
 //スライド作成を記録する関数
-function Record_slide(slideID){
+function Record_slide(itemID, nodeId, title, brotherId){
 
   $.ajax({
       url: "php/slide_create.php",
       type: "POST",
-      data: {id : slideID,},
-      success: function () {
-        console.log("登録成功：　" +slideID );
+      data: {id : itemID,
+            node_id: nodeId,
+            title: title,
+            brother_id: brotherId},
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -16,15 +21,17 @@ function Record_slide(slideID){
 }
 
 //スライド削除を記録する関数
-function Delete_slide(slideID){
+function Delete_slide(itemID){
 
   $.ajax({
 
       url: "php/slide_delete.php",
       type: "POST",
-      data: {id : slideID,},
-      success: function () {
-        console.log("登録成功：　" +slideID );
+      data: {id : itemID,},
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -32,15 +39,17 @@ function Delete_slide(slideID){
   });
 }
 //2022-12-16 shimizu
-function Delete_Document(slideID){
+function Delete_Document(itemID){
 
   $.ajax({
 
       url: "php/Document_delete.php",
       type: "POST",
-      data: {id : slideID,},
-      success: function () {
-        console.log("登録成功：　" +slideID );
+      data: {id : itemID,},
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -57,8 +66,10 @@ function Delete_document_relation_node(doc_node_id){
       url: "php/LogicRelation_node_delete.php",
       type: "POST",
       data: {id : doc_node_id,},
-      success: function () {
-        console.log("登録成功：　" +doc_node_id );
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -74,8 +85,10 @@ function Delete_slide_relation(thread_id){
     url: "php/LogicRelationSlide_delete.php",
     type: "POST",
     data: {id : thread_id,},
-    success: function () {
-      console.log("登録成功：　" +thread_id );
+    success: function (e) {
+      if(e){
+        console.log(e);
+      }
     },
     error: function () {
     console.log("登録失敗");},
@@ -91,8 +104,10 @@ function Delete_document_relation_slide(slide_id){
       url: "php/LogicRelation_slide_delete.php",
       type: "POST",
       data: {id : slide_id,},
-      success: function () {
-        console.log("登録成功：　" +slide_id );
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -104,8 +119,10 @@ function Delete_document_relation_slide(slide_id){
     url: "php/SlideLogicRelation_delete.php",
     type: "POST",
     data: {id : slide_id,},
-    success: function () {
-      console.log("登録成功：　" +slide_id );
+    success: function (e) {
+      if(e){
+        console.log(e);
+      }
     },
     error: function () {
     console.log("登録失敗");},
@@ -121,8 +138,10 @@ function Delete_document_relation_concept(id){
       url: "php/LogicRelation_concept_delete.php",
       type: "POST",
       data: {id : id,},
-      success: function () {
-        console.log("登録成功：　" +id );
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -156,7 +175,6 @@ function Delete_concept(id){
         }
         
       }
-      console.log("登録成功：　" +id );
     },
     error: function () {
     console.log("登録失敗");},
@@ -168,7 +186,7 @@ function Delete_concepts(doc_id){
 }
 
 //コンテンツ追加を記録する関数
-function Record_content(contentID, nodeID, conceptID, content, slideID, type){
+function Record_content(contentID, nodeID, conceptID, content, itemID, type){
 
   $.ajax({
 
@@ -178,11 +196,13 @@ function Record_content(contentID, nodeID, conceptID, content, slideID, type){
              node_id : nodeID,
              concept_id : conceptID,
              content : content,
-             slide_id : slideID,
+             slide_id : itemID,
              type : type,
              },
-      success: function () {
-        console.log("登録成功：　" +slideID );
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -207,7 +227,9 @@ async function Record_NodeLogicRelation(U_ID, node1_id,doc_con1_id,doc_con1_labe
             ont2_id : ont2_id,
             },
     success: function (r) {
-      console.log("これみろおおおお" +r);
+      if(e){
+        console.log(e);
+      }
     },
     error: function () {
     console.log("登録失敗");},
@@ -233,8 +255,10 @@ async function Record_SlideLogicRelation(U_ID, node_id1,thread1_id,thread1_label
             relation_label : relation_label,
             relation_concept : relation_concept
             },
-    success: function () {
-      console.log("登録成功：　" +U_ID );
+    success: function (e) {
+      if(e){
+        console.log(e);
+      }
     },
     error: function () {
     console.log("登録失敗");},
@@ -259,7 +283,6 @@ async function getContentID(doc_con_id){
           content_id = parse[i].slide_id;
         }
       }
-      console.log("取得成功：　" + content_id);
       return content_id;
     },
     error: function () {
@@ -276,8 +299,10 @@ function Delete_content(contentID){
       url: "php/content_delete.php",
       type: "POST",
       data: {id : contentID},
-      success: function () {
-        console.log("登録成功：　" +contentID );
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -292,8 +317,10 @@ function Delete_Document_content(contentID){
       url: "php/Document_content_delete.php",
       type: "POST",
       data: {id : contentID},
-      success: function () {
-        console.log("登録成功：　" +contentID );
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -312,8 +339,10 @@ function Edit_save(obj,id){
       type: "POST",
       data: {id : id,
              content : content,},
-      success: function () {
-        console.log("登録成功");
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -334,19 +363,21 @@ function Edit_save(obj,id){
 
 
 //スライドタイトルの編集を記録する関数
-function Edit_slide(obj, slideID){
+function Edit_slide(obj, itemID){
   var slidetitle = obj.value;//変更されたテキストエリアの内容
-  console.log(slideID);
+  console.log(itemID);
   console.log(slidetitle);
 
   $.ajax({
 
       url: "php/slide_edit.php",
       type: "POST",
-      data: {id : slideID,
+      data: {id : itemID,
              content : slidetitle,},
-      success: function () {
-        console.log("登録成功");
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -372,8 +403,10 @@ function Edit_title(obj){
       url: "php/title_edit.php",
       type: "POST",
       data: {title : title,},
-      success: function () {
-        console.log("登録成功");
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -385,8 +418,10 @@ function Edit_title(obj){
     url: "php/update_scenario_title.php",
     type: "POST",
     data: {title : title,},
-    success: function () {
-      console.log("登録成功");
+    success: function (e) {
+      if(e){
+        console.log(e);
+      }
     },
     error: function () {
     console.log("登録失敗");},
@@ -403,8 +438,10 @@ function Edit_title_shimizu(obj){
       url: "php/title_edit_shimizu.php",
       type: "POST",
       data: {title : title,},
-      success: function () {
-        console.log("登録成功");
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -412,32 +449,38 @@ function Edit_title_shimizu(obj){
   });
 }
 
-async function Update_slide_rank(){
+// async function Update_slide_rank(){
 
-  await $.ajax({
+//   await $.ajax({
 
-      url: "php/update_slide_rank.php",
-      type: "POST",
-      success: function () {
-        console.log("登録成功");
-        return "ok";
-      },
-      error: function () {
-      console.log("登録失敗");
-      return "err";},
+//       url: "php/update_slide_rank.php",
+//       type: "POST",
+//       success: function (e) {
+//         console.log("登録成功");
+//         if(e){
+//           console.log(e);
+//         }
+//         return "ok";
+//       },
+//       error: function () {
+//       console.log("登録失敗");
+//       return "err";},
 
-  });
-}
+//   });
+// }
 
 //2022-11-24 shimizu
+//2025-01-13 kawa 使わなくなった
 async function Update_Document_rank(){
 
   await $.ajax({
 
       url: "php/update_document_rank.php",
       type: "POST",
-      success: function () {
-        console.log("登録成功");
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
         return "ok";
       },
       error: function () {
@@ -452,8 +495,10 @@ async function Update_content_rank(){
 
       url: "php/update_content_rank.php",
       type: "POST",
-      success: function () {
-        console.log("登録成功");
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
         return "ok";
       },
       error: function () {
@@ -467,8 +512,10 @@ async function Update_Document_content_rank(){
   await $.ajax({
       url: "php/update_document_content_rank.php",
       type: "POST",
-      success: function () {
-        console.log("登録成功");
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
         return "ok";
       },
       error: function () {
@@ -477,18 +524,20 @@ async function Update_Document_content_rank(){
   });
 }
 
-function Record_slide_rank(slideID, rank, title){
+function Record_slide_rank(itemID, brotherId){
   var id = getUniqueStr();
 
   $.ajax({
       url: "php/slide_rank.php",
       type: "POST",
       data: {id : id,
-            slide_id : slideID,
-            rank : rank,
-            title : title,},
-      success: function () {
-        console.log("登録成功");
+            slide_id : itemID,
+            brother_id : brotherId,
+      },
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -496,28 +545,25 @@ function Record_slide_rank(slideID, rank, title){
 }
 
 //2022-11-24 shimizu
-function Record_document_rank(slideID, rank, title,logic_option,node_id,concept_id){
+function Record_document_rank(itemID, brother_id){
   var id = getUniqueStr();
 
   $.ajax({
       url: "php/document_rank.php",
       type: "POST",
-      data: {id : id,
-            slide_id : slideID,
-            rank : rank,
-            title : title,
-            logic_option : logic_option,
-            node_id : node_id,
-            concept_id : concept_id},
-      success: function () {
-        console.log("登録成功");
+      data: {item_id : itemID,
+            brother_id: brother_id},
+      success: function (e) {
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
   });
 }
 
-function Record_content_rank(contentID, rank, slideID, content, nodeID, type, indent, concept_id){
+function Record_content_rank(contentID, rank, itemID, content, nodeID, type, indent, concept_id){
   var id = getUniqueStr();
 
   $.ajax({
@@ -527,14 +573,17 @@ function Record_content_rank(contentID, rank, slideID, content, nodeID, type, in
       data: {id : id,
             content_id : contentID,
             rank : rank,
-            slide_id : slideID,
+            slide_id : itemID,
             content : content,
             node_id : nodeID,
             type : type,
             indent : indent,
             concept_id : concept_id},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -543,7 +592,7 @@ function Record_content_rank(contentID, rank, slideID, content, nodeID, type, in
 }
 
 //2022-11-24 shimizu
-function Record_document_content_rank(contentID, rank, slideID, content, nodeID, type, indent, concept_id,logic_option_content){
+function Record_document_content_rank(contentID, rank, itemID, content, nodeID, type, indent, concept_id,logic_option_content){
   var id = getUniqueStr();
 
   $.ajax({
@@ -553,15 +602,18 @@ function Record_document_content_rank(contentID, rank, slideID, content, nodeID,
       data: {id : id,
             content_id : contentID,
             rank : rank,
-            slide_id : slideID,
+            slide_id : itemID,
             content : content,
             node_id : nodeID,
             type : type,
             indent : indent,
             concept_id : concept_id,
             logic_option : logic_option_content},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -576,8 +628,11 @@ function Update_scenario_title(title){
       url: "php/update_scenario_title.php",
       type: "POST",
       data: {title : title,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -592,8 +647,11 @@ function Update_document_scenario_title(title){
       url: "php/update_document_scenario_title.php",
       type: "POST",
       data: {title : title,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},
@@ -608,8 +666,11 @@ function Record_Timing(timing){
       url: "php/record_timing.php",
       type: "POST",
       data: {timing : timing,},
-      success: function () {
+      success: function (e) {
         console.log("登録成功");
+        if(e){
+          console.log(e);
+        }
       },
       error: function () {
       console.log("登録失敗");},

@@ -4,8 +4,8 @@ session_start();
 require("connect_db.php");
 
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['SHEETID'];    //シートID
-$start_time_result = $mysqli->query("SELECT start_time FROM network_sturuct_activity WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND situation = 'start'");
+$map_id = $_SESSION['MAPID'];    //シートID
+$start_time_result = $mysqli->query("SELECT start_time FROM network_sturuct_activity WHERE user_id = '$user_id' AND map_id = '$map_id' AND situation = 'start'");
 
 // クエリの結果を確認
 if ($start_time_result && $start_time_result->num_rows > 0) {

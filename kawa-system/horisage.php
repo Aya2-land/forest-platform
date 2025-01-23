@@ -3,7 +3,7 @@ session_start();
 
 // ログイン状態のチェック
 if (!isset($_SESSION["USERID"])) {
-  header("Location: ./../logout.php");
+  header("Location: ../logout.php");
   exit;
 }
 
@@ -17,12 +17,12 @@ if(isset($_POST["sheetbtn"])){ header("Location: index.php"); }
         <meta charset="utf-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>自己内対話活性化支援システム</title>
-        <link type="text/css" rel="stylesheet" href="css/jsmind.css" />
-        <link rel="stylesheet" type="text/css" href="css/item.css">
-        <link rel="stylesheet" type="text/css" href="css/font.css">
-        <link rel="stylesheet" type="text/css" href="css/jquery.cleditor.css">
-        <link rel="stylesheet" type="text/css" href="css/ui.css">
-        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link type="text/css" rel="stylesheet" href="../css/jsmind.css" />
+        <link rel="stylesheet" type="text/css" href="../css/item.css">
+        <link rel="stylesheet" type="text/css" href="../css/font.css">
+        <link rel="stylesheet" type="text/css" href="../css/jquery.cleditor.css">
+        <link rel="stylesheet" type="text/css" href="../css/ui.css">
+        <link rel="stylesheet" type="text/css" href="../css/style.css">
         <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/jsmind.js"></script>
@@ -37,7 +37,7 @@ if(isset($_POST["sheetbtn"])){ header("Location: index.php"); }
 
             <div align="center">ようこそ<?=htmlspecialchars($_SESSION["USERNAME"], ENT_QUOTES); ?>さん</div>
 
-            <div id="sheet" align="center"><?php require("js/sheet.php"); echo "Sheet Name： "; getSheetname(); ?></div><br>
+            <div id="map" align="center"><?php require("js/sheet.php"); echo "Sheet Name： "; getMapname(); ?></div><br>
 
             <center>
               <input class="button1" type="button" name="save" value="木構造作成画面に戻る" onClick="save();">

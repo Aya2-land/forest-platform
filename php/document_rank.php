@@ -10,7 +10,7 @@
 
 		// $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);//日時をマイクロ秒まで取得するようにしてみる
 		$user_id = $_SESSION['USERID'];         //ユーザID
-		$sheet_id = $_SESSION['SHEETID'];       //シートID
+		$map_id = $_SESSION['MAPID'];       //シートID
 		$id = $_POST["id"];                     //ID
 		$slide_id = $_POST["slide_id"];         //スライドID
 		$rank = $_POST["rank"];                 //順番
@@ -20,8 +20,8 @@
 		$concept_id = $_POST["concept_id"];
 		$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-		$sql = "INSERT INTO document_rank (id, slide_id, rank, title, created_at, updated_at, user_id, sheet_id, deleted,logic_option,node_id,concept_id)
-		VALUES ('$id', '$slide_id', '$rank', '$title', '$timestamp', '$timestamp', '$user_id','$sheet_id', 0, '$logic_option','$node_id','$concept_id')";
+		$sql = "INSERT INTO document_rank (id, slide_id, rank, title, created_at, updated_at, user_id, map_id, deleted,logic_option,node_id,concept_id)
+		VALUES ('$id', '$slide_id', '$rank', '$title', '$timestamp', '$timestamp', '$user_id','$map_id', 0, '$logic_option','$node_id','$concept_id')";
 
 
 		$result = $mysqli->query($sql);

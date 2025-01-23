@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="quill-2.0/snow-2.0.css" >
+</head>
+<body>
+
+  <!-- ツールバーコンテナを作成 -->
+  <div id="toolbar"></div>
+
+  <!-- エディタコンテナを作成 -->
+  <div id="editor"></div>
+  
+  <!-- Quillライブラリをインクルード -->
+  <script type="text/javascript" src="quill-2.0/quill-2.0.js"></script>
+
+  <textarea id="textarea1">Content 1</textarea>
+  <textarea id="textarea2">Content 2</textarea>
+  <textarea id="textarea3">Content 3</textarea>
+
+  <button onclick="combineAndOutput()">Combine and Output</button>
+
+  <div id="output"></div>
+
+</body>
+</html>
+
+  <!-- Quillエディタを初期化 -->
+  <script>
+            var toolbarOptions = [
+            ['bold', 'italic', 'underline', 'strike'],        // スタイル設定
+            [{ 'size': ['small', false, 'large', 'huge'] }],  // テキストサイズ
+            [{ 'align': [] }],
+            //['blockquote', 'code-block'],
+            //[{ 'header': 1 }, { 'header': 2 }],               // 見出し設定
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'script': 'sub'}, { 'script': 'super' }],      // インデックス
+            [{ 'indent': '-1'}, { 'indent': '+1' }],          // インデント
+            //[{ 'direction': 'rtl' }],                         // 文字方向
+            //[{ 'header': [1, 2, 3, 4, 5, 6, false] }],         // 見出しサイズ
+            //[{ 'color': [] }, { 'background': [] }],          // テキストカラー
+            //[{ 'font': [] }],
+            //['clean'],                                         // フォーマット除去
+            ['table']
+        ];
+    var editor = new Quill('#editor', {
+      modules: { toolbar: toolbarOptions },
+      theme: 'snow'
+    });
+
+
+    function combineAndOutput() {
+    // テキストエリアの値を取得
+    var textarea1Value = document.getElementById('textarea1').value;
+    var textarea2Value = document.getElementById('textarea2').value;
+    var textarea3Value = document.getElementById('textarea3').value;
+
+    // 結合してHTML形式にする
+    var combinedHTML = `
+        <div>
+            <p>Textarea 1:</p>
+            <pre>${textarea1Value}</pre>
+        </div>
+        <div>
+            <p>Textarea 2:</p>
+            <pre>${textarea2Value}</pre>
+        </div>
+        <div>
+            <p>Textarea 3:</p>
+            <pre>${textarea3Value}</pre>
+        </div>
+    `;
+
+    // 結果を表示
+    document.getElementById('output').innerHTML = combinedHTML;
+}
+  </script>
+
+</body>
+</html>

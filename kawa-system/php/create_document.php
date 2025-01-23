@@ -26,7 +26,7 @@ date_default_timezone_set('Asia/Tokyo');
 //   return $path; // アップロード処理で上書きしてしまう(いったん消してはいけない)
 // }
 
-$name = $_SESSION["SHEETNAME"]; // シート名
+$name = $_SESSION["mapname"]; // シート名
 $timestamp = time();
 $login_time = date("Y-m-d H:i:s", $timestamp);
 

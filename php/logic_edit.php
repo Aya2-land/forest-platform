@@ -9,7 +9,7 @@
   date_default_timezone_set('Asia/Tokyo');
 
     $user_id = $_SESSION['USERID'];      //ユーザID
-    $sheet_id = $_SESSION['SHEETID'];    //シートID
+    $map_id = $_SESSION['MAPID'];    //シートID
     $slide_id = $_POST["id"]; //スライドID
     $value_LogicID = $_POST["value"]; //スライドタイトル
     $activity_id = uniqid();
@@ -62,8 +62,8 @@
     // }
     //=================================activityログ===================================//
 
-    $sql = "INSERT INTO single_logic_activity (id, sheet_id, content_id, user_id, act, LogicID, date, from_slide)
-    VALUES ('$activity_id', '$sheet_id', '$slide_id', '$user_id', 'change', '$value_LogicID', '$timestamp', '$sheet_id')";
+    $sql = "INSERT INTO single_logic_activity (id, map_id, content_id, user_id, act, LogicID, date, from_slide)
+    VALUES ('$activity_id', '$map_id', '$slide_id', '$user_id', 'change', '$value_LogicID', '$timestamp', '$map_id')";
 
     $result = $mysqli->query($sql);
 ?>

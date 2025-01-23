@@ -1,3 +1,21 @@
+async function get_Typeid(class_name, type_name) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: "php/get_Typeid.php",
+        type: "POST",
+        data: { class: class_name, type: type_name },
+        success: function(response) {
+          const result = JSON.parse(response);
+          resolve(result); 
+        },
+        error: function(error) {
+          console.log("エラー:", error);
+          reject(error);
+        }
+      });
+    });
+  }
+
 function get_question(){
     var element = document.getElementById("result");
     element.textContent = ""; // テキストを空にする
@@ -50,7 +68,7 @@ function get_question(){
                         var button = document.createElement("button"); // 新しいボタン要素を作成
                         
                         button.innerHTML = questionArray[i]["content"]; // ボタンのテキストを配列の要素に設定
-                        button.setAttribute("data-sheet_id_other", questionArray[i]["sheet_id"]);
+                        button.setAttribute("data-map_id_other", questionArray[i]["map_id"]);
                         button.setAttribute("class", "b_que");
                         concept_id = questionArray[i]["concept_id"];
                         content = questionArray[i]["content"];
@@ -71,7 +89,7 @@ function get_question(){
 
 }
 
-function add_node2(cid, content){
+async function add_node2(cid, content){
 
     //マップ上に新しく追加した問いノードの親ノード情報取得
     var parent_node = _jm.get_selected_node();
@@ -149,6 +167,14 @@ function add_node2(cid, content){
 
     make_micro_strat(element[1]);
 
+    try {
+        var type_name1 = "other_question";
+        // get_typeid の非同期処理が完了するまで待つ
+        var node_type_id1 = await get_Typeid("", type_name1);
+    } catch (error) {
+        console.log("エラーが発生しました:", error);
+    }
+
     //DBに追加した問いのノード情報を格納
     for(var i=0; i<jmnode.length; i++){
 
@@ -161,12 +187,12 @@ function add_node2(cid, content){
                 data: { insert : "node",
                         id : thisId,
                         parent_id : parent_id,
-                        type : "other_question",
+                        type : node_type_id1['node_type_id'],
                         concept_id : jmnode[i].getAttribute("concept_id"),
                         x : jmnode[i].style.left,
                         y : jmnode[i].style.top,
                         content : jmnode[i].innerHTML,
-                        class : "" }, //以前，クラスリストを用いて合理性を考えるべきノードを呈示していたが，今は必要ない
+                    },
 
             });
 
@@ -208,6 +234,14 @@ function add_node2(cid, content){
     var jmnode = document.getElementsByTagName("jmnode");
 	var p_concept = parent_concept_id;
 
+    try {
+        var type_name2 = "predict";
+        // get_typeid の非同期処理が完了するまで待つ
+        var node_type_id2 = await get_Typeid("", type_name2);
+    } catch (error) {
+        console.log("エラーが発生しました:", error);
+    }
+
 
     for(var j=0; j<jmnode.length; j++){
 
@@ -224,12 +258,12 @@ function add_node2(cid, content){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : "predict",
+                        type : node_type_id2['node_type_id'],
                         concept_id : p_concept,
                         x : jmnode[j].style.left,
                         y : jmnode[j].style.top,
                         content : jmnode[j].innerHTML,
-                        class : "" },
+                    },
 
             });
 
@@ -256,7 +290,7 @@ function add_node2(cid, content){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
     

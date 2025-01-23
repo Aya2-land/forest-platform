@@ -9,7 +9,7 @@
   }
 
   $user_id = $_SESSION["USERID"];
-  $sheet_id = $_SESSION["SHEETID"];
+  $map_id = $_SESSION["MAPID"];
   $mttime = null;
   // $last_mttime = $_SESSION["last_mttime"];
   // // 下記の「3」はファイル出力する指定
@@ -41,10 +41,10 @@
 
   // updated_atが$mttimeより遅い場合，過去の編集を遡る
   // ノード編集履歴はactivitiesテーブルに管理しているので，そちらからデータを取得する
-  // activitiesテーブルのsheet_idと$sheet_idを照合
+  // activitiesテーブルのmap_idと$map_idを照合
   // timestampが$mttimeよりも小さいものを取得・最新のものに並び替え
   $sql = "SELECT * FROM activities
-          WHERE sheet_id = '$sheet_id' 
+          WHERE map_id = '$map_id' 
           ORDER BY timestamp DESC ";
 
   if($result = $mysqli->query($sql)){

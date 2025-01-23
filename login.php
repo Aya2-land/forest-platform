@@ -1,6 +1,6 @@
 <?php
 require ("password.php");
-require_once("php/connect_db_user.php");
+require_once("php/connect_db.php");
 
 // セッション開始
 session_start();
@@ -16,7 +16,7 @@ if (isset($_POST["login"])) {
   } else if (empty($_POST["password"])) {
     $errorMessage = "パスワードが未入力です。";
   }
-
+  
   // ２．ユーザIDとパスワードが入力されていたら認証する
   if (!empty($_POST["username"]) && !empty($_POST["password"])) {
 
@@ -43,7 +43,7 @@ if (isset($_POST["login"])) {
     while ($row = $result->fetch_assoc()) {
       // パスワード(暗号化済み）の取り出し
       $db_hashed_pwd = $row['password'];
-      $user_id = $row['id'];
+      $user_id = $row['user_id'];
 
     }
 
@@ -52,7 +52,7 @@ if (isset($_POST["login"])) {
     $timestamp = time();
     $updated_at = date("Y-m-d H:i:s", $timestamp);
 
-    $l_query = "UPDATE users SET login_time = '".$updated_at."' WHERE id = ".$user_id;
+    $l_query = "UPDATE users SET login_time = '".$updated_at."' WHERE user_id = ".$user_id;
     $l_result = $mysqli->query($l_query);
 
     // データベースの切断

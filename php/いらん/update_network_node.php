@@ -6,7 +6,7 @@
 	date_default_timezone_set('Asia/Tokyo');
 
 	$user_id = $_SESSION['USERID'];      //ユーザID
-    $sheet_id = $_SESSION['SHEETID'];    //シートID
+    $map_id = $_SESSION['MAPID'];    //シートID
 	$st_time = $_POST['st_time'];
 	$change = $_POST['change'];
 	$node_id = $_POST['node_id'];
@@ -15,12 +15,12 @@
 
 	
 	if($change == "label"){
-		$sql = "UPDATE network_nodes_activity SET label = '$change_thing', updated_time = '$timestamp' WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND node_id = '$node_id' AND updated_time > '$st_time'";
+		$sql = "UPDATE network_nodes_activity SET label = '$change_thing', updated_time = '$timestamp' WHERE user_id = '$user_id' AND map_id = '$map_id' AND node_id = '$node_id' AND updated_time > '$st_time'";
 		$result = $mysqli->query($sql);
 	}
 	//後でwhereのところに時間設定はいる
 	else if($change == "delete"){
-		$sql = "DELETE FROM network_nodes_activity WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND node_id = '$node_id' AND updated_time > '$st_time'";
+		$sql = "DELETE FROM network_nodes_activity WHERE user_id = '$user_id' AND map_id = '$map_id' AND node_id = '$node_id' AND updated_time > '$st_time'";
 		$result = $mysqli->query($sql);
 	}
 	//ここから変更するものが増えていけばifの中身をいじる

@@ -54,7 +54,7 @@ function get_other_nodeid(){
                             button.setAttribute("id", "answer_button"+i);
                         }
                         button.innerHTML = Array[i]["content"]; // ボタンのテキストを配列の要素に設定
-                        button.setAttribute("data-sheet_id", Array[i]["sheet_id"]);
+                        button.setAttribute("data-map_id", Array[i]["map_id"]);
 
 
                         button.addEventListener("contextmenu", function(e) {
@@ -96,7 +96,7 @@ function get_other_nodeid(){
 
 
 
-function add_Anode_from_other(node_class, node_type){
+async function add_Anode_from_other(node_class, node_type){
 
     var selected_node = _jm.get_selected_node();
 
@@ -136,6 +136,30 @@ function add_Anode_from_other(node_class, node_type){
             jmnode[j].setAttribute("type",node_type);
             jmnode[j].setAttribute("parent_id",parent_id);
 
+            try {
+                var type_name = async function() {
+                  return new Promise((resolve, reject) => {
+                    $.ajax({
+                      url: "php/get_Typeid.php",
+                      type: "POST",
+                      data: { class: node_class, type: node_type },
+                      success: function(response) {
+                        const result = JSON.parse(response);
+                        resolve(result); 
+                      },
+                      error: function(error) {
+                        console.log("エラー:", error);
+                        reject(error);
+                      }
+                    });
+                  });
+                };
+                // get_typeid の非同期処理が完了するまで待つ
+                var node_type_id = await get_Typeid("", type_name);
+              } catch (error) {
+                console.log("エラーが発生しました:", error);
+              }
+
             $.ajax({
 
                 url: "php/insert_node.php",
@@ -143,12 +167,12 @@ function add_Anode_from_other(node_class, node_type){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : node_type,
+                        type : node_type_id['node_type_id'],
                         concept_id : p_concept,
                         x : jmnode[j].style.left,
                         y : jmnode[j].style.top,
                         content : jmnode[j].innerHTML,
-                        class : node_class },
+                    },
 
             });
 
@@ -173,7 +197,7 @@ function add_Anode_from_other(node_class, node_type){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
@@ -206,14 +230,14 @@ function reset_annotation(){
     });
 }
 
-function show_other_mindmap(button, sheet_id, parent_id=null){
+function show_other_mindmap(button, map_id, parent_id=null){
     reset_annotation();
-    if(sheet_id == "null"){
+    if(map_id == "null"){
       return;
     }
   else{
     var button = document.getElementById("all_annotation");
-    button.setAttribute("onClick", "show_other_mindmap(this, "+sheet_id+")");
+    button.setAttribute("onClick", "show_other_mindmap(this, "+map_id+")");
 
     $.ajax({
       
@@ -221,7 +245,7 @@ function show_other_mindmap(button, sheet_id, parent_id=null){
       type: "POST",
       data: { 
         // val : "user",
-        user : sheet_id,
+        user : map_id,
       },
       success: function(data){
         var obj = JSON.parse(data); // JSON型をパース
@@ -247,10 +271,10 @@ function show_other_mindmap(button, sheet_id, parent_id=null){
     })
 
     if (parent_id != null){
-        Rebuild_paper3("paper_area",sheet_id, parent_id);  
+        Rebuild_paper3("paper_area",map_id, parent_id);  
     }
     else{
-        Rebuild_paper2("paper_area",sheet_id);
+        Rebuild_paper2("paper_area",map_id);
     }
   }
 }

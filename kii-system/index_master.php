@@ -1,18 +1,18 @@
 <?php
 session_start();
-require("php/connect_db.php");
+require("../php/connect_db.php");
 require("php/sheet.php");
 
 // ログイン状態のチェック
 if (!isset($_SESSION["USERID"]) ) { //ログイン出来ていない
-    header("Location: logout.php");
+    header("Location: ../logout.php");
     exit;
 }
 
 if(isset($_POST["logout"])){ //logoutボタンが押された
     // alert("本当にログアウトしますか？");
     // 時間があれば確認ダイアログを作る
-    header("Location: logout.php");
+    header("Location: ../logout.php");
 }
 
 
@@ -24,14 +24,14 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
         <meta charset="utf-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>論文読解支援システム</title>
-        <link type="text/css" rel="stylesheet" href="css/jsmind.css" />
-        <link rel="stylesheet" type="text/css" href="css/item.css">
-        <link rel="stylesheet" type="text/css" href="css/font.css">
-        <link rel="stylesheet" type="text/css" href="css/jquery.cleditor.css">
-        <link rel="stylesheet" type="text/css" href="css/ui.css">
-        <link rel="stylesheet" type="text/css" href="css/style.css">
-        <link rel="stylesheet" type="text/css" href="css/button.css">
-        <link rel="stylesheet" type="text/css" href="css/annotation.css">
+        <link type="text/css" rel="stylesheet" href="../css/jsmind.css" />
+        <link rel="stylesheet" type="text/css" href="../css/item.css">
+        <link rel="stylesheet" type="text/css" href="../css/font.css">
+        <link rel="stylesheet" type="text/css" href="../css/jquery.cleditor.css">
+        <link rel="stylesheet" type="text/css" href="../css/ui.css">
+        <link rel="stylesheet" type="text/css" href="../css/style.css">
+        <link rel="stylesheet" type="text/css" href="../css/button.css">
+        <link rel="stylesheet" type="text/css" href="../css/annotation.css">
         <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/create_question.js"></script>
@@ -71,7 +71,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                 // echo("西田");
                 echo($_SESSION["USERNAME"]);
                 echo("　タイトル：");
-                getSheetname();
+                getMapname();
                 // 西田
                 // echo("Ontology-based Thought Organization Support System to Prompt Readiness of Intention Sharing and Its Long-term Practice：");?>
           </span>
@@ -551,7 +551,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
       </div>
         <!-- メインメニュー　Finish -->
         <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
-        <script type="text/javascript" src="js/node_tag.js"></script>
+        <script type="text/javascript" src="../js/node_tag.js"></script>
         <script type="text/javascript" src="js/add_annotations.js"></script>
         <script type="text/javascript" src="js/node_change.js"></script>
         <script type="text/javascript" src="js/add_node.js"></script>

@@ -109,9 +109,9 @@ function choose_disp(){
 
 		//親概念のIDをもつタグを探索（親：言い換える，子：言い換えるとどうなりますか）
 		if($concept_tag[i].id == parent_concept_id){//回ってきたコンセプトidが親のコンセプトidだった場合(チェックポイント)
-			console.log(parent_concept_id);
-			console.log($concept_tag[i]);
-			console.log($concept_tag[i].childNodes);
+			// console.log(parent_concept_id);
+			// console.log($concept_tag[i]);
+			// console.log($concept_tag[i].childNodes);
 			for(var j=0; j<$concept_tag[i].childNodes.length; j++){
 
 				if(j % 2 == 1){//jが奇数（textを除く）

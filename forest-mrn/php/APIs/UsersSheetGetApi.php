@@ -4,7 +4,7 @@
 $db_host = "localhost:3306";  // DBサーバのurl
 $db_user = "root";
 $db_password = "root";
-$db_dbname = "forest";
+$db_dbname = "forest_platform";
 
 // mysqlへの接続
 $mysqli = new mysqli($db_host, $db_user, $db_password, $db_dbname);
@@ -20,9 +20,9 @@ $request_param = $_GET["request"];
 $user_id = $_GET["user_id"];
 // $node_id = $_GET["node_id"];
 
-// $sql = "SELECT * FROM nodes WHERE sheet_id='".$sheet_id."' and id='".$node_id."'";
-// $sql = "SELECT * FROM nodes WHERE sheet_id='".$sheet_id."'";
-$sql = "SELECT * FROM sheets WHERE user_id = '".$user_id."' AND self_conversation_activity_mode ='self_research'";
+// $sql = "SELECT * FROM nodes WHERE map_id='".$map_id."' and id='".$node_id."'";
+// $sql = "SELECT * FROM nodes WHERE map_id='".$map_id."'";
+$sql = "SELECT * FROM map_mode_link WHERE user_id = '".$user_id."' AND mode_id =1 ";
 
 $data = array();
 if($result = $mysqli->query($sql)){ 

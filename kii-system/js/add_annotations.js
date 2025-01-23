@@ -338,6 +338,23 @@ function add_annotation(type_fromNode, node_id){
             return type;
         }
        
+        async function get_Typeid(class_name, type_name) {
+            return new Promise((resolve, reject) => {
+              $.ajax({
+                url: "php/get_Typeid.php",
+                type: "POST",
+                data: { class: class_name, type: type_name },
+                success: function(response) {
+                  const result = JSON.parse(response);
+                  resolve(result); 
+                },
+                error: function(error) {
+                  console.log("エラー:", error);
+                  reject(error);
+                }
+              });
+            });
+          }
 
 
 
@@ -345,7 +362,7 @@ function add_annotation(type_fromNode, node_id){
 
 
 //問いノード追加ボタンで問いノードを追加する
-function add_Qnode2(){
+async function add_Qnode2(){
 
   var parent_node = _jm.get_selected_node();
 
@@ -384,6 +401,17 @@ function add_Qnode2(){
           jmnode[i].setAttribute("parent_id",parent_id);
           jmnode[i].className = "";
 
+          var x = jmnode[i].style.left;
+          var y = jmnode[i].style.top;
+
+          try {
+            var type_name = "toi";
+            var class_name = "question";
+            // get_typeid の非同期処理が完了するまで待つ
+            var node_type_id = await get_Typeid(class_name, type_name);
+          } catch (error) {
+            console.log("エラーが発生しました:", error);
+          }
 
           $.ajax({
 
@@ -392,14 +420,21 @@ function add_Qnode2(){
               data: { insert : "node",
                       id : nodeid,
                       parent_id : parent_id,
-                      type : "toi",
+                      type : node_type_id['node_type_id'],
                       concept_id : "",
-                      x : jmnode[i].style.left,
-                      y : jmnode[i].style.top,
-                      content : jmnode[i].innerHTML,
-                      class : "question" },
+                      x : x,
+                      y : y,
+                      content : topic,
+                    },
+                    success:function(result){
+                    //   if(result){ console.log(result);}
+                    },
+                    error: function(error) {
+                      console.log("エラー:", error);
+                    }
 
           });
+          console.log(jmnode[i].innerHTML);
 
           //yoshioka登録　追加ボタンより自作の問いを追加したこと
           //渡す情報（ノードID，親ノードID，操作，テキスト，法造コンセプトID，タイプ，primary）
@@ -422,7 +457,7 @@ function add_Qnode2(){
 
       url: "php/update_node.php",
       type: "POST",
-      data: { update : "sheet" }
+      data: { update : "map" }
 
   });
     if(window.getSelection().toString().length != 0){
@@ -446,6 +481,17 @@ function add_Qnode2(){
             jmnode[j].setAttribute("type","predict");
             jmnode[j].setAttribute("parent_id",parent_id);
 
+            var x = jmnode[j].style.left;
+            var y = jmnode[j].style.top;
+
+            try {
+                var type_name = "predict";
+                // get_typeid の非同期処理が完了するまで待つ
+                var node_type_id = await get_Typeid("", type_name);
+              } catch (error) {
+                console.log("エラーが発生しました:", error);
+              }
+
             $.ajax({
 
                 url: "php/insert_node.php",
@@ -453,12 +499,18 @@ function add_Qnode2(){
                 data: { insert : "node",
                         id : nodeid,
                         parent_id : parent_id,
-                        type : "predict",
+                        type : node_type_id['node_type_id'],
                         concept_id : p_concept,
-                        x : jmnode[j].style.left,
-                        y : jmnode[j].style.top,
-                        content : jmnode[j].innerHTML,
-                        class : "" },
+                        x : x,
+                        y : y,
+                        content : topic,
+                    },
+                    success:function(result){
+                      if(result){ console.log(result);}
+                    },
+                    error: function(error) {
+                      console.log("エラー:", error);
+                    }
 
             });
 
@@ -485,7 +537,7 @@ function add_Qnode2(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
@@ -497,7 +549,15 @@ function add_Qnode2(){
 
 
 //答えノード追加ボタンで答えノードを追加する
-function add_Anode2(node_type){
+async function add_Anode2(node_type){
+
+    try {
+        var type_name = node_type;
+        // get_typeid の非同期処理が完了するまで待つ
+        var node_type_id = await get_Typeid("", type_name);
+    } catch (error) {
+        console.log("エラーが発生しました:", error);
+    }
 
   var selected_node = _jm.get_selected_node();
 
@@ -541,6 +601,8 @@ function add_Anode2(node_type){
           jmnode[j].setAttribute("type",node_type);
           jmnode[j].setAttribute("parent_id",parent_id);
 
+          
+
           $.ajax({
 
               url: "php/insert_node.php",
@@ -548,12 +610,12 @@ function add_Anode2(node_type){
               data: { insert : "node",
                       id : nodeid,
                       parent_id : parent_id,
-                      type : node_type,
+                      type : node_type_id['node_type_id'],
                       concept_id : p_concept,
                       x : jmnode[j].style.left,
                       y : jmnode[j].style.top,
                       content : jmnode[j].innerHTML,
-                      class : "" },
+                    },
 
           });
 
@@ -578,7 +640,7 @@ function add_Anode2(node_type){
 
       url: "php/update_node.php",
       type: "POST",
-      data: { update : "sheet" }
+      data: { update : "map" }
 
   });
 

@@ -13,7 +13,7 @@
 		$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);//日時をマイクロ秒まで取得するようにしてみる
     // $id = $_POST["ref_id"];                      //ID
 		$user_id =  $_SESSION['USERID'];          //ユーザID
-    $sheet_id = $_SESSION['SHEETID'];        //シートID
+    $map_id = $_SESSION['MAPID'];        //シートID
     // $ref_text = $_POST["ref_text"];          //リレクション文
 		// $ref_activity = $_POST["ref_activity"];  //リフレクション活動
     // $late_activity = "0"; //$_POST["late_activity"];  //仮
@@ -50,8 +50,8 @@
         $ref_target_date = $ref_item[$e]['target_node_date'];
         $rationality_node_date = $ref_item[$e]['rationality_node_date'];
 
-        $sql = "INSERT INTO reflections (id, timestamp, template_number, reflection_text, activity, activity_later, target_node_date, target_node, rationality_node_date, target_nodes, ref_reason,user_id, sheet_id)
-        VALUES ('$reflection_id', '$timestamp', '$reflection_template','$reflection_text', '$reflection_activity','$late_activity','$ref_target_date','$ref_target','$rationality_node_date','$reflection_target', '$ref_reason','$user_id','$sheet_id')";
+        $sql = "INSERT INTO reflections (id, timestamp, template_number, reflection_text, activity, activity_later, target_node_date, target_node, rationality_node_date, target_nodes, ref_reason,user_id, map_id)
+        VALUES ('$reflection_id', '$timestamp', '$reflection_template','$reflection_text', '$reflection_activity','$late_activity','$ref_target_date','$ref_target','$rationality_node_date','$reflection_target', '$ref_reason','$user_id','$map_id')";
 
 
 
@@ -92,8 +92,8 @@
       }
 
 
-		// $sql = "INSERT INTO reflections (id, timestamp, reflection_text, activity, activity_later, target_nodes, user_id, sheet_id)
-		// VALUES ('$id', '$timestamp', '$ref_text', '$ref_activity','$late_activity','$ref_targets','$user_id','$sheet_id')";
+		// $sql = "INSERT INTO reflections (id, timestamp, reflection_text, activity, activity_later, target_nodes, user_id, map_id)
+		// VALUES ('$id', '$timestamp', '$ref_text', '$ref_activity','$late_activity','$ref_targets','$user_id','$map_id')";
     //
     //
     //

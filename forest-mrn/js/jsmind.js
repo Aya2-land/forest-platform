@@ -8,6 +8,24 @@
 
  alert_count = 0;
 
+ async function get_Typeid(class_name, type_name) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: "php/get_Typeid.php",
+        type: "POST",
+        data: { class: class_name, type: type_name },
+        success: function(response) {
+          const result = JSON.parse(response);
+          resolve(result); 
+        },
+        error: function(error) {
+          console.log("エラー:", error);
+          reject(error);
+        }
+      });
+    });
+  }
+
 (function($w){
     'use strict';
     // set 'jsMind' as the library name.
@@ -197,24 +215,27 @@
         },
 
         set_root:function(nodeid, topic, data){
+            
+            console.log("set_root");
+
             if(this.root == null){
                 this.root = new jm.node(nodeid, 0, topic, data, true);
                 this._put_node(this.root);
 
-                var newId　= jm.util.uuid.newid();
+                var newId = jm.util.uuid.newid();
 
-                $.ajax({
+                $.ajax({     
 
                     url: "php/insert_node.php",
                     type: "POST",
                     data: { insert : "node",
                             id : newId,
-                            type : "root",
+                            type : 0, //root
                             concept_id : null,
                             x : "380.5px",
                             y : "187px",
                             content : "★",
-                            class : "root" },
+                            from_mode : null},
 
                 });
 
@@ -470,7 +491,7 @@
 
                 url: "php/update_node.php",
                 type: "POST",
-                data: { update : "sheet" }
+                data: { update : "map" }
 
             });
 
@@ -1208,23 +1229,23 @@
 
                 //shiftキーを押しながらじゃなかったら，答えノードはピンクに，問いノードはそのままで
                 if(event.shiftKey == false){//シフトキーを押していない時
-                    console.log(1);
+                    // console.log(1);
                     for(i=0; i<jmnode.length; i++){
                         //console.log(jmnode);
                         if(jmnode[i].getAttribute("type") == "answer"){//答えノードの時
 
                             if(jmnode[i].getAttribute("nodeid") == thisId){//回ってきたidが選択中ノードの時
 
-                                console.log(thisId);
-                                jmnode[i].style.backgroundColor = "#ff69b4";
-                                jmnode[i].style.border = "5px solid #9fd94f";
+                                // console.log(thisId);
+                                // jmnode[i].style.backgroundColor = "#ff69b4";
+                                // jmnode[i].style.border = "5px solid #9fd94f";
 
                                 parent_concept_id = jmnode[i].getAttribute("concept_id");//コンセプトidを代入（答えノードは問いのコンセプトidを持つ）
                                 GetNodeId_ContentRelationTable(thisId);
 
                             }else{
 
-                                jmnode[i].style.backgroundColor = "#ffa500";
+                                // jmnode[i].style.backgroundColor = "#ffa500";
 
                             }
 
@@ -1287,7 +1308,7 @@
                     }
 
                 }
-                console.log(thisId);
+                // console.log(thisId);
                 // ノードクリック時既に修正理由記述してあれば表示する
                 //ここから大槻修正
                 $("#reason").html("");
@@ -1692,7 +1713,7 @@
 
                 url: "php/update_node.php",
                 type: "POST",
-                data: { update : "sheet" }
+                data: { update : "map" }
 
             });
 
@@ -2690,7 +2711,11 @@
                             type: "POST",
                             data: { update : "content",
                                     id : node.id,
-                                    content : jmnode[i].innerHTML }
+                                    content : jmnode[i].innerHTML 
+                                },
+                                success:function(result){
+                                    if(result){ console.log(result);}
+                                },
 
                         });
 
@@ -2724,7 +2749,7 @@
 
                 url: "php/update_node.php",
                 type: "POST",
-                data: { update : "sheet" }
+                data: { update : "map" }
 
             });
 
@@ -3030,7 +3055,11 @@
             }
         },
 
-        handle_addchild: function(_jm,e){
+        handle_addchild: async function(_jm,e){
+
+            console.log("handle_addchild");
+
+            var n_type = 0;
             var selected_node = _jm.get_selected_node();
             if(!!selected_node){
                 var nodeid = jm.util.uuid.newid();
@@ -3056,16 +3085,16 @@
 
                 if(p_type == "toi"){
 
-                    var n_type = "answer";
+                    var n_type_name = "answer";
 
                 }else{
 
-                    var n_type = "toi";
+                    var n_type_name = "toi";
 
                 }
 
                 //生成したのが答えノードなら親ノードのconcept_idを取得
-                if(n_type == "answer"){
+                if(n_type_name == "answer"){
 
                     var n_concept = p_concept;
 
@@ -3074,6 +3103,17 @@
                     var n_concept = "";
 
                 }
+
+
+                console.log("n_type_name");
+
+                try {
+                    var type_name = n_type_name;
+                    // get_typeid の非同期処理が完了するまで待つ
+                    var node_type_id = await get_Typeid("", type_name);
+                  } catch (error) {
+                    console.log("エラーが発生しました:", error);
+                  }
 
                 for(var j=0; j<jmnode.length; j++){
 
@@ -3090,12 +3130,12 @@
                             data: { insert : "node",
                                     id : nodeid,
                                     parent_id : selected_node.id,
-                                    type : n_type,
+                                    type : node_type_id['node_type_id'],
                                     concept_id : n_concept,
                                     x : jmnode[j].style.left,
                                     y : jmnode[j].style.top,
                                     content : "New Node",
-                                    class : "" },
+                                },
 
                         });
 
@@ -3138,7 +3178,7 @@
 
                     url: "php/update_node.php",
                     type: "POST",
-                    data: { update : "sheet" }
+                    data: { update : "map" }
 
                 });
 
@@ -3147,7 +3187,8 @@
         },
 
 
-        handle_addbrother:function(_jm,e){
+        handle_addbrother: async function(_jm,e){
+            var n_type = 0;
             var selected_node = _jm.get_selected_node();
             if(!!selected_node && !selected_node.isroot){
                 var nodeid = jm.util.uuid.newid();
@@ -3203,6 +3244,14 @@
 
                 }
 
+                try {
+                    var type_name = n_type;
+                    // get_typeid の非同期処理が完了するまで待つ
+                    var node_type_id = await get_Typeid("", type_name);
+                  } catch (error) {
+                    console.log("エラーが発生しました:", error);
+                  }
+
                 for(var j=0; j<jmnode.length; j++){
 
                     if(nodeid == jmnode[j].getAttribute("nodeid")){
@@ -3218,12 +3267,11 @@
                             data: { insert : "node",
                                     id : nodeid,
                                     parent_id : parent_id,
-                                    type : n_type,
+                                    type : node_type_id['node_type_id'],
                                     concept_id : n_concept,
                                     x : jmnode[j].style.left,
                                     y : jmnode[j].style.top,
-                                    content : "New Node",
-                                    class : "" },
+                                    content : "New Node",},
 
                         });
 
@@ -3267,7 +3315,7 @@
 
                 url: "php/update_node.php",
                 type: "POST",
-                data: { update : "sheet" }
+                data: { update : "map" }
 
             });
 
@@ -3429,8 +3477,8 @@ async function GetNodeId_ContentRelationTable(node1_id)
         data: { node1_id : node1_id},
         success: function(arr){
           if(arr == "[]"){
-            console.log(arr);
-            console.log("何もなかった");
+            // console.log(arr);
+            // console.log("何もなかった");
           }else{
             //console.log(arr);
             var parse = JSON.parse(arr);

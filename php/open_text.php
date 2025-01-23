@@ -4,11 +4,11 @@ session_start();
 require("connect_db.php");
 
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['SHEETID'];    //シートID
+$map_id = $_SESSION['MAPID'];    //シートID
 $st_time = $_POST["time"]; 
 
 $result = $mysqli->query("SELECT area_id, sender, content, network_on, time, JPNtime FROM network_text
-          WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND ST_Time = '$st_time'
+          WHERE user_id = '$user_id' AND map_id = '$map_id' AND ST_Time = '$st_time'
           ORDER BY ST_Time DESC ");
 
 $data = array();
