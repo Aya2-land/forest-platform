@@ -9,7 +9,7 @@
   date_default_timezone_set('Asia/Tokyo');
 
     $user_id = $_SESSION['USERID'];      //ユーザID
-    $sheet_id = $_SESSION['SHEETID'];    //シートID
+    $sheet_id = $_SESSION['MAPID'];    //シートID
     $slide_id = $_POST["id"]; //スライドID
     $slide_title = $_POST["content"]; //スライドタイトル
     $activity_id = uniqid();

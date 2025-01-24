@@ -5,7 +5,7 @@ session_start();
 require("connect_db.php");
 
 // $user_id = $_SESSION["USERID"];//"26943"; //
-$sheet_id = $_SESSION["SHEETID"];//"102774749"; //
+$sheet_id = $_SESSION["MAPID"];//"102774749"; //
 // $doc_id = $_GET["doc_id"];
 // $doc_id = $_POST["doc_id"];
 $slide_id = $_POST["slide_id"];

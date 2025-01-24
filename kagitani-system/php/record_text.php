@@ -9,7 +9,7 @@ require("connect_db.php");
 
 //ここ未完成（ノードにもっと情報追加しないといけないかも）
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['SHEETID'];    //シートID
+$sheet_id = $_SESSION['MAPID'];    //シートID
 $sttime = $_POST["sttime"]; 
 $jsonDataArray = json_decode($_POST['jsonData'], true);
 

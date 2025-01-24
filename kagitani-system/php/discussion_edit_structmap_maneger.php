@@ -9,12 +9,12 @@
 		die("Error: USERID is not set in the session.");
 	}
 	
-	if (!isset($_SESSION['SHEETID'])) {
-		die("Error: SHEETID is not set in the session.");
+	if (!isset($_SESSION['MAPID'])) {
+		die("Error: MAPID is not set in the session.");
 	}
 
 	$user_id = $_SESSION['USERID'];      //ユーザID
-    $sheet_id = $_SESSION['SHEETID'];    //シートID
+    $sheet_id = $_SESSION['MAPID'];    //シートID
 	$purpose = $_POST['purpose'];  //記録(record)か，更新(update)か，削除(delete)か
 
 

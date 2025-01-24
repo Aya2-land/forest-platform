@@ -4,7 +4,7 @@ session_start();
 require("connect_db.php");
 
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['SHEETID'];    //シートID
+$sheet_id = $_SESSION['MAPID'];    //シートID
 $mt_time = $_POST["mttime"]; 
 
 

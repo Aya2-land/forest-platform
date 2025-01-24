@@ -6,7 +6,7 @@
 	date_default_timezone_set('Asia/Tokyo');
 
 	$user_id = $_SESSION['USERID'];      //ユーザID
-    $sheet_id = $_SESSION['SHEETID'];    //シートID
+    $sheet_id = $_SESSION['MAPID'];    //シートID
 	$purpose = $_POST['purpose'];  //記録(record)か，更新(update)か，削除(delete)か
 
 	if($purpose === 'record'){

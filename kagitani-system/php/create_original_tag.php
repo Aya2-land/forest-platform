@@ -8,7 +8,7 @@ date_default_timezone_set('Asia/Tokyo');
 
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);//日時をマイクロ秒まで取得するようにしてみる
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['SHEETID'];    //シートID
+$sheet_id = $_SESSION['MAPID'];    //シートID
 
 $tagid = rand();
 $tagname = $_POST['tagname'];

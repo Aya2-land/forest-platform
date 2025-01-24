@@ -9,7 +9,7 @@
   date_default_timezone_set('Asia/Tokyo');
 		// $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);//日時をマイクロ秒まで取得するようにしてみる
 	$user_id = $_SESSION['USERID'];      //ユーザID
- 	$sheet_id = $_SESSION['SHEETID'];    //シートID
+ 	$map_id = $_SESSION['MAPID'];    //シートID
     $node_id = $_POST["id"];             //ノードID
 	$type = $_POST["type"];              //タイプ
 	$concept_id = $_POST["concept_id"];  //法造コンセプトID
@@ -31,8 +31,8 @@
 
 
 	// SQLクエリの生成
-	$sql = "INSERT INTO activities (id, timestamp, node_id, act, type, concept_id, text, parent_id, user_id, sheet_id, object_map_id)
-	VALUES ('$primary_id', '$timestamp', '$node_id','$activity', '$type','$concept_id','$text','$parent_id','$user_id','$sheet_id', '$object_map_id')";
+	$sql = "INSERT INTO activities (id, timestamp, node_id, act, type, concept_id, text, parent_id, user_id, map_id, object_map_id)
+	VALUES ('$primary_id', '$timestamp', '$node_id','$activity', '$type','$concept_id','$text','$parent_id','$user_id','$map_id', ".$object_map_id.")";
 
 	// SQLクエリをエコーで出力（ブラウザやネットワークタブで確認可能）
 	echo "Generated SQL: " . $sql . "\n";

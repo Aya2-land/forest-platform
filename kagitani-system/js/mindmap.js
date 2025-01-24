@@ -49,11 +49,9 @@ open_empty();
 function get_selected_nodeid(){
     var selected_node = _jm.get_selected_node();
     if(!!selected_node){
-        console.log(1);
         return selected_node.id;
     
     }else{
-      console.log(2);
         return null;
         
     }
@@ -119,8 +117,27 @@ function show_node(id,pid,str,cid,type,cname){
 // });
 
 
+//node_type_idを取得する関数
+async function get_Typeid(class_name, type_name) {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: "php/get_Typeid.php",
+      type: "POST",
+      data: { class: class_name, type: type_name },
+      success: function(response) {
+        const result = JSON.parse(response);
+        resolve(result); 
+      },
+      error: function(error) {
+        console.log("エラー:", error);
+        reject(error);
+      }
+    });
+  });
+}
+
 //問い一覧から問いを選択し，マップに追加
-function add_node(){
+async function add_node(){
 
     //マップ上に新しく追加した問いノードの親ノード情報取得
     var parent_node = _jm.get_selected_node();
@@ -152,6 +169,15 @@ function add_node(){
 
     //XMLデータを取得して問いを絞って提示
     choose_xmlLoad();
+
+    //問いノードのnode_type_idを取得
+    try {
+      var type_name = "toi";
+      // get_typeid の非同期処理が完了するまで待つ
+      var node_type_id = await get_Typeid("", type_name);
+    } catch (error) {
+      console.log("エラーが発生しました:", error);
+    }
 
     //マップ上の問いノードに問い概念ID,type（問いか答えか）,親ノードIDを挿入
     var jmnode = document.getElementsByTagName("jmnode");
@@ -204,23 +230,31 @@ function add_node(){
                 data: { insert : "node",
                         id : thisId,
                         parent_id : parent_id,
-                        type : "toi",
+                        type : node_type_id['node_type_id'],
                         concept_id : jmnode[i].getAttribute("concept_id"),
                         x : jmnode[i].style.left,
                         y : jmnode[i].style.top,
                         content : jmnode[i].innerHTML,
-                        class : "" }, //以前，クラスリストを用いて合理性を考えるべきノードを呈示していたが，今は必要ない
-
+                        from_mode : null
+                      },
+                      success:function(result){
+                        if(result){ console.log(result);}
+                      },
+                      error: function(error) {
+                        console.log("エラー:", error);
+                        reject(error);
+                      }
             });
+
             // hatakeyama 用意された問いを追加
-            NodeInsert(
-              versionid, 
-              thisId, 
-              parent_id, 
-              jmnode[i].innerHTML, 
-              "",
-              "add_prepared_question"
-            );
+            // NodeInsert(
+            //   versionid, 
+            //   thisId, 
+            //   parent_id, 
+            //   jmnode[i].innerHTML, 
+            //   "",
+            //   "add_prepared_question"
+            // );
             RecordRelation(2);   //relationテーブル
             //ここから大槻修正
             $("#reason").html("");
@@ -260,14 +294,14 @@ function add_node(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
 }
 
 //問いノード追加ボタンで問いノードを追加する
-function add_Qnode(){
+async function add_Qnode(){
 
     var parent_node = _jm.get_selected_node();
 
@@ -286,6 +320,15 @@ function add_Qnode(){
     var topic = 'New Node';
     var node = _jm.add_node(parent_node, nodeid, topic);
 
+    //問いノードのnode_type_idを取得
+    try {
+      var type_name = "toi";
+      // get_typeid の非同期処理が完了するまで待つ
+      var node_type_id = await get_Typeid("", type_name);
+    } catch (error) {
+      console.log("エラーが発生しました:", error);
+    }
+
     var jmnode = document.getElementsByTagName("jmnode");
 
     for(var i=0; i<jmnode.length; i++){
@@ -298,30 +341,36 @@ function add_Qnode(){
             jmnode[i].className = "";
 
             $.ajax({
-
-                url: "php/insert_node.php",
-                type: "POST",
-                data: { insert : "node",
-                        id : nodeid,
-                        parent_id : parent_id,
-                        type : "toi",
-                        concept_id : "",
-                        x : jmnode[i].style.left,
-                        y : jmnode[i].style.top,
-                        content : jmnode[i].innerHTML,
-                        class : "" },
-
+              url: "php/insert_node.php",
+              type: "POST",
+              data: { insert : "node",
+                      id : nodeid,
+                      parent_id : parent_id,
+                      type : node_type_id['node_type_id'],
+                      concept_id : jmnode[i].getAttribute("concept_id"),
+                      x : jmnode[i].style.left,
+                      y : jmnode[i].style.top,
+                      content : jmnode[i].innerHTML,
+                      from_mode : null
+                    },
+              success:function(result){
+                if(result){ console.log(result);}
+              },
+              error: function(error) {
+                console.log("エラー:", error);
+                reject(error);
+              }
             });
 
             // hatakeyama 「問いノード追加」ボタン
-            NodeInsert(
-              versionid, 
-              nodeid, 
-              parent_id, 
-              jmnode[i].innerHTML, 
-              "",
-              "add_new_node"
-            );
+            // NodeInsert(
+            //   versionid, 
+            //   nodeid, 
+            //   parent_id, 
+            //   jmnode[i].innerHTML, 
+            //   "",
+            //   "add_new_node"
+            // );
             RecordRelation(2);
             //ここから大槻修正
             $("#reason").html("");
@@ -348,7 +397,7 @@ function add_Qnode(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
@@ -371,7 +420,7 @@ $(window).keydown(function(e){
 });
 
 //答えノード追加ボタンで答えノードを追加する
-function add_Anode(){
+async function add_Anode(){
 
     var selected_node = _jm.get_selected_node();
 
@@ -389,6 +438,15 @@ function add_Anode(){
     var versionid = jsMind.util.uuid.newid(); //hatakeyama
     var topic = 'New Node';
     var node = _jm.add_node(selected_node, nodeid, topic);
+
+    //ノードのnode_type_idを取得
+    try {
+      var type_name = "answer";
+      // get_typeid の非同期処理が完了するまで待つ
+      var node_type_id = await get_Typeid("", type_name);
+    } catch (error) {
+      console.log("エラーが発生しました:", error);
+    }
 
     var jmnode = document.getElementsByTagName("jmnode");
 
@@ -411,30 +469,36 @@ function add_Anode(){
             jmnode[j].setAttribute("parent_id",parent_id);
 
             $.ajax({
-
-                url: "php/insert_node.php",
-                type: "POST",
-                data: { insert : "node",
-                        id : nodeid,
-                        parent_id : parent_id,
-                        type : "answer",
-                        concept_id : p_concept,
-                        x : jmnode[j].style.left,
-                        y : jmnode[j].style.top,
-                        content : jmnode[j].innerHTML,
-                        class : "" },
-
+              url: "php/insert_node.php",
+              type: "POST",
+              data: { insert : "node",
+                      id : nodeid,
+                      parent_id : parent_id,
+                      type : node_type_id['node_type_id'],
+                      concept_id : p_concept,
+                      x : jmnode[j].style.left,
+                      y : jmnode[j].style.top,
+                      content : jmnode[j].innerHTML,
+                      from_mode : null
+                    },
+                    success:function(result){
+                      if(result){ console.log(result);}
+                    },
+                    error: function(error) {
+                      console.log("エラー:", error);
+                      reject(error);
+                    }
             });
 
             // hatakeyama 「答えノード追加」ボタン
-            NodeInsert(
-              versionid, 
-              nodeid, 
-              parent_id, 
-              jmnode[j].innerHTML, 
-              "",
-              "add_new_node"
-            );
+            // NodeInsert(
+            //   versionid, 
+            //   nodeid, 
+            //   parent_id, 
+            //   jmnode[j].innerHTML, 
+            //   "",
+            //   "add_new_node"
+            // );
             RecordRelation(2);   //relationテーブル
             //ここから大槻修正
             $("#reason").html("");
@@ -465,7 +529,7 @@ function add_Anode(){
 
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
 
     });
 
@@ -502,7 +566,7 @@ function add_Confirm(){
 
 
 
-function add_Pnode(){//マップへ反映ボタンでノードを追加する
+async function add_Pnode(){//マップへ反映ボタンでノードを追加する
 
   var dom_all = document.getElementsByClassName("cspan");
   for(var i=0; i<dom_all.length; i++){
@@ -526,9 +590,19 @@ function add_Pnode(){//マップへ反映ボタンでノードを追加する
     toi_type = "s_prepared_question";
   }
 
+  //問いノードのnode_type_idを取得
+  try {
+    var type_name = p_type;
+    // get_typeid の非同期処理が完了するまで待つ
+    var node_type_id = await get_Typeid("", type_name);
+  } catch (error) {
+    console.log("エラーが発生しました:", error);
+  }
+
 
   if(p_type == 'answer'){//答えの場合
           var selected_node = _jm.get_selected_node();
+
           for(key in selected_node){
               if(key == "id"){
                   var parent_id = selected_node[key];
@@ -548,21 +622,31 @@ function add_Pnode(){//マップへ反映ボタンでノードを追加する
           }
           for(var j=0; j<jmnode.length; j++){
               if(nodeid == jmnode[j].getAttribute("nodeid")){
+
                   jmnode[j].setAttribute("concept_id",p_concept);
                   jmnode[j].setAttribute("type","answer");
                   jmnode[j].setAttribute("parent_id",parent_id);
+
                   $.ajax({
-                      url: "php/insert_node.php",
-                      type: "POST",
-                      data: { insert : "node",
-                              id : nodeid,
-                              parent_id : parent_id,
-                              type : "answer",
-                              concept_id : p_concept,
-                              x : jmnode[j].style.left,
-                              y : jmnode[j].style.top,
-                              content : jmnode[j].innerHTML,
-                              class : "" },
+                    url: "php/insert_node.php",
+                    type: "POST",
+                    data: { insert : "node",
+                            id : nodeid,
+                            parent_id : parent_id,
+                            type : node_type_id['node_type_id'],
+                            concept_id : p_concept,
+                            x : jmnode[j].style.left,
+                            y : jmnode[j].style.top,
+                            content : jmnode[j].innerHTML,
+                            from_mode : null
+                          },
+                    success:function(result){
+                      if(result){ console.log(result);}
+                    },
+                    error: function(error) {
+                      console.log("エラー:", error);
+                      reject(error);
+                    }
                   });
                   //yoshioka登録　追加ボタンより答えを追加したこと
                   //渡す情報（ノードID，親ノードID，操作，テキスト，法造コンセプトID，タイプ，primary）
@@ -579,7 +663,7 @@ function add_Pnode(){//マップへ反映ボタンでノードを追加する
           $.ajax({
               url: "php/update_node.php",
               type: "POST",
-              data: { update : "sheet" }
+              data: { update : "map" }
           });
           dom_target.setAttribute("node_id", nodeid);
           var thread_id = dom_target.parentNode.parentNode.parentNode.id;
@@ -611,17 +695,25 @@ function add_Pnode(){//マップへ反映ボタンでノードを追加する
                   jmnode[i].setAttribute("parent_id",parent_id);
                   jmnode[i].className = "";
                   $.ajax({
-                      url: "php/insert_node.php",
-                      type: "POST",
-                      data: { insert : "node",
-                              id : nodeid,
-                              parent_id : parent_id,
-                              type : "toi",
-                              concept_id : p_concept_id,
-                              x : jmnode[i].style.left,
-                              y : jmnode[i].style.top,
-                              content : jmnode[i].innerHTML,
-                              class : "" },
+                    url: "php/insert_node.php",
+                    type: "POST",
+                    data: { insert : "node",
+                            id : nodeid,
+                            parent_id : parent_id,
+                            type : node_type_id['node_type_id'],
+                            concept_id : p_concept_id,
+                            x : jmnode[i].style.left,
+                            y : jmnode[i].style.top,
+                            content : jmnode[i].innerHTML,
+                            from_mode : null
+                          },
+                    success:function(result){
+                      if(result){ console.log(result);}
+                    },
+                    error: function(error) {
+                      console.log("エラー:", error);
+                      reject(error);
+                    }
                   });
                   //yoshioka登録　追加ボタンより自作の問いを追加したこと
                   //渡す情報（ノードID，親ノードID，操作，テキスト，法造コンセプトID，タイプ，primary）
@@ -638,7 +730,7 @@ function add_Pnode(){//マップへ反映ボタンでノードを追加する
           $.ajax({
               url: "php/update_node.php",
               type: "POST",
-              data: { update : "sheet" }
+              data: { update : "map" }
           });
   }
   dom_target.setAttribute("node_id", nodeid);
@@ -651,32 +743,132 @@ function add_Pnode(){//マップへ反映ボタンでノードを追加する
   // Record_rank();
 }
 
+async function add_Label(node_type){
 
+  console.log(node_type);
 
-
-
-
-//答えノードのショートカット
-$(window).keydown(function(e){
-
-    if(event.shiftKey){
-      //Aキー：65
-      if(e.keyCode === 65){
-
-        add_Anode();
-
-        return false;
+  if(node_type=="primary_label"){
+    try {
+        // get_typeid の非同期処理が完了するまで待つ
+        var node_type_id = await get_Typeid(node_type, "pl_0");
+      } catch (error) {
+        console.log("エラーが発生しました:", error);
+      }
+  }else if(node_type=="issue_label"){
+    try {
+        // get_typeid の非同期処理が完了するまで待つ
+        var node_type_id = await get_Typeid(node_type, "il_non_0");
+      } catch (error) {
+        console.log("エラーが発生しました:", error);
       }
 
-    }
+  }else if(node_type=="consistency_label"){
+    try {
+        // get_typeid の非同期処理が完了するまで待つ
+        var node_type_id = await get_Typeid(node_type, "cl_0");
+      } catch (error) {
+        console.log("エラーが発生しました:", error);
+      }
+  }else{
+    try {
+        // get_typeid の非同期処理が完了するまで待つ
+        var node_type_id = await get_Typeid("", node_type);
+      } catch (error) {
+        console.log("エラーが発生しました:", error);
+      }
+  }
 
-});
+  var selected_node = _jm.get_selected_node();
+
+  for(key in selected_node){
+
+      if(key == "id"){
+
+          var parent_id = selected_node[key];
+
+      }
+
+  }
+  var topic = '<select name="change_labels" id="select_labels"><optgroup label="ラベル付与"><option value="node_labels">ラベル選択</option>          <option value="primary_label">主軸</option><optgroup label="----L主軸"><option value="pl_1">---L有用性</option><option value="pl_2">---L新規性</option> <option value="pl_3">---L信頼性</option><option value="pl_0">---Lその他</option>                   </optgroup>              <option value="issue_label">課題</option> <optgroup label="----L未検討"> <option value="il_non_1">---L語の妥当性</option><option value="il_non_2">---L証拠の十分性</option><option value="il_non_3">---L論理の整合性</option><option value="il_non_0">---Lその他</option><optgroup label="----L再検討"> <option value="il_re_1">---L語の妥当性</option><option value="il_re_2">---L証拠の十分性</option><option value="il_re_3">---L論理の整合性</option><option value="il_re_0">---Lその他</option></optgroup><option value="cl_0">整合性</option></select>'
+
+  var nodeid = jsMind.util.uuid.newid();//idの生成
+ 
+  var node = _jm.add_node(selected_node, nodeid, topic);
+
+  var jmnode = document.getElementsByTagName("jmnode");
+
+  for(var i=0; i<jmnode.length; i++){
+
+      if(parent_id == jmnode[i].getAttribute("nodeid")){
+
+          var concept = jmnode[i].getAttribute("concept_id");
+
+      }
+
+  }
+  change_select_Nlabel("add", nodeid);
+
+  for(var j=0; j<jmnode.length; j++){
+
+      if(nodeid == jmnode[j].getAttribute("nodeid")){
+
+          jmnode[j].setAttribute("concept_id",concept);
+          jmnode[j].setAttribute("parent_id",parent_id);
+
+          if(node_type=="primary_label"){
+            jmnode[j].setAttribute("class", node_type);
+            jmnode[j].setAttribute("type", "pl_0");
+          }else if(node_type=="issue_label"){
+            jmnode[j].setAttribute("class",node_type);
+            jmnode[j].setAttribute("type","il_non_0");
+          }else if(node_type=="consistency_label"){
+            jmnode[j].setAttribute("class",node_type);
+            jmnode[j].setAttribute("type", "cl_0");
+          }else{
+            jmnode[j].setAttribute("class","");
+            jmnode[j].setAttribute("type",node_type);
+          }
+
+          console.log(node_type_id['node_type_id']);
+          $.ajax({
+
+              url: "php/insert_node.php",
+              type: "POST",
+              data: { insert : "node",
+                      id : nodeid,
+                      parent_id : parent_id,
+                      type : node_type_id['node_type_id'],
+                      concept_id : concept,
+                      x : jmnode[j].style.left,
+                      y : jmnode[j].style.top,
+                      content : jmnode[j].innerHTML,
+                      from_mode : null
+                  },
+                  success:function(result){
+                    if(result){ console.log(result);}
+                  },
+                  error: function(error) {
+                    console.log("エラー:", error);
+                  }
+
+          });
+      }
+  }
+
+  $.ajax({
+
+      url: "php/update_node.php",
+      type: "POST",
+      data: { update : "map" }
+
+  });
+
+}
 
 //ノード削除
 function remove_node(){
 
     var selected_id = get_selected_nodeid();
-    console.log(selected_id);
 
     //yoshioka登録　システムが用意した問いを追加したこと
    //渡す情報（ノードID，親ノードID，操作，テキスト，法造コンセプトID，タイプ，primary）
@@ -698,27 +890,31 @@ function remove_node(){
         url: "php/update_node.php",
         type: "POST",
         data: { update : "delete",
-                id : selected_id },
+                id : selected_id 
+              },
+              success:function(result){
+                  if(result){ console.log(result);}
+              },
     });
 
     //hatakeyama ノード削除
-    var versionid = jsMind.util.uuid.newid(); //hatakeyama
-    GetSelectedNodeVersion(selected_id).then(function (res) {
-      const parse = JSON.parse(res)
+    // var versionid = jsMind.util.uuid.newid(); //hatakeyama
+    // GetSelectedNodeVersion(selected_id).then(function (res) {
+    //   const parse = JSON.parse(res)
 
-      $.ajax({
+    //   $.ajax({
 
-        url: "php/version_update.php",
-        type: "POST",
-        data: { data : "delete",
-                node_id : selected_id,
-                parent_node_id : Get_NodeInfo(selected_id, "parent_id"),
-                node_version_id_update : parse[0],   //最新version_id
-                node_version_id_insert : versionid   //新しく追加するversion_id
-              }
-      });
+    //     url: "php/version_update.php",
+    //     type: "POST",
+    //     data: { data : "delete",
+    //             node_id : selected_id,
+    //             parent_node_id : Get_NodeInfo(selected_id, "parent_id"),
+    //             node_version_id_update : parse[0],   //最新version_id
+    //             node_version_id_insert : versionid   //新しく追加するversion_id
+    //           }
+    //   });
 
-    });
+    // });
     RecordRelation(2);   //relationテーブル
     $('#comment_balloon').hide();
     $('#comment_balloon').fadeIn(1000);
@@ -727,7 +923,7 @@ function remove_node(){
     $.ajax({
         url: "php/update_node.php",
         type: "POST",
-        data: { update : "sheet" }
+        data: { update : "map" }
     });
 
 }
@@ -878,26 +1074,29 @@ function send_map_reason(){
      
       //ノード修正理由があれば取得
       GetNodeReason(id).then(function (res) {
-      const parse = JSON.parse(res);
+        const parse = JSON.parse(res);
+        
+        if(Object.keys(parse).length>1){
 
-      var textarea = document.createElement("textarea");
-      textarea.id = "edit_reason_area";
-      textarea.name = "textarea";
-      textarea.innerHTML = parse[0];
-      reason.appendChild(textarea);
+          var textarea = document.createElement("textarea");
+          textarea.id = "edit_reason_area";
+          textarea.name = "textarea";
+          textarea.innerHTML = parse[0];
+          reason.appendChild(textarea);
 
-      var button = document.createElement("button");
-      button.className = "button4";
-      button.innerHTML = "ノードに追加";
-      button.onclick = send_reason;
-      reason.appendChild(button);
+          var button = document.createElement("button");
+          button.className = "button4";
+          button.innerHTML = "ノードに追加";
+          button.onclick = send_reason;
+          reason.appendChild(button);
 
-      var button = document.createElement("button");
-      button.className = "button4";
-      button.innerHTML = "マップに追加";
-      button.onclick = send_map_reason;
-      reason.appendChild(button);
-
+          var button = document.createElement("button");
+          button.className = "button4";
+          button.innerHTML = "マップに追加";
+          button.onclick = send_map_reason;
+          reason.appendChild(button);
+        }
+      
       });
 
     //hatakeyama 元のコード
@@ -1083,7 +1282,8 @@ function CheckClickVersion(){
   else{
     console.log("ノーチェック");
     $('#jsmind_container').show();
-    $('#jsmind_container').css('width','calc(100vw - 350px)');
+    // $('#jsmind_container').css('width','calc(100vw - 350px)');
+    $('#jsmind_container').css('width','100%');
     $('#mind').css('height','90%');
   }
 }
@@ -1094,13 +1294,12 @@ function CheckClick(){
   check = document.getElementById("checkbox");
   // checkboxがチェックされている時の処理 → 資料作成モードへの変更
   if(check.checked == true){
-    $('#jsmind_container').css('width','40vw');//横幅を全体の40％で表示？
+    $('#jsmind_container').css('width','50%');//横幅を全体の40％で表示？
     $('#document').show(); //Menu下の目標設定箇所
     $('#mind').css('height','50%');　//問い一覧箇所
     // $('#mind').toggle('fast');
     // $('#document').toggle('fast');
-    $('#document_area').css('width','calc(60vw - 350px)');　//資料作成箇所
-    // $('#document_area').css('width','620px');
+    $('#document_area').css('width','50%');　//資料作成箇所
     $('#document_area').toggle('fast'); //資料作成箇所を表示
     $('#node_slide').toggle('fast');  //
     $('#presen_menu').toggle('fast'); //資料作成用のボタン
@@ -1114,7 +1313,8 @@ function CheckClick(){
   }
   else{
     $('#jsmind_container').show();
-    $('#jsmind_container').css('width','calc(100vw - 350px)');
+    // $('#jsmind_container').css('width','calc(100vw - 350px)');
+    $('#jsmind_container').css('width','100%');
     $('#mind').css('height','90%');
     $('#document').hide();
     // $('#mind').show();
@@ -1133,56 +1333,192 @@ function CheckClick(){
 function ModeChangeButtonClick() {
   const selindex = document.target_mode.Select1;
   const num = selindex.selectedIndex;
-  var ModeLabel = ["二分割モード", "思考整理マップ", "手段目標マップ"];
+  var ModeLabel = ["自己内対話モード","資料構成作成モード","資料作成モード","議論内省マップモード"]
 
   console.log(num);
   console.log(ModeLabel);
   target = document.getElementById("output");
 
-  if(num == 0){
-    // 二分割モード：現在の状態
-    $('#object_container').toggle('fast');
-    $('#object_container').css('display','flex');
-    $('#jsmind_container').css('width','calc((100vw - 315px)*0.4)');
-    
-    const parentWidth = $('#object_container').parent().width();
-    $('#layout').css('width', `${parentWidth * 0.3}px`);
-    $('#mind').show();
+  if (num == 0 ){
+
+    $('#jsmind_container').show();
+    // $('#jsmind_container').css('width','calc(100vw - 350px)');
+    $('#jsmind_container').css('width','100%');
+    $('#mind').css('height','90%');
+    $('#document').hide();
+    // $('#mind').show();
+    if(BeforeSelectModeNumber == 1){
+      $('#document_area').toggle('fast');
+      $('#node_slide').toggle('fast');
+      $('#ImageAddContent').toggle('fast');
+      $('#presen_menu').toggle('fast');
+      // $('#node_slide').toggle('fast');  
+    }else if(BeforeSelectModeNumber == 2){
+      $('#document_area').toggle('fast');
+      $('#node_slide').toggle('fast');
+      $('#ImageAddContent').toggle('fast');
+      $('#presen_menu').toggle('fast');
+      $('#document_slide').toggle('fast');
+      //ここから大槻変更
+    }else if(BeforeSelectModeNumber == 3){
+      $('#network_container').toggle('fast');
+      document.getElementById('feedback_area').style.display = "none";
+      document.getElementById('xml_upload_area').style.display = "none";
+    }
+    //ここまで大槻変更
+   
+    // $('.changemode_button').toggle('fast');
+    const frame_dom = document.getElementsByClassName("inquiry_area");
+    frame_dom[0].style.border = "solid 5px #ccc";
+    showGeneration();
+    BeforeSelectModeNumber = 0;
+
   }else if(num == 1){
-    // 思考整理マップモード：layoutのみ表示
-    $('#object_container').hide();  // ドキュメント非表示
-    $('#myobject').hide();  // ドキュメント非表示
-    $('#utterance_area').hide();  // ドキュメント非表示
-    $('#layout').show();  // layoutを表示
-    const parentWidth = $('#object_container').parent().width();
-    $('#layout').css('width', `${parentWidth * 1.0}px`);  // layoutの横幅を2倍に変更
-    $('#jsmind_nav').css('width', `${parentWidth * 1.008}px`);  // layoutの横幅を2倍に変更
-  }else if(num == 2){
-    // 手段目標マップモード：layout以外の部分を表示
-    $('#layout').hide();  // layoutを非表示にする
-    $('#jsmind_container').hide();  // jsMind コンテナ非表示
-    $('#myobject').show();  // ドキュメント非表示
-    $('#utterance_area').show();  // ドキュメント非表示
-    $('#object_container').toggle('fast');
-    $('#object_container').css('display','flex');
 
-    // 画面全体に#object_containerを広げる
-    $('#object_container').css('width', '600vw');  // 画面全体に設定
-    $('#object_container').css('height', '60vh'); // 画面全体に設定
-    $('#object_container').css('position', 'absolute'); // 絶対配置に設定
-    $('#object_container').css('top', '80'); // 上端を0に設定
-    $('#object_container').css('left', '0'); // 左端を0に設定
-    $('#object_container').css('right', '0'); // 右端を0に設定
-    $('#object_container').css('bottom', '100'); // 下端を0に設定
-    //$('#object_container').css('grid-column', 'span 2'); // グリッドのカラムを跨るように設定
-    const parentWidth = $('#object_container').parent().width();
-    $('#object_container').css('width', `${parentWidth * 1.0}px`);  // layoutの横幅を2倍に変更
-    $('#myobject').css('width', `${parentWidth * 1.008}px`);  // layoutの横幅を2倍に変更
-}
+    $('.content_delete').css('visibility', 'visible');
+    $('.simple_btn').css('visibility', 'visible');
+    $('.cspan').css('font-size', '15');
+    $('.cspan').css('border', 'White');
+    $('.cspan').css('margin-bottom', '5');
+    $('.tspan').css('font-size', '20');
+  
+    $('.inquiry_area').css('height', '25vw');
+    $('#jsmind_container').css('width','50%');//横幅を全体の40％で表示？
+    $('#document').show(); //Menu下の目標設定箇所
+    $('#mind').css('height','50%');　//問い一覧箇所
 
+
+    $('#scenario_title').css('margin-left','15px');
+    $('#scenario_title').css('width','90%');
+
+    $('#scenario_title').css('border','Black');
+    $('#document_area').css('width','50%');　//資料作成箇所
+    $('#document_area').css('height','100%');
+    $('#document_area').css('overflow','scroll');
+    // height:84vh;overflow: scroll;
+
+    // $('#document_area').css('width','620px');
+    console.log(BeforeSelectModeNumber);
+    if(BeforeSelectModeNumber == 0){
+      $('#document_area').toggle('fast'); //資料作成箇所を表示
+      $('#node_slide').toggle('fast');  //
+      $('#ImageAddContent').toggle('fast');
+      $('#presen_menu').toggle('fast'); //資料作成用のボタン
+    }else if(BeforeSelectModeNumber == 2){
+      $('#document_slide').toggle('fast');
+      //ここから大槻変更
+    }else if(BeforeSelectModeNumber == 3){
+      $('#document_area').toggle('fast'); //資料作成箇所を表示
+      $('#node_slide').toggle('fast');  //
+      $('#ImageAddContent').toggle('fast');
+      $('#network_container').toggle('fast');
+      document.getElementById('feedback_area').style.display = "none";
+      document.getElementById('xml_upload_area').style.display = "none";
+    }
+    //ここまで大槻変更
+
+    $('.thread').css('border', 'solid 0.7px #000000');
+    
+    $("select[name='Logic_options_contents']").css('font-size', '15');
+    $("select[name='Logic_options_contents']").css('visibility', 'visible');
+    $("select[name='Logic_options_contents']").css('height', '20px');
+
+    $("select[name='Logic_options_title']").css('font-size', '15');
+    $("select[name='Logic_options_title']").css('visibility', 'visible');
+    $("select[name='Logic_options_title']").css('height', '20px');
+    // $('.changemode_button').toggle('fast');
+
+    $('.badge').css('visibility', 'visible');
+    $('.badge').css('height', '20px');
+    $('.badge').css('padding','0.125rem 0.3rem');
+    BeforeSelectModeNumber = 1;
+    AddAOI_on_ImageArea();
+    MoveAndExpensionImageArea();
+  }else if(num == 2 ){
+    var text2 = document.getElementsByClassName("cspan");
+    // console.log(text2);
+    for (var i = 0; i < text2.length; i++){
+      // console.log(text2[i].nodeType);
+    }
+    $('#document_area').css('width','50%');//資料作成箇所
+    $('#document_area').css('height','100%'); //統合前はauto
+    
+    $('.content_delete').css('visibility', 'hidden');
+    $('.simple_btn').css('visibility', 'hidden');
+    $('.thread').css('border','White');
+    $('.thread').css('padding','0');
+    $('.cspan').css('font-size', '20');
+    $('.cspan').css('border', 'White');
+    $('.cspan').css('margin-bottom', '0');
+    $('.tspan').css('margin-bottom', '0');
+    $('.tspan').css('font-size', '20');
+    if(BeforeSelectModeNumber == 1){
+      $('#document_slide').toggle('fast');
+    }else if(BeforeSelectModeNumber == 0){
+      $('#document_area').toggle('fast'); //資料作成箇所を表示
+      $('#node_slide').toggle('fast');  //
+      $('#ImageAddContent').toggle('fast');
+      //ここから大槻変更
+    }else if(BeforeSelectModeNumber == 3){
+      $('#document_area').toggle('fast'); //資料作成箇所を表示
+      $('#node_slide').toggle('fast');  //
+      $('#ImageAddContent').toggle('fast');
+      $('#network_container').toggle('fast');
+      document.getElementById('feedback_area').style.display = "none";
+      document.getElementById('xml_upload_area').style.display = "none";
+    }
+    //ここまで大槻変更
+
+    // $('#scenario_title').css('font-size', '30');
+    $('#scenario_title').css('border','White');
+    $('#scenario_title').css('margin-left','0');
+    $('#scenario_title').css('width','calc(70vw - 350px)');
+    //$('#jsmind_container').hide();//横幅を無くす
+    $('#jsmind_container').css('width','30vw');//横幅を全体の20％で表示？
+
+    $("select[name='Logic_options_contents']").css('font-size', '0.01');
+    $("select[name='Logic_options_contents']").css('visibility', 'hidden');
+    $("select[name='Logic_options_contents']").css('height', '1px');
+
+    $("select[name='Logic_options_title']").css('font-size', '0.01');
+    $("select[name='Logic_options_title']").css('visibility', 'hidden');
+    $("select[name='Logic_options_title']").css('height', '2px');
+    
+    $('.badge').css('visibility', 'hidden');
+    $('.badge').css('height', '1px');
+    $('.badge').css('padding','0');
+
+    BeforeSelectModeNumber = 2;
+    MoveAndExpensionImageArea();
+  }else if(num == 3){
+    document.getElementById('feedback_area').style.display = "block";
+    document.getElementById('xml_upload_area').style.display = "block";
+    $('#network_container').toggle('fast');
+    $('#network_container').css('display','flex');
+    $('#jsmind_container').css('width','calc((100vw - 350px)*0.4)');
+    $('#mind').css('height','90%');
+    $('#document').hide();
+    // $('#mind').show();
+    if(BeforeSelectModeNumber == 1){
+      $('#document_area').toggle('fast');
+      $('#node_slide').toggle('fast');
+      $('#ImageAddContent').toggle('fast');
+      $('#presen_menu').toggle('fast');
+      // $('#node_slide').toggle('fast');  
+    }else if(BeforeSelectModeNumber == 2){
+      $('#document_area').toggle('fast');
+      $('#node_slide').toggle('fast');
+      $('#ImageAddContent').toggle('fast');
+      $('#presen_menu').toggle('fast');
+      $('#document_slide').toggle('fast');
+    }
+    const frame_dom = document.getElementsByClassName("inquiry_area");
+    frame_dom[0].style.border = "solid 5px #ccc";
+    showGeneration();
+    BeforeSelectModeNumber = 3;
+  }
   jump_node("root");
 }
-
 
 function jump_node(nodeid) {
   // 対象となる要素を取得
@@ -1383,7 +1719,7 @@ window.onload = function(){
   var mm_menu = document.getElementById('mindmap_conmenu');  //独自コンテキストメニュー
   var mm_area = document.getElementById('jsmind_container');     //対象エリア
 // 20221208 shimizu
-  var dm_menu = document.getElementById('document_area_conmenu'); //関係性を確認するメニュー
+  // var dm_menu = document.getElementById('document_area_conmenu'); //関係性を確認するメニュー
   var dm_area = document.getElementById('document_area'); //対象エリア
 
   var dm_menu2 = document.getElementById('document_area_conmenu2'); //関係性を設定するメニュー
@@ -1422,9 +1758,9 @@ window.onload = function(){
     }
 
     if(NodeCheckCount ==1){
-      dm_menu.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
-      dm_menu.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
-      dm_menu.classList.add('on');
+      // dm_menu.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
+      // dm_menu.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
+      // dm_menu.classList.add('on');
     }else if(NodeCheckCount == 2){
       var ClickNodeLabels = [];
       var dom_all = document.getElementsByClassName("cspan");
@@ -1496,9 +1832,9 @@ window.onload = function(){
       mm_menu.classList.remove('on');
     }
 
-    if(dm_menu.classList.contains('on')){
-      dm_menu.classList.remove('on');
-    }
+    // if(dm_menu.classList.contains('on')){
+    //   dm_menu.classList.remove('on');
+    // }
 
    
   });

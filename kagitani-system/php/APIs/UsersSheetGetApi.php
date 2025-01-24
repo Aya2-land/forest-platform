@@ -4,7 +4,7 @@
 $db_host = "localhost:3306";  // DBサーバのurl
 $db_user = "root";
 $db_password = "root";
-$db_dbname = "forest";
+$db_dbname = "forest-platform";
 
 // mysqlへの接続
 $mysqli = new mysqli($db_host, $db_user, $db_password, $db_dbname);

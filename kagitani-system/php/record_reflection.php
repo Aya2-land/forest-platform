@@ -13,7 +13,7 @@
 		$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);//日時をマイクロ秒まで取得するようにしてみる
     // $id = $_POST["ref_id"];                      //ID
 		$user_id =  $_SESSION['USERID'];          //ユーザID
-    $sheet_id = $_SESSION['SHEETID'];        //シートID
+    $sheet_id = $_SESSION['MAPID'];        //シートID
     // $ref_text = $_POST["ref_text"];          //リレクション文
 		// $ref_activity = $_POST["ref_activity"];  //リフレクション活動
     // $late_activity = "0"; //$_POST["late_activity"];  //仮

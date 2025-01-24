@@ -4,7 +4,7 @@ session_start();
 require("connect_db.php");
 
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['SHEETID'];    //シートID
+$sheet_id = $_SESSION['MAPID'];    //シートID
 $st_time = $_POST["time"]; 
 
 $result = $mysqli->query("SELECT ontology_id, node_id FROM network_ontology_activity

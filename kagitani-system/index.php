@@ -1,6 +1,6 @@
 <?php
 session_start();
-// require("php/connect_db.php");
+// require("../php/connect_db.php");
 require("php/function.php");
 
 require("php/sheet.php");
@@ -9,21 +9,22 @@ $pdo = connectDB_Test();
 
 // ログイン状態のチェック
 if (!isset($_SESSION["USERID"]) ) { //ログイン出来ていない
-    header("Location: ./../logout.php");
+    header("Location: ../logout.php");
     exit;
 }
 
 if( (isset($_POST["sheetbtn"])) ||   //シート選択ボタンが押された
-    (isset($_SESSION["USERID"]) && !isset($_SESSION["SHEETID"]) )) { //ログインは出来ているがシート未選択の場合
+    (isset($_SESSION["USERID"]) && !isset($_SESSION["MAPID"]) )) { //ログインは出来ているがシート未選択の場合
     header("Location: select_sheet.php");
-    $_SESSION["SHEETID"] = null; //シート選択画面に遷移させた時にSHEETIDをリセット
+    $_SESSION["MAPID"] = null; //シート選択画面に遷移させた時にMAPIDをリセット
 }
 
 if(isset($_POST["logout"])){ //logoutボタンが押された
     // alert("本当にログアウトしますか？");
     
     // 時間があれば確認ダイアログを作る
-    header("Location: ./../logout.php");
+    header("Location: ../logout.php");
+    exit;
 }
 
 if(isset($_POST["myFileImage"])){ //imageFileImage
@@ -52,16 +53,19 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
 }
 
 
+
+
 ?>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <!-- FontAwesomeのCDNをHTMLに追加 -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
 <!-- html2canvasのCDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- ここから大槻修正 -->
 <html lang="en">
+    <!-- ここまで大槻修正 -->
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -79,6 +83,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/jsmind.js"></script>
         <script type="text/javascript" src="js/jsmind.draggable.js"></script>
+        <script type="text/javascript" src="../js/vis-network.min.js"></script>
 
         <script src="js/jquery.autosize.js"></script>
         <script src="js/jquery.autosize.min.js"></script>
@@ -88,15 +93,19 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/get_thinking.js"></script>
         <script type="text/javascript" src="js/jsmind.screenshot.js"></script>
         <script type="text/javascript" src="js/change_tab.js"></script>
+        <script type="text/javascript" src="./js/meeting-reflection-network.js"></script>
+        <link rel="stylesheet" type="text/css" href="../css/meeting-reflection-network.css" />
         <script type="text/javascript" src="./js/vis-network.min.js"></script>
         <script type="text/javascript" src="js/show_objectMap.js"></script>
         <script type="text/javascript" src="js/object_tag.js"></script>
+        <script type="text/javascript" src="js/change_map.js"></script>
         <!-- <script type="text/javascript" src="./js/meeting-reflection-network.js"></script> -->
         <link rel="stylesheet" type="text/css" href="css/meeting-reflection-network.css" />
         <script type="text/javascript">
         window.onbeforeunload = function(e) {e.returnValue = "ページを離れようとしています。よろしいですか？";}
         </script>
-    </head>
+ </head>
+
     <body id="all">
         <!---        タイトルメニューStart                 -->
         <div id="main_title">
@@ -363,9 +372,13 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         </div>
         <!-- メインメニュー　Finish -->
 
+    
         <script type="text/javascript" src="js/second_advice.js"></script>
         <script type="text/javascript" src="js/mindmap.js"></script>
         <script type="text/javascript" src="js/add_node.js"></script>
+        <script type="text/javascript" src="../js/node_tag.js"></script>
+        <script type="text/javascript" src="../js/ont_choose_thinking.js"></script>
+        <script type="text/javascript" src="../js/thinking-process-network.js"></script>
         <script type="text/javascript" src="js/past_sheet.js"></script>
         <script type="text/javascript" src="js/record_presentation.js"></script>
         <script type="text/javascript" src="js/presentation.js"></script>

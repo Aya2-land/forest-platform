@@ -1,26 +1,26 @@
 <?php
 
 session_start();
-require("php/connect_db.php");
+require("../php/connect_db.php");
 require_once("php/sheet.php");
 
 $mt_time_message = "";
 
 // ログイン状態のチェック
 if (!isset($_SESSION["USERID"])) {
-  header("Location: ./../logout.php");
+  header("Location: ../logout.php");
   exit;
 }
 
 if (isset($_POST["logout"])) {
-  header("Location: ./../logout.php");
+  header("Location: ../logout.php");
   exit;
 }
 
 //新規作成
-if(isset($_POST["sheetname"])){
+if(isset($_POST["mapname"])){
 
-	if($_POST["sheetname"] != ""){
+	if($_POST["mapname"] != ""){
 
 		createSheet();
     // createDocument();
@@ -34,9 +34,9 @@ if(isset($_POST["sheetname"])){
 }
 
 //シート編集
-if(isset($_POST["sheet"])){
+if(isset($_POST['map'])){
 
-	$_SESSION["SHEETID"] = $_POST["sheet"];
+	$_SESSION["MAPID"] = $_POST['map'];
 
 	if(isset($_POST["edit"])){
 
@@ -57,9 +57,10 @@ if(isset($_POST["record"])){
   if(($_POST["date"] != "") && ($_POST["time"] != "") ){
 
     $mt_time = (date($_POST["date"]) ." " . date($_POST["time"]) );
+    $id = rand();
 
-    $sql = "INSERT INTO mt_timing (user_id, mt_time)
-            VALUES ('".$_SESSION['USERID']."', '".$mt_time."')";
+    $sql = "INSERT INTO mt_timing (id, user_id, mt_time)
+            VALUES ('".$id."', '".$_SESSION['USERID']."', '".$mt_time."')";
 
     $result = $mysqli->query($sql);
     $mt_time_message = ('ミーティングタイムを記録しました. <br>前回：' . $mt_time);
@@ -141,13 +142,13 @@ if(isset($_POST["record"])){
     <div id="main_menu">
     <h3>思考表出マップ</h3>
 
-       <div class="newsheet">
+       <div class="newmap">
   	     <form method="POST">
            <div>
 	           <p><strong>思考表出マップ<br>新規作成</strong></p>
              <p><strong>マップ名を記入してください</strong></p>
-    	       <p><input type="text" name="sheetname" placeholder="マップ名"></p>
-    	       <p><input class="button" type="submit" name="newsheet" value="新規作成"></p>
+    	       <p><input type="text" name="mapname" placeholder="マップ名"></p>
+    	       <p><input class="button" type="submit" name="newmap" value="新規作成"></p>
            </div>
   	     </form>
        </div>

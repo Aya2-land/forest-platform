@@ -6,7 +6,7 @@
 	date_default_timezone_set('Asia/Tokyo');
 
 	$user_id = $_SESSION['USERID'];      //ユーザID
-    $sheet_id = $_SESSION['SHEETID'];    //シートID
+    $sheet_id = $_SESSION['MAPID'];    //シートID
 	$purpose = $_POST['purpose'];  //テキストの合体(union)，ネットワークに移動したとき(network_on)
 	$areaid = $_POST['areaid'];   //(ネットワークに移動したor合体によって残るされる)エリアID
 	$delete_areaid = $_POST['delete_id']; //合体によって削除されるエリアID

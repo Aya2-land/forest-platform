@@ -2,6 +2,7 @@
 
 //ノードの挿入
 function NodeInsert(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reasonSYSTEM){
+  console.log("NodeInsert");
     $.ajax({
         url: "php/version_update.php",
         type: "POST",
@@ -16,7 +17,7 @@ function NodeInsert(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reas
               },
   
         success: function (res) {
-          console.log("node_versionsに保存成功");
+          // console.log("node_versionsに保存成功");
         },
         error: function () {
           console.log("node_versionsに保存失敗");
@@ -26,6 +27,7 @@ function NodeInsert(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reas
   
 //ノードの編集／移動
 function NodeEdit(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reasonSYSTEM){
+  console.log("NodeEdit");
     $.ajax({
         url: "php/version_update.php",
         type: "POST",
@@ -40,7 +42,7 @@ function NodeEdit(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reason
               },
   
         success: function (res) {
-          console.log("node_versionsに保存成功");
+          // console.log("node_versionsに保存成功");
            //shimizu ここに資料との対応があれば記載していく
            //console.log(nodeID)
            GetPairNodeId_ContentRelationTable(nodeID)
@@ -52,7 +54,97 @@ function NodeEdit(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reason
     });
 }
 
-//relationテーブルにINSERTし、現在存在しているノードと新しいマップを結びつける
+function NodeVersionUpdate(nodes){
+
+  if(!nodes){
+    console.log(nodes);
+    var nodeVERSION = jsMind.util.uuid.newid();
+    var node = _jm.get_selected_node();
+    var nodeID = node.id;
+    var class_name = Get_NodeInfo(nodeID, 'class').split(' ')[0]; // 'XXX selected'になっているのでselectedを取り除く
+    var type_name = Get_NodeInfo(nodeID, 'type');
+    var parentID = node.parent.id;
+    var nodeTEXT = node.topic;
+    var conceptID = Get_NodeInfo(nodeID, 'concept_id');
+    var x = node._data.view.abs_x;
+    var y = node._data.view.abs_y;
+
+    //　node_type_idを取得
+    $.ajax({
+      url: "php/get_Typeid.php",
+      type: "POST",
+      data: { class: class_name, type: type_name },
+      success: function(response) {
+        const typeID = JSON.parse(response)['node_type_id'];
+        
+        //　node_type_idを取得できたらversion更新
+        $.ajax({
+          url: "php/version_update.php",
+          type: "POST",
+          data: { 
+                  data : "node",
+                  node_version_id : nodeVERSION,
+                  node_id : nodeID,
+                  node_type_id: typeID,
+                  parent_id : parentID,
+                  content : nodeTEXT,
+                  concept_id: conceptID,
+                  x: x,
+                  y: y,
+                },
+    
+          success: function (res) {
+             if(!res || res){
+              console.log(res);
+             }
+             GetPairNodeId_ContentRelationTable(nodeID);
+          },
+          error: function () {
+            console.log("node_versionsに保存失敗");
+          },
+        });
+      },
+      error: function(error) {
+        console.log("エラー:", error);
+      }
+    });
+
+  }else if(nodes){
+
+    console.log(nodes);
+    var nodeVERSION = jsMind.util.uuid.newid();
+    $.ajax({
+      url: "php/version_update.php",
+      type: "POST",
+      data: { 
+              data : "node",
+              node_version_id : nodeVERSION,
+              node_id : nodes['node_id'],
+              node_type_id: nodes['node_type_id'],
+              parent_id : nodes['parent_id'],
+              content : nodes['content'],
+              concept_id: nodes['concept_id'],
+              x: nodes['x'],
+              y: nodes[y],
+            },
+      success: function (res) {
+         if(res){
+          console.log(res);
+         }
+         GetPairNodeId_ContentRelationTable(nodeID);
+      },
+      error: function () {
+        console.log("node_versionsに保存失敗");
+      },
+    });
+  }
+
+    
+
+    
+}
+
+// relationテーブルにINSERTし、現在存在しているノードと新しいマップを結びつける
 function RecordRelation(count){
 
     var jmnode = document.getElementsByTagName("jmnode");
@@ -66,7 +158,7 @@ function RecordRelation(count){
             for(let i=1; i<jmnode.length; i++){ //現存ノードで回す(root抜き)
     
                 $node_id = jmnode[i].getAttribute("nodeid");
-        
+        // 
                 if ($node_id!=null){
         
                     $.ajax({
@@ -97,11 +189,22 @@ function MapSnapShot(){
     $.ajax({
         url: "php/version_update.php",
         type: "POST",
-        data: { data : "map"}
+        data: { data : "map"},
+        success: function(e){
+          if(e == 'null'){
+            alert("マップverが更新されました");
+            show_edit_reason();
+          }else{
+            var nodes = JSON.parse(e);
+            for(var i=0; i<Object.keys(nodes).length; i++){
+              NodeVersionUpdate(nodes[i]);
+            }
+            alert("マップverと変更があったノードのverが更新されました");
+            show_edit_reason();
+          }
+        }
     });
 
-    alert("マップver更新されました");
-    show_edit_reason();
     $('#comment_balloon').hide();
     $('#comment_balloon').fadeIn(1000);
 }
@@ -199,50 +302,50 @@ function NodeVersionLog(node_id){
 }
 //ノードversion履歴表示フォーム
 function ShowNodeVersionLog(array){ //arrayはノードバージョン最新順
-    var log = document.getElementById("node_version_log");
+    // var log = document.getElementById("node_version_log");
 
-    while(log.firstChild){  //一旦中身を空に
-        log.removeChild(log.firstChild);
-    };
+    // while(log.firstChild){  //一旦中身を空に
+    //     log.removeChild(log.firstChild);
+    // };
 
-    $("#log").html(""); //logに""を追加？
+    // $("#log").html(""); //logに""を追加？
 
-    for(i=0;i<array.length;i++){
-        var imgtag = document.createElement("img");
-        imgtag.src = "image/list6.png";
-        imgtag.style.width = 15;
-        imgtag.style.height = 15;
-        log.appendChild(imgtag);
+    // for(i=0;i<array.length;i++){
+    //     var imgtag = document.createElement("img");
+    //     imgtag.src = "image/list6.png";
+    //     imgtag.style.width = 15;
+    //     imgtag.style.height = 15;
+    //     log.appendChild(imgtag);
 
-        var atag = document.createElement("a");
-        var tab04 = document.getElementById('tab04');
-        var forestTab = document.getElementById('forestTab');
-        atag.href = "#";
-        atag.id = "atag" + i;
+    //     var atag = document.createElement("a");
+    //     var tab04 = document.getElementById('tab04');
+    //     var tab01 = document.getElementById('tab01');
+    //     atag.href = "#";
+    //     atag.id = "atag" + i;
 
-        function atagClicked(e){  //なんでこれでできるかわからんができたー！！
-        // forestTab.style.display = "none";  //下とどっちでも良さげ
-        // tab04.style.display = "block";
-        $("#forestTab").hide().fadeOut(); //フェードではない
-        $("#tab04").show().fadeIn();
-        // $('.tabnav a:first').removeClass('active');
-        // $(tab04).addClass('active');  //できてない
-        console.log(array[this.num]["updated_reason_by_system"]);
-        GetPastMapFromNode(array[this.num]["appeared_at"], array[this.num]["updated_reason_by_learner"]);
-        };
+    //     function atagClicked(e){  //なんでこれでできるかわからんができたー！！
+    //     // tab01.style.display = "none";  //下とどっちでも良さげ
+    //     // tab04.style.display = "block";
+    //     $("#tab01").hide().fadeOut(); //フェードではない
+    //     $("#tab04").show().fadeIn();
+    //     // $('.tabnav a:first').removeClass('active');
+    //     // $(tab04).addClass('active');  //できてない
+    //     console.log(array[this.num]["updated_reason_by_system"]);
+    //     GetPastMapFromNode(array[this.num]["appeared_at"], array[this.num]["updated_reason_by_learner"]);
+    //     };
 
-        atag.addEventListener('click', {arr: array, num: i, handleEvent: atagClicked});
+    //     atag.addEventListener('click', {arr: array, num: i, handleEvent: atagClicked});
 
-        // $(function() {
-        //   $("#"+atag.id).on("click", function() {
-        //   console.log("!!");
-        //     $("#forestTab").hide();
-        //     $("#tab04").show();
-        //   });
-        // });
-        atag.innerHTML = array[i]["appeared_at"] + "<br/>&emsp;テキスト：" + array[i]["content"] + "<br/>&emsp;更新理由：" + array[i]["updated_reason_by_learner"] + "<br/>";
-        log.appendChild(atag);
-    }
+    //     // $(function() {
+    //     //   $("#"+atag.id).on("click", function() {
+    //     //   console.log("!!");
+    //     //     $("#tab01").hide();
+    //     //     $("#tab04").show();
+    //     //   });
+    //     // });
+    //     atag.innerHTML = array[i]["appeared_at"] + "<br/>&emsp;テキスト：" + array[i]["content"] + "<br/>&emsp;更新理由：" + array[i]["updated_reason_by_learner"] + "<br/>";
+    //     log.appendChild(atag);
+    // }
 
 
 }
@@ -745,7 +848,7 @@ function deleteDocument(){
 
 }
 
-//このシートに含まれる過去の資料一覧（タイトル，日付）を取得して返す(sheetsから)
+//このシートに含まれる過去の資料一覧（タイトル，日付）を取得して返す(mapsから)
 function GetPastDocument(){
 
   return $.ajax({
@@ -1085,8 +1188,6 @@ async function GetPairNodeId_ContentRelationTable(node_id)
         data: { node_id   : node_id},
         success: function(arr){
           if(arr == "[]"){
-            console.log(arr);
-            console.log("何もなかった");
           }else{
             //console.log(arr);
             var parse = JSON.parse(arr);

@@ -8,7 +8,7 @@
 // date_default_timezone_set('Asia/Tokyo');
 // $image_id = uniqid();
 // $user_id = $_SESSION['USERID'];      //ユーザID
-// $sheet_id = $_SESSION['SHEETID'];    //シートID
+// $sheet_id = $_SESSION['MAPID'];    //シートID
 // $slide_id = $_POST["slide_id"];             //スライドID
 // $type = $_POST["type"];                 //ノードのタイプ
 // $activity_id = uniqid();

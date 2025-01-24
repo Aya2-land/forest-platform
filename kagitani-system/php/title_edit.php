@@ -9,7 +9,7 @@
   date_default_timezone_set('Asia/Tokyo');
 
     $user_id = $_SESSION['USERID'];      //ユーザID
-    $sheet_id = $_SESSION['SHEETID'];    //シートID
+    $sheet_id = $_SESSION['MAPID'];    //シートID
     $presentation_title = $_POST["title"]; //プレゼン自体のタイトル
     $activity_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);

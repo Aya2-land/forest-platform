@@ -8,7 +8,7 @@
 
 
 	$user_id = $_SESSION['USERID'];      //ユーザID
-	$sheet_id = $_SESSION['SHEETID'];    //シートID
+	$sheet_id = $_SESSION['MAPID'];    //シートID
 	$content_id = $_POST["id"];             //コンテントID
 	$node_id = $_POST["node_id"];             //ノードID
 	$concept_id = $_POST["concept_id"];         //コンセプトID

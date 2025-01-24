@@ -6,7 +6,7 @@ require("connect_db.php");
 
 // POSTデータの受け取り
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['SHEETID'];    //シートID
+$sheet_id = $_SESSION['MAPID'];    //シートID
 
 
 $return_data = [];

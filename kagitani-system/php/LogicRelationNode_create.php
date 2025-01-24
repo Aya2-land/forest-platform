@@ -17,7 +17,7 @@
 		$doc_con2_label = $_POST["doc_con2_label"];
 		$ont1_id = $_POST["ont1_id"];
 		$ont2_id = $_POST["ont2_id"];
-		$sheet_id = $_SESSION['SHEETID'];    //スライドID
+		$sheet_id = $_SESSION['MAPID'];    //スライドID
 		$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 		$sql = "INSERT INTO document_content_relation (id, node1_id, doc_con1_id, doc_con1_label, ont1_id, node2_id, doc_con2_id, doc_con2_label, ont2_id, deleted, created_at, updated_at, sheet_id) VALUES ('$content_id', '$node1_id','$doc_con1_id', '$doc_con1_label', '$ont1_id',  '$node2_id', '$doc_con2_id', '$doc_con2_label', '$ont2_id', 0, '$timestamp', '$timestamp' , '$sheet_id')";

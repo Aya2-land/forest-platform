@@ -5,7 +5,7 @@
 	require "connect_db.php";
 
 	if($_POST["val"] == "rationality"){
-		$sheet_id = $_SESSION["SHEETID"];
+		$sheet_id = $_SESSION["MAPID"];
 		$rationality_id = $_POST["rationality_id"];
 
 		$sql = "SELECT * FROM rationality_nodes WHERE sheet_id = ".$sheet_id." AND rationality_id = '".$rationality_id."'";
@@ -28,7 +28,7 @@
 		echo json_encode($node_id_array);
 
 	}else if($_POST["val"] == "edit_reason"){
-		$sheet_id = $_SESSION["SHEETID"];
+		$sheet_id = $_SESSION["MAPID"];
 		$id = $_POST["id"];
 
 		$sql = "SELECT * FROM edit_reason WHERE sheet_id = ".$sheet_id." AND node_id = '".$id."'";
@@ -66,7 +66,7 @@
 
 	}else if($_POST["val"] == "return"){
 
-		$sql = "SELECT * FROM nodes WHERE user_id = ".$_SESSION["USERID"]." AND sheet_id = ".$_SESSION["SHEETID"]." AND updated_at = (select max(updated_at) from nodes)";
+		$sql = "SELECT * FROM nodes WHERE user_id = ".$_SESSION["USERID"]." AND sheet_id = ".$_SESSION["MAPID"]." AND updated_at = (select max(updated_at) from nodes)";
 
 		$i = 0;
 		$updated_array = array();

@@ -19,7 +19,7 @@
 		$ont2_id = $_POST["ont2_id"];
 		$relation_label = $_POST["relation_label"];             //関係性のラベル
 		$relation_concept = $_POST["relation_concept"];
-		$sheet_id = $_SESSION['SHEETID'];    //スライドID
+		$sheet_id = $_SESSION['MAPID'];    //スライドID
 		$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 		$sql = "INSERT INTO document_relation (id, node_id1, thread1_id, thread1_label, ont1_id, node_id2, thread2_id, thread2_label, ont2_id, deleted, created_at, updated_at, sheet_id) VALUES ('$content_id', '$node_id1', '$thread1_id', '$thread1_label', '$ont1_id', '$node_id2', '$thread2_id', '$thread2_label', '$ont2_id', 0, '$timestamp', '$timestamp' , '$sheet_id')";
