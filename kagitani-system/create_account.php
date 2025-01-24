@@ -1,6 +1,6 @@
 <?php
 require 'password.php';
-require 'php/connect_db.php';
+require '../php/connect_db.php';
 
 // セッション開始
 session_start();
@@ -35,7 +35,7 @@ if (isset($_POST["signUp"])) {
 
       $pdo = new PDO($dsn, $db_user, $db_password, array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
 
-      $stmt = $pdo->prepare("INSERT INTO users(id, name, login_time, password) VALUES (?, ?, ?, ?)");
+      $stmt = $pdo->prepare("INSERT INTO users(user_id, name, login_time, password) VALUES (?, ?, ?, ?)");
 
       $userid = $pdo->lastinsertid();
 
@@ -74,8 +74,8 @@ if (isset($_POST["signUp"])) {
   <meta charset="UTF-8">
   <title>自己内対話活性化支援システム</title>
 
-  <link rel="stylesheet" href="css/Semantic-UI/semantic.css">
-  <link rel="stylesheet" type="text/css" href="css/signup.css">
+  <link rel="stylesheet" href="../css/Semantic-UI/semantic.css">
+  <link rel="stylesheet" type="text/css" href="../css/signup.css">
   </head>
   <body>
 

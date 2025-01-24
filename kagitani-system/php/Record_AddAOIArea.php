@@ -10,7 +10,7 @@ date_default_timezone_set('Asia/Tokyo');
 
 // $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);//日時をマイクロ秒まで取得するようにしてみる
 $user_id = $_SESSION['USERID'];         //ユーザID
-$sheet_id = $_SESSION['MAPID'];       //シートID
+$map_id = $_SESSION['MAPID'];       //シートID
 $slide_id = $_POST["slide_id"];         //スライドID
 $id = $_POST["id"];                     //ID
 $X = $_POST["Left"];                    //X座標の割合
@@ -20,8 +20,8 @@ $Height = $_POST["Height"];             //縦幅の割合
 
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-$sql = "INSERT INTO Area_on_Image (id, user_id, sheet_id, slide_id, X, Y, Width, Height, deleted, created_at, updated_at)
-VALUES ('$id', '$user_id', '$sheet_id', '$slide_id', '$X', '$Y', '$Width', '$Height', 0, '$timestamp', '$timestamp')";
+$sql = "INSERT INTO Area_on_Image (id, user_id, map_id, slide_id, X, Y, Width, Height, deleted, created_at, updated_at)
+VALUES ('$id', '$user_id', '$map_id', '$slide_id', '$X', '$Y', '$Width', '$Height', 0, '$timestamp', '$timestamp')";
 
 
 $result = $mysqli->query($sql);

@@ -5,7 +5,7 @@ session_start();
 require("connect_db.php");
 
 $user_id = $_SESSION["USERID"];
-$sheet_id = $_SESSION["MAPID"];
+$map_id = $_SESSION["MAPID"];
 
 //タイムゾーンの設定
 date_default_timezone_set('Asia/Tokyo');
@@ -24,13 +24,13 @@ $reflection_item = array();
 //全てのログ情報を抽出
 $sql = "SELECT *  FROM activities
         WHERE user_id = '$user_id'
-              AND sheet_id = '$sheet_id'
+              AND map_id = '$map_id'
               ORDER BY 'timestamp' DESC";
 
               // $sql = "SELECT *  FROM activities
               //         WHERE timestamp BETWEEN '$start_time' AND '$finish_time'
               //               AND user_id = '$user_id'
-              //               AND sheet_id = '$sheet_id'
+              //               AND map_id = '$map_id'
               //               ORDER BY 'timestamp' DESC";
 
 //各変数
@@ -243,7 +243,7 @@ for($e=0; $e<count($opt); $e++){
   $targets = rtrim($targets_kari, ',');
 
   //テンプレート名，対象の情報，ユーザ，シートが同じものがあったら追加しない
-  $check_sql = "SELECT * FROM reflections WHERE template_number = '$wawawa' AND target_nodes = '$targets' AND user_id='$user_id' AND sheet_id='$sheet_id'";
+  $check_sql = "SELECT * FROM reflections WHERE template_number = '$wawawa' AND target_nodes = '$targets' AND user_id='$user_id' AND map_id='$map_id'";
   $result222 = $mysqli->query($check_sql);
   if(mysqli_num_rows($result222) <= 0){
             $reflection_item[] = array(

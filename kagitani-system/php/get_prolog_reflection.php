@@ -5,7 +5,7 @@
 require("connect_db.php");
 
 $user_id = $_SESSION["USERID"];  //'26943';//
-$sheet_id = $_SESSION["MAPID"];  //'520326090';//
+$map_id = $_SESSION["MAPID"];  //'520326090';//
 
 //タイムゾーンの設定
 date_default_timezone_set('Asia/Tokyo');
@@ -14,7 +14,7 @@ $today_date = date("Y-m-d");
 //テンプレート文を格納する配列
 $reflection_item = array();
 
-$sql = "SELECT *  FROM reflections WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' ORDER BY 'timestamp' DESC";
+$sql = "SELECT *  FROM reflections WHERE user_id = '$user_id' AND map_id = '$map_id' ORDER BY 'timestamp' DESC";
 
 //各変数
 $t =0;

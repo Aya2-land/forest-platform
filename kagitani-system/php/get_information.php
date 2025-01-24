@@ -9,7 +9,7 @@ $want_info = $_POST["want"];
 date_default_timezone_set('Asia/Tokyo');
 
 //指定した情報を取得するSQLクエリ
-$sql = "SELECT  $want_info  FROM nodes where id = '$node_id' limit 1";
+$sql = "SELECT  $want_info  FROM node_latest where node_id = '$node_id' limit 1";
 
 	$i = 0;
 	$get_array = array();

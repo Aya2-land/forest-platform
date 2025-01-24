@@ -17,12 +17,12 @@ if ($mysqli->connect_error) {
 
 // params
 $request_param = $_GET["request"];
-$sheet_id = $_GET["sheet_id"];
+$map_id = $_GET["map_id"];
 // $node_id = $_GET["node_id"];
 $deleted = 0;
 
-// $sql = "SELECT * FROM nodes WHERE sheet_id='".$sheet_id."' and id='".$node_id."'";
-$sql = "SELECT * FROM nodes WHERE sheet_id='".$sheet_id."' and deleted='".$deleted."'";
+// $sql = "SELECT * FROM nodes WHERE map_id='".$map_id."' and id='".$node_id."'";
+$sql = "SELECT * FROM nodes WHERE node_id IN (SELECT node_id FROM map_node_links WHERE map_id = ".$id.") AND deleted = 0";
 
 
 $data = array();

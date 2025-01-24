@@ -381,7 +381,7 @@ async function add_Qnode2(){
                         x : jmnode[i].style.left,
                         y : jmnode[i].style.top,
                         content : jmnode[i].innerHTML,
-                        from_mode : null
+                        from_mode : ""
                       },
   
             });
@@ -451,7 +451,7 @@ async function add_Qnode2(){
                           x : jmnode[j].style.left,
                           y : jmnode[j].style.top,
                           content : jmnode[j].innerHTML,
-                          from_mode : null
+                          from_mode : ""
                       },
   
               });
@@ -555,7 +555,7 @@ async function add_Anode2(node_type){
                         x : jmnode[j].style.left,
                         y : jmnode[j].style.top,
                         content : jmnode[j].innerHTML,
-                        from_mode : null
+                        from_mode : ""
                       },
   
             });

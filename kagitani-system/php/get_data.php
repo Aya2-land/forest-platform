@@ -5,10 +5,10 @@
 	require "connect_db.php";
 
 	if($_POST["val"] == "rationality"){
-		$sheet_id = $_SESSION["MAPID"];
+		$map_id = $_SESSION["MAPID"];
 		$rationality_id = $_POST["rationality_id"];
 
-		$sql = "SELECT * FROM rationality_nodes WHERE sheet_id = ".$sheet_id." AND rationality_id = '".$rationality_id."'";
+		$sql = "SELECT * FROM rationality_nodes WHERE map_id = ".$map_id." AND rationality_id = '".$rationality_id."'";
 
 		$i = 0;
 		$node_id_array = array();
@@ -28,10 +28,12 @@
 		echo json_encode($node_id_array);
 
 	}else if($_POST["val"] == "edit_reason"){
-		$sheet_id = $_SESSION["MAPID"];
+
+		//2024-11-19 使用されていない？
+		$map_id = $_SESSION["MAPID"];
 		$id = $_POST["id"];
 
-		$sql = "SELECT * FROM edit_reason WHERE sheet_id = ".$sheet_id." AND node_id = '".$id."'";
+		$sql = "SELECT * FROM edit_reason WHERE map_id = ".$map_id." AND node_id = '".$id."'";
 
 		$i = 0;
 		$node_id_array = array();
@@ -51,7 +53,7 @@
 		echo json_encode($node_id_array);
 
 	}else if($_POST["val"] == "node_id"){
-		$sql = "SELECT * FROM nodes WHERE id = '".$_POST["node_id"]."'";
+		$sql = "SELECT * FROM node_latest WHERE node_id = '".$_POST["node_id"]."' ";
 		$result = $mysqli->query($sql);
 
 		if(!$result){
@@ -66,7 +68,7 @@
 
 	}else if($_POST["val"] == "return"){
 
-		$sql = "SELECT * FROM nodes WHERE user_id = ".$_SESSION["USERID"]." AND sheet_id = ".$_SESSION["MAPID"]." AND updated_at = (select max(updated_at) from nodes)";
+		$sql = "SELECT * FROM node_histories WHERE node_version_id IN (select node_version_id from node_versions where node_id IN (SELECT node_id FROM map_node_links WHERE map_id = ".$_SESSION["MAPID"].")) ORDER BY disappeared_at DESC LIMIT 1";
 
 		$i = 0;
 		$updated_array = array();
@@ -75,7 +77,7 @@
 
 			while($row = mysqli_fetch_assoc($result)){
 
-				$updated_array = $updated_array + array($i=>$row["id"]);
+				$updated_array = $updated_array + array($i=>$row["node_history_id"]);
 
 				$i += 1;
 

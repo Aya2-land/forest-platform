@@ -12,9 +12,8 @@ function micro_xmlLoad(){
 		dataType:'xml',
 		timeout:1000,
 		success:micro_parse_xml
-	});
 
-	console.log("testtttt");
+	});
 
 }
 
@@ -27,7 +26,7 @@ function micro_parse_xml(xml,status){
 
 
 // HTML生成関数
-/*function micro_disp(){
+function micro_disp(){
 
 	//hozo.xmlファイルのタグを検索して変数に格納（たぶん，全てのタグが配列で格納されている），thisはhozo.xmlのことかな
 	var $concept_tag = $(this).find('CONCEPT');
@@ -245,62 +244,4 @@ function micro_parse_xml(xml,status){
 
 
 
-}*/
-
-function micro_disp() {
-	console.log("testtttt");
-    var $concept_tag = $(this).find('CONCEPT');
-    var $label = $(this).find('LABEL');
-    var $isa = $(this).find('ISA');
-    
-    // 親コンセプトとその子コンセプトを格納するオブジェクト
-    var conceptHierarchy = {};
-
-    // 親コンセプトを探し、その子コンセプトを紐付ける
-    for (var i = 0; i < $concept_tag.length; i++) {
-        var conceptId = $concept_tag[i].id; // コンセプトID
-        var conceptLabel = $label[i].childNodes[0].nodeValue; // ラベル名
-
-        // 親コンセプトを探す（例として、ISAタグで親を示す）
-        var parentConcept = null;
-        for (var j = 0; j < $isa.length; j++) {
-            if ($isa[j].getAttribute('child') === conceptLabel) {
-                parentConcept = $isa[j].getAttribute('parent'); // 親コンセプトのラベル
-                break;
-            }
-        }
-
-        // 親がない場合は親コンセプトとして扱う
-        if (!parentConcept) {
-            if (!conceptHierarchy[conceptLabel]) {
-                conceptHierarchy[conceptLabel] = []; // 親コンセプトのエントリを作成
-            }
-        } else {
-            // 子コンセプトを親の配列に追加
-            if (!conceptHierarchy[parentConcept]) {
-                conceptHierarchy[parentConcept] = [];
-            }
-            conceptHierarchy[parentConcept].push(conceptLabel); // 子コンセプトを追加
-        }
-    }
-
-    // HTML生成: 親コンセプトとその子コンセプトを表示
-    var area = $("#advice_frame");
-    area.html(""); // 既存の内容をクリア
-
-    for (var parent in conceptHierarchy) {
-        // 親コンセプトを表示
-        area.append("<h3>" + parent + "</h3>");
-
-        // 子コンセプトがあれば表示
-        if (conceptHierarchy[parent].length > 0) {
-            var childList = "<ul>";
-            for (var k = 0; k < conceptHierarchy[parent].length; k++) {
-                childList += "<li>" + conceptHierarchy[parent][k] + "</li>";
-            }
-            childList += "</ul>";
-            area.append(childList);
-        }
-    }
 }
-

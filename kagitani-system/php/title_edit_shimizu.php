@@ -9,7 +9,7 @@
   date_default_timezone_set('Asia/Tokyo');
 
     $user_id = $_SESSION['USERID'];      //ユーザID
-    $sheet_id = $_SESSION['MAPID'];    //シートID
+    $map_id = $_SESSION['MAPID'];    //シートID
     $presentation_title = $_POST["title"]; //プレゼン自体のタイトル
     $activity_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
@@ -26,8 +26,8 @@
 
     // if($presentation_title != $pre_title){
 
-      $sql = "INSERT INTO presentation_title (id, presentation_title, user_id, sheet_id, edit_time)
-  		VALUES ('$activity_id', '$presentation_title', '$user_id', '$sheet_id', '$timestamp')";
+      $sql = "INSERT INTO presentation_title (id, presentation_title, user_id, map_id, edit_time)
+  		VALUES ('$activity_id', '$presentation_title', '$user_id', '$map_id', '$timestamp')";
 
 
   		$result = $mysqli->query($sql);

@@ -17,13 +17,13 @@ if ($mysqli->connect_error) {
 
 // params
 $request_param = $_GET["request"];
-$sheet_id = $_GET["sheet_id"];
+$map_id = $_GET["map_id"];
 $parent_id = $_GET["node_id"];
 $deleted = 0;
 
-// $sql = "SELECT * FROM nodes WHERE sheet_id='".$sheet_id."' and id='".$node_id."'";
-// SELECT * FROM `nodes` WHERE `sheet_id`=259042975 AND `deleted` = 0 AND`parent_id`='4efeb528c0e4a631'
-$sql = "SELECT * FROM nodes WHERE sheet_id='".$sheet_id."' AND parent_id='".$parent_id."' AND deleted='".$deleted."'";
+// $sql = "SELECT * FROM nodes WHERE map_id='".$map_id."' and id='".$node_id."'";
+// SELECT * FROM `nodes` WHERE `map_id`=259042975 AND `deleted` = 0 AND`parent_id`='4efeb528c0e4a631'
+$sql = "SELECT * FROM node_latest WHERE node_id IN (SELECT node_id FROM map_node_links WHERE map_id = ".$map_id.") AND parent_id='".$parent_id."' AND deleted = ".$deleted."";
 
 $data = array();
 if($result = $mysqli->query($sql)){ 

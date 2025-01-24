@@ -234,8 +234,7 @@ async function add_node(){
                         concept_id : jmnode[i].getAttribute("concept_id"),
                         x : jmnode[i].style.left,
                         y : jmnode[i].style.top,
-                        content : jmnode[i].innerHTML,
-                        from_mode : null
+                        content : jmnode[i].innerHTML
                       },
                       success:function(result){
                         if(result){ console.log(result);}
@@ -350,8 +349,7 @@ async function add_Qnode(){
                       concept_id : jmnode[i].getAttribute("concept_id"),
                       x : jmnode[i].style.left,
                       y : jmnode[i].style.top,
-                      content : jmnode[i].innerHTML,
-                      from_mode : null
+                      content : jmnode[i].innerHTML
                     },
               success:function(result){
                 if(result){ console.log(result);}
@@ -478,8 +476,7 @@ async function add_Anode(){
                       concept_id : p_concept,
                       x : jmnode[j].style.left,
                       y : jmnode[j].style.top,
-                      content : jmnode[j].innerHTML,
-                      from_mode : null
+                      content : jmnode[j].innerHTML
                     },
                     success:function(result){
                       if(result){ console.log(result);}
@@ -637,8 +634,7 @@ async function add_Pnode(){//マップへ反映ボタンでノードを追加す
                             concept_id : p_concept,
                             x : jmnode[j].style.left,
                             y : jmnode[j].style.top,
-                            content : jmnode[j].innerHTML,
-                            from_mode : null
+                            content : jmnode[j].innerHTML
                           },
                     success:function(result){
                       if(result){ console.log(result);}
@@ -704,8 +700,7 @@ async function add_Pnode(){//マップへ反映ボタンでノードを追加す
                             concept_id : p_concept_id,
                             x : jmnode[i].style.left,
                             y : jmnode[i].style.top,
-                            content : jmnode[i].innerHTML,
-                            from_mode : null
+                            content : jmnode[i].innerHTML
                           },
                     success:function(result){
                       if(result){ console.log(result);}
@@ -842,7 +837,6 @@ async function add_Label(node_type){
                       x : jmnode[j].style.left,
                       y : jmnode[j].style.top,
                       content : jmnode[j].innerHTML,
-                      from_mode : null
                   },
                   success:function(result){
                     if(result){ console.log(result);}

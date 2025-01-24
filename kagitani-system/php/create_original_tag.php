@@ -8,15 +8,15 @@ date_default_timezone_set('Asia/Tokyo');
 
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);//日時をマイクロ秒まで取得するようにしてみる
 $user_id = $_SESSION['USERID'];      //ユーザID
-$sheet_id = $_SESSION['MAPID'];    //シートID
+$map_id = $_SESSION['MAPID'];    //シートID
 
 $tagid = rand();
 $tagname = $_POST['tagname'];
 $node_id = $_POST['node_id'];
 $node_topic = $_POST['node_topic'];
 
-$sql = "INSERT INTO original_tag (id, user_id, sheet_id, timestamp, tag_name, selected_node_id, selected_node_topic)
-VALUES ('".$tagid."','".$user_id."','".$sheet_id."','".$timestamp."','".$tagname."','".$node_id."', '".$node_topic."') ";
+$sql = "INSERT INTO original_tag (id, user_id, map_id, timestamp, tag_name, selected_node_id, selected_node_topic)
+VALUES ('".$tagid."','".$user_id."','".$map_id."','".$timestamp."','".$tagname."','".$node_id."', '".$node_topic."') ";
 
 $result = $mysqli->query($sql);
 

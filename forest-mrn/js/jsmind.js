@@ -235,7 +235,7 @@
                             x : "380.5px",
                             y : "187px",
                             content : "★",
-                            from_mode : null},
+                            from_mode : ""},
 
                 });
 

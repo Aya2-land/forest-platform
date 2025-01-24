@@ -11,7 +11,6 @@ function macro_xmlLoad(){
 
 	});
 
-	console.log("testtttt");
 }
 
 

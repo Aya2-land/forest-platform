@@ -9,6 +9,8 @@ document.getElementById("selectmodebutton").addEventListener('click', function()
             header("Location: select_sheet.php");
           }else if(selectmodeoption[i].value === 3){
             header("Location: ");
+          }else if(selectmodeoption[i].value === 4){
+            header("Location: ");
           }
           return;
         }

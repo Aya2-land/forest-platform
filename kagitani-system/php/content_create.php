@@ -8,7 +8,7 @@
 
 
 	$user_id = $_SESSION['USERID'];      //ユーザID
-	$sheet_id = $_SESSION['MAPID'];    //シートID
+	$map_id = $_SESSION['MAPID'];    //シートID
 	$content_id = $_POST["id"];             //コンテントID
 	$node_id = $_POST["node_id"];             //ノードID
 	$concept_id = $_POST["concept_id"];         //コンセプトID
@@ -20,8 +20,8 @@
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 
-	$sql = "INSERT INTO slide_content (id, sheet_id, node_id, concept_id, content, type, user_id, slide_id, created_at, updated_at, deleted, from_slide_content)
-	VALUES ('$content_id', '$sheet_id', '$node_id', '$concept_id','$content', '$type', '$user_id', '$slide_id', '$timestamp', '$timestamp', 0, NULL)";
+	$sql = "INSERT INTO slide_content (id, map_id, node_id, concept_id, content, type, user_id, slide_id, created_at, updated_at, deleted, from_slide_content)
+	VALUES ('$content_id', '$map_id', '$node_id', '$concept_id','$content', '$type', '$user_id', '$slide_id', '$timestamp', '$timestamp', 0, NULL)";
 
 
 	$result = $mysqli->query($sql);
@@ -51,8 +51,8 @@
 
     //==============================activityログ===============================//
 
-	// $sql = "INSERT INTO slide_content_activity (id, sheet_id, slide_content_id, node_id, concept_id, content, type, user_id, slide_id, act, date, from_slide_content)
-	// VALUES ('$activity_id', '$sheet_id', '$content_id', '$node_id', '$concept_id', '$content', '$type', '$user_id', '$slide_id', 'add', '$timestamp', NULL)";
+	// $sql = "INSERT INTO slide_content_activity (id, map_id, slide_content_id, node_id, concept_id, content, type, user_id, slide_id, act, date, from_slide_content)
+	// VALUES ('$activity_id', '$map_id', '$content_id', '$node_id', '$concept_id', '$content', '$type', '$user_id', '$slide_id', 'add', '$timestamp', NULL)";
 
 	// $result = $mysqli->query($sql);
 

@@ -7,7 +7,7 @@ require("php/function.php");
 $pdo = connectDB_Test();
 
 // $user_id = $_SESSION["USERID"];//"26943"; //
-// $sheet_id = $_SESSION["MAPID"];//"102774749"; //
+// $map_id = $_SESSION["MAPID"];//"102774749"; //
 
 // //タイムゾーンの設定
 // date_default_timezone_set('Asia/Tokyo');

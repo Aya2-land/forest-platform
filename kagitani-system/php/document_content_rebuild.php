@@ -5,14 +5,14 @@ session_start();
 require("connect_db.php");
 
 $user_id = $_SESSION["USERID"];//"26943"; //
-$sheet_id = $_SESSION["MAPID"];//"102774749"; //
+$map_id = $_SESSION["MAPID"];//"102774749"; //
 
 //タイムゾーンの設定
 date_default_timezone_set('Asia/Tokyo');
 $today_date = date("Y-m-d");
 
 
-$sql = "SELECT content_id, node_id, concept_id, rank, content, slide_id, type, indent, logic_option FROM document_content_rank WHERE sheet_id='$sheet_id' AND deleted=0";
+$sql = "SELECT content_id, node_id, concept_id, rank, content, slide_id, type, indent, logic_option FROM document_content_rank WHERE map_id='$map_id' AND deleted=0";
 
 $reflections = array();
 

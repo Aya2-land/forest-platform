@@ -9,12 +9,12 @@
   date_default_timezone_set('Asia/Tokyo');
 
     $user_id = $_SESSION['USERID'];      //ユーザID
-    $sheet_id = $_SESSION['MAPID'];    //シートID
+    $map_id = $_SESSION['MAPID'];    //シートID
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
     $status = $_POST["status"];         //スライドのアップデートかコンテントかの判別
 
 
-    $sql = "UPDATE slide_rank SET updated_at='$timestamp', deleted=1 WHERE sheet_id='$sheet_id' AND deleted=0";
+    $sql = "UPDATE slide_rank SET updated_at='$timestamp', deleted=1 WHERE map_id='$map_id' AND deleted=0";
 
 		$result = $mysqli->query($sql);
 

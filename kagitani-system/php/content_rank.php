@@ -11,7 +11,7 @@
 
 		// $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);//日時をマイクロ秒まで取得するようにしてみる
 		$user_id = $_SESSION['USERID'];      //ユーザID
-		$sheet_id = $_SESSION['MAPID'];    //シートID
+		$map_id = $_SESSION['MAPID'];    //シートID
 		$id = $_POST["id"];             //ID
 		$content_id = $_POST["content_id"];            //コンテントID
 		$rank = $_POST["rank"];            //順番
@@ -25,11 +25,11 @@
 
 		$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-		// $ssql = "UPDATE slide_content_rank SET updated_at='$timestamp', deleted=1 WHERE sheet_id='$sheet_id' AND deleted=0";
+		// $ssql = "UPDATE slide_content_rank SET updated_at='$timestamp', deleted=1 WHERE map_id='$map_id' AND deleted=0";
 		// $rst = $mysqli->query($ssql);
 
-		$sql = "INSERT INTO slide_content_rank (id, content_id, node_id, concept_id, rank, content, slide_id, type, indent, created_at, updated_at, user_id, sheet_id, deleted)
-		VALUES ('$id', '$content_id', '$node_id', '$concept_id', '$rank', '$content', '$slide_id', '$type', '$indent', '$timestamp', '$timestamp', '$user_id','$sheet_id', 0)";
+		$sql = "INSERT INTO slide_content_rank (id, content_id, node_id, concept_id, rank, content, slide_id, type, indent, created_at, updated_at, user_id, map_id, deleted)
+		VALUES ('$id', '$content_id', '$node_id', '$concept_id', '$rank', '$content', '$slide_id', '$type', '$indent', '$timestamp', '$timestamp', '$user_id','$map_id', 0)";
 		$result = $mysqli->query($sql);
 
     //クエリ($sql)のエラー処理

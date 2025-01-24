@@ -269,66 +269,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     /*
      * ノードの操作
      */
-
-    //kagitani--目標追加
-    addGoal(node_id, node_label, node_type, node_x, node_y) {
-        let node_color = 'skyblue'; // ノードの背景色
-        let node_shape = 'box';     // ノードの形状
-        let text_color = 'black';   // ノード内文字列の色
-        let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
-        let object_nodes_type_id = 0;
-        // switch(object_nodes_type_id) {
-        //     case "material-content": // 議論資料に書かれた内容に関するノードの場合
-        //         break;
-        //     case "self-summary": // 自分で考えた要約に関するノードの場合
-        //         node_color = 'green';
-        //         text_color = 'white';
-        //         break;
-        //     case "utterance": // 議論内での発言ノードの場合
-        //         node_color = 'pink';
-        //         break;
-        //     case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-        //         node_color = 'blue';
-        //         node_shape = 'ellipse';
-        //         text_color = 'white';
-        //         position_fixed = true;
-        //         break;
-        //     default: // その他
-        //         break;
-        // }
-        let result_label = '';
-        for (let i = 0; i < node_label.length; i += 10) {
-            result_label += node_label.substr(i, 10) + '\n';
-        }
-        result_label = result_label.trim(); // 末尾の不要な改行を除去
-        const newNode = {
-            id: `${node_type}_${node_id}`, label: result_label,
-            group: node_type,
-            color: node_color, shape: node_shape,
-            font: { color: text_color },
-            fixed: position_fixed,
-            x: node_x, y: node_y, 
-        };
-        this.nodes.add(newNode);
-        const boundingBox = this.ownNetwork.getBoundingBox(`${node_type}_${node_id}`);
-        if(node_type !==  "topic-tag"){
-            node_y += Math.floor(((boundingBox.bottom)-(boundingBox.top))/2);
-        }
-        this.nodes.update({
-            id : `${node_type}_${node_id}`,
-            color: node_color, shape: node_shape,
-            font: { color: text_color },
-            y : node_y
-        });
-        const boundingBoxupdate = this.ownNetwork.getBoundingBox(`${node_type}_${node_id}`);
-        this.latest_selected_node_info.x = node_x;
-        this.latest_selected_node_info.y = boundingBoxupdate.bottom+10;
-        defaultRecordForestMRN.record_GoalNode(`${node_type}_${node_id}`, node_label, node_type, node_x, node_y);
-        console.log("check");
-        return this.nodes;
-    }
-
-
     //ノード追加(完了)
     addNode(node_id, node_label, node_type, node_x, node_y) {
         let node_color = 'skyblue'; // ノードの背景色
@@ -479,12 +419,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         this.addNode(this.generateUniqueNumberText(), "newNode", "self-summary", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
     }
 
-    //kagitani
-    addNewGoal() {
-        this.addGoal(this.generateUniqueNumberText(), "newNode", "self-summary", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
-        console.log("addGoalできた");
-    }
-
     addmaterialNode(node_id, node_label){
         this.addNode(node_id, node_label, "material-content", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
         console.log(this.latest_selected_node_info.x,this.latest_selected_node_info.y)
@@ -572,8 +506,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             this.selectId = params.nodes[0];
             const pointerX = params.pointer.DOM.x;
             const pointerY = params.pointer.DOM.y;
-            //const mynetPosition = document.getElementById("mynetwork2").getBoundingClientRect();
-            const mynetPosition = document.getElementById("myobject").getBoundingClientRect();
+            const mynetPosition = document.getElementById("mynetwork2").getBoundingClientRect();
             this.BoxDisplay.x = pointerX + mynetPosition.left + 20;
             this.BoxDisplay.y = pointerY + mynetPosition.top + 20;
             NetworkMenu.style.left = this.BoxDisplay.x;
@@ -1010,29 +943,6 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
 // ネットワーク関係の記録
 class RecordForestMRN{
-
-    //kagitani--目標ノードの記録
-    record_GoalNode (id, label, node_type, x, y){
-        $.ajax({
-            url: "php/object_maneger.php",
-            type: "POST",
-            data: {node_id : id,
-                label : label,
-                x : x,
-                y : y,
-                node_type : node_type,
-                purpose : 'record',
-                record_thing: 'node'
-            },
-            success: function(response) {
-                console.log("データが正常に送信されました:", response);
-            },
-            error: function(xhr, status, error) {
-                console.error("エラーが発生しました:", error);
-            }
-        });
-    }
-
     //ノードの記録(完了)
     record_Node (id, label, node_type, x, y){
         $.ajax({
@@ -1607,21 +1517,46 @@ const recordMeetingUtteranceNodes = (utterances) => {
 window.addEventListener('load', () => {
 
     // 初期表示時点でいくつかのオブジェクトを非表示にする
-    // document.getElementById("network_container").style.display="none";
-    document.getElementById("object_container").style.display="none";
+    document.getElementById("network_container").style.display="none";
     defaultForestMRN = new ForestMRN("mynetwork", "load");
-    //setUploadedXMLData("meetingUtteranceXmlFileUploader", "uploaded_meeting_utterance_xml_concent_display_area");
+    setUploadedXMLData("meetingUtteranceXmlFileUploader", "uploaded_meeting_utterance_xml_concent_display_area");
+    $("#discussion_log_xml_file_upload_button").on("click", () => {
+        // ファイルアップロードボタンにアップロードイベントを付与
+        document.getElementById("mynetwork").innerHTML="";
+        defaultForestMRN.removeEventLister();
+        
+        defaultForestMRN = new ForestMRN("mynetwork", "load");
+        uploadMeetingUtteranceXML();
+        $('#mrnb_addNode').off('click');
+        $('#mrnb_removeNode').off('click');
+        $('#mrnb_startEditEdge').off('click');
+        $('#mrnb_removeEdge').off('click');
+        $('#mrnb_ZoomIn').off('click');
+        $('#mrnb_ZoomOut').off('click');
+        $(`#mrnb_addNode`).on("click", e => {
+            defaultForestMRN.addNewNode();
+        });
+        $(`#mrnb_removeNode`).on("click", e => {
+            defaultForestMRN.deleteNode();
+        });
+        $(`#mrnb_startEditEdge`).on("click", e => {
+            defaultForestMRN.SelectEditEdge();
+        });
+        $(`#mrnb_removeEdge`).on("click", e => {
+            defaultForestMRN.deleteEdge();
+        });
+        $(`#mrnb_ZoomIn`).on("click", e => {
+            defaultForestMRN.zoomIn();
+        });
+        $(`#mrnb_ZoomOut`).on("click", e => {
+            defaultForestMRN.zoomOut();
+        });
+    });
     displayDiscussionMapData("utterance_area2", null); // 最新の議論内省マップの発話リストを表示
     // 内省マップ編集ボタンにイベント付与
     $(`#mrnb_addNode`).on("click", e => {
+        console.log("aaa");
         defaultForestMRN.addNewNode();
-    });
-    $(`#mrnb_addGoal`).on("click", e => {
-        defaultForestMRN.addNewGoal();
-    });
-    $(`#mrnb_addStep`).on("click", e => {
-        console.log("step追加できた");
-        defaultForestMRN.addNewStep();
     });
     $(`#mrnb_removeNode`).on("click", e => {
         defaultForestMRN.deleteNode();
@@ -1638,46 +1573,11 @@ window.addEventListener('load', () => {
     $(`#mrnb_ZoomOut`).on("click", e => {
         defaultForestMRN.zoomOut();
     });
-    // $("#discussion_log_xml_file_upload_button").on("click", () => {
-    //     // ファイルアップロードボタンにアップロードイベントを付与
-    //     document.getElementById("mynetwork").innerHTML="";
-    //     defaultForestMRN.removeEventLister();
-        
-    //     defaultForestMRN = new ForestMRN("mynetwork", "load");
-    //     uploadMeetingUtteranceXML();
-    //     //$('#mrnb_addNode').off('click');
-    //     //$('#mrnb_addGoal').off('click');
-    //     $('#mrnb_addStep').off('click');
-    //     $('#mrnb_removeNode').off('click');
-    //     $('#mrnb_startEditEdge').off('click');
-    //     $('#mrnb_removeEdge').off('click');
-    //     $('#mrnb_ZoomIn').off('click');
-    //     $('#mrnb_ZoomOut').off('click');
-    //     $(`#mrnb_addNode`).on("click", e => {
-    //         defaultForestMRN.addNewNode();
-    //     });
-    //     $(`#mrnb_addGoal`).on("click", e => {
-    //         defaultForestMRN.addNewNode();
-    //     });
-    //     $(`#mrnb_addStep`).on("click", e => {
-    //         defaultForestMRN.addNewNode();
-    //     });
-    //     $(`#mrnb_removeNode`).on("click", e => {
-    //         defaultForestMRN.deleteNode();
-    //     });
-    //     $(`#mrnb_startEditEdge`).on("click", e => {
-    //         defaultForestMRN.SelectEditEdge();
-    //     });
-    //     $(`#mrnb_removeEdge`).on("click", e => {
-    //         defaultForestMRN.deleteEdge();
-    //     });
-    //     $(`#mrnb_ZoomIn`).on("click", e => {
-    //         defaultForestMRN.zoomIn();
-    //     });
-    //     $(`#mrnb_ZoomOut`).on("click", e => {
-    //         defaultForestMRN.zoomOut();
-    //     });
-    // });
+
+    $("#past_time_select_button").on("click", () => {
+        // ファイルアップロードボタンにアップロードイベントを付与
+        select_time();
+    });
     const accordionHeaders = document.querySelectorAll('#accordion_discussion .accordion-header');
     console.log(accordionHeaders)
     accordionHeaders.forEach(header => {
