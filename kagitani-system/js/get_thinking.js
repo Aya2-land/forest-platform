@@ -120,13 +120,13 @@ function Get_NodeInfo(id, want_info){
 
               get_info = jmnode[i].getAttribute(want_info);
 
-                  if(get_info == "toi"){ //取得したい情報がタイプの場合，"toi"や"prepared_question"の修正を行う
-                      if(jmnode[i].getAttribute("concept_id") != ""){ //concept_idがあるならprepared_question
-                            get_info = "prepared_question";
-                      }else{
-                            get_info = "question"; //ないなら自作の問いでquestion
-                      }
-                  }
+                  // if(get_info == "toi"){ //取得したい情報がタイプの場合，"toi"や"prepared_question"の修正を行う
+                  //     if(jmnode[i].getAttribute("concept_id") != ""){ //concept_idがあるならprepared_question
+                  //           get_info = "prepared_question";
+                  //     }else{
+                  //           get_info = "question"; //ないなら自作の問いでquestion
+                  //     }
+                  // }
      }
 
       return get_info;

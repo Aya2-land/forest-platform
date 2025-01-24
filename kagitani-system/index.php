@@ -221,6 +221,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                 <li><a href="javascript:void(0);" onClick="ItemAddDocument()">項目として追加する</a></li>
                                 <li><a href="javascript:void(0);" onClick="NodeAppendLogic()">内容として追加する</a></li>
                                 <li><a href="javascript:void(0);" onclick="NodeVersionUpdate(null)">ノードを更新</a></li>
+                                <li><a href="javascript:void(0);" onclick="document.getElementById('mindmap_conmenu').style.display='none';">キャンセル</a></li>
                             </ul>
                         </div>
                     </div>
