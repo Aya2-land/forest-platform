@@ -209,6 +209,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <button class="action-button tool-button" id="zoom-out-button" onclick="zoomOut();">
                             <span class="button-icon">🔍➖</span> 縮小
                         </button>
+                        <button class="action-button tool-button" id="map-snapshot-button" onclick="MapSnapShot();RecordRelation();">
+                            <span class="button-icon">🔍➖</span> マップver更新
+                        </button>
                     </div>
                 <!-- </div> -->
 
@@ -217,7 +220,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             <ul>
                                 <li><a href="javascript:void(0);" onClick="ItemAddDocument()">項目として追加する</a></li>
                                 <li><a href="javascript:void(0);" onClick="NodeAppendLogic()">内容として追加する</a></li>
-                                <li><a href="javascript:void(0);" onClick="VersionSpread();RecordRelation()">ノードの更新をマップ全体に波及させる</a></li><!--hatakeyama-->
+                                <li><a href="javascript:void(0);" onclick="NodeVersionUpdate(null)">ノードを更新</a></li>
                             </ul>
                         </div>
                     </div>
