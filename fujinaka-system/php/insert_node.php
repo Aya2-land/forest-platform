@@ -28,7 +28,7 @@
 				if(!$result){
 
 					$node_sql = "INSERT INTO nodes (node_id, user_id, node_type_id, from_mode, deleted )
-						VALUES ('".$_POST['id']."','".$_SESSION['USERID']."','".$_POST['type']."', ".$_POST['from_mode'].", '".$deleted."')";
+						VALUES ('".$_POST['id']."','".$_SESSION['USERID']."','".$_POST['type']."', ’".$_POST['from_mode']."’, '".$deleted."')";
 					
 					$node_v_sql = "INSERT INTO node_versions (node_version_id, node_id, parent_id, node_type_id, appeared_at, disappeared_at, content, concept_id, x, y)
 						VALUES ('".$node_v_id."', '".$_POST['id']."','".$_POST['parent_id']."','".$_POST['type']."', '".$created_at."', NULL,'".$_POST['content']."','".$_POST['concept_id']."','".$_POST['x']."','".$_POST['y']."')";
@@ -75,7 +75,7 @@
 			$deleted = 0;
 
 			$node_sql = "INSERT INTO nodes (node_id, user_id, node_type_id, from_mode, deleted )
-					VALUES ('".$_POST['id']."','".$_SESSION['USERID']."','".$_POST['type']."', ".$_POST['from_mode'].", '".$deleted."')";
+					VALUES ('".$_POST['id']."','".$_SESSION['USERID']."','".$_POST['type']."', ’".$_POST['from_mode']."’, '".$deleted."')";
 				
 			$node_v_sql = "INSERT INTO node_versions (node_version_id, node_id, parent_id, node_type_id, appeared_at, disappeared_at, content, concept_id, x, y)
 				VALUES ('".$node_v_id."', '".$_POST['id']."','".$_POST['parent_id']."','".$_POST['type']."', '".$created_at."', NULL,'".$_POST['content']."','".$_POST['concept_id']."','".$_POST['x']."','".$_POST['y']."')";
