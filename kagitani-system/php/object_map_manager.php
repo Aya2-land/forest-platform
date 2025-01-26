@@ -50,12 +50,13 @@ if($purpose === "select_meeting_utterance") {
     
     //活動ログの表示
     $result_objectLog = $mysqli->query("SELECT timestamp, node_id, type, act, text, object_map_id FROM activities
-            WHERE user_id = '$user_id' AND sheet_id = '$sheet_id' AND type != 'question' ORDER BY timestamp DESC");
+            WHERE user_id = '$user_id' AND map_id = '$sheet_id' AND type != 'question' ORDER BY timestamp DESC");
     $objectLog = [];
     while ($row = $result_objectLog->fetch_assoc()) {
         array_push($objectLog, $row);
     }
     $return_data = array_merge($return_data, ['objectLog' => $objectLog]);
+    
     
     if (empty($return_data)) {  //$return_data が空（null、空の配列、空文字列など）かどうかを確認
         echo json_encode(["error" => "not"]);  //["error" => "not"] という連想配列（キーが error、値が not）を json_encode 関数で JSON 形式に変換して出力

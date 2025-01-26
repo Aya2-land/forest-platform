@@ -209,9 +209,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <button class="action-button tool-button" id="zoom-out-button" onclick="zoomOut();">
                             <span class="button-icon">🔍➖</span> 縮小
                         </button>
-                        <button class="action-button tool-button" id="map-snapshot-button" onclick="MapSnapShot();RecordRelation();">
-                            <span class="button-icon">🔍➖</span> マップver更新
-                        </button>
+                        <!-- <button class="action-button tool-button" id="map-snapshot-button" onclick="MapSnapShot();RecordRelation();">
+                            マップver更新
+                        </button> -->
                     </div>
                 <!-- </div> -->
 
@@ -228,10 +228,10 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                     <!--  kagitani　-->
                 <div id="object_container" oncontextmenu="return false;" >
                         <div id="utterance_area">
-                        <button id="a_button" onclick="openFilterModal()">活動ログフィルタ</button>
+                        <!-- <button id="a_button" onclick="openFilterModal()">活動ログフィルタ</button>
                         <div id="filter-status" style="display: none;">
                             <p>現在のフィルタ: 開始日 2024-12-01 | 終了日 2024-12-12 | マップ: Tokyo</p>
-                        </div>
+                        </div> -->
 
                            <!-- モーダルウィンドウ -->
                             <div id="filter-modal" class="modal">

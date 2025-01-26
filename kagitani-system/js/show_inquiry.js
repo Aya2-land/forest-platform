@@ -79,7 +79,6 @@ function showInquiry(arr,mode){
 		i_count += 1;
 
 	}
-
 	if(i_count >= 3){
 
 		showIntention();

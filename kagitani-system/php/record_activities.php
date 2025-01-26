@@ -32,7 +32,7 @@
 
 	// SQLクエリの生成
 	$sql = "INSERT INTO activities (id, timestamp, node_id, act, type, concept_id, text, parent_id, user_id, map_id, object_map_id)
-	VALUES ('$primary_id', '$timestamp', '$node_id','$activity', '$type','$concept_id','$text','$parent_id','$user_id','$map_id', ".$object_map_id.")";
+	VALUES ('$primary_id', '$timestamp', '$node_id','$activity', '$type','$concept_id','$text','$parent_id','$user_id','$map_id', '$object_map_id')";
 
 	// SQLクエリをエコーで出力（ブラウザやネットワークタブで確認可能）
 	echo "Generated SQL: " . $sql . "\n";

@@ -506,7 +506,13 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     }
 
     addNewStep() {
-        this.addStep(this.generateUniqueNumberText(), "newNode", "step", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
+        console.log("ああああああああああできた",globalParams);
+        // canvasのx座標とy座標を取得
+        const canvasX = globalParams.pointer.canvas.x;
+        const canvasY = globalParams.pointer.canvas.y;
+        // 取得した座標を使った処理
+        console.log(`Canvas X座標: ${canvasX}, Y座標: ${canvasY}`);
+        this.addStep(this.generateUniqueNumberText(), "newNode", "step", canvasX, canvasY + 0.1);
         console.log("addStepできた");
     }
     //kagitani
@@ -1856,19 +1862,20 @@ const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
                     object_map_Id : object_map_id
                     };
         }
+        console.log("Data sent to server:", data);
         return $.ajax({
             url: "php/object_map_manager.php",
             type: "POST",
             data: data,
             success: (r) => {
-                //console.log("Raw response:", r); 
+                console.log("Raw response:", r); 
                 try {
                     utterance_list = JSON.parse(r);
                     console.log("Parsed utterance_list:", utterance_list);
                     callback(utterance_list);
                 } catch (e) {
                     //ここのエラー治ってない．原因はわからんけど，普通に動くから削除してる．
-                    // console.error("Failed to parse JSON:", e, r);
+                    console.error("Failed to parse JSON:", e, r);
                 }
             },
             error: (xhr, status, error) => {
@@ -1876,6 +1883,7 @@ const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
                 console.log("Response text:", xhr.responseText);
             }
         });
+    
 }
 
 const getLatestMapID = (callback) => {
@@ -2233,10 +2241,10 @@ window.addEventListener("textSendEvent", (event) => {
     const receiveMapId = event.detail.objectMapId; // objectMapIdの誤スペルを修正
     console.log("[object-network.js] 受信したtimestamp:", receivedTimestamp, receivedNodeText, receivedNodeAct, receivedNodeType, receiveMapId);
 
+    const log = makeLog(receivedTimestamp, receivedNodeText, receivedNodeAct, receivedNodeType, receiveMapId);
+    console.log("生成されたDOM:", receivedTimestamp, receivedNodeText, receivedNodeAct, receivedNodeType, receiveMapId);
     try {
         // DOMを生成して挿入
-        const log = makeLog(receivedTimestamp, receivedNodeText, receivedNodeAct, receivedNodeType, receiveMapId);
-
         const target_area = $(`#utterance_area2`);
 
         if (target_area.length > 0) {
@@ -2326,7 +2334,6 @@ const displayUtteranceNodeInList = (display_target_area_id, target_reflection_ti
 }
 
 //ロードする時
-//display_target_area_id: 表示するエリアのID。target_reflection_time: 表示したい時間帯のデータを取得するための引数。
 const displayDiscussionMapData = (display_target_area_id, target_reflection_time) => {
     console.log("window.onload - objectMapId:"); // window.onload時にobjectMapIdを表示
     loadMapLabel(); // マップデータをロード
@@ -2338,7 +2345,7 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
         console.log("object_map_id に設定した値:", object_map_id);  // object_map_id に代入された値を確認
     
         // object_map_id を使用して updateObjectMapData 関数を呼び出し
-        updateObjectMapData(object_map_id);  
+        loadObjectMapData(object_map_id);  
         console.log("updateObjectMapData 関数を呼び出し。引数:", object_map_id);  // 関数呼び出しの直前
     
         console.log("更新後の mapID:", mapID);  // もう一度、mapIDの値を確認
@@ -2351,7 +2358,7 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
     //データベースから指定時間の発話データを取得。
     //データが存在する場合、dnode 内の各ノードを addReloadNode 関数でリロード。
     getDiscussionMapDataFromDB(null, null, (utterance_list_info) => {
-        console.log("utterance_list_info:", utterance_list_info);
+        console.log("おutterance_list_info:", utterance_list_info);
         //utterance_listチェック
         if (utterance_list_info && Array.isArray(utterance_list_info.dnode)) {
             utterance_list_info.dnode.forEach((n) => {
@@ -2450,10 +2457,10 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
             // rightclick()
         });
         // ネットワークにイベントリスナーを追加
-        utterance_list_info.dnode.on('hoverNode', function(event) {
-            // ノードにカーソルが当たった時に「いえ〜い」を表示
-            console.log("いえ〜い");
-        });        
+        // utterance_list_info.dnode.on('hoverNode', function(event) {
+        //     // ノードにカーソルが当たった時に「いえ〜い」を表示
+        //     console.log("いえ〜い");
+        // });        
     });
 }
 

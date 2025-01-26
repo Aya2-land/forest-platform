@@ -341,6 +341,7 @@ function update_objectMap(updatedGoalContent, createdAt, objectMapId) {
    });
 }
 
+//大目標エリアの取得
 window.addEventListener('load', () => {
     fetchGoals();
 });
