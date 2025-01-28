@@ -79,3 +79,24 @@
 	float: left; 
 	position: absolute;
 }
+
+#node_conmenu {
+	width: 160px;
+	height: 250px;
+	background-color: #f0f0f0;
+	border: 1px solid #999999;
+	display: none;
+	position: absolute;
+	z-index: 1000;
+	text-align: center;
+}
+
+#node_conmenu ul {
+	list-style: none;
+	margin: 0px;
+	padding: 5px;
+}
+
+#node_conmenu li:hover {
+	background-color: #CCFFFF;
+}

@@ -51,6 +51,8 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
   <script src="js/referense_node_and_anno.js"></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vis-network@9.1.0/dist/vis-network.min.js"></script>
+
   <script src="js/jquery.autosize.js"></script>
   <script src="js/jquery.autosize.min.js"></script>
 
@@ -102,7 +104,7 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
 
   <!--      タブメニュー Start        -->
   <ul div class="tabnav">
-    <li class="active"><a href="#tab01">文章要約支援システム</a></li>
+    <li class="active"><a href="#tab01">文章要約スキル育成システム</a></li>
     <!-- <li class="active"><a href="#tab03" >リフレクション</a></li>yoshioka            -->
     <!-- yoshioka -->
   </ul>
@@ -123,8 +125,11 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
               【Edit】
 
 
-              <button class="button4" id="question_node_b" onclick="add_paragraph();">
-                ノードの追加
+              <button class="button4" id="question_node_b" onclick="add_paragraph();"> <!--question_node_b-->
+                段落ノードの追加
+              </button>
+              <button class="button4" id="chapter_node" onclick="add_chapter();">
+                章ノードの追加
               </button>
               <button class="button4" id="s_interpretation" onclick="connectNodes();">
                 エッジの追加
@@ -132,44 +137,6 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
               <button class="button4" id="s_interpretation" onclick="deleteNodes();">
                 ノードの削除
               </button>
-              <!--
-                  <button class="button4" id="s_interpretation" onclick="deleteEdge();">
-                    エッジの削除
-                  </button> -->
-
-
-
-              <!-- <select name="add_criticism" id="s_criticism_node">
-                    <optgroup label="批評の観点（タグ）付与">
-                    <option value="criticism">批評ノード追加</option>
-                       <option value="evaluation">価値判断</option>
-                          <optgroup label="----L価値判断">
-                              <option value="e_1">---L有用性</option>
-                              <option value="e_2">---L新規性</option>
-                              <option value="e_3">---L信頼性</option>
-                            </optgroup>
-
-                       <option value="objection">意見</option>
-                            <optgroup label="----L意見">
-                            <option value="o_1">---L反論</option>
-                              <option value="o_2">---L改善策</option>
-                              <option value="o_3">---L代替案</option>
-                            </optgroup>
-                      <option value="modification">問題点</option>
-                            <optgroup label="----L問題点">
-                            <option value="m_1">---L語の妥当性</option>
-                              <option value="m_2">---L証拠の十分生</option>
-                              <option value="m_3">---L論理の整合性</option>
-                            </optgroup>
-
-
-                    </optgroup>
-                  </select> -->
-
-
-
-
-
 
               【mindmap】
               <button class="button3" id="zoom-in-button" onclick="zoomIn();">
@@ -206,34 +173,29 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
               <button class="button4" style="width:80px" onclick="screen_shot();">
                 screenshot
               </button>
-
-
-              <!-- <button class="button4" style="width:80px" onclick="Difference();"> -->
-              <!-- <label><input type="checkbox" name="Difference" id="Difference" onClick="Difference();">以前のマップとの差分</label> -->
-              <!-- </button> -->
-
             </div>
-            <!-- <div id="jsmind_area" oncontextmenu="return false;">           
-                  <div id="jsmind_container" oncontextmenu="return false;"></div>
-                  <div id="jsmind_container2_menu">
-                    <div id="mindmap_tab"><span id="all_annotation"></span></div>
-                    
-                    <button class="button3" id="zoom-in-button" onclick="zoomIn2();">
-                      拡大
-                    </button>
-                    <button class="button3" id="zoom-out-button" onclick="zoomOut2();">
-                      縮小
-                    </button> 
-                    
 
-                  </div>    
-                  <div id="jsmind_container2"></div>
-                </div> -->
 
             <!-- <div id="digest_area" oncontextmenu="return false;"></div> エリアは一つでよいとのこと -->
             <div id="summary_area" oncontextmenu="return false;">
               <svg id="svg_area" oncontextmenu="return false;">
               </svg>
+
+              <div id="node_conmenu">
+                <ul>
+                  <li>
+                    <button class="button4" id="drawingEdge">
+                      エッジを引く
+                    </button>
+                  </li>
+                  <li>
+                    ノードを編集する
+                  </li>
+                  <li>
+                    ノードを削除する
+                  </li>
+                </ul>
+              </div>
 
               <div id="mindmap_conmenu">
                 <ul>
@@ -265,7 +227,7 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
                     </button>
                   </li>
                   <li>
-                    <button class="button4" onclick="add_Anode2('konkyo');">
+                    <button class="button4" onclick="add_contrast();"> <!--add_Anodes2('konkyo');-->
                       対比
                     </button>
                   </li>
@@ -412,46 +374,46 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
 
 
         <!-- 思考過程表出化マップ　By川 -->
-        <div id="process_network_container" oncontextmenu="return false;" >
-            <div id="myProcessnetwork2">
-                <div id="buttoncluster">
-                    <input type="button" class="thinkingProcess_network_button"
-                            id="process_addNode" value="思考ノード追加" />
-                    <input type="button" class="thinkingProcess_network_button"
-                            id="process_removeNode" value="ノード削除" />
-                    <input type="button" class="thinkingProcess_network_button"
-                            id="process_startEditEdge" value="エッジ追加" />
-                    <input type="button" class="thinkingProcess_network_button"
-                            id="process_removeEdge" value="エッジ削除" />
-                    <input type="button" class="thinkingProcess_network_button"
-                            id="process_ZoomIn" value="拡大" />
-                    <input type="button" class="thinkingProcess_network_button"
-                            id="process_ZoomOut" value="縮小" />
-                </div>
-                <div id="t_Process_conmenu">
-                    <ul>
-                        <li><a href="javascript:void(0);" id="process_conmenu1">概念をつける</a></li>
-                        <li><a href="javascript:void(0);" id="process_conmenu2">マインドマップと対応付ける</a></li>
-                        <li><a href="javascript:void(0);" id="process_conmenu3" style="display:none">採用/棄却をつける</a></li>
-                        <li><a href="javascript:void(0);" id="process_conmenu4">キャンセル</a></li>
-                    </ul>
-                </div>
-                <div id="t_Process_labelselect">
-                    <select id="t_Process_selectionlist" size="3">
-                        <!-- いるやつあれば追加やけど未実装（研究活動オントロジー読み込みかな？） -->
-                    </select>
-                    <input type="button" value="選択完了" id="p_ontology_select">
-                </div>
-                <div id="t_Process_recruitselect">
-                    <select id="t_Process_recruitselectionlist">
-                        <option value="採用">採用</option>
-                        <option value="棄却">棄却</option>
-                    </select>
-                    <input type="button" value="選択完了" id="p_recruit_select">
-                </div>
-                <div id="myProcessnetwork"></div>
+        <div id="process_network_container" oncontextmenu="return false;">
+          <div id="myProcessnetwork2">
+            <div id="buttoncluster">
+              <input type="button" class="thinkingProcess_network_button"
+                id="process_addNode" value="思考ノード追加" />
+              <input type="button" class="thinkingProcess_network_button"
+                id="process_removeNode" value="ノード削除" />
+              <input type="button" class="thinkingProcess_network_button"
+                id="process_startEditEdge" value="エッジ追加" />
+              <input type="button" class="thinkingProcess_network_button"
+                id="process_removeEdge" value="エッジ削除" />
+              <input type="button" class="thinkingProcess_network_button"
+                id="process_ZoomIn" value="拡大" />
+              <input type="button" class="thinkingProcess_network_button"
+                id="process_ZoomOut" value="縮小" />
             </div>
-            <!-- <div id="trigger_area">
+            <div id="t_Process_conmenu">
+              <ul>
+                <li><a href="javascript:void(0);" id="process_conmenu1">概念をつける</a></li>
+                <li><a href="javascript:void(0);" id="process_conmenu2">マインドマップと対応付ける</a></li>
+                <li><a href="javascript:void(0);" id="process_conmenu3" style="display:none">採用/棄却をつける</a></li>
+                <li><a href="javascript:void(0);" id="process_conmenu4">キャンセル</a></li>
+              </ul>
+            </div>
+            <div id="t_Process_labelselect">
+              <select id="t_Process_selectionlist" size="3">
+                <!-- いるやつあれば追加やけど未実装（研究活動オントロジー読み込みかな？） -->
+              </select>
+              <input type="button" value="選択完了" id="p_ontology_select">
+            </div>
+            <div id="t_Process_recruitselect">
+              <select id="t_Process_recruitselectionlist">
+                <option value="採用">採用</option>
+                <option value="棄却">棄却</option>
+              </select>
+              <input type="button" value="選択完了" id="p_recruit_select">
+            </div>
+            <div id="myProcessnetwork"></div>
+          </div>
+          <!-- <div id="trigger_area">
                 <div id="trigger_area_display">
                     <div id="conceptdisplay"></div>
                     <div id="trigger_click"></div>
@@ -756,7 +718,8 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
   <script type="text/javascript" src="js/reflection.js"></script>
   <!--<script type="text/javascript" src="js/summary.js"></script> -->
   <!--<script type="text/javascript" src="js/summary2.js"></script> -->
-  <script type="text/javascript" src="js/summary3.js"></script>
+  <!--<script type="text/javascript" src="js/summary3.js"></script> -->
+  <script type="text/javascript" src="js/summary4.js"></script>
 </body>
 
 </html>

@@ -347,7 +347,7 @@ function createRelationshipNode(x1, y1, x2, y2, initialText) {
             relationshipNode.dataset.flag = "true";
         }
 
-        toggleDropdownMenu(e, relationshipNode);
+        toggleDropdownMenu(e);
     })
 
     document.addEventListener("click", () => {
@@ -359,7 +359,7 @@ function createRelationshipNode(x1, y1, x2, y2, initialText) {
 }
 
 //プルダウンメニューを表示する関数
-function toggleDropdownMenu(e, relationshipNode) {
+function toggleDropdownMenu(e) {
     //プルダウンメニューの作成
     const menu = document.getElementById("mindmap_conmenu");
 
