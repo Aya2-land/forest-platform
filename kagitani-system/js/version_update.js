@@ -191,6 +191,7 @@ function MapSnapShot(){
         type: "POST",
         data: { data : "map"},
         success: function(e){
+          console.log(e);
           if(e == 'null'){
             alert("マップverが更新されました");
             show_edit_reason();
