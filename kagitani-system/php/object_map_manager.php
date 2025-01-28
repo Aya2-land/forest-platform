@@ -73,7 +73,7 @@ if($purpose === "select_meeting_utterance") {
 }else if ($purpose === "get_latest_map_id") {
     // 最新の object_map_id を取得
     // 最新のobject_map_idを取得するクエリ
-    $latest_map_id_result = $mysqli->query("SELECT `object_map_id` FROM `object_maps` ORDER BY `updated_at` DESC LIMIT 1;");
+    $latest_map_id_result = $mysqli->query("SELECT `object_map_id` FROM `object_maps`WHERE map_id = '$sheet_id' ORDER BY `updated_at` DESC LIMIT 1;");
 
     // クエリが失敗した場合のエラーハンドリング
     if (!$latest_map_id_result) {
