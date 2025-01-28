@@ -293,12 +293,13 @@ table[type] {
 	background:#c6deff;
 	overflow-y: scroll;
 	/* float:left; */
+	position:relative;
+
 }
 #utterance_area2{
 	margin-bottom:2vh;
 	border:solid 5px #cccccc00;
 	background:#c6deff;
-	float:left;
 	line-height:20px;
 	cursor: pointer;
 }
