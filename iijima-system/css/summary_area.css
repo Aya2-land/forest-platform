@@ -85,7 +85,7 @@
 	height: 250px;
 	background-color: #f0f0f0;
 	border: 1px solid #999999;
-	display: none;
+	/* display: none; */
 	position: absolute;
 	z-index: 1000;
 	text-align: center;

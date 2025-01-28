@@ -683,17 +683,13 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
         </ul>
       </div>
 
-
-
     </div>
-
-
 
   </div>
 
   <!-- tab04ここまで -->
 
-  </div>
+  <!-- </div> -->
   <!-- メインメニュー　Finish -->
   <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
   <script type="text/javascript" src="js/node_tag.js"></script>
@@ -720,6 +716,15 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
   <!--<script type="text/javascript" src="js/summary2.js"></script> -->
   <!--<script type="text/javascript" src="js/summary3.js"></script> -->
   <script type="text/javascript" src="js/summary4.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      let menu = document.getElementById("node_conmenu");
+      console.log(menu); // ここでmenuが取得できるかを確認
+      if (!menu) {
+        console.log("メニューがない");
+      }
+    });
+  </script>
 </body>
 
 </html>

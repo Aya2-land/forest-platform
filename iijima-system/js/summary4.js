@@ -38,7 +38,7 @@ const options = {
         enabled: true
     }
 };
-const network = new vis.Network(container, data, options);
+const network = new vis.Network(container  , data, options);
 
 // ノード追加の関数
 function add_paragraph() {
@@ -104,22 +104,39 @@ function enableEditing(nodeData, callback) {
 //     }
 // })
 
+let menu;
+
+// document.addEventListener("DOMContentLoaded", function() {
+//     menu = document.getElementById("node_conmenu");    //右クリック時のメニュー
+//     console.log(menu);
+//     if (!menu) {
+//         console.log("メニューがない");
+//     }
+// });
+
 network.on("oncontext", function (params) {
-    params.event.preventDefault();   //デフォルトの右クリックメニューを帽子
+    params.event.preventDefault();   //デフォルトの右クリックメニューを防止
+    console.log(params);
     
-    const nodeId = params.nodes[0]   //右クリックされたノードのIDを取得
+    const nodeId = params.nodes[0];   //右クリックされたノードのIDを取得
 
     if (nodeId) {
         const nodePosition = network.getPositions([nodeId]);
+        console.log(nodePosition);
         const nodeX = nodePosition[nodeId].x;
         const nodeY = nodePosition[nodeId].y;
         console.log(nodeX, nodeY);
+
+        //vis.jsの座標をブラウザの絶対座標に変換
+        const canvasCoords = network.canvasToDOM({ x: nodeX, y: nodeY });
+
         const menu = document.getElementById("node_conmenu");
+        console.log(menu);
         if (!menu) {
             alert("menuがない");
         } 
-        menu.style.left = `${nodeX}px`;
-        menu.style.top = `${nodeY}px`;
+        menu.style.left = `${canvasCoords.x}px`;      //絶対座標に基づいて位置を設定
+        menu.style.top = `${canvasCoords.y}px`;
         menu.style.display = "block";         //メニューを表示
 
         //エッジを引くボタンをクリックしたときの処理
@@ -128,7 +145,7 @@ network.on("oncontext", function (params) {
             connectNodes(nodeId);
         }
     }
-})
+});
 
 // ノード同士を繋ぐエッジの作成
 function connectNodes(nodeId) {

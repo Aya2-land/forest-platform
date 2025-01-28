@@ -244,7 +244,7 @@ table[type] {
 	overflow-x: auto;
 	overflow-y: visible;
 	float: left;
-	display: none;   /*追加した*/
+	/* display: none;   追加した */
 }
 
 
