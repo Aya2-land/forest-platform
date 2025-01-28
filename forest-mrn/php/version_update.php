@@ -173,7 +173,6 @@
 	}else if($_POST["data"] == "map"){
 
 		//マップ更新ボタンを押したとき
-		if($_POST["node_id"] == NULL){
 
 			//map_versionsをUPDATE
 			$sql_mvu = "UPDATE map_versions SET disappeared_at = '".$timestamp."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
@@ -203,27 +202,7 @@
 				echo "Error update node_version: ". $mysqli->error;
 			}
 
-		//ノードからマップ全体に波及させるとき	11/30意味なくないですか？マップver2個できる 壊れそう relationも設定せず置いとこう
-		}else{
-
-			//ノードの最新appeared_atを取得	ここ後で選べるようにできたらいいね
-			// $node_id = $_POST["node_id"];
-			// $sql_get_app = "SELECT appeared_at FROM node_versions WHERE node_id = '$node_id' AND disappeared_at = (select max(appeared_at) from (select appeared_at from node_versions) temp)";
-    		// if($result_get_app = $mysqli->query($sql_get_app)) {
-      		// 	while($row = mysqli_fetch_assoc($result_get_app)){
-			// 		$appeared_at = $row['appeared_at'];
-      		// 	}
-    		// }
-			//ノードに時間を合わせてmap_versionsをUPDATE
-			// $sql_mvu = "UPDATE map_versions SET disappeared_at = '".$appeared_at."' WHERE map_id = ".$_SESSION['MAPID']." AND disappeared_at IS NULL";
-			// $result_mvu = $mysqli->query($sql_mvu);
-
-			//ノードに時間を合わせてmap_versionsにINSERTする
-			// $map_version = rand();	//not unique
-			// $sql = "INSERT INTO map_versions(id, map_id, appeared_at, disappeared_at, type, updated_reason)
-			// VALUES ($map_version, '".$_SESSION['MAPID']."', '$appeared_at', NULL, 'spread', NULL)";	//後で理由入れる
-			// $result = $mysqli->query($sql);
-		}
+		
 
 	//ノードのバージョンを更新
 	}else if($_POST["data"] == "node"){
