@@ -111,7 +111,7 @@ function NodeVersionUpdate(nodes){
 
   }else if(nodes){
 
-    console.log(nodes);
+    // console.log(nodes);
     var nodeVERSION = jsMind.util.uuid.newid();
     $.ajax({
       url: "php/version_update.php",
