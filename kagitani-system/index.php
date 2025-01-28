@@ -209,9 +209,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <button class="action-button tool-button" id="zoom-out-button" onclick="zoomOut();">
                             <span class="button-icon">🔍➖</span> 縮小
                         </button>
-                        <!-- <button class="action-button tool-button" id="map-snapshot-button" onclick="MapSnapShot();RecordRelation();">
+                        <button class="action-button tool-button" id="map-snapshot-button" onclick="MapSnapShot();RecordRelation();">
                             マップver更新
-                        </button> -->
+                        </button>
                     </div>
                 <!-- </div> -->
 
