@@ -39,7 +39,7 @@
 
 		//map_versionsにINSERT
 		$sql_mvi = $sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) 
-		VALUES ($map_version, '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'system', NULL)";
+		VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'system', NULL)";
 		$result_mvi = $mysqli->query($sql_mvi);
 
 	//ノードの編集、移動
@@ -95,7 +95,7 @@
 
 			//map_versionsにINSERT
 			$sql_mvi = $sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) 
-			VALUES ($map_version_id, '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'system', NULL)";
+			VALUES (".$map_version."_id, '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'system', NULL)";
 			$result_mvi = $mysqli->query($sql_mvi);
 
 		}
@@ -127,7 +127,7 @@
 		//map_versionsにINSERT
 		$map_version = rand();
 		$sql_mvi = $sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) 
-		VALUES ($map_version, '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'system', NULL)";
+		VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'system', NULL)";
 		$result_mvi = $mysqli->query($sql_mvi);
 
 
@@ -179,7 +179,7 @@
 			//map_versionsにINSERTする
 			$map_version = rand();	//not unique
 			$sql_mvi = "INSERT INTO map_versions(id, map_id, appeared_at, disappeared_at, type, updated_reason)
-			VALUES ($map_version, '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'map', NULL)";	//後で理由入れる
+			VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$timestamp."', NULL, 'map', NULL)";	//後で理由入れる
 			$result_mvi = $mysqli->query($sql_mvi);
 
 		//ノードからマップ全体に波及させるとき	11/30意味なくないですか？マップver2個できる 壊れそう relationも設定せず置いとこう
@@ -200,7 +200,7 @@
 			//ノードに時間を合わせてmap_versionsにINSERTする
 			$map_version = rand();	//not unique
 			$sql = "INSERT INTO map_versions(id, map_id, appeared_at, disappeared_at, type, updated_reason)
-			VALUES ($map_version, '".$_SESSION['MAPID']."', '$appeared_at', NULL, 'spread', NULL)";	//後で理由入れる
+			VALUES (".$map_version.", '".$_SESSION['MAPID']."', '$appeared_at', NULL, 'spread', NULL)";	//後で理由入れる
 			$result = $mysqli->query($sql);
 		}
 

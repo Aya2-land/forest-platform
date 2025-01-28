@@ -72,7 +72,7 @@
 		    // }
 
 			//hatakeyama map_versionsにver.1をINSERTする.
-			$sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) VALUES ($map_version, '".$_SESSION['MAPID']."', '".$created_at."', NULL, 'new', NULL)";
+			$sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$created_at."', NULL, 'new', NULL)";
 			if (!$result = $mysqli->query($sql_mv)) {
 		      print('Error - SQLSTATE'. mysqli_error($link));
 		      exit();
@@ -114,7 +114,7 @@
 		// }
 
 		//hatakeyama map_versionsにver.1をINSERTする.
-		$sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) VALUES ($map_version, '".$_SESSION['MAPID']."', '".$created_at."', NULL, 'new', NULL)";
+		$sql_mv = "INSERT INTO map_versions (id, map_id, appeared_at, disappeared_at, type, updated_reason) VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$created_at."', NULL, 'new', NULL)";
 		if (!$result = $mysqli->query($sql_mv)) {
 		  print('Error - SQLSTATE'. mysqli_error($link));
 		  exit();

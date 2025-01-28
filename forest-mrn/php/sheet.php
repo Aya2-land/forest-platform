@@ -73,7 +73,7 @@
 		    //   exit();
 		    // }
 			 
-			$sql_mv = "INSERT INTO map_versions (map_version_id, map_id, name, scenario_title, appeared_at, disappeared_at) VALUES ($map_version, '".$_SESSION['MAPID']."', '".$_POST['mapname']."', NULL, '".$created_at."', NULL)";
+			$sql_mv = "INSERT INTO map_versions (map_version_id, map_id, name, scenario_title, appeared_at, disappeared_at) VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$_POST['mapname']."', NULL, '".$created_at."', NULL)";
 			if (!$result = $mysqli->query($sql_mv)) {
 				print('Error - SQLSTATE3'. mysqli_error($mysqli));
 				exit();
@@ -117,7 +117,7 @@
 		// }
 
 		
-		$sql_mv = "INSERT INTO map_versions (map_version_id, map_id, name, scenario_title, appeared_at, disappeared_at) VALUES ($map_version, '".$_SESSION['MAPID']."', '".$_POST['mapname']."', NULL, '".$created_at."', NULL)";
+		$sql_mv = "INSERT INTO map_versions (map_version_id, map_id, name, scenario_title, appeared_at, disappeared_at) VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$_POST['mapname']."', NULL, '".$created_at."', NULL)";
 		if (!$result = $mysqli->query($sql_mv)) {
 		  print('Error - SQLSTATE'. mysqli_error($link));
 		  exit();
