@@ -97,7 +97,7 @@ function NodeVersionUpdate(nodes){
              if(!res || res){
               console.log(res);
              }
-             GetPairNodeId_ContentRelationTable(nodeID);
+            //  GetPairNodeId_ContentRelationTable(nodeID);
           },
           error: function () {
             console.log("node_versionsに保存失敗");
@@ -131,7 +131,7 @@ function NodeVersionUpdate(nodes){
          if(res){
           console.log(res);
          }
-         GetPairNodeId_ContentRelationTable(nodeID);
+        //  GetPairNodeId_ContentRelationTable(nodeID);
       },
       error: function () {
         console.log("node_versionsに保存失敗");
