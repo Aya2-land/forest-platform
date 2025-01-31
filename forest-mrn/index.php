@@ -455,6 +455,16 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                                 id="process_ZoomIn" value="拡大" />
                                         <input type="button" class="thinkingProcess_network_button"
                                                 id="process_ZoomOut" value="縮小" />
+                                        <div class="checkbox_process">
+                                            <input type="checkbox" id="checkbox_process" class="checkbox_process" name="check_process" onclick="ShowRelatedProcess('brother')">
+                                            <label for="checkbox_process" data-on-label="On" data-off-label="Off"></label>
+                                            <span class="checkbox_process_text">【兄弟ノード表示】<br></span>
+                                        </div>
+                                        <!-- <div class="checkbox_process">
+                                            <input type="checkbox" id="checkbox_process" class="checkbox_process" name="check_process" onclick="ShowRelatedProcess('consistency')">
+                                            <label for="checkbox_process" data-on-label="On" data-off-label="Off"></label>
+                                            <span class="checkbox_process_text">【整合性ノード表示】<br></span>
+                                        </div> -->
                                     </div>
                                     <div id="t_Process_conmenu">
                                         <ul>
