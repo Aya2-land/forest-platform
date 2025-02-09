@@ -12,14 +12,14 @@
 		// $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);//日時をマイクロ秒まで取得するようにしてみる
 		$user_id = $_SESSION['USERID'];      	//ユーザID
 		$map_id = $_SESSION['MAPID'];    	//シートID
-		$id = $_POST["id"];             	 	//ID
-		$content_id = $_POST["content_id"];     //コンテントID
-		$rank = $_POST["rank"];            		//順番
-		$slide_id = $_POST["slide_id"];     	//スライドID
+		// $id = $_POST["id"];             	 	//ID
+		$item_content_id = $_POST["item_content_id"];     //コンテントID
+		$brother_id = $_POST["brother_id"];            		//順番
+		$item_id = $_POST["item_id"];     	//スライドID
 		$content = $_POST["content"];     		//コンテンツの中身
 		$node_id = $_POST["node_id"];     		//ノードID
 		$type = $_POST["type"];     			//タイプ
-		$indent = $_POST["indent"];     		//インデント情報
+		$parent_id = $_POST["parent_id"];     		//インデント情報
 		$concept_id = $_POST["concept_id"];     //コンセプトID
 		$logic_option = $_POST["logic_option"]; //選択したセレクトボックスのインデント
 

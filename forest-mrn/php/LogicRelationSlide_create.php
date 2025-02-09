@@ -8,7 +8,7 @@
   //タイムゾーンの設定
   date_default_timezone_set('Asia/Tokyo');
 
-  		$content_id = $_POST["id"];             //コンテントID
+  		$id = $_POST["id"];             //コンテントID
 		$node_id1 = $_POST["node_id1"]; 
 		$node_id2 = $_POST["node_id2"];
 		$thread1_id = $_POST["thread1_id"];      //ユーザID
@@ -22,7 +22,7 @@
 		$map_id = $_SESSION['MAPID'];    //スライドID
 		$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-		$sql = "INSERT INTO document_relation (id, node_id1, thread1_id, thread1_label, ont1_id, node_id2, thread2_id, thread2_label, ont2_id, deleted, created_at, updated_at, map_id) VALUES ('$content_id', '$node_id1', '$thread1_id', '$thread1_label', '$ont1_id', '$node_id2', '$thread2_id', '$thread2_label', '$ont2_id', 0, '$timestamp', '$timestamp' , '$map_id')";
+		$sql = "INSERT INTO item_relations (id, node_id1, item1_id, item1_label, ont1_id, node_id2, item2_id, item2_label, ont2_id, deleted, created_at, updated_at) VALUES ('$id', '$node_id1', '$thread1_id', '$thread1_label', '$ont1_id', '$node_id2', '$thread2_id', '$thread2_label', '$ont2_id', 0, '$timestamp', '$timestamp')";
 
 		$result = $mysqli->query($sql);
 

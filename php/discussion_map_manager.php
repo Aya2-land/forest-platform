@@ -94,7 +94,7 @@ if($purpose === "record_meeting_utterance") {
     // * 未完成?，資料の構造を取ってくる（今残ってる資料を取ってきてるから過去の資料を見たいならまだできない）
     // あと，もともとのDBのdocument_content_relationにuseridがないから重複しないか清水さんに聞く
     // */
-    // $result_document_relation = $mysqli->query("SELECT id, node1_id, doc_con1_id, doc_con1_label, ont1_id, ont2_id, node2_id, doc_con2_id, doc_con2_label  FROM document_content_relation
+    // $result_document_relation = $mysqli->query("SELECT id, node1_id, doc_con1_id, doc_con1_label, ont1_id, ont2_id, node2_id, doc_con2_id, doc_con2_label  FROM item_content_relations
     // WHERE map_id = '$map_id' AND deleted = 0 ORDER BY created_at ASC");
     // while ($row = $result_document_relation->fetch_assoc()) {
         
@@ -263,7 +263,7 @@ if($purpose === "select_meeting_utterance") {
     $return_data = array_merge($return_data, ['document' => $document]);
 
     // userIDがないから一意に特定できるかわからん．清水さんに確認
-    $result_document_relation = $mysqli->query("SELECT node1_id, doc_con1_id, doc_con1_label, node2_id, doc_con2_id, doc_con2_label FROM document_content_relation
+    $result_document_relation = $mysqli->query("SELECT node1_id, doc_con1_id, doc_con1_label, node2_id, doc_con2_id, doc_con2_label FROM item_content_relations
         WHERE map_id = '$map_id' AND deleted = 0");
     $document_relation = [];
     while ($row = $result_document_relation->fetch_assoc()) {

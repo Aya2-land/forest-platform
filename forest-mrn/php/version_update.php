@@ -438,11 +438,11 @@
 	$result_c = $mysqli->query($sql_c);
 
 	//スライド関係
-	$sql_sr = "UPDATE document_relation SET updated_at='$timestamp', deleted=1 WHERE map_id='$map_id' AND deleted=0";
+	$sql_sr = "UPDATE item_relations SET updated_at='$timestamp', deleted=1 WHERE item1_id IN (SELECT item_id FROM items WHERE map_id = '$map_id') AND deleted=0";
 	$result_sr = $mysqli->query($sql_sr);
 
 	//コンテント関係
-	$sql_cr = "UPDATE document_content_relation SET updated_at='$timestamp', deleted=1 WHERE map_id='$map_id' AND deleted=0";
+	$sql_cr = "UPDATE item_content_relations SET updated_at='$timestamp', deleted=1 WHERE item_content1_id IN (SELECT item_content_id FROM item_contents WHERE item_id IN (SELECT item_id FROM items WHERE map_id = '$map_id') AND deleted=0";
 	$result_cr = $mysqli->query($sql_cr);
 
 	//このシートに含まれる資料を一覧を取得

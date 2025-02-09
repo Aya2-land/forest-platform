@@ -13,7 +13,7 @@ $map_id = $_SESSION["MAPID"];//"102774749"; //
 date_default_timezone_set('Asia/Tokyo');
 
 // $sql = "SELECT scenario_title FROM maps WHERE map_id='$map_id'";
-$sql = "SELECT * FROM document_relation WHERE map_id='$map_id' AND deleted='0'";
+$sql = "SELECT * FROM item_relations WHERE map_id='$map_id' AND deleted='0'";
 
 $data = array();
 if($result = $mysqli->query($sql)){
@@ -22,7 +22,7 @@ if($result = $mysqli->query($sql)){
   }
 }
 
-// $sql2 = "SELECT * FROM document_relation WHERE map_id='$map_id' AND deleted='0'";
+// $sql2 = "SELECT * FROM item_relations WHERE map_id='$map_id' AND deleted='0'";
 // if($result2 = $mysqli->query($sql2)){
 //   while($row2 = mysqli_fetch_assoc($result2)){
 //     array_push($data, $row2);

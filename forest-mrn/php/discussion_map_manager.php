@@ -94,7 +94,7 @@ if($purpose === "record_meeting_utterance") {
     // * 未完成?，資料の構造を取ってくる（今残ってる資料を取ってきてるから過去の資料を見たいならまだできない）
     // あと，もともとのDBのdocument_content_relationにuseridがないから重複しないか清水さんに聞く
     // */
-    // $result_document_relation = $mysqli->query("SELECT id, node1_id, doc_con1_id, doc_con1_label, ont1_id, ont2_id, node2_id, doc_con2_id, doc_con2_label  FROM document_content_relation
+    // $result_document_relation = $mysqli->query("SELECT id, node1_id, doc_con1_id, doc_con1_label, ont1_id, ont2_id, node2_id, doc_con2_id, doc_con2_label  FROM item_content_relations
     // WHERE map_id = '$map_id' AND deleted = 0 ORDER BY created_at ASC");
     // while ($row = $result_document_relation->fetch_assoc()) {
         
@@ -263,13 +263,13 @@ if($purpose === "select_meeting_utterance") {
     $return_data = array_merge($return_data, ['document' => $document]);
 
     // userIDがないから一意に特定できるかわからん．清水さんに確認
-    $result_document_relation = $mysqli->query("SELECT node1_id, doc_con1_id, doc_con1_label, node2_id, doc_con2_id, doc_con2_label FROM document_content_relation
-        WHERE map_id = '$map_id' AND deleted = 0");
-    $document_relation = [];
-    while ($row = $result_document_relation->fetch_assoc()) {
-        array_push($document_relation, $row);
+    $result_item_content_relation = $mysqli->query("SELECT node_id1, item_content1_id, item_content1_label, node_id2, item_content2_id, item_content2_label FROM item_content_relations
+        WHERE item_content1_id IN (SELECT item_content_id FROM item_contents WHERE item_id IN (SELECT item_id FROM items WHERE map_id = '$map_id') AND deleted = 0");
+    $item_content_relation = [];
+    while ($row = $result_item_content_relation->fetch_assoc()) {
+        array_push($item_content_relation, $row);
     }
-    $return_data = array_merge($return_data, ['document_relation' => $document_relation]);
+    $return_data = array_merge($return_data, ['item_content_relation' => $item_content_relation]);
     
     /*
      * 議論における発話パーツ一覧

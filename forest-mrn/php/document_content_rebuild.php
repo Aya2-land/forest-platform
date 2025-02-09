@@ -12,7 +12,7 @@ date_default_timezone_set('Asia/Tokyo');
 $today_date = date("Y-m-d");
 
 
-$sql = "SELECT content_id, node_id, concept_id, rank, content, slide_id, type, indent, logic_option FROM document_content_rank WHERE map_id='$map_id' AND deleted=0";
+$sql = "SELECT item_content_id, node_id, concept_id, brother_id, content, item_id, type, parent_id, logic_option FROM item_content_latest WHERE map_id='$map_id' AND deleted=0";
 
 $reflections = array();
 
@@ -21,14 +21,14 @@ if($result = $mysqli->query($sql)){
   //$reflections
   while($row = mysqli_fetch_assoc($result)){
     $reflections[] = array(
-    'content_id'=> $row["content_id"],
+    'item_content_id'=> $row["item_content_id"],
     'node_id'=> $row["node_id"],
     'concept_id'=> $row["concept_id"],
-    'rank' => $row["rank"],
+    'brother_id' => $row["brother_id"],
     'content' => $row["content"],
-    'slide_id'=> $row["slide_id"],
+    'item_id'=> $row["item_id"],
     'type'=> $row["type"],
-    'indent'=> $row["indent"],
+    'parent_id'=> $row["parent_id"],
     'logic_option'=> $row["logic_option"]);
   }
 }

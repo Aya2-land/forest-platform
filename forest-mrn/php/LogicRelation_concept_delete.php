@@ -14,7 +14,7 @@
     $activity_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-    $sql = "UPDATE document_content_relation SET updated_at='$timestamp', deleted=1 WHERE id='$id'";
+    $sql = "UPDATE item_content_relations SET updated_at='$timestamp', deleted=1 WHERE item_content1_id IN (SELECT item_content_id FROM item_contents WHERE item_id ='$id')";
 	$result = $mysqli->query($sql);
 
     //クエリ($sql)のエラー処理

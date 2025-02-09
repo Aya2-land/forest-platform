@@ -3711,7 +3711,7 @@ async function Rebuild_content(){
                   content: parse[j].content,
                   slide_id: parse[j].slide_id,
                   type: parse[j].type,
-              	  indent: parse[j].indent});
+              	  indent: parse[j].brother_id});
                 if(parse[j].node_id != ""){
                   const content_id = parse[j].content_id;
                   const node_id = parse[j].node_id;

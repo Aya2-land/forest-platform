@@ -15,7 +15,7 @@ $node1_id = $_POST["node1_id"];
 date_default_timezone_set('Asia/Tokyo');
 
 // $sql = "SELECT scenario_title FROM maps WHERE map_id='$map_id'";
-$sql = "SELECT * FROM document_content_relation WHERE map_id='$map_id' AND deleted='0' AND node1_id='$node_id'";
+$sql = "SELECT * FROM item_content_relations WHERE item_content1_id IN (SELECT item_content_id FROM item_contents WHERE item_id IN (SELECT item_id FROM items WHERE map_id = '$map_id') AND deleted='0' AND node1_id='$node_id'";
 
 $data = array();
 if($result = $mysqli->query($sql)){
@@ -25,7 +25,7 @@ if($result = $mysqli->query($sql)){
 }
 
 //追記
-$sql2 = "SELECT * FROM document_content_relation WHERE map_id='$map_id' AND deleted='0' AND node1_id='$node1_id' OR map_id='$map_id' AND deleted='0' AND node2_id='$node1_id'";
+$sql2 = "SELECT * FROM item_content_relations WHERE item_content1_id IN (SELECT item_content_id FROM item_contents WHERE item_id IN (SELECT item_id FROM items WHERE map_id = '$map_id') AND deleted='0' AND (node1_id='$node1_id' OR node2_id='$node1_id')";
 
 if($result2 = $mysqli->query($sql2)){
   while($row2 = mysqli_fetch_assoc($result2)){

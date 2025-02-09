@@ -1193,8 +1193,8 @@ const displayUtteranceNodeInList = (display_target_area_id, target_reflection_ti
             document.getElementById("labelselect").style.display = "none";
             defaultForestMRN.addMaterialOntology('material-content_'+utterance_list_info.document[i].content_id, utterance_list_info.document[i].concept_id);
         }
-        utterance_list_info.document_relation.map(u => {
-            defaultForestMRN.addmaterialEdge("material-content_"+u.doc_con1_id, "material-content_"+u.doc_con2_id, u.doc_con1_label+"→"+u.doc_con2_label)        
+        utterance_list_info.item_content_relation.map(u => {
+            defaultForestMRN.addmaterialEdge("material-content_"+u.item_content1_id, "material-content_"+u.item_content2_id, u.item_content1_label+"→"+u.item_content2_label)        
         });
     }).then(() => {
         $(`#utterance_area`).on('mousedown', (e) => {
