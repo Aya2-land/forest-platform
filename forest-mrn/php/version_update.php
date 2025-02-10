@@ -437,6 +437,46 @@
 	$sql_c = "UPDATE document_content_rank SET updated_at='$timestamp', deleted=1 WHERE map_id='$map_id' AND deleted=0";
 	$result_c = $mysqli->query($sql_c);
 
+	//items
+	$sql_item = "UPDATE items SET updated_at='$timestamp', deleted=1 WHERE map_id='$map_id' deleted = 0";
+	$result = $mysqli->query($sql_item);
+    //クエリ($sql)のエラー処理
+    if ($mysqli->error) {
+		echo "Error items: " . $mysqli->error;
+	}
+    $sql_item_v = "UPDATE item_versions SET disappeared_at='$timestamp' WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id') AND disappeared_at=NULL";
+	$result = $mysqli->query($sql_item_v);
+    //クエリ($sql)のエラー処理
+    if ($mysqli->error) {
+		echo "Error item_versions: " . $mysqli->error;
+	}
+	$sql_item_h = "UPDATE item_histories SET disappeared_at='$timestamp' WHERE item_version_id IN (SELECT item_version_id FROM item_versions WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id')) AND disappeared_at = NULL";
+	$result = $mysqli->query($sql_item_h);
+    //クエリ($sql)のエラー処理
+    if ($mysqli->error) {
+		echo "Error item_histories: " . $mysqli->error;
+	}
+
+	//items
+	$sql_item = "UPDATE item_contents SET updated_at='$timestamp', deleted=1 WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id') deleted = 0";
+	$result = $mysqli->query($sql_item);
+    //クエリ($sql)のエラー処理
+    if ($mysqli->error) {
+		echo "Error items: " . $mysqli->error;
+	}
+    $sql_item_v = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_id IN (SELECT item_content_id FROM item_contents WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id') AND disappeared_at=NULL";
+	$result = $mysqli->query($sql_item_v);
+    //クエリ($sql)のエラー処理
+    if ($mysqli->error) {
+		echo "Error item_versions: " . $mysqli->error;
+	}
+	$sql_item_h = "UPDATE item_content_histories SET disappeared_at='$timestamp' WHERE item_content_version_id IN (SELECT item_content_version_id FROM item_content_versions WHERE item_content_id IN (SELECT item_content_id FROM item_contents WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id'))) AND disappeared_at = NULL";
+	$result = $mysqli->query($sql_item_h);
+    //クエリ($sql)のエラー処理
+    if ($mysqli->error) {
+		echo "Error item_histories: " . $mysqli->error;
+	}
+
 	//スライド関係
 	$sql_sr = "UPDATE item_relations SET updated_at='$timestamp', deleted=1 WHERE item1_id IN (SELECT item_id FROM items WHERE map_id = '$map_id') AND deleted=0";
 	$result_sr = $mysqli->query($sql_sr);
@@ -446,6 +486,42 @@
 	$result_cr = $mysqli->query($sql_cr);
 
 	//このシートに含まれる資料を一覧を取得
+	}else if($_POST["data"] == "item_versions"){
+		$item_id = $_POST["item_id"];
+		$sql = "SELECT * FROM item_versions WHERE item_id = '$item_id' ORDER BY appeared_at DESC";
+
+		$i = 0;
+		$updated_array = array(999 => 'temp');	//最初にこれ入れとかないと何故かindex($i)がついてくれない
+
+		if($result = $mysqli->query($sql)){
+
+			while($row = mysqli_fetch_assoc($result)){
+
+				$updated_array[$i] = $row["item_version_id"];
+
+				$i += 1;
+			}
+		}
+		echo json_encode($updated_array);
+
+	}else if($_POST["data"] == "item_content_versions"){
+		$item_conent_id = $_POST["item_conent_id"];
+		$sql = "SELECT * FROM item_versions WHERE item_conent_id = '$item_conent_id' ORDER BY appeared_at DESC";
+
+		$i = 0;
+		$updated_array = array(999 => 'temp');	//最初にこれ入れとかないと何故かindex($i)がついてくれない
+
+		if($result = $mysqli->query($sql)){
+
+			while($row = mysqli_fetch_assoc($result)){
+
+				$updated_array[$i] = $row["item_version_id"];
+
+				$i += 1;
+			}
+		}
+		echo json_encode($updated_array);
+
 	}else if($_POST["data"] == "get_past_document"){
 
 		//mapsから資料のタイトルとupdated_at取得

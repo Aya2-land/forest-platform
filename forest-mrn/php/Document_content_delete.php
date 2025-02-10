@@ -10,60 +10,55 @@
 
     $user_id = $_SESSION['USERID'];      //ユーザID
     $map_id = $_SESSION['MAPID'];    //シートID
-    $content_id = $_POST["id"]; //コンテントID
-    $activity_id = uniqid();
+    $item_content_id = $_POST["id"]; //コンテントID
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-    $sql = "UPDATE document_content_rank SET updated_at='$timestamp', deleted=1 WHERE id='$content_id'";
+    $sql = "UPDATE document_content_rank SET updated_at='$timestamp', deleted=1 WHERE id='$item_content_id'";
 
+		$sql_item_content = "UPDATE item_contents SET updated_at='$timestamp', deleted=1 WHERE item_content_id='$item_content_id' AND deleted = 0";
+    $result = $mysqli->query($sql_item);
+      //クエリ($sql)のエラー処理
+      if ($mysqli->error) {
+      echo "Error item_contents: " . $mysqli->error;
+    }
 
-		$result = $mysqli->query($sql);
+    $sql_item_content_v = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_id='$item_content_id' AND disappeared_at=NULL";
+    $result = $mysqli->query($sql_item_content_v);
+      //クエリ($sql)のエラー処理
+      if ($mysqli->error) {
+      echo "Error item_content_versions: " . $mysqli->error;
+    }
 
-    //クエリ($sql)のエラー処理
-    if($sql == TRUE){
-			echo "true";
-			error_log('$sql成功しています！'.$timestamp, 0);
-		}else if($sql == FALSE){
-			error_log($sql.'$sql失敗です', 0);
-			// error_log('失敗しました。'.mysqli_error($link), 0);
-		}else{
-			error_log('$sql不明なエラーです', 0);
-		}
-
-    //php($result)のエラー処理
-    if($result == TRUE){
-			echo "true";
-			error_log('$result成功しています！'.$timestamp, 0);
-		}else if($result == FALSE){
-			error_log($result.'$result失敗です'.$mysqli->error, 0);
-			// error_log('失敗しました。'.mysqli_error($link), 0);
-		}else{
-			error_log('$result不明なエラーです', 0);
-		}
+    $sql_item_content_h = "UPDATE item_content_histories SET disappeared_at='$timestamp' WHERE item_content_version_id = (SELECT item_content_version_id FROM item_content_versions WHERE item_content_id='$item_content_id' order by appeared_at DESC LIMIT 1) AND disappeared_at=NULL";
+    $result = $mysqli->query($sql_item_content_h);
+      //クエリ($sql)のエラー処理
+      if ($mysqli->error) {
+      echo "Error item_content_histories: " . $mysqli->error;
+    }
 
     //=================================activityログ===================================//
 
-    $sql = "SELECT * FROM slide_content WHERE id = '$content_id'";
+    // $sql = "SELECT * FROM slide_content WHERE id = '$content_id'";
 
-    // $stmt = $mysqli->query($sql);
+    // // $stmt = $mysqli->query($sql);
 
-    if($result = $mysqli->query($sql)) {
-      while($row = mysqli_fetch_assoc($result)){//mysqli_fetch_assoc：連想配列として結果の行を取得
-        echo $row['id'];
-        $node_id = $row['node_id'];
-        $concept_id = $row['concept_id'];
-        $content = $row['content'];
-        $slide_id = $row['slide_id'];
-      }
-    }
+    // if($result = $mysqli->query($sql)) {
+    //   while($row = mysqli_fetch_assoc($result)){//mysqli_fetch_assoc：連想配列として結果の行を取得
+    //     echo $row['id'];
+    //     $node_id = $row['node_id'];
+    //     $concept_id = $row['concept_id'];
+    //     $content = $row['content'];
+    //     $slide_id = $row['slide_id'];
+    //   }
+    // }
 
-    $sql = "INSERT INTO slide_content_activity (id, map_id, slide_content_id, node_id, concept_id, content, type, user_id, slide_id, act, date, from_slide_content)
-		VALUES ('$activity_id', '$map_id', '$content_id', '$node_id', '$concept_id', '$content', NULL, '$user_id', '$slide_id', 'delete', '$timestamp', NULL)";
+    // $sql = "INSERT INTO slide_content_activity (id, map_id, slide_content_id, node_id, concept_id, content, type, user_id, slide_id, act, date, from_slide_content)
+		// VALUES ('$activity_id', '$map_id', '$content_id', '$node_id', '$concept_id', '$content', NULL, '$user_id', '$slide_id', 'delete', '$timestamp', NULL)";
 
-		$result = $mysqli->query($sql);
+		// $result = $mysqli->query($sql);
 
 
-		$json_test = json_encode($content);
+		// $json_test = json_encode($content);
 
 
 ?>

@@ -549,11 +549,11 @@ h3 {
 	width:160px;
 	background-color:#ffffff;
 	border:2px solid #999999;
-	  border-radius: 10px;
+	border-radius: 10px;
 	display:none;
 	position:fixed;
-	  z-index: 1000;
-	  text-align: center;
+	z-index: 1000;
+	text-align: center;
 }
 #document_area_conmenu.on{
   display:block;

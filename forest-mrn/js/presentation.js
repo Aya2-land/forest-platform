@@ -392,8 +392,8 @@ $(document).on('dblclick', '.badge', async function(){
           var parse = JSON.parse(arr);
           console.log(parse);
           for(var i=0; i<parse.length; i++){
-            RelationSlideID_1.push(parse[i].thread1_id);
-            RelationSlideID_2.push(parse[i].thread2_id);
+            RelationSlideID_1.push(parse[i].item1_id);
+            RelationSlideID_2.push(parse[i].item2_id);
           }
         }
 
@@ -2078,7 +2078,9 @@ function Get_ContentRank(){
   // console.log(slide_dom);
   // console.log("KKKKKKKKKKKKKKKK");
 
-  Update_content_rank().then(() => {
+
+  // 2025-02-10 kawa content_rank.phpで処理
+  // Update_content_rank().then(() => {
     //最新のコンテントの順番を保存する処理
     for(var i=0; i<slide_dom.length; i++){
       var slide_id = slide_dom[i].id;
@@ -2097,7 +2099,7 @@ function Get_ContentRank(){
         Record_content_rank(content_id, rank, slide_id, content, node_id, type, indent, concept_id);
       }
     }
-  });
+  // });
 }
 
 //2022-11-24 shimizu
@@ -2619,31 +2621,32 @@ async function Rebuild_s(){
         }else{
           var parse = JSON.parse(arr);
           console.log(parse);
+          var bro_id = "root";
           
           for(var i=0; i<parse.length; i++){
             for(var j=0; j<parse.length; j++){
-              if(String(i) == parse[j].rank){
-                if(parse[j].concept_id == "notid"){
+              if(parse[j].brother_id == bro_id){
+                if(parse[j].node_id == "notid"){
                   const image = new SlideImage({
                     slide_title: parse[j].title,
-                    slide_id: parse[j].slide_id,
+                    slide_id: parse[j].item_id,
                     node_id: parse[j].node_id,
-                    concept_id: parse[j].concept_id
                   });  
                   delete image;
                   console.log("画像再現完了");
+                  bro_id = parse[j].item_id;
                   break;
                 }
                 else{
                   const newslide = new Slide({
                     slide_title: parse[j].title,
-                    slide_id: parse[j].slide_id,
-                    logic_option: parse[j].logic_option,
+                    slide_id: parse[j].item_id,
                     node_id: parse[j].node_id,
-                    concept_id: parse[j].concept_id
+                    logic_option: parse[j].logic_option,
                   });  
                   delete newslide;
                   console.log("スライド再現完了");
+                  bro_id = parse[j].item_id;
                   break;
                 }
               }
@@ -2703,24 +2706,24 @@ async function Rebuild_s(){
         
         for(var i=0; i<parse.length; i++){
  
-          var select_box_id1 = "SelectBox-"+parse[i].thread1_id;
-          var select_box_id2 = "SelectBox-"+parse[i].thread2_id;
+          var select_box_id1 = "SelectBox-"+parse[i].item1_id;
+          var select_box_id2 = "SelectBox-"+parse[i].item2_id;
           var select_box1 = document.getElementById(select_box_id1);
           var select_box2 = document.getElementById(select_box_id2);
           
           var createElement1 = document.createElement('span')
-          createElement1.id = parse[i].id+","+parse[i].thread1_id;
+          createElement1.id = parse[i].id+","+parse[i].item1_id;
           createElement1.className = "badge bg-red";
-          createElement1.textContent = parse[i].thread1_label;
+          createElement1.textContent = parse[i].item1_label;
           createElement1.setAttribute('ontlogy_id',parse[i].ont1_id); 
           // delete_button1.after(createElement1);
           select_box1.after(createElement1);
  
 
           var createElement2 = document.createElement('span')
-          createElement2.id = parse[i].id+","+parse[i].thread2_id;
+          createElement2.id = parse[i].id+","+parse[i].item2_id;
           createElement2.className = "badge bg-red";
-          createElement2.textContent = parse[i].thread2_label; 
+          createElement2.textContent = parse[i].item2_label; 
           createElement2.setAttribute('ontlogy_id',parse[i].ont2_id);
           // delete_button2.after(createElement2);
           select_box2.after(createElement2);
@@ -2788,9 +2791,9 @@ async function CreateDocumentXML(){
         LR_counter += parse.length;
 
         for(var i=0; i<parse.length; i++){
-          var RelationNodes =parse[i].id+","+parse[i].thread1_id +"."+ parse[i].id+","+parse[i].thread2_id;
+          var RelationNodes =parse[i].id+","+parse[i].item1_id +"."+ parse[i].id+","+parse[i].item2_id;
           // console.log(RelationNodes) 
-          Count_LogicRelationLabel[count] = parse[i].thread1_label+"を根拠として"+parse[i].thread2_label;
+          Count_LogicRelationLabel[count] = parse[i].item1_label+"を根拠として"+parse[i].item2_label;
           console.log(Count_LogicRelationLabel[i]);
           Count_LogicRelationNodes[count] = RelationNodes;
           Count_LogicRelationConceptID[count] = OutputLabel_ClassConceptID[Count_LogicRelationLabel[i]];

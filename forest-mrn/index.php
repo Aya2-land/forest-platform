@@ -332,12 +332,12 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                 </div>
                             </div>
                             <!-- 20221208 shimizu　資料構成作成エリアで右クリックしたときに項目出現 -->
-                            <!--  20241213 kawa なぜか最初から表示されるので一旦コメントアウト-->
-                            <!-- <div id="document_area_conmenu">
+                            <div id="document_area_conmenu">
                                 <ul>
                                     <li><a href="javascript:void(0);" onClick="LogicRelationChecker()">設定した関係を確認する</a></li>
                                 </ul>
-                            </div> -->
+                            </div>
+                            
                             <div id="document_area_conmenu2" >
                                 <select  id="Slides" class='cp_ipselect cp_sl05'>
                                 </select><a id="SlideName">大枠</a><br>

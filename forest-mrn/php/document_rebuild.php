@@ -10,7 +10,7 @@ $map_id = $_SESSION["MAPID"];
 date_default_timezone_set('Asia/Tokyo');
 $today_date = date("Y-m-d");
 
-$sql = "SELECT item_id, item_bro_id, node_id, title FROM item_latest WHERE map_id='$map_id'";
+$sql = "SELECT item_id, item_bro_id, node_id, logic_option, title FROM item_latest WHERE map_id='$map_id'";
 
 $reflections = array();
 
@@ -20,6 +20,7 @@ if($result = $mysqli->query($sql)){
     $reflections[] = array(
     'item_id'=> $row["item_id"],
     'item_bro_id' => $row["brother_id"],
+    'logic_option' => $row["logic_option"],
     'title' => $row["title"],
     'node_id' => $row["node_id"]);
   }

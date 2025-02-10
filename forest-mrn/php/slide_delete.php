@@ -14,21 +14,21 @@
     $activity_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-    $sql_item = "UPDATE items SET updated_at='$timestamp', deleted=1 WHERE item_id='$item_id'";
+    $sql_item = "UPDATE items SET updated_at='$timestamp', deleted=1 WHERE item_id='$item_id' AND deleted = 0";
 	$result = $mysqli->query($sql_item);
     //クエリ($sql)のエラー処理
     if ($mysqli->error) {
 		echo "Error items: " . $mysqli->error;
 	}
 
-    $sql_item_v = "UPDATE item_versions SET disappeared_at='$timestamp' WHERE item_id='$item_id' order by appeared_at DESC LIMIT 1";
+    $sql_item_v = "UPDATE item_versions SET disappeared_at='$timestamp' WHERE item_id='$item_id' AND disappeared_at=NULL";
 	$result = $mysqli->query($sql_item_v);
     //クエリ($sql)のエラー処理
     if ($mysqli->error) {
 		echo "Error item_versions: " . $mysqli->error;
 	}
 
-	$sql_item_h = "UPDATE item_histories SET disappeared_at='$timestamp' WHERE item_version_id = (SELECT item_version_id FROM item_versions WHERE item_id='$item_id' order by appeared_at DESC LIMIT 1) order by appeared_at DESC LIMIT 1";
+	$sql_item_h = "UPDATE item_histories SET disappeared_at='$timestamp' WHERE item_version_id = (SELECT item_version_id FROM item_versions WHERE item_id='$item_id' order by appeared_at DESC LIMIT 1) AND disappeared_at=NULL";
 	$result = $mysqli->query($sql_item_h);
     //クエリ($sql)のエラー処理
     if ($mysqli->error) {

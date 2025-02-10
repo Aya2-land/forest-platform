@@ -245,8 +245,8 @@ if($purpose === "select_meeting_utterance") {
     /*
     * 未完成?，資料のタイトルを取ってくる（今残ってる資料を取ってきてるから過去の資料を見たいならまだできない）
     */
-    $result_document_title = $mysqli->query("SELECT node_id, title, id, slide_id, concept_id FROM document_rank
-                            WHERE user_id = '$user_id' AND map_id = '$map_id' AND deleted = 0");
+    $result_document_title = $mysqli->query("SELECT node_id, title, logic_option, item_id FROM item_latest
+                            WHERE map_id = '$map_id'");
     $document_title = [];
     while ($row = $result_document_title->fetch_assoc()) {
         array_push($document_title, $row);

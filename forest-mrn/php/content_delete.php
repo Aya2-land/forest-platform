@@ -14,7 +14,10 @@
     $activity_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-    $sql = "UPDATE slide_content SET updated_at='$timestamp', deleted=1 WHERE id='$content_id'";
+
+    $sql = "UPDATE item_contents SET updated_at='$timestamp', deleted=1 WHERE item_content_id='$content_id'";
+    $sql = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_id='$content_id' AND disappread_at = NULL";
+    $sql = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_version_id=(SELECT item_version_id FROM item_versions WHERE item_content_id = '$content_id' order BY appeared_at DESC LIMIT 1) AND disappread_at = NULL ";
 
 
 		$result = $mysqli->query($sql);
@@ -43,27 +46,27 @@
 
     //=================================activityログ===================================//
 
-    $sql = "SELECT * FROM slide_content WHERE id = '$content_id'";
+    // $sql = "SELECT * FROM item_contents WHERE item_content_id = '$content_id'";
 
-    // $stmt = $mysqli->query($sql);
+    // // $stmt = $mysqli->query($sql);
 
-    if($result = $mysqli->query($sql)) {
-      while($row = mysqli_fetch_assoc($result)){//mysqli_fetch_assoc：連想配列として結果の行を取得
-        echo $row['id'];
-        $node_id = $row['node_id'];
-        $concept_id = $row['concept_id'];
-        $content = $row['content'];
-        $slide_id = $row['slide_id'];
-      }
-    }
+    // if($result = $mysqli->query($sql)) {
+    //   while($row = mysqli_fetch_assoc($result)){//mysqli_fetch_assoc：連想配列として結果の行を取得
+    //     echo $row['id'];
+    //     $node_id = $row['node_id'];
+    //     $concept_id = $row['concept_id'];
+    //     $content = $row['content'];
+    //     $slide_id = $row['slide_id'];
+    //   }
+    // }
 
-    $sql = "INSERT INTO slide_content_activity (id, map_id, slide_content_id, node_id, concept_id, content, type, user_id, slide_id, act, date, from_slide_content)
-		VALUES ('$activity_id', '$map_id', '$content_id', '$node_id', '$concept_id', '$content', NULL, '$user_id', '$slide_id', 'delete', '$timestamp', NULL)";
+    // $sql = "INSERT INTO slide_content_activity (id, map_id, slide_content_id, node_id, concept_id, content, type, user_id, slide_id, act, date, from_slide_content)
+		// VALUES ('$activity_id', '$map_id', '$content_id', '$node_id', '$concept_id', '$content', NULL, '$user_id', '$slide_id', 'delete', '$timestamp', NULL)";
 
-		$result = $mysqli->query($sql);
+		// $result = $mysqli->query($sql);
 
 
-		$json_test = json_encode($content);
+		// $json_test = json_encode($content);
 
 
 ?>

@@ -1713,7 +1713,7 @@ window.onload = function(){
   var mm_menu = document.getElementById('mindmap_conmenu');  //独自コンテキストメニュー
   var mm_area = document.getElementById('jsmind_container');     //対象エリア
 // 20221208 shimizu
-  // var dm_menu = document.getElementById('document_area_conmenu'); //関係性を確認するメニュー
+  var dm_menu = document.getElementById('document_area_conmenu'); //関係性を確認するメニュー
   var dm_area = document.getElementById('document_area'); //対象エリア
 
   var dm_menu2 = document.getElementById('document_area_conmenu2'); //関係性を設定するメニュー
@@ -1752,9 +1752,9 @@ window.onload = function(){
     }
 
     if(NodeCheckCount ==1){
-      // dm_menu.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
-      // dm_menu.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
-      // dm_menu.classList.add('on');
+      dm_menu.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
+      dm_menu.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
+      dm_menu.classList.add('on');
     }else if(NodeCheckCount == 2){
       var ClickNodeLabels = [];
       var dom_all = document.getElementsByClassName("cspan");
@@ -1826,9 +1826,9 @@ window.onload = function(){
       mm_menu.classList.remove('on');
     }
 
-    // if(dm_menu.classList.contains('on')){
-    //   dm_menu.classList.remove('on');
-    // }
+    if(dm_menu.classList.contains('on')){
+      dm_menu.classList.remove('on');
+    }
 
    
   });

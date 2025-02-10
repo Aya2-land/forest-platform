@@ -784,6 +784,29 @@ h3 {
 	padding:5px;
   }
 
+  /* ドキュメントエリア内で右クリックしたときのメニュー */
+#document_area_conmenu{
+	width:160px;
+	background-color:#ffffff;
+	border:2px solid #999999;
+	border-radius: 10px;
+	display:none;
+	position:fixed;
+	z-index: 1000;
+	text-align: center;
+}
+#document_area_conmenu.on{
+  display:block;
+}
+#document_area_conmenu ul{
+  list-style:none;
+  margin:0px;
+  padding:5px;
+}
+#document_area_conmenu li:hover{
+	background-color: #CCFFFF;
+}
+
   /* ドキュメントエリア内で右クリックしたとき[ノード2個選択時]のメニュー */
 #document_area_conmenu2{
 	width:auto;

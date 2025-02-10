@@ -189,20 +189,21 @@ async function Update_slide_rank(){
   });
 }
 
+// 2025-02-10 kawa content_rank.phpで処理
 async function Update_content_rank(){
-  await $.ajax({
+  // await $.ajax({
 
-      url: "php/update_content_rank.php",
-      type: "POST",
-      success: function () {
-        console.log("登録成功");
-        return "ok";
-      },
-      error: function () {
-      console.log("登録失敗");
-      return "err";},
+  //     url: "php/update_content_rank.php",
+  //     type: "POST",
+  //     success: function () {
+  //       console.log("登録成功");
+  //       return "ok";
+  //     },
+  //     error: function () {
+  //     console.log("登録失敗");
+  //     return "err";},
 
-  });
+  // });
 }
 
 function Record_slide_rank(slideID, rank, title){

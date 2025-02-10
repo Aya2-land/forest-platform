@@ -25,6 +25,7 @@
 	$sql_update = "UPDATE item_histories SET disappeared_at = '$timestamp' WHERE item_history_id = (SELECT item_history_id FROM tmp_item_histories);";
 	$sql_new_2 = "UPDATE tmp_item_histories SET item_history_id = '$id', item_bro_id = '$brother_id', appeared_at = '$timestamp', disappeared_at = NULL;";
 	$sql_new_3 = "INSERT INTO item_histories SELECT * FROM tmp_item_histories;";
+	$sql_i_update = "UPDATE items set updated_at = '$timestamp' WHERE item_id = $item_id;";
 
 	// TEMPORARY TABLEを削除
 	$sql_drop = "DROP TEMPORARY TABLE IF EXISTS tmp_item_histories;";
@@ -44,6 +45,10 @@
 	$result_new_3 = $mysqli->query($sql_new_3);
 	if ($mysqli->error) {
 		echo "Error item_his insert: " . $mysqli->error;
+	}
+	$result_i_update = $mysqli->query($sql_i_update);
+	if ($mysqli->error) {
+	  echo "Error items update: " . $mysqli->error;
 	}
 	$result_drop = $mysqli->query($sql_drop);
 	if ($mysqli->error) {

@@ -10,22 +10,22 @@
 
     $user_id = $_SESSION['USERID'];      //ユーザID
     $map_id = $_SESSION['MAPID'];    //シートID
-    $slide_id = $_POST["id"]; //スライドID
+    $item_id = $_POST["id"]; //スライドID
     $value_LogicID = $_POST["value"]; //スライドタイトル
     $activity_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-    $sql = "SELECT slide_title FROM slide WHERE id = '$slide_id'";
+    $sql = "SELECT title FROM item_latest WHERE item_id = '$item_id'";
     if($result = $mysqli->query($sql)) {
       while($row = mysqli_fetch_assoc($result)){
-        $pre_title = $row['slide_title'];
+        $pre_title = $row['title'];
       }
     }
 
-    $sql = "SELECT slide_title FROM slide WHERE id = '$slide_id'";
+    $sql = "SELECT title FROM item_latest WHERE item_id = '$item_id'";
     if($result = $mysqli->query($sql)) {
       while($row = mysqli_fetch_assoc($result)){
-        $pre_title = $row['slide_title'];
+        $pre_title = $row['title'];
       }
     }
     // file_put_contents("error_log.txt", $pre_title);
@@ -33,7 +33,7 @@
 
     // if($slide_title != $pre_title){
 
-    //   $sql = "UPDATE slide SET updated_at='$timestamp', slide_title='$slide_title' WHERE id='$slide_id'";
+    //   $sql = "UPDATE slide SET updated_at='$timestamp', slide_title='$slide_title' WHERE id='$item_id'";
 
   	// 	$result = $mysqli->query($sql);
 
@@ -63,7 +63,7 @@
     //=================================activityログ===================================//
 
     $sql = "INSERT INTO single_logic_activity (id, map_id, content_id, user_id, act, LogicID, date, from_slide)
-    VALUES ('$activity_id', '$map_id', '$slide_id', '$user_id', 'change', '$value_LogicID', '$timestamp', '$map_id')";
+    VALUES ('$activity_id', '$map_id', '$item_id', '$user_id', 'change', '$value_LogicID', '$timestamp', '$map_id')";
 
     $result = $mysqli->query($sql);
 ?>

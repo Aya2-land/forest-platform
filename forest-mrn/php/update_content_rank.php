@@ -1,5 +1,7 @@
 <?php
 
+	//2025-02-10 kawa 後のcontent_rank.phpで一気に処理しているので不使用
+
 	session_start();
 
 	/*ノード情報をDBに格納する際に使用*/

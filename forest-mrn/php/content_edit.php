@@ -10,16 +10,15 @@
 
     $user_id = $_SESSION['USERID'];      //ユーザID
     $map_id = $_SESSION['MAPID'];    //シートID
-    $content_id = $_POST["id"];       //contentID
+    $item_content_id = $_POST["id"];       //contentID
     $content = $_POST["content"]; //content
-    $activity_id = uniqid();
+    $$item_content_history_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-    $sql = "SELECT * FROM slide_content WHERE id = '$content_id'";
+    $sql = "SELECT * FROM item_contents WHERE item_content_id = '$item_content_id'";
     if($result = $mysqli->query($sql)) {
       while($row = mysqli_fetch_assoc($result)){
         $node_id = $row['node_id'];
-        $concept_id = $row['concept_id'];
         $slide_id = $row['slide_id'];
         $pre_content = $row['content'];
       }
@@ -27,37 +26,47 @@
 
 
     if($content != $pre_content){
-      $sql = "UPDATE slide_content SET updated_at='$timestamp', content='$content' WHERE id='$content_id'";
-  		$result = $mysqli->query($sql);
+  		
+      $sql_new_1 = "CREATE TEMPORARY TABLE tmp_item_content_histories AS SELECT * FROM item_content_histories WHERE item_content_history_id = (SELECT item_content_history_id FROM item_content_latest WHERE item_content_id = '$item_content_id');";
+      $sql_update = "UPDATE item_content_histories SET disappeared_at = '$timestamp' WHERE item_content_history_id = (SELECT item_content_history_id FROM tmp_item_content_histories);";
+      $sql_new_2 = "UPDATE tmp_item_content_histories set item_content_history_id = '$item_content_history_id', title = '$content', appeared_at = '$timestamp', disappeared_at = NULL;";
+      $sql_new_3 = "INSERT INTO item_content_histories SELECT * FROM tmp_item_content_histories;";
+      $sql_i_update = "UPDATE item_contents set updated_at = '$timestamp' WHERE item_content_id = $item_content_id;";
 
-      //クエリ($sql)のエラー処理
-      if($sql == TRUE){
-  			echo "true";
-  			error_log('$sql成功しています！'.$timestamp, 0);
-  		}else if($sql == FALSE){
-  			error_log($sql.'$sql失敗です', 0);
-  			// error_log('失敗しました。'.mysqli_error($link), 0);
-  		}else{
-  			error_log('$sql不明なエラーです', 0);
-  		}
+      // TEMPORARY TABLEを削除
+      $sql_drop = "DROP TEMPORARY TABLE IF EXISTS tmp_item_content_histories;";
 
-      //php($result)のエラー処理
-      if($result == TRUE){
-  			echo "true";
-  			error_log('$result成功しています！'.$timestamp, 0);
-  		}else if($result == FALSE){
-  			error_log($result.'$result失敗です'.$mysqli->error, 0);
-  			// error_log('失敗しました。'.mysqli_error($link), 0);
-  		}else{
-  			error_log('$result不明なエラーです', 0);
-  		}
+      $result_new_1 = $mysqli->query($sql_new_1);
+      if ($mysqli->error) {
+        echo "Error creating temporary table: " . $mysqli->error;
+      }
+      $result_update = $mysqli->query($sql_update);
+      if ($mysqli->error) {
+        echo "Error item_content_his update: " . $mysqli->error;
+      }
+      $result_new_2 = $mysqli->query($sql_new_2);
+      if ($mysqli->error) {
+        echo "Error tmp_item_content_his update: " . $mysqli->error;
+      }
+      $result_new_3 = $mysqli->query($sql_new_3);
+      if ($mysqli->error) {
+        echo "Error item_content_his insert: " . $mysqli->error;
+      }
+      $result_i_update = $mysqli->query($sql_i_update);
+      if ($mysqli->error) {
+        echo "Error item_contents update: " . $mysqli->error;
+      }
+      $result_drop = $mysqli->query($sql_drop);
+      if ($mysqli->error) {
+        echo "Error drop temporary table: " . $mysqli->error;
+      }
 
       //=================================activityログ===================================//
 
-      $sql = "INSERT INTO slide_content_activity (id, map_id, slide_content_id, node_id, concept_id, content, type, user_id, slide_id, act, date, from_slide_content)
-  		VALUES ('$activity_id', '$map_id', '$content_id', '$node_id', '$concept_id', '$content', NULL, '$user_id', '$slide_id', 'edit', '$timestamp', NULL)";
+      // $sql = "INSERT INTO slide_content_activity (id, map_id, slide_content_id, node_id, concept_id, content, type, user_id, slide_id, act, date, from_slide_content)
+  		// VALUES ('$activity_id', '$map_id', '$item_content_id', '$node_id', '$concept_id', '$content', NULL, '$user_id', '$slide_id', 'edit', '$timestamp', NULL)";
 
-  		$result = $mysqli->query($sql);
+  		// $result = $mysqli->query($sql);
     }
 
 ?>

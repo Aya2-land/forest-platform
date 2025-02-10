@@ -1553,7 +1553,8 @@ function Get_ContentRank(){
   console.log(slide_dom);
 
 
-  Update_content_rank().then(() => {
+  // 2025-02-10 kawa content_rank.phpで処理
+  // Update_content_rank().then(() => {
     //最新のコンテントの順番を保存する処理
     for(var i=0; i<slide_dom.length; i++){
       var slide_id = slide_dom[i].id;
@@ -1574,7 +1575,7 @@ function Get_ContentRank(){
         Record_content_rank(content_id, rank, slide_id, content, node_id, type, indent, concept_id);
       }
     }
-  });
+  // });
 }
 
 

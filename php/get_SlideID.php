@@ -14,7 +14,7 @@ $map_id = $_SESSION["MAPID"];//"102774749"; //
 date_default_timezone_set('Asia/Tokyo');
 
 // $sql = "SELECT scenario_title FROM maps WHERE map_id='$map_id'";
-$sql = "SELECT * FROM document_rank WHERE map_id='$map_id' AND deleted='0'";
+$sql = "SELECT * FROM item_latest WHERE map_id='$map_id'";
 
 $data = array();
 if($result = $mysqli->query($sql)){
