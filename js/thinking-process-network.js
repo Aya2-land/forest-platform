@@ -1550,6 +1550,16 @@ function showThinkingProcessMap(){
   
 }
 
+function closeThinkingProcessMap(){
+  
+    document.getElementById('feedback_area').style.display = "block";
+    document.getElementById('xml_upload_area').style.display = "block";
+    $('#process_network_container').css('display','none');
+    // $('#jsmind_container').css('width','calc(100vw - 350px)');
+    $('#jsmind_container').css('height','100%');
+    $('#mind').css('height','90%');
+}
+
 // ロードした際の関数
 window.addEventListener('load', () => {
 

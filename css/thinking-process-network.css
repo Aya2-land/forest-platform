@@ -86,6 +86,7 @@
 
 /* -------------------- ボタン類の設定 ---------------------- */
 
+
 #trigger_click{
 	height:30px;
 }
@@ -275,6 +276,29 @@ input[type="checkbox"][name="check_process"]{
 #inputTriggerbutton:hover {
   color: #f1f7f2;
   background: #93a3a1;
+}
+
+
+.process_close{
+	color: #a0a1a1;
+	background: #ffffff;
+	width: 30px;
+    height: 30px;
+    font-size: 12px;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 6px;
+	padding: 0.4em;
+	display: inline-block;
+	text-decoration: none;
+	text-align: center;
+	user-select: none;
+	border: 1px #a0a1a1 solid;
+	transition: 0.4s ease;
+}
+.process_close:hover {
+	background-color: #a0a1a1;
+	color: #ffffff;
 }
 
 .thinkingProcess_network_button{

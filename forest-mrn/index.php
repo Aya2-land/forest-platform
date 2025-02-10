@@ -443,7 +443,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             <div id="process_network_container" oncontextmenu="return false;" >
                                 <div id="myProcessnetwork2">
                                     <div id="buttoncluster">
-                                        <input type="button" class="thinkingProcess_network_button"
+                                        <input type="button" class="process_close" onclick="closeThinkingProcessMap()"
                                                 id="process_close" value="×" />
                                         <input type="button" class="thinkingProcess_network_button"
                                                 id="process_addNode" value="思考ノード追加" />
