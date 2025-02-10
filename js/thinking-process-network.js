@@ -1198,8 +1198,9 @@ const displayTriggerData = (mode, display_target_area_id) => {
     }else if(mode=="AddBrother"){
         getProcessMapDataFromDB ((trigger_list_info) => {
             // versionノードの表示
+            let bronum = trigger_list_info.brother_num;
             trigger_list_info.node_versions.forEach((v) => {
-                let bros = [];
+                console.log(bronum[v.node_id]);
                 if(v.broversion){
                     node_x = defaultThinkingProcess.nodes.get(v.broversion).x;
                     node_y = v.y;

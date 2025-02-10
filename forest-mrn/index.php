@@ -444,6 +444,8 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                 <div id="myProcessnetwork2">
                                     <div id="buttoncluster">
                                         <input type="button" class="thinkingProcess_network_button"
+                                                id="process_close" value="×" />
+                                        <input type="button" class="thinkingProcess_network_button"
                                                 id="process_addNode" value="思考ノード追加" />
                                         <input type="button" class="thinkingProcess_network_button"
                                                 id="process_removeNode" value="ノード削除" />

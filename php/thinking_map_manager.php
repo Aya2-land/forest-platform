@@ -123,14 +123,6 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     //兄弟ノードの数を取得
     $result_brother_num = $mysqli->query("SELECT process_node_id, content, process_node_type, node_x, node_y FROM process_nodes
             WHERE node_id = '".$selected_node_id."' AND deleted = 0");
-    $brother_num = [];
-    if ($result_brother_num) {
-        // concept名を取り出し
-        while ($row = $result_brother_num->fetch_assoc()) {
-            $brother_num = $row["brother_num"];
-        }  
-        $return_data = array_merge($return_data, ['brother_num' => $brother_num]);
-    }
     /*  
         * 思考過程表出化マップのノードデータの取得    	
     */
@@ -154,15 +146,28 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     $return_data = array_merge($return_data, ['pedge' => $processmap_edge]);
 
     // ノードのバージョン情報と対応するメインのバージョン情報を取得
-    $result_node_versions = $mysqli->query("SELECT nv.node_version_id, nv.parent_id, nv.appeared_at, nv.disappeared_at,nv.content, nv.x, nv.y, (
+    $result_node_versions = $mysqli->query("SELECT nv.node_version_id, nv.node_id, nv.parent_id, nv.appeared_at, nv.disappeared_at,nv.content, nv.x, nv.y, (
                                                             SELECT node_version_id FROM node_versions WHERE node_id = '".$selected_node_id."' AND appeared_at < nv.appeared_at ORDER BY appeared_at DESC LIMIT 1
                                                         ) AS broversion FROM node_versions nv
                                                         WHERE parent_id IN (SELECT parent_id FROM node_versions WHERE node_id = '".$selected_node_id."') AND node_id IN (SELECT node_id FROM nodes WHERE deleted = 0 AND node_id NOT LIKE '".$selected_node_id."') ORDER BY nv.appeared_at ASC");
     $node_versions = [];
+    $brother_num = [];
     while ($row = $result_node_versions->fetch_assoc()) {
         array_push($node_versions, $row);
+        // node_id を取得
+        $node_id = $row['node_id'];
+        
+        // node_id がすでに存在するか確認する
+        if (array_key_exists($node_id, $brother_num)) {
+            // 既に存在する場合はカウントを増やす
+            $brother_num[$node_id]++;
+        } else {
+            // まだ存在しない場合は初期カウントとして1を設定する
+            $brother_num[$node_id] = 1;
+        }
     }
     $return_data = array_merge($return_data, ['node_versions' => $node_versions]);
+    $return_data = array_merge($return_data, ['brother_num' => $brother_num]);
 
     // triggerを取得
     $result_trigger = $mysqli->query("SELECT * FROM triggers
