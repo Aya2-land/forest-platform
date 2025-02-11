@@ -14,8 +14,8 @@
 	$concept_id = $_POST["concept_id"];         //コンセプトID
 	$content = $_POST["content"];             //コンテント
 	$item_id = $_POST["slide_id"];             //スライドID
-	$item_id = $_POST["brother_id"];             //スライドID
-	$item_id = $_POST["parent_id"];             //スライドID
+	$brother_id = $_POST["brother_id"];             //スライドID
+	$parent_id = $_POST["parent_id"];             //スライドID
 	$type = $_POST["type"];                 //ノードのタイプ
 	$activity_id = uniqid();
 	$item_content_history_id = uniqid();
@@ -30,15 +30,15 @@
 	echo "Error item_contents: " . $mysqli->error;
 	}
 
-	$sql_it_v = "INSERT INTO item_content_versions (item_content_version_id, item_content_id, item_content_par_id, item_content_bro_id, node_id, title, appeared_at, disappeared_at)
-	VALUES ('$item_content_version_id', '$item_content_id', '$parent_id', '$brother_id', '$node_id', 0, '$title', '$timestamp', NULL)";
+	$sql_it_v = "INSERT INTO item_content_versions (item_content_version_id, item_content_id, item_content_par_id, item_content_bro_id, node_id, logic_option, title, type, appeared_at, disappeared_at)
+	VALUES ('$item_content_version_id', '$item_content_id', '$parent_id', '$brother_id', '$node_id', 0, '$content', '$type', '$timestamp', NULL)";
 	$result_it_v = $mysqli->query($sql_it_v);
 	if ($mysqli->error) {
 	echo "Error item_content_versions: " . $mysqli->error;
 	}
 
-	$sql_it_h = "INSERT INTO item_content_histories (item_content_history_id, item_content_version_id, item_content_par_id, item_content_bro_id, node_id, title, appeared_at, disappeared_at)
-	VALUES ('$item_content_history_id', '$item_content_version_id', '$parent_id', '$brother_id', '$node_id', 0, '$title', '$timestamp', NULL)";
+	$sql_it_h = "INSERT INTO item_content_histories (item_content_history_id, item_content_version_id, item_content_par_id, item_content_bro_id, node_id, logic_option, title, type, appeared_at, disappeared_at)
+	VALUES ('$item_content_history_id', '$item_content_version_id', '$parent_id', '$brother_id', '$node_id', 0, '$content', '$type', '$timestamp', NULL)";
 	$result_it_h = $mysqli->query($sql_it_h);
 	if ($mysqli->error) {
 	echo "Error item_content_histories: " . $mysqli->error;

@@ -1110,61 +1110,61 @@ function Rebuild_title_Past(endtime){
             // var delete_button_id2 = "DeleteButton-"+parse[i].doc_con2_id;
             // var delete_button1 = document.getElementById(delete_button_id1);
             // var delete_button2 = document.getElementById(delete_button_id2);
-            var select_box_id1 = "SelectBox-"+parse[i].doc_con1_id;
-            var select_box_id2 = "SelectBox-"+parse[i].doc_con2_id;
+            var select_box_id1 = "SelectBox-"+parse[i].item_content1_id;
+            var select_box_id2 = "SelectBox-"+parse[i].item_content2_id;
             var select_box1 = document.getElementById(select_box_id1);
             var select_box2 = document.getElementById(select_box_id2);
             
             var createElement1 = document.createElement('span')
-            if(parse[i].doc_con1_label == "前提" || parse[i].doc_con1_label == "提案"){
-              createElement1.id = parse[i].id+","+parse[i].doc_con1_id;
+            if(parse[i].item_content1_label == "前提" || parse[i].item_content1_label == "提案"){
+              createElement1.id = parse[i].id+","+parse[i].item_content1_id;
               createElement1.className = "badge bg-blue";
-              createElement1.textContent = parse[i].doc_con1_label; 
+              createElement1.textContent = parse[i].item_content1_label; 
               // delete_button1.after(createElement1);
               select_box1.after(createElement1);
-            }else if(parse[i].doc_con1_label == "主張" || parse[i].doc_con1_label == "根拠"){
-              createElement1.id = parse[i].id+","+parse[i].doc_con1_id;
+            }else if(parse[i].item_content1_label == "主張" || parse[i].item_content1_label == "根拠"){
+              createElement1.id = parse[i].id+","+parse[i].item_content1_id;
               createElement1.className = "badge bg-red";
-              createElement1.textContent = parse[i].doc_con1_label; 
+              createElement1.textContent = parse[i].item_content1_label; 
               // delete_button1.after(createElement1);
               select_box1.after(createElement1);
-            }else if(parse[i].doc_con1_label == "事実" || parse[i].doc_con1_label == "推測"){
-              createElement1.id = parse[i].id+","+parse[i].doc_con1_id;
+            }else if(parse[i].item_content1_label == "事実" || parse[i].item_content1_label == "推測"){
+              createElement1.id = parse[i].id+","+parse[i].item_content1_id;
               createElement1.className = "badge bg-green";
-              createElement1.textContent = parse[i].doc_con1_label; 
+              createElement1.textContent = parse[i].item_content1_label; 
               // delete_button1.after(createElement1);
               select_box1.after(createElement1);
-            }else if(parse[i].doc_con1_label == "議論目的" || parse[i].doc_con1_label == "指針"){
-              createElement1.id = parse[i].id+","+parse[i].doc_con1_id;
+            }else if(parse[i].item_content1_label == "議論目的" || parse[i].item_content1_label == "指針"){
+              createElement1.id = parse[i].id+","+parse[i].item_content1_id;
               createElement1.className = "badge bg-yellow";
-              createElement1.textContent = parse[i].doc_con1_label;  
+              createElement1.textContent = parse[i].item_content1_label;  
               // delete_button1.after(createElement1);
               select_box1.after(createElement1);
             }
   
             var createElement2 = document.createElement('span')
-            if(parse[i].doc_con2_label == "前提" || parse[i].doc_con2_label == "提案"){
-              createElement2.id = parse[i].id+","+parse[i].doc_con2_id;
+            if(parse[i].item_content2_label == "前提" || parse[i].item_content2_label == "提案"){
+              createElement2.id = parse[i].id+","+parse[i].item_content2_id;
               createElement2.className = "badge bg-blue";
-              createElement2.textContent = parse[i].doc_con2_label; 
+              createElement2.textContent = parse[i].item_content2_label; 
               // delete_button2.after(createElement2);
               select_box2.after(createElement2);
-            }else if(parse[i].doc_con2_label == "主張" || parse[i].doc_con2_label == "根拠"){
-              createElement2.id = parse[i].id+","+parse[i].doc_con2_id;
+            }else if(parse[i].item_content2_label == "主張" || parse[i].item_content2_label == "根拠"){
+              createElement2.id = parse[i].id+","+parse[i].item_content2_id;
               createElement2.className = "badge bg-red";
-              createElement2.textContent = parse[i].doc_con2_label; 
+              createElement2.textContent = parse[i].item_content2_label; 
               // delete_button2.after(createElement2);
               select_box2.after(createElement2);
-            }else if(parse[i].doc_con2_label == "事実" || parse[i].doc_con2_label == "推測"){
-              createElement2.id = parse[i].id+","+parse[i].doc_con2_id;
+            }else if(parse[i].item_content2_label == "事実" || parse[i].item_content2_label == "推測"){
+              createElement2.id = parse[i].id+","+parse[i].item_content2_id;
               createElement2.className = "badge bg-green";
-              createElement2.textContent = parse[i].doc_con2_label; 
+              createElement2.textContent = parse[i].item_content2_label; 
               // delete_button2.after(createElement2);
               select_box2.after(createElement2);
-            }else if(parse[i].doc_con2_label == "議論目的" || parse[i].doc_con2_label == "指針"){
-              createElement2.id = parse[i].id+","+parse[i].doc_con2_id;
+            }else if(parse[i].item_content2_label == "議論目的" || parse[i].item_content2_label == "指針"){
+              createElement2.id = parse[i].id+","+parse[i].item_content2_id;
               createElement2.className = "badge bg-yellow";
-              createElement2.textContent = parse[i].doc_con2_label;  
+              createElement2.textContent = parse[i].item_content2_label;  
               // delete_button2.after(createElement2);
               select_box2.after(createElement2);
             }
@@ -1210,7 +1210,7 @@ async function GetPairNodeId_ContentRelationTable(node_id)
                           console.log(node_count);
                           jmnode[node_count].style.backgroundColor = "#ff69b4";
                           jmnode[node_count].style.border = "5px solid #9fd94f";
-                          alert("資料上で["+parse[logic_pair_count].doc_con1_label+"]と位置付けている「"+jmnode[i].innerHTML+"」に変更がありました．これに基づいて考えられた["+parse[logic_pair_count].doc_con2_label+"]の["+jmnode[node_count].innerHTML+"]も考え直す必要はないか検討してみましょう！");
+                          alert("資料上で["+parse[logic_pair_count].item_content1_label+"]と位置付けている「"+jmnode[i].innerHTML+"」に変更がありました．これに基づいて考えられた["+parse[logic_pair_count].item_content2_label+"]の["+jmnode[node_count].innerHTML+"]も考え直す必要はないか検討してみましょう！");
   
                           $.ajax({
                             url: "php/version_update.php",

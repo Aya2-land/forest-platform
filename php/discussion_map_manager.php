@@ -263,7 +263,7 @@ if($purpose === "select_meeting_utterance") {
     $return_data = array_merge($return_data, ['document' => $document]);
 
     // userIDがないから一意に特定できるかわからん．清水さんに確認
-    $result_document_relation = $mysqli->query("SELECT node1_id, doc_con1_id, doc_con1_label, node2_id, doc_con2_id, doc_con2_label FROM item_content_relations
+    $result_document_relation = $mysqli->query("SELECT node1_id, item_content1_id, item_content1_label, node2_id, item_content2_id, item_content2_label FROM item_content_relations
         WHERE map_id = '$map_id' AND deleted = 0");
     $document_relation = [];
     while ($row = $result_document_relation->fetch_assoc()) {

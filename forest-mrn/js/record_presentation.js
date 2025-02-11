@@ -163,9 +163,9 @@ function Delete_concept(id){
         var parse = JSON.parse(arr);
         var badge_ids = [];
         for(var i=0; i<parse.length;i++){
-          var badge_id1 = parse[i].id+","+parse[i].doc_con1_id;
+          var badge_id1 = parse[i].id+","+parse[i].item_content1_id;
           badge_ids.push(badge_id1);
-          var badge_id2 = parse[i].id+","+parse[i].doc_con2_id;
+          var badge_id2 = parse[i].id+","+parse[i].item_content2_id;
           badge_ids.push(badge_id2);
         }
         for(var j=0;j<badge_ids;j++){
@@ -186,8 +186,10 @@ function Delete_concepts(doc_id){
 }
 
 //コンテンツ追加を記録する関数
-function Record_content(contentID, nodeID, conceptID, content, itemID, type){
+function Record_content(contentID, nodeID, conceptID, content, itemID, brother_id, parent_id, type){
 
+  console.log(brother_id);
+  console.log(parent_id)
   $.ajax({
 
       url: "php/content_create.php",
@@ -197,6 +199,8 @@ function Record_content(contentID, nodeID, conceptID, content, itemID, type){
              concept_id : conceptID,
              content : content,
              slide_id : itemID,
+             brother_id :brother_id,
+             parent_id: parent_id,
              type : type,
              },
       success: function (e) {
@@ -211,19 +215,19 @@ function Record_content(contentID, nodeID, conceptID, content, itemID, type){
 }
 
 //2022-12-13 shimizu ノード間の論理的関係を記録する関数
-async function Record_NodeLogicRelation(U_ID, node1_id,doc_con1_id,doc_con1_label,ont1_id,node2_id, doc_con2_id,doc_con2_label,ont2_id){
+async function Record_NodeLogicRelation(U_ID, node1_id,item_content1_id,item_content1_label,ont1_id,node2_id, item_content2_id,item_content2_label,ont2_id){
 
   $.ajax({
     url: "php/LogicRelationNode_create.php",
     type: "POST",
     data: {id : U_ID,
             node1_id : node1_id,
-            doc_con1_id : doc_con1_id,
-            doc_con1_label : doc_con1_label,
+            item_content1_id : item_content1_id,
+            item_content1_label : item_content1_label,
             ont1_id : ont1_id,
             node2_id : node2_id,
-            doc_con2_id : doc_con2_id,
-            doc_con2_label : doc_con2_label,
+            item_content2_id : item_content2_id,
+            item_content2_label : item_content2_label,
             ont2_id : ont2_id,
             },
     success: function (r) {
@@ -237,18 +241,18 @@ async function Record_NodeLogicRelation(U_ID, node1_id,doc_con1_id,doc_con1_labe
   });
 }
 
-async function Record_SlideLogicRelation(U_ID, node_id1,thread1_id,thread1_label, ont1_id, node_id2, thread2_id,thread2_label,ont2_id, relation_label,relation_concept){
+async function Record_SlideLogicRelation(U_ID, node1_id,thread1_id,thread1_label, ont1_id, node2_id, thread2_id,thread2_label,ont2_id, relation_label,relation_concept){
 
 
   $.ajax({
     url: "php/LogicRelationSlide_create.php",
     type: "POST",
     data: { id : U_ID,
-            node_id1 : node_id1,
+            node1_id : node1_id,
             thread1_id : thread1_id,
             thread1_label : thread1_label,
             ont1_id : ont1_id,
-            node_id2 : node_id2,
+            node2_id : node2_id,
             thread2_id : thread2_id,
             thread2_label : thread2_label,
             ont2_id : ont2_id,
@@ -267,12 +271,12 @@ async function Record_SlideLogicRelation(U_ID, node_id1,thread1_id,thread1_label
 }
 
 //2022-12-15 shimizu 使用してないが，関係性を設定する時にスライドのIDを保存するやり方を検討していた．
-async function getContentID(doc_con_id){
+async function getContentID(item_content_id){
   var content_id
   $.ajax({
     url: "php/get_content_slideID.php",
     type: "POST",
-    data: {content_id: doc_con_id},
+    data: {content_id: item_content_id},
     success: function(arr){
       if(arr == "[]"){
         // console.log(arr);

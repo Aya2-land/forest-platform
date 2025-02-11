@@ -451,8 +451,8 @@ $(document).on('dblclick', '.badge', async function(){
           // console.log(arr);
           var parse = JSON.parse(arr);
           for(var i=0; i<parse.length; i++){
-            RelationNodeID_1.push(parse[i].doc_con1_id);
-            RelationNodeID_2.push(parse[i].doc_con2_id);
+            RelationNodeID_1.push(parse[i].item_content1_id);
+            RelationNodeID_2.push(parse[i].item_content2_id);
           }
         }
 
@@ -639,20 +639,53 @@ function TextboxClick(){
   }
 }
 
+async function get_Typeid(class_name, type_name) {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: "php/get_Typeid.php",
+      type: "POST",
+      data: { class: class_name, type: type_name },
+      success: function(response) {
+        const result = JSON.parse(response);
+        resolve(result); 
+      },
+      error: function(error) {
+        console.log("エラー:", error);
+        reject(error);
+      }
+    });
+  });
+}
+
 //type取得関数
-function GetType(id){
+async function GetType(id){
   var jmnode = document.getElementsByTagName("jmnode");
   for(i=0; i<jmnode.length; i++){
     if(jmnode[i].getAttribute("nodeid") == id){//回ってきたidが選択中ノードの時
         console.log(jmnode[i]);
-        var type = jmnode[i].getAttribute("type");//typeを代入
-    }
-    if(type != undefined){
-      break;
+        var type_name = jmnode[i].getAttribute("type");//typeを代入
+        var class_name = jmnode[i].getAttribute("class");//typeを代入
+        // class_nameから'selected'を取り除く
+        if (class_name.includes('selected')) {
+          class_name = class_name.split(' ').filter(function (cls) {
+              return cls !== 'selected'; // 'selected' 以外のクラスのみを残す
+          }).join(' '); // 残ったクラスをスペースで結合
+        }
+        // 最終的にclass_nameに余分なスペースがないことを確認
+        class_name = class_name.trim(); 
+
+        try {
+          // get_typeid の非同期処理が完了するまで待つ
+          var type = await get_Typeid(class_name, type_name);
+          console.log(class_name);
+          console.log(type_name);
+          console.log(type['node_type_id']);
+          return type['node_type_id'];
+        } catch (error) {
+          console.log("エラーが発生しました:", error);
+        }
     }
   }
-  console.log(type);
-  return type;
 }
 
 
@@ -674,7 +707,7 @@ function CheckSelectedNode(){
 
 //　オリジナルのスレッドを作成する関数
 // 引数説明　meta:メタ認知的知識　topic:記述内容 id:選択したノードID
-function CreateThread(topic, id){
+async function CreateThread(topic, id){
 
   var statement = topic || "";  // テキストボックスに入れる文字列を格納する変数
   var k = 0;
@@ -736,12 +769,27 @@ function CreateThread(topic, id){
       brotherId = "root";
   }
 
+  let brotherThread = newThread.prev('.thread'); // 親要素を取得
+  let parentId;
+  if (brotherThread.length > 0) {
+      parentId = brotherThread.attr('id'); // 親要素のIDを取得
+      newThread.attr('data-parent_id', parentId); // 新しい要素にparent_idを設定
+  } else {
+      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      parentId = "root";
+  }
+
   Record_slide(uuid, node_id, statement, brotherId);
 
   var conceptID = GetConceptId(id);
-  var type = GetType(id);
+  try {
+    var type = await GetType(id);
+  } catch (error) {
+    console.log("エラーが発生しました:", error);
+  }
+
   console.log(type);
-  Record_content(setid, id, conceptID, statement, uuid, type);
+  Record_content(setid, id, conceptID, statement, uuid, brotherId, parentId, type);
 
  $('#document_area').sortable({
    update: function(){
@@ -1010,7 +1058,7 @@ $('#'+uuid).data('node_id', node_id);
 return uuid; // 作成したID（スレッドのID)を返す
 }
 
-function NodeAppend(){
+async function NodeAppend(){
   let selected_node = CheckSelectedNode();
   var id = selected_node.id;  //nodeID
   var content = selected_node.topic;  //content
@@ -1080,8 +1128,12 @@ function NodeAppend(){
   // console.log(concept_id);  //concept_id
   // console.log(content);  //content
   // console.log(target);  //slideID
-  var type = GetType(id);
-  Record_content(setid, id, concept_id, content, target, type);
+  try {
+    var type = await GetType(id);
+  } catch (error) {
+    console.log("エラーが発生しました:", error);
+  }
+  console.log(type);
 
   var dom_tmp = document.getElementById("contents-"+setid);
   var dom_target = dom_tmp.previousElementSibling;
@@ -1113,13 +1165,35 @@ function NodeAppend(){
       dom_target.setAttribute("name",stindent);
     }
   }
-  SetIndent();
+
+   // 新しいノードの位置を取得
+   var newNode = document.getElementById("contents-" + setid);
+   let parentId;
+   let brotherId;
+   
+   // 新しく追加したノードのインデント情報を取得
+   let newIndentLevel = parseInt(newNode.previousElementSibling.getAttribute('name'), 10); // 前の要素のインデントを取得
+   let siblingElements = $(newNode).parent().children('.scenario_content'); // 同じ親の要素を取得
+   brotherId = newNode.previousElementSibling ? newNode.previousElementSibling.id : null; // 前の兄弟を取得
+
+   if (newIndentLevel > 0) {
+       parentId = newNode.previousElementSibling.getAttribute('id'); // 前の兄弟のIDを親として設定
+   } else {
+       parentId = "root"; // 親がいない場合はrootを設定
+   }
+
+   console.log("parentId: " + parentId);
+   console.log("brotherId: " + brotherId);
+   
+   Record_content(setid, id, concept_id, content, target, brotherId, parentId, type);
+
+  // SetIndent();
   // Record_rank();
 
 }
 
 //　2022shimizu 資料にノードを追加する際に前提を付与
-function NodeAppendLogic(){
+async function NodeAppendLogic(){
   let selected_node = CheckSelectedNode();
   var id = selected_node.id;  //nodeID
   var content = selected_node.topic;  //content，書かれている内容
@@ -1146,7 +1220,7 @@ function NodeAppendLogic(){
     var arr = $('#'+target).data('node_id');
     console.log("arr : "+arr);
     if(arr.length != 0){
-      console.log("OK");
+      // console.log("OK");
       arr = [];
     }
     arr.push(id);
@@ -1192,13 +1266,43 @@ function NodeAppendLogic(){
   }
   var concept_id = GetConceptId(id);  //conceptID
 
+  // 新たに追加されたノードの情報を取得
+  let newNode = document.getElementById(setid);
+  let brotherNode = newNode.previousElementSibling; // 兄弟ノードの取得
+  let brotherId = brotherNode ? brotherNode.id : "root"; // 兄弟が存在しない場合は "root" とする
+
+  // 新しいノードのインデントレベルを取得
+  let newIndentLevel = parseInt(newNode.querySelector('.cspan').getAttribute('name'), 10);
+
+  // 親ノードを特定
+  let parentThread = Array.from(area.querySelectorAll('.scenario_content')).filter(function(thread) {
+      let currentIndentLevel = parseInt(thread.querySelector('.cspan').getAttribute('name'), 10);
+      return currentIndentLevel === newIndentLevel - 1; // 1つ上のインデントレベル
+  });
+
+  let parentId;
+  if (parentThread.length > 0){
+    parentId = parentThread[parentThread.length - 1].id; // 一番下の親ノードのIDを取得
+  } else {
+      parentId = "root"; // 親がいない場合は "root" と設定
+  }
+
+console.log("brotherId: " + brotherId);
+console.log("parentId: " + parentId);
+
+
   // console.log(setid);  //content_id
   // console.log(id);  //node_id
   // console.log("concept_id : "+concept_id);  //concept_id NewNodeみたいにないときはnull
   // console.log(content);  //content
   // console.log(target);  //slideID
-  var type = GetType(id);
-  Record_content(setid, id, concept_id, content, target, type);
+  try {
+    var type = await GetType(id);
+  } catch (error) {
+    console.log("エラーが発生しました:", error);
+  }
+
+  Record_content(setid, id, concept_id, content, target, brotherId, parentId, type);
 
   //ノードの中，<textarea>の取得
   var dom_tmp = document.getElementById("contents-"+setid);
@@ -1243,7 +1347,7 @@ function NodeAppendLogic(){
     // $("select[id="+LogicID+"]").append(new Option(Label, Base_ClassLabeltoConceptID[LogicLabel]));
   }
 
-  SetIndent();
+  // SetIndent();
   // Record_rank();
 
 }
@@ -1532,14 +1636,14 @@ async function LogicRelationChecker(){
         // console.log(arr);
         var parse = JSON.parse(arr);
         for(var i=0; i<parse.length; i++){
-          if(parse[i].doc_con1_id == c_dom_id){
-            console.log(parse[i].doc_con1_id);
-            RelationNode.push(parse[i].doc_con2_id);
+          if(parse[i].item_content1_id == c_dom_id){
+            console.log(parse[i].item_content1_id);
+            RelationNode.push(parse[i].item_content2_id);
             // RelationLabel[parse[i].doc_con2_id] = parse[i].relation_label;
-          }else if(parse[i].doc_con2_id == c_dom_id){
-            console.log(parse[i].doc_con2_id);
-            RelationNode.push(parse[i].doc_con1_id);
-            // RelationLabel[parse[i].doc_con1_id] = parse[i].relation_label;
+          }else if(parse[i].item_content2_id == c_dom_id){
+            console.log(parse[i].item_content2_id);
+            RelationNode.push(parse[i].item_content1_id);
+            // RelationLabel[parse[i].item_content1_id] = parse[i].relation_label;
           }
         }
         
@@ -1622,14 +1726,14 @@ function NewContent_Append(type){
     dom_target.style.backgroundColor = "#ffffff";
     dom_target.style.border = "1.5px solid gray";
     dom_target.setAttribute("type","toi");
-    Record_content(setid,  '','', '', data,'toi');
+    Record_content(setid,  '','', '', data, brotherId, parentId, 1);
   } else{
     dom_target.innerHTML = "新規答えノード";
     // dom_target.style.backgroundColor = "#d3d3d3";
     dom_target.style.backgroundColor = "#ffffff";
     dom_target.style.border = "1.5px solid gray";
     dom_target.setAttribute("type","answer");
-    Record_content(setid,  '','', '', data,'answer');
+    Record_content(setid,  '','', '', data, brotherId, parentId, 5);
   }
 
   //インデント情報の格納
@@ -1720,7 +1824,7 @@ function Toi_Append(){
   dom_target.style.backgroundColor = "#ffffff";
   dom_target.style.border = "1.5px solid gray";
   dom_target.setAttribute("type","toi");
-  Record_content(setid,  '',conceptid, content, tid,'toi');
+  Record_content(setid,  '',conceptid, content, tid, brotherId, parentId, 1);
 
   //インデント情報の格納
   console.log(set_indent);
@@ -2625,6 +2729,7 @@ async function Rebuild_s(){
           
           for(var i=0; i<parse.length; i++){
             for(var j=0; j<parse.length; j++){
+              console.log(parse[j].brother_id);
               if(parse[j].brother_id == bro_id){
                 if(parse[j].node_id == "notid"){
                   const image = new SlideImage({
@@ -2671,8 +2776,8 @@ async function Rebuild_s(){
         //選択ずみの値を設定
         if(parse !== undefined){
           for(var q=0; q<parse.length; q++){
-            console.log(parse[q].slide_id);
-            var selected_id = "SelectBox-"+parse[q].slide_id;
+            console.log(parse[q].item_id);
+            var selected_id = "SelectBox-"+parse[q].item_id;
             console.log(selected_id);
             var objSelect = document.getElementById(selected_id);
             console.log(objSelect);
@@ -2756,9 +2861,9 @@ async function CreateDocumentXML(){
           LR_counter += parse.length;
 
           for(var i=0; i<parse.length; i++){
-            var RelationNodes = parse[i].id+","+parse[i].doc_con1_id +"."+ parse[i].id+","+parse[i].doc_con2_id;
+            var RelationNodes = parse[i].id+","+parse[i].item_content1_id +"."+ parse[i].id+","+parse[i].item_content2_id;
             // console.log(RelationNodes) 
-            Count_LogicRelationLabel[count] = parse[i].doc_con1_label+"を根拠として"+parse[i].doc_con2_label;
+            Count_LogicRelationLabel[count] = parse[i].item_content1_label+"を根拠として"+parse[i].item_content2_label;
             console.log(Count_LogicRelationLabel[i]);
             Count_LogicRelationNodes[count] = RelationNodes;
             Count_LogicRelationConceptID[count] = OutputLabel_ClassConceptID[Count_LogicRelationLabel[i]];
@@ -3568,8 +3673,8 @@ async function CheckNodeAllLogicRelation(){
         // console.log(arr);
         var parse = JSON.parse(arr);
         for(var i=0; i<parse.length; i++){
-          RelationNodeID_1.push(parse[i].doc_con1_id);
-          RelationNodeID_2.push(parse[i].doc_con2_id);
+          RelationNodeID_1.push(parse[i].item_content1_id);
+          RelationNodeID_2.push(parse[i].item_content2_id);
         }
       }
       for(var r = 0; r<RelationNodeID_1.length; r++){
@@ -3849,28 +3954,28 @@ async function Rebuild_content_s(){
         // console.log(parse.length);//スライド上に追加してあるのノードの個数
         
         for(var i=0; i<parse.length; i++){
-          // var delete_button_id1 = "DeleteButton-"+parse[i].doc_con1_id;
-          // var delete_button_id2 = "DeleteButton-"+parse[i].doc_con2_id;
+          // var delete_button_id1 = "DeleteButton-"+parse[i].item_content1_id;
+          // var delete_button_id2 = "DeleteButton-"+parse[i].item_content2_id;
           // var delete_button1 = document.getElementById(delete_button_id1);
           // var delete_button2 = document.getElementById(delete_button_id2);
-          var select_box_id1 = "SelectBox-"+parse[i].doc_con1_id;
-          var select_box_id2 = "SelectBox-"+parse[i].doc_con2_id;
+          var select_box_id1 = "SelectBox-"+parse[i].item_content1_id;
+          var select_box_id2 = "SelectBox-"+parse[i].item_content2_id;
           var select_box1 = document.getElementById(select_box_id1);
           var select_box2 = document.getElementById(select_box_id2);
           
           var createElement1 = document.createElement('span')
-          createElement1.id = parse[i].id+","+parse[i].doc_con1_id;
+          createElement1.id = parse[i].id+","+parse[i].item_content1_id;
           createElement1.className = "badge bg-blue";
-          createElement1.textContent = parse[i].doc_con1_label; 
+          createElement1.textContent = parse[i].item_content1_label; 
           createElement1.setAttribute('ontlogy_id',parse[i].ont1_id);
           // delete_button1.after(createElement1);
           select_box1.after(createElement1);
           
 
           var createElement2 = document.createElement('span')
-          createElement2.id = parse[i].id+","+parse[i].doc_con2_id;
+          createElement2.id = parse[i].id+","+parse[i].item_content2_id;
           createElement2.className = "badge bg-blue";
-          createElement2.textContent = parse[i].doc_con2_label; 
+          createElement2.textContent = parse[i].item_content2_label; 
           createElement2.setAttribute('ontlogy_id',parse[i].ont2_id);
           // delete_button2.after(createElement2);
           select_box2.after(createElement2);

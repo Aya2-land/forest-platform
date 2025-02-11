@@ -11,15 +11,15 @@
   		$id = $_POST["id"];             
 		$node1_id = $_POST["node1_id"]; 
 		$node2_id = $_POST["node2_id"]; 
-		$doc_con1_id = $_POST["doc_con1_id"];      
-		$doc_con2_id = $_POST["doc_con2_id"];
-		$doc_con1_label = $_POST["doc_con1_label"];      
-		$doc_con2_label = $_POST["doc_con2_label"];
+		$item_content1_id = $_POST["item_content1_id"];      
+		$item_content2_id = $_POST["item_content2_id"];
+		$item_content1_label = $_POST["item_content1_label"];      
+		$item_content2_label = $_POST["item_content2_label"];
 		$ont1_id = $_POST["ont1_id"];
 		$ont2_id = $_POST["ont2_id"];
 		$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-		$sql = "INSERT INTO item_content_relations (id, node_id1, item_content1_id, item_content1_label, ont1_id, node_id2, item_content2_id, item_content2_label, ont2_id, deleted, created_at, updated_at) VALUES ('$id', '$node1_id','$doc_con1_id', '$doc_con1_label', '$ont1_id',  '$node2_id', '$doc_con2_id', '$doc_con2_label', '$ont2_id', 0, '$timestamp', '$timestamp')";
+		$sql = "INSERT INTO item_content_relations (id, node1_id, item_content1_id, item_content1_label, ont1_id, node2_id, item_content2_id, item_content2_label, ont2_id, deleted, created_at, updated_at) VALUES ('$id', '$node1_id','$item_content1_id', '$item_content1_label', '$ont1_id',  '$node2_id', '$item_content2_id', '$item_content2_label', '$ont2_id', 0, '$timestamp', '$timestamp')";
 
 		$result = $mysqli->query($sql);
 		echo($sql);
