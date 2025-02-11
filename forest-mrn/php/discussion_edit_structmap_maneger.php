@@ -9,7 +9,7 @@
     $map_id = $_SESSION['MAPID'];    //シートID
 	$purpose = $_POST['purpose'];  //記録(record)か，更新(update)か，削除(delete)か
 
-	$result_struct_start_time = $mysqli->query("SELECT MAX(start_time) FROM network_sturuct_activity WHERE user_id = $user_id AND map_id = $map_id ORDER BY start_time DESC");
+	$result_struct_start_time = $mysqli->query("SELECT MAX(start_time) FROM network_sturuct_activity WHERE user_id = '$user_id' AND map_id = '$map_id' ORDER BY start_time DESC");
 	$row = $result_struct_start_time->fetch_assoc();
     $struct_start_time = $row['MAX(start_time)'];  //更新するときの議論内省開始時間
 

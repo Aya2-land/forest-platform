@@ -18,7 +18,7 @@ $return_data = []; // DBアクセスの結果として返すキー・バリュ�
 /*
  * すべてのマップ履歴について，開始と終了（リフレクションの開始＿過去のリフレクションの終了）時刻を取得
  */
-$result_map_create_start_and_end = $mysqli->query("SELECT * FROM network_sturuct_activity WHERE user_id = $user_id AND map_id = $map_id ORDER BY start_time DESC");
+$result_map_create_start_and_end = $mysqli->query("SELECT * FROM network_sturuct_activity WHERE user_id = '$user_id' AND map_id = '$map_id' ORDER BY start_time DESC");
 
 $map_create_start_and_end = [];
 $latest_map_created_time = null; // 最初にヒットしたもの（現在の最新状態のもの）を履歴情報から除外するためのフラグ

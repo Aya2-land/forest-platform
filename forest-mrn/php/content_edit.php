@@ -12,15 +12,15 @@
     $map_id = $_SESSION['MAPID'];    //シートID
     $item_content_id = $_POST["id"];       //contentID
     $content = $_POST["content"]; //content
-    $$item_content_history_id = uniqid();
+    $item_content_history_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-    $sql = "SELECT * FROM item_contents WHERE item_content_id = '$item_content_id'";
+    $sql = "SELECT * FROM item_content_latest WHERE item_content_id = '$item_content_id'";
     if($result = $mysqli->query($sql)) {
       while($row = mysqli_fetch_assoc($result)){
         $node_id = $row['node_id'];
-        $slide_id = $row['slide_id'];
-        $pre_content = $row['content'];
+        $slide_id = $row['item_id'];
+        $pre_content = $row['title'];
       }
     }
 
@@ -31,7 +31,7 @@
       $sql_update = "UPDATE item_content_histories SET disappeared_at = '$timestamp' WHERE item_content_history_id = (SELECT item_content_history_id FROM tmp_item_content_histories);";
       $sql_new_2 = "UPDATE tmp_item_content_histories set item_content_history_id = '$item_content_history_id', title = '$content', appeared_at = '$timestamp', disappeared_at = NULL;";
       $sql_new_3 = "INSERT INTO item_content_histories SELECT * FROM tmp_item_content_histories;";
-      $sql_i_update = "UPDATE item_contents set updated_at = '$timestamp' WHERE item_content_id = $item_content_id;";
+      $sql_i_update = "UPDATE item_contents set updated_at = '$timestamp' WHERE item_content_id = '$item_content_id';";
 
       // TEMPORARY TABLEを削除
       $sql_drop = "DROP TEMPORARY TABLE IF EXISTS tmp_item_content_histories;";

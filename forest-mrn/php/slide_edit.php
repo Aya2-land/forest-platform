@@ -31,7 +31,7 @@
       $sql_update = "UPDATE item_histories SET disappeared_at = '$timestamp' WHERE item_history_id = (SELECT item_history_id FROM tmp_item_histories);";
       $sql_new_2 = "UPDATE tmp_item_histories set item_history_id = '$item_history_id', title = '$title', appeared_at = '$timestamp', disappeared_at = NULL;";
       $sql_new_3 = "INSERT INTO item_histories SELECT * FROM tmp_item_histories;";
-  		$sql_i_update = "UPDATE items set updated_at = '$timestamp' WHERE item_id = $item_id;";
+  		$sql_i_update = "UPDATE items set updated_at = '$timestamp' WHERE item_id = '$item_id';";
 
       // TEMPORARY TABLEを削除
       $sql_drop = "DROP TEMPORARY TABLE IF EXISTS tmp_item_histories;";
