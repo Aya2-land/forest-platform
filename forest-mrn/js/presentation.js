@@ -763,9 +763,9 @@ async function CreateThread(topic, id){
   let brotherId;
   if (parentThread.length > 0) {
       brotherId = parentThread.attr('id'); // 親要素のIDを取得
-      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+      newThread.attr('data-brother_id', brotherId); // 新しい要素にparent_idを設定
   } else {
-      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      newThread.attr('data-brother_id', 'root'); // 親がいない場合はrootを設定
       brotherId = "root";
   }
 
@@ -875,9 +875,9 @@ function MakeSlide(){
     let brotherId;
     if (parentThread.length > 0) {
         brotherId = parentThread.attr('id'); // 親要素のIDを取得
-        newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+        newThread.attr('data-brother_id', brotherId); // 新しい要素にparent_idを設定
     } else {
-        newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+        newThread.attr('data-brother_id', 'root'); // 親がいない場合はrootを設定
       brotherId = "root";
     }
 
@@ -935,9 +935,9 @@ function MakeNewPage(){
   let brotherId;
   if (parentThread.length > 0) {
       brotherId = parentThread.attr('id'); // 親要素のIDを取得
-      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+      newThread.attr('data-brother_id', brotherId); // 新しい要素にparent_idを設定
   } else {
-      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      newThread.attr('data-brother_id', 'root'); // 親がいない場合はrootを設定
       brotherId = "root";
   }
 
@@ -1026,9 +1026,9 @@ function AddImage(){
   let brotherId;
   if (parentThread.length > 0) {
       brotherId = parentThread.attr('id'); // 親要素のIDを取得
-      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+      newThread.attr('data-brother_id', brotherId); // 新しい要素にparent_idを設定
   } else {
-      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      newThread.attr('data-brother_id', 'root'); // 親がいない場合はrootを設定
       brotherId = "root";
   }
 
@@ -1398,9 +1398,9 @@ function ItemAddDocument(){
   let brotherId;
   if (parentThread.length > 0) {
       brotherId = parentThread.attr('id'); // 親要素のIDを取得
-      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+      newThread.attr('data-brother_id', brotherId); // 新しい要素にparent_idを設定
   } else {
-      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      newThread.attr('data-brother_id', 'root'); // 親がいない場合はrootを設定
       brotherId = "root";
   }
 
@@ -1694,7 +1694,7 @@ function NewContent_Append(type){
   //内容テキストエリアにノード内容を挿入
   let area = document.getElementById(data);
   let label = "<div id='"+setid+"' class='scenario_content'>"+
-                "<span class='cspan' name = '0' style = 'width:calc(100% - 25px)' tabindex='0'></span>"+
+                "<span class='cspan' name = 'root' style = 'width:calc(100% - 25px)' tabindex='0'></span>"+
                 "<textarea id='contents-"+setid+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_setid+");' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
                 "<input class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_setid+");'>"+
                 "<select id=SelectBox-"+setid+" class='cp_ipselect cp_sl05' name='Logic_options_contents'>"+"</select>"+
@@ -2135,9 +2135,9 @@ function Get_SlideRank(){
   let brotherId;
   if (parentThread.length > 0) {
       brotherId = parentThread.attr('id'); // 親要素のIDを取得
-      newThread.attr('data-parent_id', brotherId); // 新しい要素にparent_idを設定
+      newThread.attr('data-brother_id', brotherId); // 新しい要素にparent_idを設定
   } else {
-      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
+      newThread.attr('data-brother_id', 'root'); // 親がいない場合はrootを設定
       brotherId = "root";
   }
   console.log(brotherId);
@@ -2169,7 +2169,7 @@ function Get_DocumentRank(){
     }
 
     // 親IDを設定
-    $(slide_dom[i]).attr('data-parent_id', brotherId); // 対象のスレッドにparent_idを設定
+    $(slide_dom[i]).attr('data-brother_id', brotherId); // 対象のスレッドにparent_idを設定
     
     // document_rankを記録する
     Record_document_rank(slide_id[i], brotherId);
@@ -2192,15 +2192,15 @@ function Get_ContentRank(){
       var content_dom = $(slide_dom[i]).find('.scenario_content');
       // console.log(content_dom);//これが欲しかった情報
       for(var j=0; j<content_dom.length; j++){
-        var rank = j;
+        var brother_id = j;
         var content_id = content_dom[j].id;
         const content = content_dom[j].firstElementChild.innerHTML;
         const node_id = content_dom[j].firstElementChild.getAttribute('node_id');
         const type = content_dom[j].firstElementChild.getAttribute('type');
-        const indent = content_dom[j].firstElementChild.getAttribute('name');
+        const parent_id = content_dom[j].firstElementChild.getAttribute('name');
         const concept_id = content_dom[j].firstElementChild.getAttribute('concept_id');
 
-        Record_content_rank(content_id, rank, slide_id, content, node_id, type, indent, concept_id);
+        Record_content_rank(content_id, brother_id, slide_id, content, node_id, type, parent_id, concept_id);
       }
     }
   // });
@@ -2589,12 +2589,13 @@ class SlideImage{
 class Content{
   constructor(obj){
 
+    console.log(obj);
     const content_id = obj.content_id;
     const node_id = obj.node_id;
     const content = obj.content;
     const slide_id = obj.slide_id;
     const type = obj.type;
-    const indent = obj.indent;
+    const parent_id = obj.parent_id;
 
     var arr = $('#'+slide_id).data('node_id');
     // console.log(arr);
@@ -2615,7 +2616,7 @@ class Content{
     // console.log(slide_id);
     // console.log(quot_slide_id);
     let label = "<div id='"+content_id+"' class='scenario_content'>"+
-                  "<span id='"+content_id+"' class = 'cspan' name = '"+indent+"' style = 'width:calc(100% - 25px)' type='"+type+"' tabindex='0'>"+content+"</span>"+
+                  "<span id='"+content_id+"' class = 'cspan' name = '"+parent_id+"' style = 'width:calc(100% - 25px)' type='"+type+"' tabindex='0'>"+content+"</span>"+
                   "<textarea id='contents-"+content_id+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_contentid+");' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'>"+content+"</textarea>"+
                   "<input id=DeleteButton-"+content_id+" class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_contentid+");'>"+
                   "<select id=SelectBox-"+content_id+" class='cp_ipselect cp_sl05' name='Logic_options_contents'>"+"</select>"+
@@ -2658,6 +2659,7 @@ class Content{
 }
 
 //スライド再現の関数
+// 2025-02-12　kawa 使われていない
 async function Rebuild(){
 
   await $.ajax({
@@ -2676,7 +2678,7 @@ async function Rebuild(){
               if(String(i) == parse[j].rank){
                 // console.log(parse[j].rank);
                 const newslide = new Slide({
-              		slide_title: parse[j].title,
+              		slide_title: parse[j].content,
               		slide_id: parse[j].slide_id,
               	});  
                 delete newslide;
@@ -2736,23 +2738,22 @@ async function Rebuild_s(){
                     slide_title: parse[j].title,
                     slide_id: parse[j].item_id,
                     node_id: parse[j].node_id,
-                  });  
+                  });
                   delete image;
                   console.log("画像再現完了");
-                  bro_id = parse[j].item_id;
-                  break;
-                }
-                else{
+                  bro_id = parse[j].item_id; // 更新
+                  break; // 内部ループから抜け出し
+                } else {
                   const newslide = new Slide({
                     slide_title: parse[j].title,
                     slide_id: parse[j].item_id,
                     node_id: parse[j].node_id,
                     logic_option: parse[j].logic_option,
-                  });  
+                  });
                   delete newslide;
                   console.log("スライド再現完了");
-                  bro_id = parse[j].item_id;
-                  break;
+                  bro_id = parse[j].item_id; // 更新
+                  break; // 内部ループから抜け出し
                 }
               }
             }
@@ -3356,6 +3357,8 @@ async function CreateDocumentXML(){
       var beforeNodeTagTlue = 0;
       var badgeCount = 0;
       var NodeHeightMarge = 0;
+      var currentParentId = null; // 現在の parent_id
+      var parentIdStartY = {}; // 各 parent_id に対する初期 Y 座標を保持するオブジェクト
       for(var h=0; h<content_dom.length; h++){
         console.log(content_dom[h]);
         var selectElement = content_dom[h].querySelector('select');
@@ -3363,7 +3366,7 @@ async function CreateDocumentXML(){
         
         // const content = content_dom[h].firstElementChild.innerHTML;
         const node_id = content_dom[h].firstElementChild.getAttribute('node_id');
-        const indent = content_dom[h].firstElementChild.getAttribute('name');
+        const parent_id = content_dom[h].firstElementChild.getAttribute('name');
         const concept_id = content_dom[h].firstElementChild.getAttribute('concept_id');
         const sentence_label =  content_dom[h].firstElementChild.innerHTML;
         const NodeWidth = content_dom[h].firstElementChild.clientWidth;
@@ -3373,7 +3376,16 @@ async function CreateDocumentXML(){
         var Temp_Xpx = 0;
         var resarch_Node_Label = ConceptID_ClassLabel[concept_id];
 
-
+        // インデント設定
+        var indent = 0;
+        if (currentParentId !== parent_id) {
+            // 新しい親の場合、初期 Y 座標を設定
+            currentParentId = parent_id;
+            // 現在の親の Y 座標を取得
+            if (!(parent_id in parentIdStartY)) {
+                parentIdStartY[parent_id] = NodeHeightMarge; // 最初の Y 座標を保存
+            }
+        }
         // console.log(content_id);
         // console.log(node_id);
         console.log("NodeWidth :"+NodeWidth);
@@ -3386,27 +3398,29 @@ async function CreateDocumentXML(){
       
 
         //xml:Node用
-        if(indent == 0){
-          // console.log("tab0");
-          // AreaCounter++;
+        if (indent == 0) {
           Temp_Xpx = 11;
-          Temp_X = 11/DocumentAreaWidth;
-        }else if(indent == 1){
-          // console.log("tab1");
-          Temp_Xpx =31;
-          Temp_X = 31/DocumentAreaWidth;
-          // NodeWidth = NodeWidth - 20;
-        }else if(indent == 2){
-          // console.log("tab2");
+          Temp_X = 11 / DocumentAreaWidth;
+      } else if (indent == 1) {
+          Temp_Xpx = 31;
+          Temp_X = 31 / DocumentAreaWidth;
+      } else if (indent == 2) {
           Temp_Xpx = 51;
-          Temp_X = 51/DocumentAreaWidth;
-          // NodeWidth = NodeWidth - 40;
-        }else{
-          // console.log("tab3");
+          Temp_X = 51 / DocumentAreaWidth;
+      } else {
           Temp_Xpx = 71;
-          Temp_X = 71/DocumentAreaWidth;
-          // NodeWidth = NodeWidth - 60;
-        }
+          Temp_X = 71 / DocumentAreaWidth;
+      }
+  
+      if (h >= 1 && content_dom[h-1].childElementCount >= 5) {
+          beforeNodeTagTlue = 3;
+          badgeCount += 1;
+      }
+
+      console.log(Temp_X);
+
+      // 親ごとのY座標を使ってNodeStartPointYを設定
+      var NodeStartPointY = parentIdStartY[parent_id] + (beforeNodeTagTlue * badgeCount);
 
         if(h >= 1 && content_dom[h-1].childElementCount >= 5){
           beforeNodeTagTlue = 3;
@@ -3875,41 +3889,114 @@ async function Rebuild_content_s(){
         }else{
           // console.log(arr);
           var parse = JSON.parse(arr);
-          // console.log(parse);//スライド上に追加してあるのノードの内容
-          // console.log(parse.length);//スライド上に追加してあるのノードの個数
-          for(var i=0; i<parse.length; i++){
-            for(var j=0; j<parse.length; j++){
-              // console.log(String(i), parse[j].rank);
-              if(String(i) == parse[j].rank){
-                const newcontent = new Content({
-              		content_id: parse[j].content_id,
-              		node_id: parse[j].node_id,
-                  content: parse[j].content,
-                  slide_id: parse[j].slide_id,
-                  type: parse[j].type,
-              	  indent: parse[j].indent});
-                if(parse[j].node_id != ""){
-                  const content_id = parse[j].content_id;
-                  const node_id = parse[j].node_id;
-                  var dom_tmp = document.getElementById("contents-"+content_id);
-                  var dom_target = dom_tmp.previousElementSibling;
-                  // console.log(dom_target);
-                  dom_target.setAttribute("node_id",node_id);
-                }
-                if(parse[j].concept_id != ""){
-                  const content_id = parse[j].content_id;
-                  const concept_id = parse[j].concept_id;
-                  var dom_tmp = document.getElementById("contents-"+content_id);
-                  var dom_target = dom_tmp.previousElementSibling;
-                  // console.log(dom_target);
-                  dom_target.setAttribute("concept_id",concept_id);
-                }
-                
-                delete newcontent;
-                console.log("コンテント再現完了");
+          const contentMap = {};
+          console.log(parse);
+          
+          // 要素をcontentMapに格納
+          for (var i = 0; i < parse.length; i++) {
+            contentMap[parse[i].item_content_id] = parse[i];
+          }
+
+          // brother_id ごとのグルーピング
+          const groups = {};
+          for (var i = 0; i < parse.length; i++) {
+              const content = contentMap[parse[i].item_content_id];
+              const brotherId = content.brother_id;
+
+              if (brotherId) {
+                  if (!groups[brotherId]) {
+                      groups[brotherId] = [];
+                  }
+                  groups[brotherId].push(content);
               }
+          }
+
+          for (const brotherId in groups) {
+            const group = groups[brotherId];
+            // parent_id に基づいて並び替え
+            group.sort((a, b) => {
+                return (a.parent_id || "").localeCompare(b.parent_id || ""); // nullまたはundefinedの場合に注意
+            });
+            console.log(group);
+    
+            // 並び替えた要素を挿入する処理
+            for (const content of group) {
+              const newContent = new Content({
+                  content_id: content.item_content_id,
+                  node_id: content.node_id,
+                  content: content.content,
+                  slide_id: content.item_id,
+                  type: content.type,
+                  brother_id: content.brother_id,
+                  parent_id: content.parent_id
+              });
+  
+              let insertAfterElement;
+  
+              // brother_id が存在する場合、兄弟要素に基づいて挿入
+              if (content.brother_id && contentMap[content.brother_id]) {
+                  insertAfterElement = document.getElementById("contents-" + contentMap[content.brother_id].item_content_id);
+              } 
+              // parent_id が root の場合、最初の子要素の前に追加
+              else if (content.parent_id === "root") {
+                  const parentElements = document.querySelectorAll(`div[pt-id='${content.parent_id}'] > div`); 
+                  if (parentElements.length > 0) {
+                      insertAfterElement = parentElements[0];
+                  }
+              } 
+              // parent_id がある場合、その要素を基準に使用
+              else if (content.parent_id && contentMap[content.parent_id]) {
+                  insertAfterElement = document.getElementById("contents-" + contentMap[content.parent_id].item_content_id);
+              }
+  
+              // 要素を挿入
+              if (insertAfterElement) {
+                  const domTmp = document.createElement('div');
+                  domTmp.id = "contents-" + content.item_content_id; // content_id を使用
+                  domTmp.innerHTML = content.content; // コンテンツ内容を挿入
+  
+                  insertAfterElement.parentNode.insertBefore(domTmp, insertAfterElement); // insertAfterElementの前に追加
+              }
+  
+              delete newContent;  // メモリ管理のため、必要であればここで削除
             }
           }
+          console.log("コンテント再現完了");
+
+          // for(var i=0; i<parse.length; i++){
+          //   for(var j=0; j<parse.length; j++){
+          //     // console.log(String(i), parse[j].rank);
+          //     if(String(i) == parse[j].rank){
+          //       const newcontent = new Content({
+          //     		content_id: parse[j].item_content_id,
+          //     		node_id: parse[j].node_id,
+          //         content: parse[j].content,
+          //         slide_id: parse[j].item_id,
+          //         type: parse[j].type,
+          //         brother_id: parse[j].brother_id,
+          //     	  parent_id: parse[j].parent_id});
+          //       if(parse[j].node_id != ""){
+          //         const content_id = parse[j].item_content_id;
+          //         const node_id = parse[j].node_id;
+          //         var dom_tmp = document.getElementById("contents-"+content_id);
+          //         var dom_target = dom_tmp.previousElementSibling;
+          //         // console.log(dom_target);
+          //         dom_target.setAttribute("node_id",node_id);
+          //       }
+          //       if(parse[j].concept_id != ""){
+          //         const content_id = parse[j].item_content_id;
+          //         const concept_id = parse[j].concept_id;
+          //         var dom_tmp = document.getElementById("contents-"+content_id);
+          //         var dom_target = dom_tmp.previousElementSibling;
+          //         // console.log(dom_target);
+          //         dom_target.setAttribute("concept_id",concept_id);
+          //       }
+                
+          //       delete newcontent;
+          //       console.log("コンテント再現完了");
+          //     }
+          //   }
+          // }
           //2022-11-23 論理構成意図を選択するためのセレクトボックスの中身を追加
           for(var LogicLabel in Base_ClassLabeltoConceptID){
             // console.log(LogicLabel);
@@ -3925,7 +4012,7 @@ async function Rebuild_content_s(){
           //選択ずみの値を設定
           for(var q=0; q<parse.length; q++){
             // console.log(parse[q].slide_id);
-            var selected_id = "SelectBox-"+parse[q].content_id;
+            var selected_id = "SelectBox-"+parse[q].item_content_id;
             //console.log(selected_id);
             var objSelect = document.getElementById(selected_id);
             // console.log(parse[q].logic_option)
@@ -4067,6 +4154,7 @@ function Rebuild_title_s(){
 	});
 }
 
+// 2025-02-12 parentとbrotherに置き換え
 function SetIndent(){
 
   const span_dom = document.getElementsByClassName("cspan");
