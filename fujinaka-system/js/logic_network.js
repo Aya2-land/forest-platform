@@ -1,4 +1,5 @@
 let defaultLogicNetwork;
+let defaultRecordLogicNetwork;
 class LogicNetwork {
   constructor(container, load) {
     defaultRecordLogicNetwork = new RecordLogicNetwork();
@@ -6,14 +7,14 @@ class LogicNetwork {
     this.edges = new vis.DataSet();
     this.options = {
       physics: false,
-      nodes: {
-        shape: 'box',
-        color: '#fffacd',
-      },
       interaction: {
         multiselect: false,
       }
     };
+    this.latest_selected_node_info = {
+      x: 0,
+      y: 35,
+    }
     this.network = null;
     this.edgeEditMode = false; //リンクの編集モード
     this.dragStartNodeId = null;  //ドラッグスタートしたノードのID
@@ -82,17 +83,28 @@ setOptions(options) {
   }
 
   //ノードを追加する
-  addNode() {
-    const node_id = this.generateUniqueNumberText();
-    const node_label = 'new node';
+  addNode(node_id, node_label, node_x, node_y) {
+    let node_color = '#fffacd';
+    let node_shape = 'box';
     const newNode = {
       id: node_id,
-      label: node_label
+      label: node_label,
+      color: node_color,
+      shape: node_shape,
+      x: node_x,
+      y: node_y,
     };
     this.nodes.add(newNode);
-    console.log(`Added Node ID: ${node_id}`);
+    console.log(node_x);
+    defaultRecordLogicNetwork.record_LogicNode(node_id, node_label, node_x, node_y);
     return this.nodes;
   }
+
+  addNewNode() {
+    this.addNode(this.generateUniqueNumberText(), "newNode", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
+    console.log("addGoalできた");
+}
+
 
   //ノードのラベル編集(完了)
   editNode(node_id, node_content) {
@@ -185,11 +197,30 @@ setOptions(options) {
 
 }
 
+class RecordLogicNetwork{
+  record_LogicNode (id, label, x, y){
+    $.ajax({
+      url: "php/logicrecord.php",
+      type: "POST",
+      data: {
+        node_id : id,
+        label : label,
+        x : x,
+        y : y,
+        purpose : 'record',
+        record_thing : 'node'
+      },
+    });
+  }
+  
+
+}
+
 window.addEventListener('load', () => {
   defaultLogicNetwork = new LogicNetwork("mynetwork", "load");
   $('#mynetwork').css('visibility', 'visible');
   $(`#ln_addNode`).on("click", e => {
-    defaultLogicNetwork.addNode();
+    defaultLogicNetwork.addNewNode();
   });
   $(`#ln_deleteNode`).on("click", e => {
     defaultLogicNetwork.deleteNode();
