@@ -149,6 +149,7 @@ setOptions(options) {
   //エッジを追加する
   addEdge(E_start, E_end) {
     this.edges.add({ from: E_start, to: E_end });
+    defaultRecordLogicNetwork.record_Edge(E_start, E_end);
   }
 
   //ドラッグ開始
@@ -210,6 +211,18 @@ class RecordLogicNetwork{
         purpose : 'record',
         record_thing : 'node'
       },
+      dataType: "json",
+  success: function(response) {
+    console.log(response); // ← ここでレスポンス確認
+    if (response.status === "success") {
+      console.log("記録成功:", response.node_id);
+    } else {
+      console.error("エラー:", response.message);
+    }
+  },
+  error: function(xhr, status, error) {
+    console.error("通信エラー:", error);
+  }
     });
   }
   

@@ -459,12 +459,13 @@ border-radius: 10px;
 
 /* 三角ロジックエリア */
 #logic_area {
-	 min-width: 140px;
-	 height: 84vh;
-	 margin-bottom:2vh;
-	 font-size:25px;
-	 background-color:#e6e6fa;
-	 border: 3px double #ccc;
+	min-width: 140px;
+	height: 84vh;
+	margin-bottom:2vh;
+	font-size:25px;
+	background-color:#e6e6fa;
+	border: 3px double #ccc;
+	/* display: none; */
 }
 
 #mynetwork {
