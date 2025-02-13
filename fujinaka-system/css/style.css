@@ -139,8 +139,14 @@ table[type] {
 
 /* -------------------- メインの設定 ---------------------- */
 /* タブメニュー */
+#tab_menu {
+	display: flex;
+	align-items: flex-start; /* 子要素の縦方向の位置を揃える */
+	margin-top: 10px;
+}
+
 .tabnav {
-		width: calc(50vw + 200px);
+		width: 30vw;
 		min-width: 280px;
     padding: 0;
 		float: left;
@@ -206,7 +212,7 @@ table[type] {
 } */
 
 /* 「問いノード追加」等のボタンがある箇所 */
-#jsmind_nav {
+.menu_css {
 	width: calc(100vw - 350px);
 	min-width: 450px;
 	height:37px;
@@ -218,6 +224,8 @@ table[type] {
 	overflow-y: visible;
 	float:left;
 }
+
+
 
 /* 推敲時のデータ選択を行う箇所 */
 #version_area {
@@ -245,6 +253,11 @@ table[type] {
 
 
 /* 文書化モードのチェックボックス */
+#checkbox_area {
+	float: center;
+	width: 40vw;
+}
+
 .checkbox {
 	float: right;
 	font-size: 30px;
@@ -252,6 +265,11 @@ table[type] {
 	margin-right: 10px;
 	margin-top:3px;
 	margin-bottom:2px;
+}
+
+#btn_menu {
+	display: flex; 
+	align-items: flex-start;
 }
 
 /* 通常のチェックボックスの削除 */
@@ -380,19 +398,20 @@ input:checked+label::after {
     border-bottom: none;
 }
 
+
+
 /* マインドマップを表示する枠の設定 */
 #jsmind_container{
 	width: calc(100vw - 350px);
 	min-width: 300px;
-	/* height:75vh; */
-	height:100%;
+	height: 84vh;
+	height: 100%;
 	/* 元は75 */
 	min-height: 450px;
 	margin-bottom:2vh;
   border:solid 5px #ccc;
   background:#F0F0F0;
 	overflow: scroll;
-	float:left;
 }
 
 /* マインドマップ上で右クリックしたときのメニュー */
@@ -400,7 +419,7 @@ input:checked+label::after {
   width:160px;
   background-color:#f0f0f0;
   border:2px solid #999999;
-	border-radius: 10px;
+border-radius: 10px;
   display:none;
   position:fixed;
 	z-index: 1000;
@@ -434,21 +453,40 @@ input:checked+label::after {
 	user-select:auto;
 }
 
+#content{
+	display: flex;
+}
 
+/* 三角ロジックエリア */
+#logic_area {
+	 min-width: 140px;
+	 height: 84vh;
+	 margin-bottom:2vh;
+	 font-size:25px;
+	 background-color:#e6e6fa;
+	 border: 3px double #ccc;
+}
 
+#mynetwork {
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
+#logic_menu {
+	display: none;
+}
 
 /* シナリオ構成エリア */
 #document_area {
 	/*（全体）ー（サイドメニュー *//* ここで設定しても意味がない */
 	 													/* チェックボックスが押されるたびにCSSを上書きしている  */
 	min-width: 140px;
-	/* height:84vh; */
-	height:100%;
+	height: 84vh;
 	min-height: 450px;
 	margin-bottom:2vh;
 	font-size:25px;
 	display: none;
-	float:left;
 	background-color:	#CEF9DC;
 
   border: 3px double #ccc;
@@ -1124,9 +1162,12 @@ select[name="mttime_list"] {
 
 /********************* リフレクションタブ関係 **********************/
 /*リフレクション関係　yoshioka*/
+#tab02{
+	display: none;
+}
 #tab03 {
-	width:100%;
-	height: 100%;
+	display: none;
+
 }
 
 #reflection_container{
@@ -1287,6 +1328,7 @@ select[name="mttime_list"] {
 
 /*履歴関係　yoshioka*/
 #record_tab {
+	display: none;
 	width:100%;
 	height: 100%;
 }
@@ -1639,7 +1681,6 @@ select[name="mttime_list"] {
 	display : none;
 	text-align:right;
 	float:right;
-	margin-right:60px;
 }
 
 /* 聴衆の観点追加フォーム */
@@ -1797,8 +1838,9 @@ select[name="mttime_list"] {
 }
 
 .select_form {
-	float: right;
+	width: 20vw;
 	margin-right: 10px;
+	margin-left: auto;
 	margin-top:10px;
 	margin-bottom:2px;
 }

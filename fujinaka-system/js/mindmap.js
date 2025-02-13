@@ -1138,27 +1138,54 @@ function ModeChangeButtonClick() {
 // 文書化モードを切り替えたときの動作
 function CheckClick(){
   // checkboxの状態を取得
+  logic_check = document.getElementById("logicbox");
   check = document.getElementById("scenariobox");
   pre_check = document.getElementById("previewbox");
   map_check = document.getElementById("plusmapbox");
   if (modetype == 0 ) {
-    if(check.checked == true && pre_check.checked == false){ // checkboxがチェックされている時の処理
-      $('#jsmind_container').css('width','40vw');
-      $('#document_area').css('width','calc(60vw - 350px)');
+    //　三角ロジックボタンだけオン（マップと三角ロジックを表示）
+    if(logic_check.checked == true && check.checked == false && pre_check.checked == false){ 
+      $('#jsmind_container').css('width','50vw');
+      $('#map_menu').css('width','50vw');
+      $('#logic_area').css('width','49vw');
+      $('#logic_menu').css('width','49vw');
+
 
       $('#jsmind_container').show('fast');
-      $('#document_area').show('fast');
-      $('#preview_area').hide('fast');
-
       $('#map_menu').show('fast');
+      $('#logic_area').show('fast');
+      $('#logic_menu').show('fast');
+      $('#mindmap_conmenu').hide('fast');
+      $('.Menu').hide('fast');
+      $('#side_menu').hide('fast');
+    }
+    //　三角ロジックボタンとシナリオボタンがオン（マップと三角ロジックとシナリオを表示）
+    else if(logic_check.checked == true && check.checked == true && pre_check.checked == false){ 
+      $('#jsmind_container').css('width','33.3333vw');
+      $('#map_menu').css('width','33.3333vw');
+      $('#logic_area').css('width','33.3333vw');
+      $('#logic_menu').css('width','33.3333vw');
+      $('#document_area').css('width','33.3333vw');
+      $('#presen_menu').css('width','33.3333vw');
+
+      $('#jsmind_container').show('fast');
+      $('#map_menu').show('fast');
+      $('#document_area').show('fast');
+      $('#logic_menu').show('fast');
+      $('#document_area').show('fast');
       $('#presen_menu').show('fast');
+      $('#preview_area').hide('fast');
       $('#preview_menu').hide('fast');
+      $('#mindmap_conmenu').hide('fast');
+      $('.Menu').hide('fast');
+      $('#side_menu').hide('fast');
 
       $('#preview_btn').show('fast');
       $('#plusmap_btn').hide('fast');
       $('#finish1_btn').show('fast');
 
-    }else if (check.checked == true && pre_check.checked == true && map_check.checked == false){ // previewboxがチェックされている時の処理
+      //　三角ロジックボタンとシナリオボタンとプレビューボタンがオン（シナリオとプレビューを表示）
+    }else if (check.checked == true && pre_check.checked == true && map_check.checked == false){ 
       $('#document_area').css('width','45vw');
       $('#preview_area').css('width','calc(55vw - 350px)');
 
@@ -1176,6 +1203,7 @@ function CheckClick(){
 
       Create_preview()
 
+      //　マップ表示ボタンと三角ロジックボタンとシナリオボタンとプレビューボタンがオン（マップとシナリオとプレビューを表示）
     }else if (check.checked == true && pre_check.checked == true && map_check.checked == true){ // previewboxがチェックされている時の処理
       $('#jsmind_container').css('width', '25vw');
       $('#document_area').css('width', '27vw');
@@ -1202,8 +1230,11 @@ function CheckClick(){
 
     }else{
       $('#jsmind_container').css('width','calc(100vw - 350px)');
+      $('#map_menu').css('width','calc(100vw - 350px)');
 
       $('#jsmind_container').show('fast');
+      $('#logic_area').hide('fast');
+      $('#logic_menu').hide('fast');
       $('#document_area').hide('fast');
       $('#preview_area').hide('fast');
 

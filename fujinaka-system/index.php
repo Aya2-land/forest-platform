@@ -27,6 +27,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
 <html>
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>自己内対話活性化支援システム</title>
         <link type="text/css" rel="stylesheet" href="css/jsmind.css" />
@@ -37,8 +38,10 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css/annotation.css">
         <link rel="stylesheet" type="text/css" href="quill-2.0/snow-2.0.css" >
-
-
+        
+        
+        
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
         <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/jsmind.js"></script>
@@ -48,6 +51,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
         <script type="text/javascript" src="js/version.js"></script>
         <script type="text/javascript" src="quill-2.0/quill-2.0.js"></script>
         <script type="text/javascript" src="diff-match-patch-master/javascript/diff_match_patch.js" ></script>
+        
 
 
         <script src="js/jquery.autosize.js"></script>
@@ -72,179 +76,181 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
           <span><input class="button1" type="submit" name="sheetbtn" value="シート選択画面に戻る"></span>
         </form>
       </div>
-      <!-- <form name="return" method="POST">
-        <div id="session">
-          <span class="session_php">
-          <?php //echo("ユーザ名：");
-                //echo($_SESSION["USERNAME"]);
-                //echo("  　シート名：");
-                //getSheetname();?>
-          </span>
-          <span>
-            <a href="" class="modal"><input type="button" id="js-show-popup" class="button9"  onclick="OperateDescription();" value="操作確認"></a>
-            <input class="button7" type="button" onclick="save_node();" value="DBの接続確認">
-          </span>
-        </div>
-      </form> -->
-      <!---          タイトルメニューFinish              -->
 
       <!--      タブメニュー Start        -->
-        <ul div class="tabnav">
-          <li class="active"><a href="#tab01">思考整理支援システム</a></li>
-          <!-- <li><a href="#tab02">過去のマインドマップ</a></li>
-          <li class="active"><a href="#tab03" >リフレクション</a></li>
-          <li class="active"><a href="#record_tab" >履歴</a></li> -->
-        </ul>
-      <!-- タブメニュー　Finish -->
+        <div id ="tab_menu">
+          <ul div class="tabnav">
+            <li class="active"><a href="#tab01">思考整理支援システム</a></li>
+          </ul>
 
-        <form name="target_mode" class="select_form" action="">
-            <select class="cp_ipselect2 cp_sl02"name="Select1">
-              <option>論文執筆モード</option>
-              <option>論文推敲モード</option>
-            </select>
-            <input type="button" class="button3" value="実行" onclick="ModeChangeButtonClick();" />
-        </form>
-        <div class="checkbox" id="scenario_btn">
-          <input type="checkbox" id="scenariobox" class="checkbox" name="check" onclick="CheckClick()">
-          <label for="scenariobox" data-on-label="" data-off-label=""></label>
-          <span class="checkbox_text">【論文シナリオを表示】</span>
-        </div>
-        <div class="checkbox" id="preview_btn" style="display:none;" >
-          <input type="checkbox" id="previewbox" class="checkbox" name="check" onclick="CheckClick()">
-          <label for="previewbox" data-on-label="" data-off-label=""></label>
-          <span class="checkbox_text">【論文プレビューを表示】</span>
-        </div>
-        <div class="checkbox" id="plusmap_btn" style="display:none;" >
-          <input type="checkbox" id="plusmapbox" class="checkbox" name="check" onclick="CheckClick()">
-          <label for="plusmapbox" data-on-label="" data-off-label=""></label>
-          <span class="checkbox_text">【マップも表示】</span>
+
+          
+          <div id="checkbox_area">
+            <div class="checkbox" id="logic_btn">
+              <input type="checkbox" id="logicbox" class="checkbox" name="check" onclick="CheckClick()">
+              <label for="logicbox" data-on-label="" data-off-label=""></label>
+              <span class="checkbox_text">【三角ロジックを表示】</span>
+            </div>
+
+            <div class="checkbox" id="scenario_btn">
+              <input type="checkbox" id="scenariobox" class="checkbox" name="check" onclick="CheckClick()">
+              <label for="scenariobox" data-on-label="" data-off-label=""></label>
+              <span class="checkbox_text">【論文シナリオを表示】</span>
+            </div>
+            <div class="checkbox" id="preview_btn" style="display:none;" >
+              <input type="checkbox" id="previewbox" class="checkbox" name="check" onclick="CheckClick()">
+              <label for="previewbox" data-on-label="" data-off-label=""></label>
+              <span class="checkbox_text">【論文プレビューを表示】</span>
+            </div>
+            <div class="checkbox" id="plusmap_btn" style="display:none;" >
+              <input type="checkbox" id="plusmapbox" class="checkbox" name="check" onclick="CheckClick()">
+              <label for="plusmapbox" data-on-label="" data-off-label=""></label>
+              <span class="checkbox_text">【マップも表示】</span>
+            </div>
+          </div>
+
+          <form name="target_mode" class="select_form" action="">
+              <select class="cp_ipselect2 cp_sl02"name="Select1">
+                <option>論文執筆モード</option>
+                <option>論文推敲モード</option>
+              </select>
+              <input type="button" class="button3" value="実行" onclick="ModeChangeButtonClick();" />
+          </form>
         </div>
         <!-- <div class="Menu">Menu</div> -->
 
         <!--メインメニュー　Start  -->
         <div class="tabcontent">
-        <!-- 思考整理支援システム -->
           <div id="tab01">
-            <div id="layout">
-              <div id="jsmind_nav">
-                <div style="text-align: left">
-                  <div id = "map_menu">
-                    <!-- 【Edit】 -->
-                    <button class="button4" onclick="add_Qnode();">
-                      問いノード追加
-                    </button>
-                    <button class="button4" onclick="add_Anode();">
-                      答えノード追加
-                    </button>
-                    <!-- <li><button onclick="horisage();">掘り下げる</button></li>
-                      <horisage()関数は現在存在しない-->
-                    <button class="button4" onclick="remove_node();">
-                      ノードの削除
-                    </button>
-                    <!--1つ前に消したノードを復元-->
-                    <!-- <button class="button4" onclick="return_node();">
-                      1つ前に戻る
-                    </button> -->
+            <div id="btn_menu">
+              <div class="menu_css" id = "map_menu">
+                <!-- 【Edit】 -->
+                <button class="button4" onclick="add_Qnode();">
+                  問いノード追加
+                </button>
+                <button class="button4" onclick="add_Anode();">
+                  答えノード追加
+                </button>
+                <!-- <li><button onclick="horisage();">掘り下げる</button></li>
+                  <horisage()関数は現在存在しない-->
+                <button class="button4" onclick="remove_node();">
+                  ノードの削除
+                </button>
+                <!--1つ前に消したノードを復元-->
+                <!-- <button class="button4" onclick="return_node();">
+                  1つ前に戻る
+                </button> -->
 
-                    <!-- 【Zoom】 -->
-                    <button class="button3" id="zoom-in-button" onclick="zoomIn();">
-                      拡大
-                    </button>
-                    <button class="button3" id="zoom-out-button" onclick="zoomOut();">
-                      縮小
-                    </button>
-                    <!-- 【Reason】
-                    <button class="button4" onclick="add_edit_reason();">
-                      修正理由の追加
-                    </button> -->
-                    <!-- 【Screenshot】 -->
-                    <button class="button4" style="width:80px" onclick="screen_shot();">
-                      screenshot
-                    </button>
-                    <!-- <label><input type="checkbox" name="Difference" id="Difference" onClick="Difference();">以前のマップとの差分</label> -->
-                  </div>
-
-                  <div id ="presen_menu">
-                    <!-- 【Slide】 -->
-                    <button class="button4" onclick="MakeChapter(null);">
-                      章追加
-                    </button>
-                    <button class="button4" onclick="MakeSection(null);">
-                      節追加
-                    </button>
-                    <button class="button4" onclick="MakeSlide();">
-                      パラグラフ追加
-                    </button>
-                    <button class="button4" onclick="NewContent_Append('問い')">
-                      問いノード追加
-                    </button>
-                    <button class="button4" onclick="NewContent_Append('答え')">
-                      答えノード追加
-                    </button>
-                    <button class="button4" onclick="add_Confirm();">
-                      マップ側へ反映
-                    </button>
-                    <!-- <button class="button4" onclick="Rebuild();">
-                      スライド再現
-                    </button> -->
-                    <!-- <button class="button4" onclick="Get_SlideRank();Get_ContentRank();Get_SlideTitle();">
-                      スライド保存
-                    </button> -->
-                    <button class="button4" onclick="Unreflected_node();">
-                      未反映ノード
-                    </button>
-                    <!-- <button class="button4" onclick="recommend_xmlLoad();">
-                      test
-                    </button> -->
-                    <!-- 【Export】
-                    <button class="button4" onclick="OutputScenario();">
-                      test
-                    </button> -->
-                    <!-- <button class="button4" onclick="OutputFile()">
-                      test
-                    </button> -->
-                  </div>
-                </div>
-                <div id ="preview_menu">
-                    <!-- 【Preview】 -->
-                    <button class="button4" onclick="Create_preview();">
-                      プレビュー更新
-                </div>
+                <!-- 【Zoom】 -->
+                <button class="button3" id="zoom-in-button" onclick="zoomIn();">
+                  拡大
+                </button>
+                <button class="button3" id="zoom-out-button" onclick="zoomOut();">
+                  縮小
+                </button>
+                <!-- 【Reason】
+                <button class="button4" onclick="add_edit_reason();">
+                  修正理由の追加
+                </button> -->
+                <!-- 【Screenshot】 -->
+                <button class="button4" style="width:80px" onclick="screen_shot();">
+                  screenshot
+                </button>
+                <!-- <label><input type="checkbox" name="Difference" id="Difference" onClick="Difference();">以前のマップとの差分</label> -->
               </div>
-              <div id="version_area" style="display:none;"></div>
 
-              <div class="Menu">Menu</div>
-              <!-- <div class="checkbox"> -->
-                <!-- <input type="checkbox" id="checkbox" class="checkbox" name="check" onclick="CheckClick()"> -->
-                <!-- <input type="checkbox" id="checkbox" class="checkbox" name="check" onclick="">
-                <label for="checkbox" data-on-label="On" data-off-label="Off"></label>
-                <span class="checkbox_text">【プレゼン作成】</span>
-              </div> -->
-
-              <!-- <div class="changemode_button">
-                <input type="button" id="documentation_mode_button" value="プレゼン" onclick="change_documentation_mode()">
-                <input type="button" id="mindmap_mode_button" value="マインドマップ" onclick="change_mindmap_mode()">
-              </div> -->
-
-            <div id="jsmind_container" oncontextmenu="return false;"></div>
-            <div id="mindmap_conmenu">
-              <ul>
-                <li><a href="javascript:void(0);" onClick="SetPurposeonChapter()">章を作成</a></li>
-                <li><a href="javascript:void(0);" onClick="SetPurposeonSection()">節を作成</a></li>
-                <li><a href="javascript:void(0);" onClick="SetPurpose()">パラグラフを作成</a></li>
-                <li><a href="javascript:void(0);" onClick="NodeAppend()">パラグラフに内容を追加</a></li>
-              </ul>
-            </div>
-            <div id="document_area"> 
-              <div id="document_title">
-                <div class="document_purpose">
-                  <textarea id="scenario_title" class="document_title_area" class="statement" onfocus='TextboxClick()' onblur='Edit_title(this);' placeholder="論文タイトル" style='width:91%;'></textarea>
-                </div>
+              <div class="menu_css" id ="presen_menu">
+                <!-- 【Slide】 -->
+                <button class="button4" onclick="MakeChapter(null);">
+                  章追加
+                </button>
+                <button class="button4" onclick="MakeSection(null);">
+                  節追加
+                </button>
+                <button class="button4" onclick="MakeSlide();">
+                  パラグラフ追加
+                </button>
+                <button class="button4" onclick="NewContent_Append('問い')">
+                  問いノード追加
+                </button>
+                <button class="button4" onclick="NewContent_Append('答え')">
+                  答えノード追加
+                </button>
+                <button class="button4" onclick="add_Confirm();">
+                  マップ側へ反映
+                </button>
+                <!-- <button class="button4" onclick="Rebuild();">
+                  スライド再現
+                </button> -->
+                <!-- <button class="button4" onclick="Get_SlideRank();Get_ContentRank();Get_SlideTitle();">
+                  スライド保存
+                </button> -->
+                <button class="button4" onclick="Unreflected_node();">
+                  未反映ノード
+                </button>
+                <!-- <button class="button4" onclick="recommend_xmlLoad();">
+                  test
+                </button> -->
+                <!-- 【Export】
+                <button class="button4" onclick="OutputScenario();">
+                  test
+                </button> -->
+                <!-- <button class="button4" onclick="OutputFile()">
+                  test
+                </button> -->
               </div>
-              <div id="chapter_area"></div>
+              <div class="menu_css" id="logic_menu">
+                <input type="button" id="ln_addNode" value="ノード追加">
+                <input type="button" id="ln_deleteNode" value="ノード削除">
+                <input type="button" id="ln_startEditEdge" value="エッジ追加">
+                <input type="button" id="ln_deleteEdge" value="エッジ削除">
+              </div>
+              <div id ="preview_menu">
+                  <!-- 【Preview】 -->
+                  <button class="button4" onclick="Create_preview();">
+                    プレビュー更新
+              </div>
             </div>
-            <div id="preview_area"></div>
+            <div id="version_area" style="display:none;"></div>
 
+            <div class="Menu">Menu</div>
+            <!-- <div class="checkbox"> -->
+              <!-- <input type="checkbox" id="checkbox" class="checkbox" name="check" onclick="CheckClick()"> -->
+              <!-- <input type="checkbox" id="checkbox" class="checkbox" name="check" onclick="">
+              <label for="checkbox" data-on-label="On" data-off-label="Off"></label>
+              <span class="checkbox_text">【プレゼン作成】</span>
+            </div> -->
+
+            <!-- <div class="changemode_button">
+              <input type="button" id="documentation_mode_button" value="プレゼン" onclick="change_documentation_mode()">
+              <input type="button" id="mindmap_mode_button" value="マインドマップ" onclick="change_mindmap_mode()">
+            </div> -->
+            <div id="content">
+              <div id="jsmind_area">
+                <div id="jsmind_container" oncontextmenu="return false;"></div>
+              </div>
+              <div id="mindmap_conmenu">
+                <ul>
+                  <li><a href="javascript:void(0);" onClick="SetPurposeonChapter()">章を作成</a></li>
+                  <li><a href="javascript:void(0);" onClick="SetPurposeonSection()">節を作成</a></li>
+                  <li><a href="javascript:void(0);" onClick="SetPurpose()">パラグラフを作成</a></li>
+                  <li><a href="javascript:void(0);" onClick="NodeAppend()">パラグラフに内容を追加</a></li>
+                </ul>
+              </div>
+              <div id="logic_area">
+                <div id="mynetwork"></div>
+              </div>
+
+              <div id="document_area"> 
+                <div id="document_title">
+                  <div class="document_purpose">
+                    <textarea id="scenario_title" class="document_title_area" class="statement" onfocus='TextboxClick()' onblur='Edit_title(this);' placeholder="論文タイトル" style='width:91%;'></textarea>
+                  </div>
+                </div>
+                <div id="chapter_area"></div>
+              </div>
+              <div id="preview_area"></div>
+            </div>
             <div id="elab_jsmind_container" style="display:none;" oncontextmenu="return false;" ></div>
             <div id="elab_map_conmenu" class="elab_conmenu">
               <ul>
@@ -301,71 +307,6 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
 
             <!--サイドメニュー　start-->
             <div id="side_menu">
-            <div id="feedback_area"></div>
-
-            <!--
-              <!-- プレゼンモードのサイドメニュー -- >
-              <div id="document">
-                <div id="advice_frame" class="searchFrame">
-                    <!-- 事前設定 -->
-                    <!-- <div id='pre_set' style="margin-top: 120px;">
-                      <center><input type="button" value="事前設定" onclick="ShowModel()" style="width:100px; height:50px; background-color:#FFDBE1;"></center>
-                    </div> -->
-                    <!-- 発表の場の選択 -- >
-                    <div id='set_audience'>
-                      <h2>発表の場の選択</h2>
-                      <form name="form1">
-                        <input type="radio" class="aradio" value="1" opt="卒業論文発表" checked>卒業論文発表<br>
-                        <input type="radio" class="aradio" value="2" opt="修士論文発表">修士論文発表<br>
-                        <!-- <input type="radio" class="aradio" value="1" opt="夏季成果報告会（学士/未システム）" checked>夏季成果報告会（学士/未システム）<br>
-                        <input type="radio" class="aradio" value="2" opt="夏季成果報告会（学士/システム）">夏季成果報告会（学士/システム）<br>
-                        <input type="radio" class="aradio" value="3" opt="夏季成果報告会（修士1年）">夏季成果報告会（修士1年）<br>
-                        <input type="radio" class="aradio" value="4" opt="夏季成果報告会（修士2年）">夏季成果報告会（修士2年）<br>
-                        <input type="radio" class="aradio" value="5" opt="夏季成果報告会（博士）">夏季成果報告会（博士）<br> -- >
-                        <input class="simple_btn" type="button" name="set" value="NEXT" onclick="audience_xmlLoad()"/>
-                        <!-- <input class="simple_btn" type="button" name="set" value="NEXT" onclick="SetAudience()"/> -- >
-                      </form>
-                    </div>
-                    <!-- 学習者による聴衆モデルの選択 -- >
-                    <div id='set_model'>
-                      <h2>目標の設定</h2>
-                      <form name="form1">
-                        <div id="set_perspective">
-                        </div>
-
-
-                        <div id="input_pluralBox">
-                          <!-- <div id="input_plural">
-                          　<input type="text" class="form-control" placeholder="〇〇は述べられているか">
-                            <input type="button" value="－" class="del pluralBtn">
-                          </div> -- >
-                        </div>
-                        <input class="add pluralBtn" class="simple_btn" type="button" value="＋"><br>
-                        <!-- その他 -->
-                        <!-- 折りたたみ展開ボタン -- >
-                        <div onclick="obj=document.getElementById('menu1').style; obj.display=(obj.display=='none')?'block':'none';">
-                        <a style="cursor:pointer;">▼ その他(クリックで展開)</a>
-                        </div>
-                        <!--// 折りたたみ展開ボタン -- >
-                        <!-- ここから先を折りたたむ -- >
-                        <div id="menu1" style="display:none;clear:both;">
-                        </div>
-                        <!--// ここまでを折りたたむ -- >
-
-                        <input class="simple_btn" type="button" name="set" value="OK" onclick="SetModel();" style="margin-top: 20px"/>
-                        <input class="simple_btn" type="button" name="set" value="発表の場の選択に戻る" onclick="Back_Select()" style="margin-top: 20px"/>
-                      </form>
-                    </div>
-                    <!-- 選択中の聴衆モデル-- >
-                    <div id='set_final'>
-                      <h2>設定目標</h2>
-                    </div>
-                    <div id='edit_model'>
-                      <input class="simple_btn" type="button" value="目標の設定に戻る" onclick="Edit_Model();"/>
-                    </div>
-
-                </div>
-              </div>-->
 
               <!-- マインドマップ編集のサイドメニュー -->
               <div id="mind">
@@ -400,39 +341,13 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                 </div>
               </div>
               <!-- 添削コメント編集のサイドメニュー -->
-              <div id="comment" style="display:none;" >
-                <!-- <div class=check_menu">添削一覧</div>aaa -->
-                <!-- <div class="check_list">
-                  <input class="button5" type="button" onclick="showGeneration();" value="all">
-                  添削一覧を表示
-                </div> -->
-
-                <!-- <div class="templete_area">
-                  <div id="tensaku_templete"></div>
-
-                  <!--<div>【典型的な問題点】</div>
-                  <div id="testxml"></div>
-                  <div id="ont"></div>
-
-                  <div>【独自の問題点】</div>
-                  <div id="intention"></div>
-                  
-                   <div>【表現の問題点】</div>
-                  <div id="check_deep"></div> --v>
-                </div> -->
 
 
-                <div class="check_list">
-                  <input id="add_tensaku" type="button" onclick="Add_tensaku();" value="添削コメントを追加"  style="display:none;" >
-                </div>
-                <div id="tensaku_area">
-                </div>
+
+              <div class="check_list">
+                <input id="add_tensaku" type="button" onclick="Add_tensaku();" value="添削コメントを追加"  style="display:none;" >
               </div>
-
-
-            <!--サイドメニュー　finish-->
-          </div>
-          </div>
+            </div>
           </div>
 
           <!--  　　　tab02メニュー　　　　　-->
@@ -478,14 +393,14 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                       <span><input id="reflection_btn" type="button" onclick="activity_reflection();" value="リフレクション開始" /></span>
               </form>
               <form id ="reflection_form" class="ref_form" method = "post" action = "php/record_reflection.php" ></form>
-            </div>
+              </div>
             </div>
           </div>
           <!--リフレクション終了 yoshioka -->
 
 
           <!-- 履歴　yoshioka -->
-          <div id="record_tab">
+          <!-- <div id="record_tab">
             <div id="layout">
             <div id="record_container">
               <form id ="reco_peri" class="ref_peri" method = "post" acion="">
@@ -498,15 +413,14 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                       <input id="reco_period" name="start_date" type="date" disabled="disabled"/>から<input id="reco_period2" name="finish_date" type="date" disabled="disabled"/>
                       <br>
                       <br>
-                      <!-- ↓idがバッティングしていたため，とりあえずコメントアウトしている． -->
-                      <!-- <span><input id="reflection_btn" type="button" onclick="get_recordAAAA();" value="リフレクション履歴表示" /></span> -->
+                      ↓idがバッティングしていたため，とりあえずコメントアウトしている．
+                      <span><input id="reflection_btn" type="button" onclick="get_recordAAAA();" value="リフレクション履歴表示" /></span>
               </form>
               <div id ="record_table"></div>
             </div>
             </div>
-          </div>
+          </div> -->
           <!--履歴 yoshioka -->
-
         </div>
         <!-- メインメニュー　Finish -->
 
@@ -533,6 +447,8 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
         <script type="text/javascript" src="js/ont_audience_model.js"></script>
         <script type="text/javascript" src="js/ont_audience_model.js"></script>
         <script type="text/javascript" src="js/tensaku.js"></script>
+        <script type="text/javascript" src="js/logic_network.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
           open_empty();
           getData();
