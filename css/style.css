@@ -685,7 +685,7 @@ input:checked+label::after {
 /* 議論目的の部分 */
 #document_title{
 	overflow: visible;
-	background-color: orange;
+	/* background-color: orange; */
 }
 #document_title::-webkit-scrollbar{
 	display:none;

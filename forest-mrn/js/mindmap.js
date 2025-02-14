@@ -1848,7 +1848,7 @@ window.onload = function(){
   Rebuild_s().then(() => {
 
     Rebuild_content_s().then(() => {
-      // SetIndent();
+      SetIndent();
     });
 
   });

@@ -769,16 +769,6 @@ async function CreateThread(topic, id){
       brotherId = "root";
   }
 
-  let brotherThread = newThread.prev('.thread'); // 親要素を取得
-  let parentId;
-  if (brotherThread.length > 0) {
-      parentId = brotherThread.attr('id'); // 親要素のIDを取得
-      newThread.attr('data-parent_id', parentId); // 新しい要素にparent_idを設定
-  } else {
-      newThread.attr('data-parent_id', 'root'); // 親がいない場合はrootを設定
-      parentId = "root";
-  }
-
   Record_slide(uuid, node_id, statement, brotherId);
 
   var conceptID = GetConceptId(id);
@@ -789,7 +779,7 @@ async function CreateThread(topic, id){
   }
 
   console.log(type);
-  Record_content(setid, id, conceptID, statement, uuid, brotherId, parentId, type);
+  Record_content(setid, id, conceptID, statement, uuid, brotherId, "root", type);
 
  $('#document_area').sortable({
    update: function(){
@@ -869,13 +859,13 @@ function MakeSlide(){
 
     area.append(label);
 
-    // slide内のparent_idを指定
+    // slide内のbrother_idを指定
     let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
     let parentThread = newThread.prev('.thread'); // 親要素を取得
     let brotherId;
     if (parentThread.length > 0) {
         brotherId = parentThread.attr('id'); // 親要素のIDを取得
-        newThread.attr('data-brother_id', brotherId); // 新しい要素にparent_idを設定
+        newThread.attr('data-brother_id', brotherId); // 新しい要素にbrother_idを設定
     } else {
         newThread.attr('data-brother_id', 'root'); // 親がいない場合はrootを設定
       brotherId = "root";
@@ -929,13 +919,13 @@ function MakeNewPage(){
 
   area.append(label);
 
-  // slide内のparent_idを指定
+  // slide内のbrother_idを指定
   let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
   let parentThread = newThread.prev('.thread'); // 親要素を取得
   let brotherId;
   if (parentThread.length > 0) {
       brotherId = parentThread.attr('id'); // 親要素のIDを取得
-      newThread.attr('data-brother_id', brotherId); // 新しい要素にparent_idを設定
+      newThread.attr('data-brother_id', brotherId); // 新しい要素にbrother_idを設定
   } else {
       newThread.attr('data-brother_id', 'root'); // 親がいない場合はrootを設定
       brotherId = "root";
@@ -1020,13 +1010,13 @@ function AddImage(){
 
   area.append(label);
 
-  // slide内のparent_idを指定
+  // slide内のbrother_idを指定
   let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
   let parentThread = newThread.prev('.thread'); // 親要素を取得
   let brotherId;
   if (parentThread.length > 0) {
       brotherId = parentThread.attr('id'); // 親要素のIDを取得
-      newThread.attr('data-brother_id', brotherId); // 新しい要素にparent_idを設定
+      newThread.attr('data-brother_id', brotherId); // 新しい要素にbrother_idを設定
   } else {
       newThread.attr('data-brother_id', 'root'); // 親がいない場合はrootを設定
       brotherId = "root";
@@ -1392,13 +1382,13 @@ function ItemAddDocument(){
 
   area.append(label);
 
-  // slide内のparent_idを指定
+  // slide内のbrother_idを指定
   let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
   let parentThread = newThread.prev('.thread'); // 親要素を取得
   let brotherId;
   if (parentThread.length > 0) {
       brotherId = parentThread.attr('id'); // 親要素のIDを取得
-      newThread.attr('data-brother_id', brotherId); // 新しい要素にparent_idを設定
+      newThread.attr('data-brother_id', brotherId); // 新しい要素にbrother_idを設定
   } else {
       newThread.attr('data-brother_id', 'root'); // 親がいない場合はrootを設定
       brotherId = "root";
@@ -2129,13 +2119,13 @@ function Get_SlideRank(){
   var slide_dom = document.getElementsByClassName("thread");
   var slide_id =[];
 
-  // slide内のparent_idを指定
+  // slide内のbrother_idを指定
   let newThread = area.find(`#${uuid}`); // 追加したばかりの要素を取得
   let parentThread = newThread.prev('.thread'); // 親要素を取得
   let brotherId;
   if (parentThread.length > 0) {
       brotherId = parentThread.attr('id'); // 親要素のIDを取得
-      newThread.attr('data-brother_id', brotherId); // 新しい要素にparent_idを設定
+      newThread.attr('data-brother_id', brotherId); // 新しい要素にbrother_idを設定
   } else {
       newThread.attr('data-brother_id', 'root'); // 親がいない場合はrootを設定
       brotherId = "root";
@@ -2169,7 +2159,7 @@ function Get_DocumentRank(){
     }
 
     // 親IDを設定
-    $(slide_dom[i]).attr('data-brother_id', brotherId); // 対象のスレッドにparent_idを設定
+    $(slide_dom[i]).attr('data-brother_id', brotherId); // 対象のスレッドにbrother_idを設定
     
     // document_rankを記録する
     Record_document_rank(slide_id[i], brotherId);
@@ -2589,7 +2579,7 @@ class SlideImage{
 class Content{
   constructor(obj){
 
-    console.log(obj);
+    // console.log(obj);
     const content_id = obj.content_id;
     const node_id = obj.node_id;
     const content = obj.content;
@@ -3887,40 +3877,62 @@ async function Rebuild_content_s(){
         if(arr == "[]"){
           // console.log(arr);
         }else{
-          // console.log(arr);
           var parse = JSON.parse(arr);
           const contentMap = {};
-          console.log(parse);
+          // console.log(arr);
+          // console.log(parse);
           
           // 要素をcontentMapに格納
           for (var i = 0; i < parse.length; i++) {
-            contentMap[parse[i].item_content_id] = parse[i];
+              contentMap[parse[i].item_content_id] = parse[i];
           }
 
-          // brother_id ごとのグルーピング
+          // ノードのグループ作成
           const groups = {};
-          for (var i = 0; i < parse.length; i++) {
-              const content = contentMap[parse[i].item_content_id];
-              const brotherId = content.brother_id;
-
-              if (brotherId) {
-                  if (!groups[brotherId]) {
-                      groups[brotherId] = [];
-                  }
-                  groups[brotherId].push(content);
+          for (const id in contentMap) {
+              const content = contentMap[id];
+              const parentId = content.parent_id;
+              if (!groups[parentId]) {
+                  groups[parentId] = [];
               }
+              groups[parentId].push(content);
           }
 
-          for (const brotherId in groups) {
-            const group = groups[brotherId];
-            // parent_id に基づいて並び替え
-            group.sort((a, b) => {
-                return (a.parent_id || "").localeCompare(b.parent_id || ""); // nullまたはundefinedの場合に注意
-            });
-            console.log(group);
-    
-            // 並び替えた要素を挿入する処理
-            for (const content of group) {
+          // ノードを出力するための結果配列
+          const result = [];
+
+          // 指定した条件に基づくノードの出力
+          const collectResults = (parentId) => {
+              const siblings = groups[parentId] || [];
+              
+              // brother_id が root で parent_id が root のノードを取得
+              const specialNodes = siblings.filter(node => node.brother_id === 'root' && node.parent_id === 'root');
+              
+              // それ以外のノード
+              const otherNodes = siblings.filter(node => !(node.brother_id === 'root' && node.parent_id === 'root'));
+
+              // 特別なノードを出力
+              for (const node of specialNodes) {
+                  result.push(node);
+                  // 子ノードも再帰的に処理
+                  collectResults(node.item_content_id);
+              }
+
+              // その他のノードも出力
+              for (const node of otherNodes) {
+                  result.push(node);
+                  // 子ノードも再帰的に処理
+                  collectResults(node.item_content_id);
+              }
+          };
+
+          // 最初に root ノードから開始
+          collectResults("root");
+
+          // 結果を整形して出力
+          result.forEach(content => {
+              console.log(`${content.item_content_id} [id:${content.item_content_id}, bro:${content.brother_id}, par:${content.parent_id}]`);
+
               const newContent = new Content({
                   content_id: content.item_content_id,
                   node_id: content.node_id,
@@ -3928,75 +3940,16 @@ async function Rebuild_content_s(){
                   slide_id: content.item_id,
                   type: content.type,
                   brother_id: content.brother_id,
-                  parent_id: content.parent_id
+                  parent_id: content.parent_id,
               });
-  
-              let insertAfterElement;
-  
-              // brother_id が存在する場合、兄弟要素に基づいて挿入
-              if (content.brother_id && contentMap[content.brother_id]) {
-                  insertAfterElement = document.getElementById("contents-" + contentMap[content.brother_id].item_content_id);
-              } 
-              // parent_id が root の場合、最初の子要素の前に追加
-              else if (content.parent_id === "root") {
-                  const parentElements = document.querySelectorAll(`div[pt-id='${content.parent_id}'] > div`); 
-                  if (parentElements.length > 0) {
-                      insertAfterElement = parentElements[0];
-                  }
-              } 
-              // parent_id がある場合、その要素を基準に使用
-              else if (content.parent_id && contentMap[content.parent_id]) {
-                  insertAfterElement = document.getElementById("contents-" + contentMap[content.parent_id].item_content_id);
-              }
-  
-              // 要素を挿入
-              if (insertAfterElement) {
-                  const domTmp = document.createElement('div');
-                  domTmp.id = "contents-" + content.item_content_id; // content_id を使用
-                  domTmp.innerHTML = content.content; // コンテンツ内容を挿入
-  
-                  insertAfterElement.parentNode.insertBefore(domTmp, insertAfterElement); // insertAfterElementの前に追加
-              }
-  
-              delete newContent;  // メモリ管理のため、必要であればここで削除
-            }
-          }
+
+              // 要素をDOMに挿入する処理をここに追加（例: newContentをDOMに追加）
+              
+              delete newContent; // メモリ管理のため、必要であればここで削除
+          });
+
           console.log("コンテント再現完了");
 
-          // for(var i=0; i<parse.length; i++){
-          //   for(var j=0; j<parse.length; j++){
-          //     // console.log(String(i), parse[j].rank);
-          //     if(String(i) == parse[j].rank){
-          //       const newcontent = new Content({
-          //     		content_id: parse[j].item_content_id,
-          //     		node_id: parse[j].node_id,
-          //         content: parse[j].content,
-          //         slide_id: parse[j].item_id,
-          //         type: parse[j].type,
-          //         brother_id: parse[j].brother_id,
-          //     	  parent_id: parse[j].parent_id});
-          //       if(parse[j].node_id != ""){
-          //         const content_id = parse[j].item_content_id;
-          //         const node_id = parse[j].node_id;
-          //         var dom_tmp = document.getElementById("contents-"+content_id);
-          //         var dom_target = dom_tmp.previousElementSibling;
-          //         // console.log(dom_target);
-          //         dom_target.setAttribute("node_id",node_id);
-          //       }
-          //       if(parse[j].concept_id != ""){
-          //         const content_id = parse[j].item_content_id;
-          //         const concept_id = parse[j].concept_id;
-          //         var dom_tmp = document.getElementById("contents-"+content_id);
-          //         var dom_target = dom_tmp.previousElementSibling;
-          //         // console.log(dom_target);
-          //         dom_target.setAttribute("concept_id",concept_id);
-          //       }
-                
-          //       delete newcontent;
-          //       console.log("コンテント再現完了");
-          //     }
-          //   }
-          // }
           //2022-11-23 論理構成意図を選択するためのセレクトボックスの中身を追加
           for(var LogicLabel in Base_ClassLabeltoConceptID){
             // console.log(LogicLabel);
@@ -4016,12 +3969,12 @@ async function Rebuild_content_s(){
             //console.log(selected_id);
             var objSelect = document.getElementById(selected_id);
             // console.log(parse[q].logic_option)
-            objSelect.options[parse[q].logic_option].selected = true;
+            // objSelect.options[parse[q].logic_option].selected = true;
             
           }
           console.log("選択肢を追加");
         }
-	    },
+      },
       error:function(){
         console.log("エラーです");
       }
@@ -4159,37 +4112,55 @@ function SetIndent(){
 
   const span_dom = document.getElementsByClassName("cspan");
 
-  for(var i=0; i<span_dom.length; i++){
-    const indent = span_dom[i].getAttribute("name");
+  for (var i = 0; i < span_dom.length; i++) {
     const target_dom = span_dom[i];
-    const text_dom = span_dom[i].nextElementSibling;
-    //2022/12/23 shimizu 
-    const thread_dom = document.getElementById("SelectBox-"+target_dom.id)
-    switch(indent){
-      case "1":
-        target_dom.style.width = "calc(100% - 45px)";
-        target_dom.style.marginLeft = "20px";
-        text_dom.style.width = "calc(100% - 45px)";
-        text_dom.style.marginLeft = "20px";
-        //2022/12/23 shimizu
-        thread_dom.style.marginLeft = "20px";
-        break;
-      case "2":
-        target_dom.style.width = "calc(100% - 65px)";
-        target_dom.style.marginLeft = "40px";
-        text_dom.style.width = "calc(100% - 65px)";
-        text_dom.style.marginLeft = "40px";
-         //2022/12/23 shimizu
-         thread_dom.style.marginLeft = "40px";
-        break;
-      case "3":
-        target_dom.style.width = "calc(100% - 85px)";
-        target_dom.style.marginLeft = "60px";
-        text_dom.style.width = "calc(100% - 85px)";
-        text_dom.style.marginLeft = "60px";
-         //2022/12/23 shimizu
-         thread_dom.style.marginLeft = "60px";
-        break;
+    const parent_id = target_dom.getAttribute("name"); // parent_idを取得
+    let indent = 0;
+
+    // 親要素の深さを取得するために親を辿る
+    let parent = document.getElementById(parent_id);
+    while (parent) {
+        indent++; // 親が存在する間、深さを増やす
+        const grandParentId = parent.getAttribute("name");
+        if (grandParentId == "root") break; // 親が親を持たない場合終了
+        parent = document.getElementById(grandParentId); // 新しい親を取得
+    }
+
+    // 深さに応じてスタイルを設定
+    const text_dom = target_dom.nextElementSibling;
+    const thread_dom = document.getElementById("SelectBox-" + target_dom.id);
+
+    switch (indent) {
+        case 1:
+            target_dom.style.width = "calc(100% - 45px)";
+            target_dom.style.marginLeft = "20px";
+            text_dom.style.width = "calc(100% - 45px)";
+            text_dom.style.marginLeft = "20px";
+            if (thread_dom) thread_dom.style.marginLeft = "20px";
+            break;
+        case 2:
+            target_dom.style.width = "calc(100% - 65px)";
+            target_dom.style.marginLeft = "40px";
+            text_dom.style.width = "calc(100% - 65px)";
+            text_dom.style.marginLeft = "40px";
+            if (thread_dom) thread_dom.style.marginLeft = "40px";
+            break;
+        case 3:
+            target_dom.style.width = "calc(100% - 85px)";
+            target_dom.style.marginLeft = "60px";
+            text_dom.style.width = "calc(100% - 85px)";
+            text_dom.style.marginLeft = "60px";
+            if (thread_dom) thread_dom.style.marginLeft = "60px";
+            break;
+        default:
+            target_dom.style.width = "100%";
+            target_dom.style.marginLeft = "0px";
+            if (text_dom) {
+                text_dom.style.width = "100%";
+                text_dom.style.marginLeft = "0px";
+            }
+            if (thread_dom) thread_dom.style.marginLeft = "0px";
+            break;
     }
   }
 }
