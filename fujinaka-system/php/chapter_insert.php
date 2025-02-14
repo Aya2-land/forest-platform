@@ -9,34 +9,36 @@
   date_default_timezone_set('Asia/Tokyo');
 
 	$user_id = $_SESSION['USERID'];		//ユーザID
-  $map_id = $_SESSION['MAPID'];	//シートID
-  $chapter_id = $_POST["id"];				//章ID
-	$rank = $_POST["rank"];						//章順番
+	$map_id = $_SESSION['MAPID'];	//シートID
+	$chapter_id = $_POST["id"];				//章ID
+	$title = $_POST["title"];
+	$brother_id = $_POST["brother_id"];						//章順番
+	$chapter_version_id = uniqid();				//章versionID
+	$chapter_history_id = uniqid();				//章historyID
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-	$sql = "INSERT INTO chapter (chapter_id, user_id, map_id, rank, created_at)
-	VALUES ('$chapter_id', '$user_id', '$map_id', '$rank', '$timestamp')";
-
-	$result = $mysqli->query($sql);
-
-	//php($sql)のエラー処理
-	if($sql == TRUE){
-		;
-		error_log('$sql:chapter_insert成功', 0);
-	}else if($sql == FALSE){
-		error_log($sql.'$sql:chapter_insert失敗', 0);
-	}else{
-		error_log('$sql:chapter_insert不明なエラー', 0);
-	}
+	$sql = "INSERT INTO chapter (chapter_id, map_id, created_at, updated_at, deleted	)
+	VALUES ('$chapter_id', '$map_id', '$timestamp', '$timestamp', 0)";
 	
-	//php($result)のエラー処理
-	if($result == TRUE){
-		
-		error_log('$result:chapter_insert成功', 0);
-	}else if($result == FALSE){
-		error_log($result.'$result:chapter_insert失敗'.$mysqli->error, 0);
-	}else{
-		error_log('$result:chapter_insert不明なエラー', 0);
+	$sql_it = "INSERT INTO chapters (chapter_id, item_id, created_at, updated_at, deleted)
+	VALUES ('$chapter_id', '$map_id', '$timestamp', '$timestamp', 0)";
+	$result_it = $mysqli->query($sql_it);
+	if ($mysqli->error) {
+	echo "Error chapters: " . $mysqli->error;
+	}
+
+	$sql_it_v = "INSERT INTO chapter_versions (chapter_version_id, chapter_id, chapter_bro_id, map_version_id, title, appeared_at, disappeared_at)
+	VALUES ('$chapter_version_id', '$chapter_id', '$brother_id', '$node_id', 0, '$content', '$type', '$timestamp', NULL)";
+	$result_it_v = $mysqli->query($sql_it_v);
+	if ($mysqli->error) {
+	echo "Error chapter_versions: " . $mysqli->error;
+	}
+
+	$sql_it_h = "INSERT INTO chapter_histories (chapter_history_id, chapter_version_id, chapter_bro_id, title, appeared_at, disappeared_at)
+	VALUES ('$chapter_history_id', '$chapter_version_id', '$parent_id', '$brother_id', '$node_id', 0, '$content', '$type', '$timestamp', NULL)";
+	$result_it_h = $mysqli->query($sql_it_h);
+	if ($mysqli->error) {
+	echo "Error chapter_histories: " . $mysqli->error;
 	}
 
 ?>
