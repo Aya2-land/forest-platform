@@ -186,6 +186,29 @@ setOptions(options) {
       }
       this.dragStartNodeId = null;
       this.dragEndNodeId = null;
+    } else {
+      //移動したノードの情報を保存
+      const movedNodeId = params.nodes[0];
+      if (movedNodeId !== undefined) {
+        const node = this.nodes.get(movedNodeId);
+        if (!node) {
+          console.error(`ノードID ${movedNodeId} に該当するノードが見つかりません。`);
+          return;
+        }
+        this.nodes.update({
+          id: movedNodeId,
+          x: params.pointer.x,
+          y: params.pointer.y,
+        })
+        const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
+        this.latest_selected_node_info.x = (nodeBoundingBox.right + nodeBoundingBox.left) / 2;
+        this.latest_selected_node_info.y = nodeBoundingBox.bottom + 10;
+        try {
+          defaultRecordLogicNetwork.update_LogicNodePosition(movedNodeId, this.latest_selected_node_info.x, this.latest_selected_node_info.y);
+        } catch (error) {
+          console.error("Error updating defaultRecordLogicNetwork:", error);
+        }
+      }
     }
   }
 
@@ -201,7 +224,7 @@ setOptions(options) {
 class RecordLogicNetwork{
   record_LogicNode (id, label, x, y){
     $.ajax({
-      url: "php/logicrecord.php",
+      url: "php/logic_maneger.php",
       type: "POST",
       data: {
         node_id : id,
@@ -212,10 +235,57 @@ class RecordLogicNetwork{
         record_thing : 'node'
       },
       dataType: "json",
+      success: function(response) {
+        console.log(response); // ← ここでレスポンス確認
+        if (response.status === "success") {
+          console.log("記録成功:", response.node_id);
+        } else {
+          console.error("エラー:", response.message);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error("通信エラー:", error);
+      }
     });
   }
-  record_LogicEdge (id,edge_from,  edge_to){
-    
+
+  update_LogicNodePosition (movedNodeId, x, y){
+    $.ajax({
+      url: "php/logic_maneger.php",
+      type: "POST",
+      data: {
+        movedNodeId : movedNodeId,
+        x : x,
+        y : y,
+        purpose : 'update',
+        update_thing : 'node'
+      }
+    })
+  }
+
+  record_LogicEdge (edge_start,  edge_end){
+    $.ajax({
+      url: "php/logic_maneger.php",
+      type: "POST",
+      data: {
+        edge_start: edge_start,
+        edge_end: edge_end,
+        purpose: 'record',
+        record_thing: 'edge'
+      },
+      dataType: "json",
+      success: function(response) {
+        console.log(response); // ← ここでレスポンス確認
+        if (response.status === "success") {
+          console.log("記録成功:", response.node_id);
+        } else {
+          console.error("エラー:", response.message);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error("通信エラー:", error);
+      }
+    })
   }
   
 
