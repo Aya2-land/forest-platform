@@ -4,7 +4,7 @@
 
 		require "connect_db.php";
 
-		$sql = "SELECT * FROM maps WHERE map_id = ".$_SESSION["MAPID"];
+		$sql = "SELECT * FROM maps WHERE map_id = ".$_SESSION["MAPID"]."";
 
 		if($result = $mysqli->query($sql)){
 
@@ -47,6 +47,8 @@
 		$_SESSION["MAPID"] = rand(); //ここでセッションが定義されているらしい
 		$map_version = rand();	
 		$map_mode_link = rand();
+		$document_id = uniqid();
+		$scenario_id = uniqid();
 		$created_at = date("Y-m-d H:i:s");
 		$deleted = 0;
 		$mode_id = 1; //自己内対話モード
@@ -73,11 +75,25 @@
 		    //   exit();
 		    // }
 			 
-			$sql_mv = "INSERT INTO map_versions (map_version_id, map_id, name, scenario_title, appeared_at, disappeared_at) VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$_POST['mapname']."', NULL, '".$created_at."', NULL)";
+			$sql_mv = "INSERT INTO map_versions (map_version_id, map_id, name, appeared_at, disappeared_at) VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$_POST['mapname']."', '".$created_at."', NULL)";
 			if (!$result = $mysqli->query($sql_mv)) {
 				print('Error - SQLSTATE3'. mysqli_error($mysqli));
 				exit();
 			}
+
+			$sql2 = "INSERT INTO document_titles (document_id, map_id, title, created_at, updated_at, deleted) VALUES ('$document_id', ".$_SESSION['MAPID'].", NULL, '$created_at','$created_at',0)";
+			
+			if (!$result = $mysqli->query($sql1)) {
+		      print('Error - SQLSTATE4'. mysqli_error($mysqli));
+		      exit();
+		    }
+
+			$sql2 = "INSERT INTO scenario_titles (scenario_id, map_id, title, created_at, updated_at, deleted) VALUES ('$scenario_id', ".$_SESSION['MAPID'].", NULL, '$created_at','$created_at',0)";
+			
+			if (!$result = $mysqli->query($sql1)) {
+		      print('Error - SQLSTATE5'. mysqli_error($mysqli));
+		      exit();
+		    }
 
 			header("Location: index.php");
 
@@ -117,7 +133,7 @@
 		// }
 
 		
-		$sql_mv = "INSERT INTO map_versions (map_version_id, map_id, name, scenario_title, appeared_at, disappeared_at) VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$_POST['mapname']."', NULL, '".$created_at."', NULL)";
+		$sql_mv = "INSERT INTO map_versions (map_version_id, map_id, name, appeared_at, disappeared_at) VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$_POST['mapname']."', '".$created_at."', NULL)";
 		if (!$result = $mysqli->query($sql_mv)) {
 		  print('Error - SQLSTATE'. mysqli_error($link));
 		  exit();

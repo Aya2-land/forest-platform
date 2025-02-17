@@ -188,8 +188,6 @@ function Delete_concepts(doc_id){
 //コンテンツ追加を記録する関数
 function Record_content(contentID, nodeID, conceptID, content, itemID, brother_id, parent_id, type){
 
-  console.log(brother_id);
-  console.log(parent_id)
   $.ajax({
 
       url: "php/content_create.php",
@@ -336,7 +334,6 @@ function Delete_Document_content(contentID){
 //コンテンツの編集を記録する関数
 function Edit_save(obj,id){
   var content = obj.value;//変更されたテキストエリアの内容
-  console.log(id);
 
   $.ajax({
       url: "php/content_edit.php",
@@ -401,6 +398,7 @@ function Edit_slide(obj, itemID){
 //プレゼンテーション自体のタイトルの編集を記録する関数
 function Edit_title(obj){
   var title = obj.value;
+  console.log(title);
 
   $.ajax({
 
@@ -512,7 +510,8 @@ async function Update_content_rank(){
   // });
 }
 
-//2022-11-24 shimizu
+//　2022-11-24 shimizu
+//  2025-02-17 kawa document_content_rank.phpで処理
 async function Update_Document_content_rank(){
   await $.ajax({
       url: "php/update_document_content_rank.php",
@@ -597,25 +596,20 @@ function Record_content_rank(contentID, rank, itemID, content, nodeID, type, ind
 }
 
 //2022-11-24 shimizu
-function Record_document_content_rank(contentID, rank, itemID, content, nodeID, type, indent, concept_id,logic_option_content){
+function Record_document_content_rank(contentID, brother_id, parent_id){
   var id = getUniqueStr();
+  console.log(brother_id);
+  console.log(parent_id);
 
   $.ajax({
 
       url: "php/document_content_rank.php",
       type: "POST",
       data: {id : id,
-            content_id : contentID,
-            rank : rank,
-            slide_id : itemID,
-            content : content,
-            node_id : nodeID,
-            type : type,
-            indent : indent,
-            concept_id : concept_id,
-            logic_option : logic_option_content},
+            item_content_id : contentID,
+            brother_id : brother_id,
+            parent_id : parent_id,},
       success: function (e) {
-        console.log("登録成功");
         if(e){
           console.log(e);
         }

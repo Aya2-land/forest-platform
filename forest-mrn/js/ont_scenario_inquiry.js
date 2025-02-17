@@ -39,12 +39,11 @@ function recommend_disp(){
 
   var conceptid;
   const c_scenario = document.getElementsByClassName("cspan");
-  console.log(c_scenario);
+//   console.log(c_scenario);
   for(var i=0; i<c_scenario.length; i++){
-    console.log(c_scenario[i].style.border);
+    // console.log(c_scenario[i].style.border);
     if(c_scenario[i].style.border == "2px solid gray"){
       conceptid = c_scenario[i].getAttribute("concept_id");
-      console.log(conceptid);
 			// if(conceptid == "" || conceptid == undefined || conceptid == null){
 			// 	console.log("aa");
 			// 	return 0;
@@ -58,7 +57,7 @@ function recommend_disp(){
       // }
     }
   }
-	console.log(conceptid);
+	// console.log(conceptid);
 
 	for(var i=0; i<$label.length; i++){//オントロジーの個数分回す
 

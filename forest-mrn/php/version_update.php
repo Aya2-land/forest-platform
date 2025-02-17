@@ -184,8 +184,8 @@
 
 			//map_versionsにINSERTする
 			$map_version = rand();	//not unique
-			$sql_mvi = "INSERT INTO map_versions(map_version_id, map_id, name, scenario_title, type, appeared_at, disappeared_at)
-				VALUES (".$map_version.", '".$_SESSION['MAPID']."', (SELECT name FROM maps WHERE map_id = ".$_SESSION['MAPID']."), (SELECT scenario_title FROM maps WHERE map_id = ".$_SESSION['MAPID']."), '".$timestamp."', NULL)";	//後で理由入れる
+			$sql_mvi = "INSERT INTO map_versions(map_version_id, map_id, name,  type, appeared_at, disappeared_at)
+				VALUES (".$map_version.", '".$_SESSION['MAPID']."', (SELECT name FROM maps WHERE map_id = ".$_SESSION['MAPID']."), '".$timestamp."', NULL)";	//後で理由入れる
 			$result_mvi = $mysqli->query($sql_mvi);
 			if($mysqli->error){
 				echo "Error: ". $mysqli->error;
@@ -525,12 +525,12 @@
 	}else if($_POST["data"] == "get_past_document"){
 
 		//mapsから資料のタイトルとupdated_at取得
-		$sql_get = "SELECT scenario_title, updated_at FROM maps WHERE user_id = ".$_SESSION['USERID']." AND map_id = ".$_SESSION['MAPID'];
+		$sql_get = "SELECT title, updated_at FROM document_titles WHERE map_id = ".$_SESSION['MAPID'];
 		$i = 0;
     	$get_array = array();
 		if($result_get = $mysqli->query($sql_get)) {
       		while($row = mysqli_fetch_assoc($result_get)){
-				$get_array[$i]["scenario_title"] = $row['scenario_title'];
+				$get_array[$i]["scenario_title"] = $row['title'];
 				$get_array[$i]["updated_at"] = $row['updated_at'];
 
 				//echo" <option value='".$row['scenario_title']."'": "'".$row['updated_at']."'>"  .$row['scenario_title']. "</option>" ;

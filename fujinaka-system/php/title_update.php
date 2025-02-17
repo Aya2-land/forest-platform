@@ -10,11 +10,11 @@ $map_id = $_SESSION["MAPID"];//
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 
-$sql = "SELECT scenario_title FROM maps WHERE map_id='$map_id'";
+$sql = "SELECT title FROM scenario_titles WHERE map_id='$map_id'";
 
 if($result = $mysqli->query($sql)) {
   while($row = mysqli_fetch_assoc($result)){
-    $pre_title = $row['scenario_title'];
+    $pre_title = $row['itle'];
   }
 }
 
@@ -22,7 +22,8 @@ $title = $_POST["title"]; //論文タイトル
 
 if($title != $pre_title){	//変更があれば更新
 
-  $sql = "UPDATE maps SET updated_at='$timestamp', scenario_title='$title' WHERE map_id='$map_id'";
+  // scenario_idをとってくるよう後で改変
+  $sql = "UPDATE scenario_titles SET updated_at='$timestamp', title='$title' WHERE map_id='$map_id'";
     
   $result = $mysqli->query($sql);
 

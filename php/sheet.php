@@ -4,7 +4,7 @@
 
 		require "connect_db.php";
 
-		$sql = "SELECT * FROM maps WHERE map_id = ".$_SESSION["MAPID"];
+		$sql = "SELECT * FROM maps WHERE map_id = ".$_SESSION["MAPID"]."";
 
 		if($result = $mysqli->query($sql)){
 

@@ -10,8 +10,8 @@
 
     $user_id = $_SESSION['USERID'];      //ユーザID
     $map_id = $_SESSION['MAPID'];    //シートID
-    $presentation_title = $_POST["title"]; //プレゼン自体のタイトル
-    $activity_id = uniqid();
+    $title = $_POST["title"]; //プレゼン自体のタイトル
+    // $document_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
     // $sql = "SELECT presentation_title FROM presentation_title WHERE edit_time = (select max(edit_time) from presentation_title)";
@@ -26,9 +26,8 @@
 
     // if($presentation_title != $pre_title){
 
-      $sql = "INSERT INTO presentation_title (id, presentation_title, user_id, map_id, edit_time)
-  		VALUES ('$activity_id', '$presentation_title', '$user_id', '$map_id', '$timestamp')";
-
+      // document_idをとってくるよう後で改変
+      $sql = "UPDATE document_titles SET updated_at='$timestamp', title='$title' WHERE map_id='$map_id'";
 
   		$result = $mysqli->query($sql);
 

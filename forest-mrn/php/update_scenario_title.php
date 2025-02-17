@@ -14,7 +14,7 @@
     $title = $_POST["title"];         //プレゼンシナリオのタイトル
 
 
-    $sql = "UPDATE maps SET updated_at = '$timestamp' WHERE map_id = '$map_id' AND 1 IN (SELECT mode_id FROM map_mode_links WHERE map_id = '$map_id' ) ";
+    $sql = "UPDATE scenario_titles SET title = '$title', '$updated_at' = '$timestamp' WHERE map_id = '$map_id'";
 
 
 		$result = $mysqli->query($sql);

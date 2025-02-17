@@ -10,60 +10,118 @@
 
     $user_id = $_SESSION['USERID'];      //ユーザID
     $map_id = $_SESSION['MAPID'];    //シートID
-    $item_id = $_POST["id"]; //スライドID
+    $purpose = $_POST["purpose"];
+    $id = $_POST["id"]; //item_idかitem_content_id
     $value_LogicID = $_POST["value"]; //スライドタイトル
-    $activity_id = uniqid();
+    $history_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-    $sql = "SELECT title FROM item_latest WHERE item_id = '$item_id'";
-    if($result = $mysqli->query($sql)) {
-      while($row = mysqli_fetch_assoc($result)){
-        $pre_title = $row['title'];
+
+    if($purpose === "item"){
+
+      $sql = "SELECT logic_option FROM item_latest WHERE item_id = '$id' ";
+      if ($mysqli->error) {
+        echo "Error item logic_option select: " . $mysqli->error;
+      }else if($result = $mysqli->query($sql)) {
+        while($row = mysqli_fetch_assoc($result)){
+          $pre_LogicID = $row['logic_option'];
+        }
       }
+
+      if($value_LogicID != $pre_LogicID){
+
+        // TEMPORARY TABLEを用いてitem_historiesから必要箇所のみ変更し，新しいタプルとして挿入
+        // 挿入順を変えるとappeared_at，disappeared_atが狂うので注意
+        $sql_new_1 = "CREATE TEMPORARY TABLE tmp_item_histories AS SELECT * FROM item_histories 
+            WHERE item_history_id = (SELECT item_history_id FROM item_latest WHERE item_id = '$id');";
+        $sql_update = "UPDATE item_histories SET disappeared_at = '$timestamp' WHERE item_history_id = (SELECT item_history_id FROM tmp_item_histories);";
+        $sql_new_2 = "UPDATE tmp_item_histories SET item_history_id = '$history_id', logic_option = '$value_LogicID', appeared_at = '$timestamp', disappeared_at = NULL;";
+        $sql_new_3 = "INSERT INTO item_histories SELECT * FROM tmp_item_histories;";
+        $sql_i_update = "UPDATE items set updated_at = '$timestamp' WHERE item_id = '$id';";
+
+        // TEMPORARY TABLEを削除
+        $sql_drop = "DROP TEMPORARY TABLE IF EXISTS tmp_item_histories;";
+
+        $result_new_1 = $mysqli->query($sql_new_1);
+        if ($mysqli->error) {
+          echo "Error creating temporary table: " . $mysqli->error;
+        }
+        $result_update = $mysqli->query($sql_update);
+        if ($mysqli->error) {
+          echo "Error item_his update: " . $mysqli->error;
+        }
+        $result_new_2 = $mysqli->query($sql_new_2);
+        if ($mysqli->error) {
+          echo "Error tmp_item_his update: " . $mysqli->error;
+        }
+        $result_new_3 = $mysqli->query($sql_new_3);
+        if ($mysqli->error) {
+          echo "Error item_his insert: " . $mysqli->error;
+        }
+        $result_i_update = $mysqli->query($sql_i_update);
+        if ($mysqli->error) {
+          echo "Error items update: " . $mysqli->error;
+        }
+        $result_drop = $mysqli->query($sql_drop);
+        if ($mysqli->error) {
+          echo "Error drop temporary table: " . $mysqli->error;
+        }
+
+      }
+      
+    }else if($purpose === "item_content"){
+
+      $sql = "SELECT logic_option FROM item_content_latest WHERE item_content_id = '$id' ";
+      if ($mysqli->error) {
+        echo "Error item_content logic_option select: " . $mysqli->error;
+      }else if($result = $mysqli->query($sql)) {
+        while($row = mysqli_fetch_assoc($result)){
+          $pre_LogicID = $row['logic_option'];
+        }
+      }
+
+      if($value_LogicID != $pre_LogicID){
+
+        // TEMPORARY TABLEを用いてitem_content_historiesから必要箇所のみ変更し，新しいタプルとして挿入
+        // 挿入順を変えるとappeared_at，disappeared_atが狂うので注意
+        $sql_new_1 = "CREATE TEMPORARY TABLE tmp_item_content_histories AS SELECT * FROM item_content_histories 
+            WHERE item_content_history_id = (SELECT item_content_history_id FROM item_content_latest WHERE item_content_id = '$id');";
+        $sql_update = "UPDATE item_content_histories SET disappeared_at = '$timestamp' WHERE item_content_history_id = (SELECT item_content_history_id FROM tmp_item_content_histories);";
+        $sql_new_2 = "UPDATE tmp_item_content_histories SET item_content_history_id = '$history_id', logic_option = '$value_LogicID', appeared_at = '$timestamp', disappeared_at = NULL;";
+        $sql_new_3 = "INSERT INTO item_content_histories SELECT * FROM tmp_item_content_histories;";
+        $sql_i_update = "UPDATE item_contents set updated_at = '$timestamp' WHERE item_content_id = '$id';";
+
+        // TEMPORARY TABLEを削除
+        $sql_drop = "DROP TEMPORARY TABLE IF EXISTS tmp_item_content_histories;";
+
+        $result_new_1 = $mysqli->query($sql_new_1);
+        if ($mysqli->error) {
+          echo "Error creating temporary table: " . $mysqli->error;
+        }
+        $result_update = $mysqli->query($sql_update);
+        if ($mysqli->error) {
+          echo "Error item_content_his update: " . $mysqli->error;
+        }
+        $result_new_2 = $mysqli->query($sql_new_2);
+        if ($mysqli->error) {
+          echo "Error tmp_item_content_his update: " . $mysqli->error;
+        }
+        $result_new_3 = $mysqli->query($sql_new_3);
+        if ($mysqli->error) {
+          echo "Error item_content_his insert: " . $mysqli->error;
+        }
+        $result_i_update = $mysqli->query($sql_i_update);
+        if ($mysqli->error) {
+          echo "Error items update: " . $mysqli->error;
+        }
+        $result_drop = $mysqli->query($sql_drop);
+        if ($mysqli->error) {
+          echo "Error drop temporary table: " . $mysqli->error;
+        }
+
+      }
+
     }
 
-    $sql = "SELECT title FROM item_latest WHERE item_id = '$item_id'";
-    if($result = $mysqli->query($sql)) {
-      while($row = mysqli_fetch_assoc($result)){
-        $pre_title = $row['title'];
-      }
-    }
-    // file_put_contents("error_log.txt", $pre_title);
-    // file_put_contents("error_log.txt", $slide_title);
-
-    // if($slide_title != $pre_title){
-
-    //   $sql = "UPDATE slide SET updated_at='$timestamp', slide_title='$slide_title' WHERE id='$item_id'";
-
-  	// 	$result = $mysqli->query($sql);
-
-    //   // //クエリ($sql)のエラー処理
-    //   // if($sql == TRUE){
-  	// 	// 	echo "true";
-  	// 	// 	error_log('$sql成功しています！'.$timestamp, 0);
-  	// 	// }else if($sql == FALSE){
-  	// 	// 	error_log($sql.'$sql失敗です', 0);
-  	// 	// 	// error_log('失敗しました。'.mysqli_error($link), 0);
-  	// 	// }else{
-  	// 	// 	error_log('$sql不明なエラーです', 0);
-  	// 	// }
-
-    //   // //php($result)のエラー処理
-    //   // if($result == TRUE){
-  	// 	// 	echo "true";
-  	// 	// 	error_log('$result成功しています！'.$timestamp, 0);
-  	// 	// }else if($result == FALSE){
-  	// 	// 	error_log($result.'$result失敗です'.$mysqli->error, 0);
-  	// 	// 	// error_log('失敗しました。'.mysqli_error($link), 0);
-  	// 	// }else{
-  	// 	// 	error_log('$result不明なエラーです', 0);
-  	// 	// }
-
-    // }
-    //=================================activityログ===================================//
-
-    $sql = "INSERT INTO single_logic_activity (id, map_id, content_id, user_id, act, LogicID, date, from_slide)
-    VALUES ('$activity_id', '$map_id', '$item_id', '$user_id', 'change', '$value_LogicID', '$timestamp', '$map_id')";
-
-    $result = $mysqli->query($sql);
+    
 ?>
