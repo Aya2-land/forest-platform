@@ -12,6 +12,7 @@
     $map_id = $_SESSION['MAPID'];    //シートID
     $item_content_id = $_POST["id"];       //contentID
     $content = $_POST["content"]; //content
+    $node_id = $_POST["node_id"];       //contentID
     $item_content_history_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
@@ -24,12 +25,11 @@
       }
     }
 
-
     if($content != $pre_content){
   		
       $sql_new_1 = "CREATE TEMPORARY TABLE tmp_item_content_histories AS SELECT * FROM item_content_histories WHERE item_content_history_id = (SELECT item_content_history_id FROM item_content_latest WHERE item_content_id = '$item_content_id');";
       $sql_update = "UPDATE item_content_histories SET disappeared_at = '$timestamp' WHERE item_content_history_id = (SELECT item_content_history_id FROM tmp_item_content_histories);";
-      $sql_new_2 = "UPDATE tmp_item_content_histories set item_content_history_id = '$item_content_history_id', title = '$content', appeared_at = '$timestamp', disappeared_at = NULL;";
+      $sql_new_2 = "UPDATE tmp_item_content_histories set item_content_history_id = '$item_content_history_id', title = '$content', node_id = '$node_id', appeared_at = '$timestamp', disappeared_at = NULL;";
       $sql_new_3 = "INSERT INTO item_content_histories SELECT * FROM tmp_item_content_histories;";
       $sql_i_update = "UPDATE item_contents set updated_at = '$timestamp' WHERE item_content_id = '$item_content_id';";
 

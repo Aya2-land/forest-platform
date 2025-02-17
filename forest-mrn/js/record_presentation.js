@@ -241,6 +241,7 @@ async function Record_NodeLogicRelation(U_ID, node1_id,item_content1_id,item_con
 
 async function Record_SlideLogicRelation(U_ID, node1_id,thread1_id,thread1_label, ont1_id, node2_id, thread2_id,thread2_label,ont2_id, relation_label,relation_concept){
 
+  console.log(U_ID);
 
   $.ajax({
     url: "php/LogicRelationSlide_create.php",
@@ -333,13 +334,15 @@ function Delete_Document_content(contentID){
 
 //コンテンツの編集を記録する関数
 function Edit_save(obj,id){
-  var content = obj.value;//変更されたテキストエリアの内容
+  var content = obj.innerHTML;//変更されたテキストエリアの内容
+  var nodeid = obj.getAttribute('data-node_id');
 
   $.ajax({
       url: "php/content_edit.php",
       type: "POST",
       data: {id : id,
-             content : content,},
+             content : content,
+             node_id: nodeid},
       success: function (e) {
         if(e){
           console.log(e);

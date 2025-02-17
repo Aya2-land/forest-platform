@@ -485,42 +485,106 @@
 	$sql_cr = "UPDATE item_content_relations SET updated_at='$timestamp', deleted=1 WHERE item_content1_id IN (SELECT item_content_id FROM item_contents WHERE item_id IN (SELECT item_id FROM items WHERE map_id = '$map_id') AND deleted=0";
 	$result_cr = $mysqli->query($sql_cr);
 
-	//このシートに含まれる資料を一覧を取得
+	
+
+
+
 	}else if($_POST["data"] == "item_versions"){
-		$item_id = $_POST["item_id"];
-		$sql = "SELECT * FROM item_versions WHERE item_id = '$item_id' ORDER BY appeared_at DESC";
+		$item_id = $_POST["id"];
+		$version_id = uniqid();
 
-		$i = 0;
-		$updated_array = array(999 => 'temp');	//最初にこれ入れとかないと何故かindex($i)がついてくれない
-
-		if($result = $mysqli->query($sql)){
-
-			while($row = mysqli_fetch_assoc($result)){
-
-				$updated_array[$i] = $row["item_version_id"];
-
-				$i += 1;
-			}
+		//item_versionsをUPDATE
+		$sql_nvu = "UPDATE item_versions SET disappeared_at = '".$timestamp."' WHERE item_id = '".$item_id."' AND disappeared_at IS NULL";
+		$result_nvu = $mysqli->query($sql_nvu);
+		if($mysqli->error){
+			echo "Error update item_version: ". $mysqli->error;
 		}
-		echo json_encode($updated_array);
+
+		// item_historiesから最新のレコードを取得
+		$sql_latest = "SELECT item_bro_id, node_id, logic_option, title FROM item_histories WHERE item_version_id IN (SELECT item_version_id FROM item_versions WHERE item_id = '$item_id') AND disappeared_at IS NULL ORDER BY appeared_at DESC LIMIT 1";
+		$result_latest = $mysqli->query($sql_latest);
+
+		if($mysqli->error) {
+
+			echo "Error fetching latest item_history: " . $mysqli->error;
+
+		} else if ($result_latest) {
+			$latest_record = $result_latest->fetch_assoc();
+    
+			// item_versionsにINSERTする
+			$sql_nvi = "INSERT INTO item_versions(item_version_id, item_id, item_bro_id, node_id, logic_option, title, appeared_at, disappeared_at)
+						VALUES ('".$version_id."', '".$item_id."', '".$latest_record['item_bro_id']."', '".$latest_record['node_id']."', '".$latest_record['logic_option']."', '".$latest_record['title']."', '".$timestamp."', NULL)";
+			$result_nvi = $mysqli->query($sql_nvi);
+			if($mysqli->error) {
+				echo "Error insert item_version: " . $mysqli->error;
+				echo "item_id: ".$item_id;
+			}
+
+			// item_historiesをUPDATE
+			$sql_nvu = "UPDATE item_histories SET item_version_id = '$version_id' WHERE item_version_id IN (SELECT item_version_id FROM item_versions WHERE item_id = '$item_id') AND disappeared_at IS NULL";
+			$result_nvu = $mysqli->query($sql_nvu);
+			if($mysqli->error) {
+				echo "Error update item_history: " . $mysqli->error;
+			}
+
+			$sql_iu = "UPDATE items SET updated_at = '$timestamp' WHERE item_id = '$item_id'";
+			$result_iu = $mysqli->query($sql_iu);
+			if($mysqli->error) {
+				echo "Error update items: " . $mysqli->error;
+			}
+
+		}else {
+			echo "No item_history found for item_id: $item_id";
+		}
 
 	}else if($_POST["data"] == "item_content_versions"){
-		$item_conent_id = $_POST["item_conent_id"];
-		$sql = "SELECT * FROM item_versions WHERE item_conent_id = '$item_conent_id' ORDER BY appeared_at DESC";
+		$item_content_id = $_POST["id"];
+		$version_id = uniqid();
 
-		$i = 0;
-		$updated_array = array(999 => 'temp');	//最初にこれ入れとかないと何故かindex($i)がついてくれない
-
-		if($result = $mysqli->query($sql)){
-
-			while($row = mysqli_fetch_assoc($result)){
-
-				$updated_array[$i] = $row["item_version_id"];
-
-				$i += 1;
-			}
+		//item_content_versionsをUPDATE
+		$sql_nvu = "UPDATE item_content_versions SET disappeared_at = '".$timestamp."' WHERE item_content_id = '".$item_content_id."' AND disappeared_at IS NULL";
+		$result_nvu = $mysqli->query($sql_nvu);
+		if($mysqli->error){
+			echo "Error update item_content_version: ". $mysqli->error;
 		}
-		echo json_encode($updated_array);
+
+		// item_content_historiesから最新のレコードを取得
+		$sql_latest = "SELECT item_content_bro_id, node_id, logic_option, title FROM item_content_histories WHERE item_content_version_id IN (SELECT item_content_version_id FROM item_content_versions WHERE item_content_id = '$item_content_id') AND disappeared_at IS NULL ORDER BY appeared_at DESC LIMIT 1";
+		$result_latest = $mysqli->query($sql_latest);
+
+		if($mysqli->error) {
+
+			echo "Error fetching latest item_content_history: " . $mysqli->error;
+
+		} else if ($result_latest) {
+			$latest_record = $result_latest->fetch_assoc();
+    
+			// item_content_versionsにINSERTする
+			$sql_nvi = "INSERT INTO item_content_versions(item_content_version_id, item_content_id, item_content_bro_id, node_id, logic_option, title, appeared_at, disappeared_at)
+						VALUES ('".$version_id."', '".$item_content_id."', '".$latest_record['item_content_bro_id']."', '".$latest_record['node_id']."', '".$latest_record['logic_option']."', '".$latest_record['title']."', '".$timestamp."', NULL)";
+			$result_nvi = $mysqli->query($sql_nvi);
+			if($mysqli->error) {
+				echo "Error insert item_content_version: " . $mysqli->error;
+				echo "item_content_id: ".$item_content_id;
+			}
+
+			// item_content_historiesをUPDATE
+			$sql_nvu = "UPDATE item_content_histories SET item_content_version_id = '$version_id' WHERE item_content_version_id IN (SELECT item_content_version_id FROM item_content_versions WHERE item_content_id = '$item_content_id') AND disappeared_at IS NULL";
+			$result_nvu = $mysqli->query($sql_nvu);
+			if($mysqli->error) {
+				echo "Error update item_content_history: " . $mysqli->error;
+			}
+
+			$sql_icu = "UPDATE item_contents SET updated_at = '$timestamp' WHERE item_content_id = '$item_content_id'";
+			$result_icu = $mysqli->query($sql_icu);
+			if($mysqli->error) {
+				echo "Error update item_contents: " . $mysqli->error;
+			}
+
+		}else {
+			echo "No item_content_history found for item_content_id: $item_content_id";
+		}
+
 
 	}else if($_POST["data"] == "get_past_document"){
 

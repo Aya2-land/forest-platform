@@ -336,6 +336,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                 <ul>
                                     <li><a href="javascript:void(0);" onClick="LogicRelationChecker()">設定した関係を確認する</a></li>
                                 </ul>
+                                <ul>
+                                    <li><a href="javascript:void(0);" onClick="ItemVersionUpdate()">バージョンを更新</a></li>
+                                </ul>
                             </div>
                             
                             <div id="document_area_conmenu2" >

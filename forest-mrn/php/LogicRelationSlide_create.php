@@ -25,28 +25,8 @@
 		$sql = "INSERT INTO item_relations (id, node1_id, item1_id, item1_label, ont1_id, node2_id, item2_id, item2_label, ont2_id, deleted, created_at, updated_at) VALUES ('$id', '$node1_id', '$thread1_id', '$thread1_label', '$ont1_id', '$node2_id', '$thread2_id', '$thread2_label', '$ont2_id', 0, '$timestamp', '$timestamp')";
 
 		$result = $mysqli->query($sql);
-
-		//クエリ($sql)のエラー処理
-		if($sql == TRUE){
-			echo "true";
-			error_log('$sql成功しています！'.$timestamp, 0);
-		}else if($sql == FALSE){
-			error_log($sql.'$sql失敗です', 0);
-			// error_log('失敗しました。'.mysqli_error($link), 0);
-		}else{
-			error_log('$sql不明なエラーです', 0);
-		}
-
-		//php($result)のエラー処理
-		if($result == TRUE){
-			echo "true";
-			error_log('$result成功しています!'.$timestamp, 0);
-		}else if($result == FALSE){
-      	echo "false";
-			error_log($result.'$result失敗です'.$mysqli->error, "3", "error_log.txt");
-			// error_log('失敗しました。'.mysqli_error($link), 0);
-		}else{
-			error_log('$result不明なエラーです', 0);
+		if ($mysqli->error) {
+			echo "Error item_relations: " . $mysqli->error;
 		}
 
     //==============================activityログ===============================//

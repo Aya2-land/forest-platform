@@ -105,7 +105,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
         </ul>
       <!-- タブメニュー　Finish -->
         
-      <div id="advice_frame" class="searchFrame"></div>
+      <!-- <div id="advice_frame" class="searchFrame"></div> -->
         
         <!--メインメニュー　Start  -->
       <div class="tabcontent">

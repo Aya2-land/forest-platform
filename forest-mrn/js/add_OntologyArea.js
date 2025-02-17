@@ -13,40 +13,40 @@ const NodeSelectBox = document.getElementById("Sentences");
 
 targetElement.addEventListener('contextmenu', function (event){
     event.preventDefault();
-    console.log('右クリックされました');
+    // console.log('右クリックされました');
 });
 
 targetElement.addEventListener('mousedown',function(event){
     if(event.button == 2){
-        console.log('右クリックを押したまま');
-        console.log(event.target);
+        // console.log('右クリックを押したまま');
+        // console.log(event.target);
         var startTempID = event.target.id;
         var DecideStartAreaID = startTempID.replace("preview-", "");
         var StartThread = document.getElementById(DecideStartAreaID);
-        console.log(StartThread);
+        // console.log(StartThread);
         // console.log(StartThread.clientX);
         // console.log(StartThread.clientY);
         isDrawing = true;
         startX = event.clientX;
         startY = event.clientY;
-        console.log(startX);
-        console.log(startY);
+        // console.log(startX);
+        // console.log(startY);
     }
 });
 
 targetElement.addEventListener('mouseup',function(event){
     if(event.button == 2){
-        console.log('右クリックを離した');
+        // console.log('右クリックを離した');
         // alert("エリアを決定しますか？");
-        console.log(event);
-        console.log(event.target);
-        console.log(event.target.id);
+        // console.log(event);
+        // console.log(event.target);
+        // console.log(event.target.id);
         var TempDecideAreaId = event.target.id;
-        console.log(TempDecideAreaId);
+        // console.log(TempDecideAreaId);
         var DecideAreaID = TempDecideAreaId.replace("preview-", "");
-        console.log(DecideAreaID);
+        // console.log(DecideAreaID);
         var ImageThread = document.getElementById(DecideAreaID);
-        console.log(ImageThread);
+        // console.log(ImageThread);
         if (!isDrawing) return;
         isDrawing = false;
 
@@ -54,8 +54,8 @@ targetElement.addEventListener('mouseup',function(event){
         // console.log(ImageThread.style.clientY);
         const endX = event.clientX;
         const endY = event.clientY;
-        console.log(endX);
-        console.log(endY);
+        // console.log(endX);
+        // console.log(endY);
 
         // 四角形を確定
         createRectangle(startX, startY, endX, endY, DecideAreaID,"decide");
@@ -89,9 +89,9 @@ function createRectangle(x1, y1, x2, y2, targetAreaID, type) {
     var NewRect_height = Math.abs(y1 - y2);
     var ratioTop = Math.abs(tRect_top - NewRect_top) / tRect_height * 100;
     var ratioHeight = NewRect_height / tRect_height * 100;
-    console.log(Math.abs(tRect_top - NewRect_top));
-    console.log(tRect_height);
-    console.log(ratioTop);
+    // console.log(Math.abs(tRect_top - NewRect_top));
+    // console.log(tRect_height);
+    // console.log(ratioTop);
 
     var tRect_left = tRect.left;
     var NewRect_left = Math.min(x1,x2);
@@ -99,8 +99,8 @@ function createRectangle(x1, y1, x2, y2, targetAreaID, type) {
     var tRect_width = tRect.width;
     var ratioLeft = Math.abs(tRect_left - NewRect_left) / tRect_width * 100;
     var ratioWidth = NewRect_width / tRect_width * 100;
-    console.log(ratioLeft);
-    console.log(ratioWidth);
+    // console.log(ratioLeft);
+    // console.log(ratioWidth);
     // document.getElementById("document_area").appendChild(rectangle);
     if(targetArea !== null){
         // console.log(targetArea);
@@ -108,10 +108,10 @@ function createRectangle(x1, y1, x2, y2, targetAreaID, type) {
     }
 
     if(type == "temp"){
-        console.log("temp");
+        // console.log("temp");
         TempRectangles.push(rectangle);
     }else if(type == "decide"){
-        console.log("decide");
+        // console.log("decide");
         var rect_id = getUniqueStr();
         rectangle.className = "highlightedDecideRectangle";
         var classN = "Rectangle-"+ targetAreaID ;

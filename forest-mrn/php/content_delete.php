@@ -15,58 +15,21 @@
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 
-    $sql = "UPDATE item_contents SET updated_at='$timestamp', deleted=1 WHERE item_content_id='$content_id'";
-    $sql = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_id='$content_id' AND disappread_at = NULL";
-    $sql = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_version_id=(SELECT item_version_id FROM item_versions WHERE item_content_id = '$content_id' order BY appeared_at DESC LIMIT 1) AND disappread_at = NULL ";
+    $sql_ic = "UPDATE item_contents SET updated_at='$timestamp', deleted=1 WHERE item_content_id='$content_id'";
+    $sql_icv = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_id='$content_id' AND disappeared_at = NULL";
+    $sql_ich = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_version_id=(SELECT item_version_id FROM item_versions WHERE item_content_id = '$content_id' order BY appeared_at DESC LIMIT 1) AND disappeared_at = NULL ";
 
-
-		$result = $mysqli->query($sql);
-
-    //クエリ($sql)のエラー処理
-    if($sql == TRUE){
-			echo "true";
-			error_log('$sql成功しています！'.$timestamp, 0);
-		}else if($sql == FALSE){
-			error_log($sql.'$sql失敗です', 0);
-			// error_log('失敗しました。'.mysqli_error($link), 0);
-		}else{
-			error_log('$sql不明なエラーです', 0);
+    $result_ic = $mysqli->query($sql_ic);
+		if($mysqli->error){
+			echo "Error update item_contents: ". $mysqli->error;
 		}
-
-    //php($result)のエラー処理
-    if($result == TRUE){
-			echo "true";
-			error_log('$result成功しています！'.$timestamp, 0);
-		}else if($result == FALSE){
-			error_log($result.'$result失敗です'.$mysqli->error, 0);
-			// error_log('失敗しました。'.mysqli_error($link), 0);
-		}else{
-			error_log('$result不明なエラーです', 0);
+    $result_icv = $mysqli->query($sql_icv);
+		if($mysqli->error){
+			echo "Error update item_content_versions: ". $mysqli->error;
 		}
-
-    //=================================activityログ===================================//
-
-    // $sql = "SELECT * FROM item_contents WHERE item_content_id = '$content_id'";
-
-    // // $stmt = $mysqli->query($sql);
-
-    // if($result = $mysqli->query($sql)) {
-    //   while($row = mysqli_fetch_assoc($result)){//mysqli_fetch_assoc：連想配列として結果の行を取得
-    //     echo $row['id'];
-    //     $node_id = $row['node_id'];
-    //     $concept_id = $row['concept_id'];
-    //     $content = $row['content'];
-    //     $slide_id = $row['slide_id'];
-    //   }
-    // }
-
-    // $sql = "INSERT INTO slide_content_activity (id, map_id, slide_content_id, node_id, concept_id, content, type, user_id, slide_id, act, date, from_slide_content)
-		// VALUES ('$activity_id', '$map_id', '$content_id', '$node_id', '$concept_id', '$content', NULL, '$user_id', '$slide_id', 'delete', '$timestamp', NULL)";
-
-		// $result = $mysqli->query($sql);
-
-
-		// $json_test = json_encode($content);
-
+    $result_ich = $mysqli->query($sql_ich);
+		if($mysqli->error){
+			echo "Error update item_content_hisotries: ". $mysqli->error;
+		}
 
 ?>

@@ -552,9 +552,8 @@ function add_Confirm(){
   }else if(span_count == 0){
     window.alert('スライド側のノードが選択されていません．');
   }else{
-    console.log(dom_target.getAttribute("node_id"));
-    if(!(dom_target.getAttribute("node_id"))){
-      add_Pnode();
+    if(!(dom_target.getAttribute("data-node_id"))){
+      add_Pnode(dom_target);
     }else{
       window.alert('このノードは既にマインドマップにあるため，反映できません');
     }
@@ -563,19 +562,12 @@ function add_Confirm(){
 
 
 
-async function add_Pnode(){//マップへ反映ボタンでノードを追加する
+async function add_Pnode(dom_target){//マップへ反映ボタンでノードを追加する
 
-  var dom_all = document.getElementsByClassName("cspan");
-  for(var i=0; i<dom_all.length; i++){
-    if(dom_all[i].style.border == "2px solid gray"){
-      var dom_target = dom_all[i];
-      break;
-    }
-  }
   var p_content = dom_target.innerHTML;
-  console.log(dom_target);
+  // console.log(dom_target);
   var p_type = dom_target.getAttribute("type");
-  console.log(p_type);
+  // console.log(p_type);
   var p_concept_id = dom_target.getAttribute("concept_id");
   var toi_type;
   if(p_concept_id === null){
@@ -728,19 +720,16 @@ async function add_Pnode(){//マップへ反映ボタンでノードを追加す
               data: { update : "map" }
           });
   }
-  dom_target.setAttribute("node_id", nodeid);
+  dom_target.setAttribute("data-node_id", nodeid);
+  Edit_save(dom_target, dom_target.id)
   var thread_id = dom_target.parentNode.parentNode.parentNode.id;
-  var arr = $('#'+thread_id).data('node_id');
-  console.log(arr);
+  var arr = $('#'+thread_id).data('data-node_id');
   arr.push(nodeid);
-  console.log(arr);
-  $('#'+thread_id).data('node_id', arr);
+  $('#'+thread_id).data('data-node_id', arr);
   // Record_rank();
 }
 
 async function add_Label(node_type){
-
-  console.log(node_type);
 
   if(node_type=="primary_label"){
     try {
@@ -1663,7 +1652,7 @@ function RemoveAppendNode(data){
     $('#'+data).fadeOut('fast').queue(function() {
       $('#'+data).remove();
     });
-    console.log(typeof(data));
+    console.log(data);
     Delete_content(data);
     //2022-12-16 shimizu
     Delete_Document_content(data);
@@ -1751,7 +1740,7 @@ window.onload = function(){
       }
     }
 
-    if(NodeCheckCount ==1){
+    if(NodeCheckCount ==1 || ThreadCheckCount == 1){
       dm_menu.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
       dm_menu.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
       dm_menu.classList.add('on');
@@ -1777,9 +1766,9 @@ window.onload = function(){
       dm_menu3.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
       dm_menu3.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
       dm_menu3.classList.add('on');
-      // dm_menu4.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
-      // dm_menu4.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
-      // dm_menu4.classList.add('on');
+      dm_menu4.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
+      dm_menu4.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
+      dm_menu4.classList.add('on');
     }
 
     if(ThreadCheckCount == 2 && NodeCheckCount != 2){
@@ -1811,9 +1800,9 @@ window.onload = function(){
     }
 
     // console.log("右クリック");
-    // dm_menu4.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
-    // dm_menu4.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
-    // dm_menu4.classList.add('on');
+    dm_menu4.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
+    dm_menu4.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
+    dm_menu4.classList.add('on');
 
   });
 
