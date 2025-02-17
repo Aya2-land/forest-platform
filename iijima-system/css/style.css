@@ -1405,24 +1405,6 @@ h3 {
 	background-color: #ff8c00;
 }
 
-/* ノード追加ボタン */
-
-
-.button4 {
-	background-color: #999;
-	color: #fff;
-	width: 100px;
-	height: 25px;
-	font-size: 12px;
-	margin-left: 10px;
-	margin-top: 5px;
-	overflow: auto;
-}
-
-/* .button4:hover {
-	background-color: #ff8c00;
-} */
-
 /*他者の問いノード表示*/
 .button_q {
 	display: flex;

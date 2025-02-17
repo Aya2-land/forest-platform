@@ -106,18 +106,3 @@ const setTaggedHTMLPaperData = (file_input_btn_id, paper_area_id) => {
 
 setTaggedHTMLPaperData("input_htmlfile", "paper_read_area");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

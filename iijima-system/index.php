@@ -181,22 +181,6 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
               <svg id="svg_area" oncontextmenu="return false;">
               </svg>
 
-              <div id="node_conmenu">
-                <ul>
-                  <li>
-                    <button class="button4" id="drawingEdge">
-                      エッジを引く
-                    </button>
-                  </li>
-                  <li>
-                    ノードを編集する
-                  </li>
-                  <li>
-                    ノードを削除する
-                  </li>
-                </ul>
-              </div>
-
               <div id="mindmap_conmenu">
                 <ul>
 
@@ -252,6 +236,69 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
               </div>
 
             </div>
+
+            <!-- vis.jsによってsummary_areaの中身が書き換えられるため，外に配置 -->
+            <div id="node_conmenu" oncontextmenu="return false;">
+              <ul>
+                <li>
+                  <button class="button4" onclick="changeMenu();">   <!--connectNodes();-->
+                    結束関係の定義
+                  </button>
+                </li>
+                <li>
+                  <button class="button4" onclick="enableEditing();">
+                    ノードの編集
+                  </button>
+                </li>
+                <li>
+                  <button class="button4" onclick="deleteNode();">
+                    ノードの削除
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <!-- 「結束関係を定義」をクリックすると表示されるエリア -->
+            <div id="relationship_conmenu" oncontextmenu="return false;">
+              定義する結束関係
+              <ul>
+                <li>
+                  <button class="button4" onclick="connectNodes('parallel');">
+                    並列
+                  </button>
+                </li>
+                <li>
+                  <button class="button4" onclick="connectNodes('contrast');">
+                    対比
+                  </button>
+                </li>
+                <li>
+                  <button class="button4" onclick="connectNodes('adversative');">
+                    逆接
+                  </button>
+                </li>
+                <li>
+                  <button class="button4" onclick="connectNodes('causeAndeffect');">
+                    原因ー結果
+                  </button>
+                </li>
+                <li>
+                  <button class="button4" onclick="connectNodes('abstractAndconcrete');">
+                    抽象ー具体
+                  </button>
+                </li>
+                <li>
+                  <button class="button4" onclick="connectNodes('problemAndsolution');">
+                    問題ー解決案
+                  </button>
+                </li>
+              </ul>
+              <!-- 戻るボタン -->
+               <button id="backButton" onclick="backMenu();">
+                戻る
+               </button>
+            </div>
+
             <!--
             <div id="document_area" oncontextmenu="return false;"></div>   -->
 
@@ -266,52 +313,7 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
             <li>
               ノード情報変更
             </li>
-            <!--
-              <li>                
-                  <button class="button6" onclick="add_annotation_toNode();">
-                    アノテーション付与
-                  </button>
-                </li>
-              <li>
-              <button class="button4" onclick="remove_node();">
-                  ノードの削除
-                </button>
-              </li>
-
-                <li>
-                 onclick="move_papaer();"
-                </li>
-         
-                 <li>
-                  論文からノード追加
-                </li> 
-                <li>  <button class="button4" onclick="add_Anode2('konkyo');">
-                    根拠ノード追加
-                  </button>
-                </li>
-                <li>
-                  他者刺激
-                </li>
-                <li>  <button class="button6" onclick="test_show_other_mindmap()">
-                    マインドマップ表示
-                  </button>
-                <li>  
-                </li>
-              　-->
-
-            <!--<li><a href="javascript:void(0);" target="_blank" onClick="SetPurpose('提案')">ノード追加</a></li> 
-               <li>
-                  <button class="button4" onclick="add_Anode2('answer');">
-                    解釈ノード追加
-                  </button>
-                </li>
-                <li>
-                  <li>
-                  <button class="button4" onclick="add_Anode2('criticism');">
-                    批評ノード追加
-                  </button>
-                  </li>
-                </li> -->
+           
 
 
 
@@ -373,64 +375,6 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
         </div>
 
 
-        <!-- 思考過程表出化マップ　By川 -->
-        <div id="process_network_container" oncontextmenu="return false;">
-          <div id="myProcessnetwork2">
-            <div id="buttoncluster">
-              <input type="button" class="thinkingProcess_network_button"
-                id="process_addNode" value="思考ノード追加" />
-              <input type="button" class="thinkingProcess_network_button"
-                id="process_removeNode" value="ノード削除" />
-              <input type="button" class="thinkingProcess_network_button"
-                id="process_startEditEdge" value="エッジ追加" />
-              <input type="button" class="thinkingProcess_network_button"
-                id="process_removeEdge" value="エッジ削除" />
-              <input type="button" class="thinkingProcess_network_button"
-                id="process_ZoomIn" value="拡大" />
-              <input type="button" class="thinkingProcess_network_button"
-                id="process_ZoomOut" value="縮小" />
-            </div>
-            <div id="t_Process_conmenu">
-              <ul>
-                <li><a href="javascript:void(0);" id="process_conmenu1">概念をつける</a></li>
-                <li><a href="javascript:void(0);" id="process_conmenu2">マインドマップと対応付ける</a></li>
-                <li><a href="javascript:void(0);" id="process_conmenu3" style="display:none">採用/棄却をつける</a></li>
-                <li><a href="javascript:void(0);" id="process_conmenu4">キャンセル</a></li>
-              </ul>
-            </div>
-            <div id="t_Process_labelselect">
-              <select id="t_Process_selectionlist" size="3">
-                <!-- いるやつあれば追加やけど未実装（研究活動オントロジー読み込みかな？） -->
-              </select>
-              <input type="button" value="選択完了" id="p_ontology_select">
-            </div>
-            <div id="t_Process_recruitselect">
-              <select id="t_Process_recruitselectionlist">
-                <option value="採用">採用</option>
-                <option value="棄却">棄却</option>
-              </select>
-              <input type="button" value="選択完了" id="p_recruit_select">
-            </div>
-            <div id="myProcessnetwork"></div>
-          </div>
-          <!-- <div id="trigger_area">
-                <div id="trigger_area_display">
-                    <div id="conceptdisplay"></div>
-                    <div id="trigger_click"></div>
-                    <div id="trigger_area_add">
-                        <input type="button" id="inputTriggerbutton" value=" ＋ 活動を入力" onclick="inputTriggerAreaOpen()"/>
-                        <div id="trigger_add">
-                        </div>
-                    </div>
-                </div>
-                <div id="trigger_area_list">
-                </div>
-            </div> -->
-        </div>
-        <!-- 思考過程表出化マップ　fin -->
-
-
-      </div>
 
       <!-- <iframe id="document_area" src="papaer\contemporary_self.html" frameborder="0">
 
@@ -479,26 +423,6 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
 
         </ul>
       </div>
-
-      <!-- <div id="other_question_conmenu" oncontextmenu="return false;">
-              <ul> -->
-      <!-- <li><a href="javascript:void(0);" target="_blank" onClick="SelecttextToNode()">選択したをマインドマップに追加する</a>
-               -->
-      <!-- <li>
-                <button class="button6" onclick="add_annotation('highlight');" style="pointer-events: auto !important;">
-                    論文アノテーション追加
-                </button>
-                </li> -->
-      <!-- <li>
-                  <button class="button_other" onclick="add_Anode_from_other('toi', 'toi')">
-                    この解釈を取り入れる
-                  </button>
-                   
-        
-                </li>
-              
-              </ul>
-            </div> -->
 
 
       <!--サイドメニュー　start-->
@@ -553,52 +477,7 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
             <input class="button5" type="button" onclick="showGeneration();" value="all">
             問い一覧を表示
           </div>
-
-          <div class="inquiry_area other" style="display: block; resize: vertical">
-
-
-            <div>【情報の表出化】</div>
-            <div id="testxml"></div>
-            <div id="ont"></div>
-
-            <div>【理由・目的】</div>
-            <div id="intention"></div>
-
-            <div>【合理性】</div>
-            <div id="rationality"></div>
-            <!-- <div>【言い換え・具体例】</div>
-                  <div id="deep"></div> -->
-          </div>
         </div>
-
-
-        <div id="crit" class="side">
-          <!-- <button id="change3" class="button10 " onClick="confirmAndExecute('ref');">モード３へ移行</button> -->
-          <div>自分の作ったマップをもとに，この論文のRQ(明かしたいこと)新規性・有用性・信頼性について踏まえて総評について考えてみましょう．
-            <div>RQ</div>
-            <div id="rq" class="resizable-textbox" contenteditable="true"></div>
-            <div>新規性としての強み</div>
-            <div id="e_1_strong" class="resizable-textbox" contenteditable="true"></div>
-            <div>新規性としての弱み</div>
-            <div id="e_1_weak" class="resizable-textbox" contenteditable="true"></div>
-            <div>有用性としての強み</div>
-            <div id="e_2_strong" class="resizable-textbox" contenteditable="true"></div>
-            <div>有用性としての弱み</div>
-            <div id="e_2_weak" class="resizable-textbox" contenteditable="true"></div>
-            <div>信頼性としての強み</div>
-            <div id="e_3_strong" class="resizable-textbox" contenteditable="true"></div>
-            <div>信頼性としての弱み</div>
-            <div id="e_3_weak" class="resizable-textbox" contenteditable="true"></div>
-            <div>総評</div>
-            <div id="summary" class="resizable-textbox" contenteditable="true"></div>
-            <button id="submit_summary" onclick="submitSummary();">送信する</button>
-          </div>
-
-        </div>
-
-
-
-
 
       </div>
     </div>
@@ -716,15 +595,6 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
   <!--<script type="text/javascript" src="js/summary2.js"></script> -->
   <!--<script type="text/javascript" src="js/summary3.js"></script> -->
   <script type="text/javascript" src="js/summary4.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      let menu = document.getElementById("node_conmenu");
-      console.log(menu); // ここでmenuが取得できるかを確認
-      if (!menu) {
-        console.log("メニューがない");
-      }
-    });
-  </script>
 </body>
 
 </html>

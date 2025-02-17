@@ -1326,6 +1326,7 @@ function CheckClick(){
     // $('#mind').toggle('fast');
     $('#mind').css('display','flex');
     $('#document_area').css('width','35%');
+    $('#document_area').css('height','100%');
     $('#document_area').css('position','relative');   
     $('#document_area').toggle('fast');
     //$('#summary_area').css('height', '100px');

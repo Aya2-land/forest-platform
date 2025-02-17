@@ -1,32 +1,43 @@
 .node {
-	width: auto;    /*コンテンツに応じて幅を自動調整*/
-    min-width: 200px;   /*最小幅を設定*/
+	width: auto;
+	/*コンテンツに応じて幅を自動調整*/
+	min-width: 200px;
+	/*最小幅を設定*/
 	max-width: 400px;
 	height: auto;
-    min-height: 50px;
-    background-color: #4CAF50;
-    color: black;
-    text-align: left;
-	padding: 10px;  /*内側の余白を設定*/
-	box-sizing: border-box;  /*パディングを含めたサイズ計算*/
-    line-height: normal;
-    position: absolute;
-    cursor: pointer;
-	word-wrap: break-word;  /*長い単語を折り返し*/
-	white-space: normal;  /*改行を許可*/
-	overflow: hidden;  /*ノードの外にテキストがはみ出ないようにする*/
+	min-height: 50px;
+	background-color: #4CAF50;
+	color: black;
+	text-align: left;
+	padding: 10px;
+	/*内側の余白を設定*/
+	box-sizing: border-box;
+	/*パディングを含めたサイズ計算*/
+	line-height: normal;
+	position: absolute;
+	cursor: pointer;
+	word-wrap: break-word;
+	/*長い単語を折り返し*/
+	white-space: normal;
+	/*改行を許可*/
+	overflow: hidden;
+	/*ノードの外にテキストがはみ出ないようにする*/
 }
 
 .node:active {
-    background-color: yellow;
-   /* cursor: grabbing; */
+	background-color: yellow;
+	/* cursor: grabbing; */
 }
 
 .node-number {
-	font-weight: bold;    /*数字部分を太字にする*/
-	font-size: 18px;      /*数字のサイズを調整*/
-	color: white;       /*数字の色を白に指定*/
-	margin-right: 10px;   /*数字とテキストの間に余白を設定*/
+	font-weight: bold;
+	/*数字部分を太字にする*/
+	font-size: 18px;
+	/*数字のサイズを調整*/
+	color: white;
+	/*数字の色を白に指定*/
+	margin-right: 10px;
+	/*数字とテキストの間に余白を設定*/
 }
 
 .node-text {
@@ -40,22 +51,26 @@
 	height: auto;
 	min-height: 25px;
 	position: absolute;
-    background-color: #b2be6b;
-    padding: 5px;
-	box-sizing: border-box;  /*パディングを含めたサイズ計算*/
-    line-height: normal;
+	background-color: #b2be6b;
+	padding: 5px;
+	box-sizing: border-box;
+	/*パディングを含めたサイズ計算*/
+	line-height: normal;
 	color: black;
 	cursor: default;
-	word-wrap: break-word;  /*長い単語を折り返し*/
-	white-space: normal;  /*改行を許可*/
-	overflow: hidden;  /*ノードの外にテキストがはみ出ないようにする*/
+	word-wrap: break-word;
+	/*長い単語を折り返し*/
+	white-space: normal;
+	/*改行を許可*/
+	overflow: hidden;
+	/*ノードの外にテキストがはみ出ないようにする*/
 }
 
 #summary_area {
 	width: 100%;
 	height: calc(100% - 34px);
 	background: #fff;
-	float: left; 
+	float: left;
 	position: relative;
 }
 
@@ -73,10 +88,11 @@
 }   */
 
 #svg_area {
-    width: 100%;
-	height: 100%;       /*親要素がsummary_areaであるので，summary_areaを基準として100%*/
+	width: 100%;
+	height: 100%;
+	/*親要素がsummary_areaであるので，summary_areaを基準として100%*/
 	background: #fff;
-	float: left; 
+	float: left;
 	position: absolute;
 }
 
@@ -85,18 +101,68 @@
 	height: 250px;
 	background-color: #f0f0f0;
 	border: 1px solid #999999;
-	/* display: none; */
+	display: none;
 	position: absolute;
 	z-index: 1000;
 	text-align: center;
 }
 
-#node_conmenu ul {
+#node_conmenu ul, #relationship_conmenu ul {
 	list-style: none;
 	margin: 0px;
 	padding: 5px;
 }
 
-#node_conmenu li:hover {
-	background-color: #CCFFFF;
+#relationship_conmenu {
+	width: 160px;
+	height: 250px;
+	position: absolute;
+	background-color: #f0f0f0;
+	border: 1px solid #999999;
+	display: none;
+	text-align: center;
+	z-index: 1000;
+	padding-top: 20px;
+}
+
+.button4 {
+	background-color: #999;
+	color: #fff;
+	width: 100px;
+	height: 25px;
+	font-size: 12px;
+	margin-left: 10px;
+	margin-top: 5px;
+	overflow: auto;
+}
+
+.button4:hover {
+	background-color: #ff8c00;
+}
+
+#backButton {
+	background-color: transparent;
+	/* 背景色 */
+	/* color: white;
+	文字色 */
+	font-size: 16px;
+	/* 文字の大きさ */
+	padding: 5px 10px;
+	/* 内側の余白（上下10px、左右20px） */
+	border: none;
+	/* 枠線なし */
+	border-radius: 5px;
+	/* 丸みを帯びた角 */
+	cursor: pointer;
+	/* カーソルをポインタに */
+}
+
+/* ホバー時のスタイル */
+#backButton:hover {
+	background-color: #64b7bd;
+}
+
+/* フォーカス時のスタイル(tabキーなどで参照されたとき) */ 
+#backButton:focus {
+	outline: none;
 }
