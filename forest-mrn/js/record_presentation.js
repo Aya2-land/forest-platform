@@ -96,7 +96,7 @@ function Delete_slide_relation(thread_id){
 }
 
 //2022-12-13 shimizu
-//スライド削除から関係性を更新する関数
+//スライド削除からcontentの関係性を更新する関数
 function Delete_document_relation_slide(slide_id){
 
   $.ajax({
@@ -157,19 +157,21 @@ function Delete_concept(id){
     type: "POST",
     success: function (arr) {
       if(arr == "[]"){
-        console.log(arr);
+        // console.log(arr);
       }else{
-        console.log(arr);
+        // console.log(arr);
         var parse = JSON.parse(arr);
         var badge_ids = [];
         for(var i=0; i<parse.length;i++){
-          var badge_id1 = parse[i].id+","+parse[i].item_content1_id;
-          badge_ids.push(badge_id1);
-          var badge_id2 = parse[i].id+","+parse[i].item_content2_id;
-          badge_ids.push(badge_id2);
+          if(id == parse[i].item_content1_id || id == parse[i].item_content2_id){
+            var badge_id1 = parse[i].id+","+parse[i].item_content1_id;
+            badge_ids.push(badge_id1);
+            var badge_id2 = parse[i].id+","+parse[i].item_content2_id;
+            badge_ids.push(badge_id2);
+          }
         }
-        for(var j=0;j<badge_ids;j++){
-          console.log(badge_ids[j]);
+        console.log(badge_ids);
+        for(var j=0;j<badge_ids.length;j++){
           var badge_element = document.getElementById(badge_ids[j]);
           badge_element.remove();
         }
@@ -215,6 +217,8 @@ function Record_content(contentID, nodeID, conceptID, content, itemID, brother_i
 //2022-12-13 shimizu ノード間の論理的関係を記録する関数
 async function Record_NodeLogicRelation(U_ID, node1_id,item_content1_id,item_content1_label,ont1_id,node2_id, item_content2_id,item_content2_label,ont2_id){
 
+  console.log(U_ID+", "+node1_id +", "+item_content1_id +", "+item_content1_label +", "+ont1_id +", "+node2_id +", "+item_content2_id +", "+item_content2_label +", "+ont2_id);
+
   $.ajax({
     url: "php/LogicRelationNode_create.php",
     type: "POST",
@@ -228,7 +232,7 @@ async function Record_NodeLogicRelation(U_ID, node1_id,item_content1_id,item_con
             item_content2_label : item_content2_label,
             ont2_id : ont2_id,
             },
-    success: function (r) {
+    success: function (e) {
       if(e){
         console.log(e);
       }
@@ -239,9 +243,9 @@ async function Record_NodeLogicRelation(U_ID, node1_id,item_content1_id,item_con
   });
 }
 
-async function Record_SlideLogicRelation(U_ID, node1_id,thread1_id,thread1_label, ont1_id, node2_id, thread2_id,thread2_label,ont2_id, relation_label,relation_concept){
+async function Record_SlideLogicRelation(U_ID, node1_id,thread1_id,thread1_label, ont1_id, node2_id, thread2_id,thread2_label,ont2_id){
 
-  console.log(U_ID);
+  console.log(U_ID +", "+node1_id +", "+thread1_id +", "+thread1_label +", "+ont1_id +", "+node2_id +", "+thread2_id +", "+thread2_label +", "+ont2_id);
 
   $.ajax({
     url: "php/LogicRelationSlide_create.php",
@@ -255,8 +259,6 @@ async function Record_SlideLogicRelation(U_ID, node1_id,thread1_id,thread1_label
             thread2_id : thread2_id,
             thread2_label : thread2_label,
             ont2_id : ont2_id,
-            relation_label : relation_label,
-            relation_concept : relation_concept
             },
     success: function (e) {
       if(e){

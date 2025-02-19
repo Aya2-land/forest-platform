@@ -144,7 +144,7 @@ $(document).on('click', '.thread', function(){
     color_count += 1;
 
     // //テキストエリアの初期化
-    document.getElementById('advice_frame').textContent = "";
+    // document.getElementById('advice_frame').textContent = "";
 
     //20230130 shimizu
     var doc_node_id;
@@ -1522,15 +1522,14 @@ async function DecideNodeLogicRelation_Click(){
   }
   Record_NodeLogicRelation(u_id,ClickDocNodeIDs[0],ClickDocIDs_Decide[0],SelectLogic[0],Logic_ClassLabeltoConceptID[SelectLogic[0]],ClickDocNodeIDs[1],ClickDocIDs_Decide[1],SelectLogic[1],Logic_ClassLabeltoConceptID[SelectLogic[1]]);
 
-  //ノード非表示
-  var dm_menu3 = document.getElementById('document_area_conmenu3'); //コンテキストメニュー
-  dm_menu3.classList.remove('on');
+  
+  CancelButton_Click("document_area_conmenu3");
 
 }
 
 //2022/12/23 shimizu スライド間の関係性として論理関係を決定
 async function DecideSlideLogicRelation_Click(){
-  console.log("ノード間の論理的関係性を決定");
+  console.log("スライド間の論理的関係性を決定");
 
   var SelectLogic = [];
   //それぞれのセレクトボックスの「選択している番号，value，中身のテキスト」を取得
@@ -1606,12 +1605,11 @@ async function DecideSlideLogicRelation_Click(){
   //   alert("選択した「"+LogicText1+"("+ClickSlideLabels[0]+")」と「"+LogicText2+"("+ClickSlideLabels[1]+")」にはシステム内で関係性が定義されていません．");
   // }
 
-  CancelButton_Click4();
+  CancelButton_Click("document_area_conmenu4");
 }
 
 //20221209 shimizu 論理関係を確認
 async function LogicRelationChecker(){
-  console.log("論理関係を確認");
   var dom_all = document.getElementsByClassName("cspan");
   var c_dom_id;
   var c_dom_label;
@@ -1623,37 +1621,43 @@ async function LogicRelationChecker(){
     }
   }
   var RelationNode = [];
-  var RelationLabel = {};
+  var RelationLabel = [];
+  var RelationNodeLabel = [];
   await $.ajax({
     url: "php/get_LogicRelation.php",
     type: "POST",
     success: function(arr){
+
       if(arr == "[]"){
         // console.log(arr);
       }else{
         // console.log(arr);
         var parse = JSON.parse(arr);
+        console.log(parse);
         for(var i=0; i<parse.length; i++){
           if(parse[i].item_content1_id == c_dom_id){
-            console.log(parse[i].item_content1_id);
-            RelationNode.push(parse[i].item_content2_id);
+            RelationNode.push(parse[i].item_content1_id);
+            RelationLabel.push(parse[i].item_content2_label);
+            RelationNodeLabel.push(parse[i].title2);
             // RelationLabel[parse[i].doc_con2_id] = parse[i].relation_label;
           }else if(parse[i].item_content2_id == c_dom_id){
             console.log(parse[i].item_content2_id);
             RelationNode.push(parse[i].item_content1_id);
+            RelationLabel.push(parse[i].item_content1_label);
+            RelationNodeLabel.push(parse[i].title1);
             // RelationLabel[parse[i].item_content1_id] = parse[i].relation_label;
           }
         }
-        
       }
-      var RelationNodeLabel = [];
 
       if(RelationNode.length == 0){
         alert("選択した「"+c_dom_label+"」は現在関係性は規定されていません．")
       }else{
+        console.log(RelationNode);
+        console.log(RelationNodeLabel);
         var RelationText = "";
         for(var r = 0; r<RelationNode.length; r++){
-          RelationText += "<p><b>「"+RelationNodeLabel[r]+"」</b>：<b>「"+RelationLabel[RelationNode[r]]+"」</b></p>";
+          RelationText += "<p><b>「"+RelationLabel[r]+"」</b>：<b>「"+RelationNodeLabel[r]+"」</b></p>";
         }
 
         // id属性で要素を取得
@@ -2081,11 +2085,11 @@ async function CreateMindmapNodeXML(){
       }else{
         // console.log(arr);
         var parse = JSON.parse(arr);
+          console.log(parse);
         // console.log(parse);
         for(var i=0; i<parse.length; i++){
           // デバッグ用
           // console.log(parse[i]);
-          // console.log(parse[i].id);
           console.log("node_content : "+parse[i].content);
           // console.log(parse[i].concept_id);
           // console.log(parse[i].parent_id);
@@ -2094,7 +2098,7 @@ async function CreateMindmapNodeXML(){
           xmlSource += 'node_label="'+parse[i].content+'" ';
           xmlSource += 'node_concept_id="'+parse[i].concept_id+'" ';
           xmlSource += 'node_parent_id="'+parse[i].parent_id+'" ';
-          xmlSource += 'type="'+parse[i].type_id+'" />\n';
+          xmlSource += 'type="'+parse[i].type+'" />\n';
         }
       }
       xmlSource += '</Information>\n';
@@ -2804,12 +2808,12 @@ async function Rebuild_s(){
           console.log(arr);
         }else{
           var parse = JSON.parse(arr);
-          console.log(parse);
+          // console.log(parse);
           var bro_id = "root";
           
           for(var i=0; i<parse.length; i++){
             for(var j=0; j<parse.length; j++){
-              console.log(parse[j].brother_id);
+              // console.log(parse[j].brother_id);
               if(parse[j].brother_id == bro_id){
                 if(parse[j].node_id == "notid"){
                   const image = new SlideImage({
@@ -3823,10 +3827,10 @@ function DeleteLogicRelation(){
   var dom_all = document.getElementsByClassName("cspan");
   var c_dom_id = "0";
   for(var i=0; i<dom_all.length; i++){
-    //選択中のノードを確認
-    // if(dom_all[i].style.border == "2px solid gray"){
-    //   c_dom_id = dom_all[i].id;
-    // }
+    // 選択中のノードを確認
+    if(dom_all[i].style.border == "2px solid gray"){
+      c_dom_id = dom_all[i].id;
+    }
   }
   
   var badge_all = document.getElementsByClassName("badge");
@@ -3845,8 +3849,8 @@ function DeleteLogicRelation(){
     
       console.log(c_dom_id);//id
       console.log(document.getElementById(c_dom_id));
-      Delete_document_relation_node(c_dom_id);
       Delete_concepts(c_dom_id);
+      Delete_document_relation_node(c_dom_id);
       // Record_rank();
     }
   }else if(c_badge_id != "0"){
@@ -3855,11 +3859,11 @@ function DeleteLogicRelation(){
       console.log(c_badge_ids[0]);//id
       console.log(c_badge_ids[1]);
       // console.log(document.getElementById(c_dom_id));
+      Delete_concept(c_badge_ids[0]);
       Delete_document_relation_concept(c_badge_ids[0]);
       //20230130 追記
       Delete_slide_relation(c_badge_ids[0]);
       
-      Delete_concept(c_badge_ids[0]);
 
       // Record_rank();
 
@@ -3869,13 +3873,12 @@ function DeleteLogicRelation(){
         console.log(badge_all[badgeCounter].id);
         var badge_ids = badge_all[badgeCounter].id.split(",");
         var selectContentBadge = document.getElementById(badge_all[badgeCounter].id);
-        if(c_badge_ids[0] == badge_ids[0]){
+        if(c_badge_ids[0] == badge_ids[0] || c_badge_ids[1] == badge_ids[1]){
           // var selectContentBadge = document.getElementById(badge_all[badgeCount].id);
           console.log(selectContentBadge);
-          //selectContentBadge.remove();
+          // selectContentBadge.remove();
         }
       }
-      
 
     }
   }
@@ -4080,6 +4083,7 @@ async function Rebuild_content_s(){
       }else{
         //console.log(arr);
         var parse = JSON.parse(arr);
+        console.log(parse);
         // console.log(parse);//スライド上に追加してあるのノードの内容
         // console.log(parse.length);//スライド上に追加してあるのノードの個数
         

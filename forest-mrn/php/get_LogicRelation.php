@@ -13,7 +13,7 @@ $map_id = $_SESSION["MAPID"];//"102774749"; //
 date_default_timezone_set('Asia/Tokyo');
 
 // $sql = "SELECT scenario_title FROM maps WHERE map_id='$map_id'";
-$sql = "SELECT * FROM item_content_relations WHERE item_content1_id IN (SELECT item_content_id FROM item_contents WHERE item_id IN (SELECT item_id FROM items WHERE map_id = '$map_id') AND deleted='0'";
+$sql = "SELECT icr.*, icl1.title AS title1, icl2.title AS title2 FROM item_content_relations icr LEFT JOIN item_content_latest icl1 ON icr.item_content1_id = icl1.item_content_id LEFT JOIN item_content_latest icl2 ON icr.item_content2_id = icl2.item_content_id WHERE icr.deleted = '0' AND (icl1.item_id IN (SELECT item_id FROM item_latest WHERE  map_id = '$map_id') OR icl2.item_id IN (SELECT item_id FROM item_latest WHERE  map_id = '$map_id'));";
 
 $data = array();
 if($result = $mysqli->query($sql)){

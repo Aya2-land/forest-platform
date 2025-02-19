@@ -378,13 +378,13 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                         <option value="根拠">根拠</option>
                                     </select>
                                     <select id="logic_intention1" class="cp_ipselect cp_sl04" >
-                                    </select><a id="SelectContent1">スライドA</a><br>
+                                    </select><a id="SelectContent1">A</a><br>
                                 </div>
                                 <div id="second_choice">
                                     <select id="second_logic" class='cp_ipselect cp_sl05'>
                                     </select>
                                     <select id="logic_intention2" class="cp_ipselect cp_sl04">
-                                    </select><a id="SelectContent2">スライドB</a><br>
+                                    </select><a id="SelectContent2">B</a><br>
                                 </div>
                                 <input id="DecideLogicRelationButton" type="button" value="決定" onclick="DecideSlideLogicRelation_Click();">
                                 <input id="DecideLogicRelationButton" type="button" value="キャンセル" onclick="CancelButton_Click('document_area_conmenu4')">

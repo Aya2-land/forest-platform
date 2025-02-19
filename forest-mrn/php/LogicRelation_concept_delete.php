@@ -14,30 +14,17 @@
     $activity_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-    $sql = "UPDATE item_content_relations SET updated_at='$timestamp', deleted=1 WHERE item_content1_id IN (SELECT item_content_id FROM item_contents WHERE item_id ='$id')";
-	$result = $mysqli->query($sql);
+    $sql_i = "UPDATE item_relations SET updated_at='$timestamp', deleted=1 WHERE (item1_id='$id' OR item2_id='$id')";
+	$result_i = $mysqli->query($sql_i);
+	if ($mysqli->error) {
+		echo "Error delete item_relations: " . $mysqli->error;
+	}
 
-    //クエリ($sql)のエラー処理
-    if($sql == TRUE){
-			echo "true";
-			error_log('$sql成功しています！'.$timestamp, 0);
-		}else if($sql == FALSE){
-			error_log($sql.'$sql失敗です', 0);
-			// error_log('失敗しました。'.mysqli_error($link), 0);
-		}else{
-			error_log('$sql不明なエラーです', 0);
-		}
-
-    //php($result)のエラー処理
-    if($result == TRUE){
-			echo "true";
-			error_log('$result成功しています！'.$timestamp, 0);
-		}else if($result == FALSE){
-			error_log($result.'$result失敗です'.$mysqli->error, 0);
-			// error_log('失敗しました。'.mysqli_error($link), 0);
-		}else{
-			error_log('$result不明なエラーです', 0);
-		}
+	$sql_ic = "UPDATE item_content_relations SET updated_at='$timestamp', deleted=1 WHERE (item_content1_id='$id' OR item_content2_id='$id')";
+	$result_ic = $mysqli->query($sql_ic);
+	if ($mysqli->error) {
+		echo "Error delete item_content_relations: " . $mysqli->error;
+	}
 
     //=================================activityログ===================================//
 

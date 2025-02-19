@@ -1716,7 +1716,6 @@ window.onload = function(){
     mm_menu.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
     mm_menu.classList.add('on');
   });
-  console.log("a");
 
   // 文書化エリアで右クリック時に独自コンテキストメニューを表示する
   dm_area.addEventListener('contextmenu',function(e){
@@ -1740,11 +1739,7 @@ window.onload = function(){
       }
     }
 
-    if(NodeCheckCount ==1 || ThreadCheckCount == 1){
-      dm_menu.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
-      dm_menu.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
-      dm_menu.classList.add('on');
-    }else if(NodeCheckCount == 2){
+    if(NodeCheckCount == 2){
       var ClickNodeLabels = [];
       var dom_all = document.getElementsByClassName("cspan");
       for(var i=0; i<dom_all.length; i++){
@@ -1754,10 +1749,6 @@ window.onload = function(){
           ClickNodeLabels.push(c_dom_label);
         }
       }
-      // var selectNode1 = document.getElementById("SelectNode1");
-      // var selectNode2 = document.getElementById("SelectNode2");
-      // selectNode1.innerHTML = ClickNodeLabels[0];
-      // selectNode2.innerHTML = ClickNodeLabels[1];
       var selectContent1 = document.getElementById("SelectContent1_node");
       var selectContent2 = document.getElementById("SelectContent2_node");
       selectContent1.innerHTML = ClickNodeLabels[0];
@@ -1766,12 +1757,10 @@ window.onload = function(){
       dm_menu3.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
       dm_menu3.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
       dm_menu3.classList.add('on');
-      dm_menu4.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
-      dm_menu4.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
-      dm_menu4.classList.add('on');
-    }
-
-    if(ThreadCheckCount == 2 && NodeCheckCount != 2){
+      // dm_menu4.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
+      // dm_menu4.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
+      // dm_menu4.classList.add('on');
+    }else if(ThreadCheckCount == 2){
       var ClickContentLabels = [];
       var thread_all = document.getElementsByClassName("thread");
       for(var i=0; i<thread_all.length; i++){
@@ -1797,12 +1786,16 @@ window.onload = function(){
       dm_menu4.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
       dm_menu4.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
       dm_menu4.classList.add('on');
+    }else if(NodeCheckCount ==1 || ThreadCheckCount == 1){
+      dm_menu.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
+      dm_menu.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
+      dm_menu.classList.add('on');
     }
 
     // console.log("右クリック");
-    dm_menu4.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
-    dm_menu4.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
-    dm_menu4.classList.add('on');
+    // dm_menu4.style.left = (e.pageX - document.body.scrollLeft + 10) + 'px';
+    // dm_menu4.style.top = (e.pageY - document.body.scrollTop + 10) + 'px';
+    // dm_menu4.classList.add('on');
 
   });
 

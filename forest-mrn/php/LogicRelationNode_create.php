@@ -22,7 +22,9 @@
 		$sql = "INSERT INTO item_content_relations (id, node1_id, item_content1_id, item_content1_label, ont1_id, node2_id, item_content2_id, item_content2_label, ont2_id, deleted, created_at, updated_at) VALUES ('$id', '$node1_id','$item_content1_id', '$item_content1_label', '$ont1_id',  '$node2_id', '$item_content2_id', '$item_content2_label', '$ont2_id', 0, '$timestamp', '$timestamp')";
 
 		$result = $mysqli->query($sql);
-		echo($sql);
+		if ($mysqli->error) {
+			echo "Error item_content_relations: " . $mysqli->error;
+		}
 
     //==============================activityログ===============================//
 
