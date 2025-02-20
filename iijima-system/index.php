@@ -41,6 +41,7 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
   <link rel="stylesheet" type="text/css" href="css/button.css">
   <link rel="stylesheet" type="text/css" href="css/annotation.css">
   <link rel="stylesheet" type="text/css" href="css/summary_area.css">
+  <link rel="stylesheet" type="text/css" href="css/paper_display.css">
   <!-- <link rel="stylesheet" type="text/css" href="css/digest_area.css"> -->
   <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
   <script type="text/javascript" src="js/jquery-ui.min.js"></script>
@@ -118,32 +119,33 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
     <div id="tab01">
       <div id="layout">
 
+        <iframe id="paper_display" src="index.html" oncontextmenu="return false;"></iframe>
+        <div id="highlight_conmenu" oncontextmenu="return false;">
+          <ul>
+            <li>
+              <button class="button4">
+                ハイライトの追加
+              </button>
+            </li>
+            <li>
+              <button class="button4">
+                ハイライトの削除
+              </button>
+            </li>
+          </ul>
+        </div>
+
+
         <div id="system">
           <div id="area">
             <div id="document_area" oncontextmenu="return false;"></div>
             <div id="jsmind_nav">
               【Edit】
-
-
-              <button class="button4" id="question_node_b" onclick="add_paragraph();"> <!--question_node_b-->
+              <button class="button4" id="question_node_b" onclick="add_paragraph('paragraph');"> <!--question_node_b-->
                 段落ノードの追加
               </button>
-              <button class="button4" id="chapter_node" onclick="add_chapter();">
+              <button class="button4" id="chapter_node" onclick="add_paragraph('chapter');">
                 章ノードの追加
-              </button>
-              <button class="button4" id="s_interpretation" onclick="connectNodes();">
-                エッジの追加
-              </button>
-              <button class="button4" id="s_interpretation" onclick="deleteNodes();">
-                ノードの削除
-              </button>
-
-              【mindmap】
-              <button class="button3" id="zoom-in-button" onclick="zoomIn();">
-                拡大
-              </button>
-              <button class="button3" id="zoom-out-button" onclick="zoomOut();">
-                縮小
               </button>
 
               【paper】
@@ -237,11 +239,14 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
 
             </div>
 
+            <!-- ノードの段落番号・章番号を表示するためのdiv要素 -->
+             <div id="paragraph_number" oncontextmenu="return false;"></div>
+
             <!-- vis.jsによってsummary_areaの中身が書き換えられるため，外に配置 -->
             <div id="node_conmenu" oncontextmenu="return false;">
               <ul>
                 <li>
-                  <button class="button4" onclick="changeMenu();">   <!--connectNodes();-->
+                  <button class="button4" onclick="changeMenu();"> <!--connectNodes();-->
                     結束関係の定義
                   </button>
                 </li>
@@ -294,9 +299,9 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
                 </li>
               </ul>
               <!-- 戻るボタン -->
-               <button id="backButton" onclick="backMenu();">
+              <button id="backButton" onclick="backMenu();">
                 戻る
-               </button>
+              </button>
             </div>
 
             <!--
@@ -313,7 +318,7 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
             <li>
               ノード情報変更
             </li>
-           
+
 
 
 
@@ -376,225 +381,226 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
 
 
 
-      <!-- <iframe id="document_area" src="papaer\contemporary_self.html" frameborder="0">
+        <!-- <iframe id="document_area" src="papaer\contemporary_self.html" frameborder="0">
 
           </iframe> -->
-      <!-- <div id="document_area" style="width: calc(60vw - 350px); display: block;"> -->
+        <!-- <div id="document_area" style="width: calc(60vw - 350px); display: block;"> -->
 
-      <div id="document_conmenu">
-        <ul>
-          <!-- <li><a href="javascript:void(0);" target="_blank" onClick="SelecttextToNode()">選択したをマインドマップに追加する</a>
+        <div id="document_conmenu">
+          <ul>
+            <!-- <li><a href="javascript:void(0);" target="_blank" onClick="SelecttextToNode()">選択したをマインドマップに追加する</a>
                -->
-          <!-- <li>
+            <!-- <li>
                 <button class="" onclick="add_annotation('highlight');" style="pointer-events: auto !important;">
                     論文アノテーション追加
                 </button>
                 </li> -->
-          <li>
+            <li>
 
-          <li>
-            <button class="button6" id="question_node_b" onclick="move2node_from_anno(annotations);">
-              紐づいた考えを参照
-            </button>
-          </li>
-          </li>
-          </li>
+            <li>
+              <button class="button6" id="question_node_b" onclick="move2node_from_anno(annotations);">
+                紐づいた考えを参照
+              </button>
+            </li>
+            </li>
+            </li>
 
 
-        </ul>
-      </div>
+          </ul>
+        </div>
 
-      <div id="other_conmenu">
-        <ul>
-          <!-- <li><a href="javascript:void(0);" target="_blank" onClick="SelecttextToNode()">選択したをマインドマップに追加する</a>
+        <div id="other_conmenu">
+          <ul>
+            <!-- <li><a href="javascript:void(0);" target="_blank" onClick="SelecttextToNode()">選択したをマインドマップに追加する</a>
                -->
-          <!-- <li>
+            <!-- <li>
                 <button class="button6" onclick="add_annotation('highlight');" style="pointer-events: auto !important;">
                     論文アノテーション追加
                 </button>
                 </li> -->
-          <li>
-            <button class="button_other" onclick="add_Anode_from_other('other_answer', 'other_answer')">
-              この解釈を取り入れる
+            <li>
+              <button class="button_other" onclick="add_Anode_from_other('other_answer', 'other_answer')">
+                この解釈を取り入れる
+              </button>
+
+
+            </li>
+
+          </ul>
+        </div>
+
+
+        <!--サイドメニュー　start-->
+        <div id="side_menu">
+          <div class="Menu">Menu</div>
+          <button id="change2" class="button10" onClick="confirmAndExecute('other');">マップを比較する</button>
+
+
+          <button id="change3" class="button10 other" onClick="confirmAndExecute('crit');">総評する</button>
+
+          <div class="checkbox">
+            <input type="checkbox" id="checkbox" class="checkbox" name="check" onclick="CheckClick()">
+            <label for="checkbox" data-on-label="On" data-off-label="Off"></label>
+            <span class="checkbox_text">【論文表示】<br><br></span>
+          </div>
+          <!-- マインドマップ編集のサイドメニュー -->
+          <div id="mind" class="side">
+            <div id="make_micro_strat_form">
+              <div id=ref_guidance></div>
+              <div><input type="text" id="ref_text"></div>
+              <button id="submit_strat_button" onclick="submit_strat()">送信する</button>
+            </div>
+
+
+
+            <button class="button6 other" style="position: center;" onclick="get_question()">
+              他者の疑問の観点
             </button>
 
 
-          </li>
 
-        </ul>
-      </div>
+            <div class="other_annotation other" id="othercontainer" oncontextmenu="return false;">
 
+              <div id="result">ノードを選択してください</div>
+            </div>
 
-      <!--サイドメニュー　start-->
-      <div id="side_menu">
-        <div class="Menu">Menu</div>
-        <button id="change2" class="button10" onClick="confirmAndExecute('other');">マップを比較する</button>
-
-
-        <button id="change3" class="button10 other" onClick="confirmAndExecute('crit');">総評する</button>
-
-        <div class="checkbox">
-          <input type="checkbox" id="checkbox" class="checkbox" name="check" onclick="CheckClick()">
-          <label for="checkbox" data-on-label="On" data-off-label="Off"></label>
-          <span class="checkbox_text">【論文表示】<br><br></span>
-        </div>
-        <!-- マインドマップ編集のサイドメニュー -->
-        <div id="mind" class="side">
-          <div id="make_micro_strat_form">
-            <div id=ref_guidance></div>
-            <div><input type="text" id="ref_text"></div>
-            <button id="submit_strat_button" onclick="submit_strat()">送信する</button>
-          </div>
-
-
-
-          <button class="button6 other" style="position: center;" onclick="get_question()">
-            他者の疑問の観点
-          </button>
-
-
-
-          <div class="other_annotation other" id="othercontainer" oncontextmenu="return false;">
-
-            <div id="result">ノードを選択してください</div>
-          </div>
-
-          <button class="button6" id="comment_button" style="position: center; display: none;" onclick="input_comment();">
-            コメントを反映
-          </button>
+            <button class="button6" id="comment_button" style="position: center; display: none;" onclick="input_comment();">
+              コメントを反映
+            </button>
 
 
 
 
-          <!-- <div class="other_annotation ref" id="othercontainer" oncontextmenu="return false;">
+            <!-- <div class="other_annotation ref" id="othercontainer" oncontextmenu="return false;">
         
                   <div id="">ノードを選択してください</div>
               </div> -->
 
 
-          <!-- <div class="toi_menu">問い一覧</div> -->
-          <div class="toi_list other" style="display: block;">
-            <input class="button5" type="button" onclick="showGeneration();" value="all">
-            問い一覧を表示
+            <!-- <div class="toi_menu">問い一覧</div> -->
+            <div class="toi_list other" style="display: block;">
+              <input class="button5" type="button" onclick="showGeneration();" value="all">
+              問い一覧を表示
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- </div> -->
+      <!--  tab04メニュー nishida-->
+      <div id="tab04">
+        <!-- < id="layout"> -->
+        <div id="jsmind_nav2">
+          <div class="user">
+            選択したユーザ
+            のマップ表示
+            <select name="user_list" id="user_list" class="user_select">
+              <!-- ログイン中のユーザのMT時間を取得する -->
+              <?php
+              show_user();
+              ?>
+            </select>
+
+            <form id="reco_peri" class="user_select" method="post" action="">
+              <input type="button" class="ShowCurrentMapButton" onClick="ShowCurrentMap();" value="自分のマップを表示">
+              <input type="button" class="HideCurrentMapButton" onClick="HideCurrentMap();" value="自分のマップを隠す">
+              <input type="button" class="ShowCurrentMapButton" onClick="show_paper();" value="論文を表示">
+              <input type="button" class="HideCurrentMapButton" onClick="hide_paper();" value="論文を隠す">
+              <input id="pastmap_btn" type="button" onclick="show_otherMap();" value="他者のマップを全画面にする">
+            </form>
+            <label><input type="checkbox" name="Difference" id="Difference" onClick="show_annotation();">自分のアノテーション表示</label>
+
+            【paper】
+            <button class="zoom" onclick="zoomIn_paper();">
+              <!-- 拡大 -->
+              <i class="fas fa-search-plus"></i>
+            </button>
+
+            <button class="zoom" onclick="zoomOut_paper();">
+              <!-- 縮小 -->
+              <i class="fas fa-search-minus"></i>
+            </button>
+
+            <button class="zoom" onclick="zoomInit_paper();">
+              <!-- 縮小 -->
+              元のサイズ
+            </button>
           </div>
         </div>
 
+        <!-- 他者のマインドマップを表示する部分 -->
+        <!-- 現在のマインドマップのコピー -->
+        <div id="jsmind_container3" oncontextmenu="return false;"></div>
+        <!-- <div id="#paper_container"> </div> -->
+        <div id="paper_area" oncontextmenu="return false;"></div>
+
+
+        <div id="paper_conmenu">
+          <ul>
+            <li>
+              <button class="button6" id="b_someone" onclick="move2node_from_anno(annotations_s);">
+                紐づいた考えを参照（他者）
+              </button>
+            </li>
+            <li>
+              <button class="button6" id="b_my" onclick="move2node_from_anno(annotations);">
+                紐づいた考えを参照（自分）
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!--<div>他者のマップ</div>-->
+        <div id="jsmind_container2" oncontextmenu="return false;"></div>
+
+
+        <div id="mindmap_conmenu_someone">
+          <ul>
+            <li>
+              <button class="button4" onclick="move2anno_from_node(annotations_s);">
+                紐付いた文参照
+              </button>
+
+
+            </li>
+          </ul>
+        </div>
+
       </div>
+
     </div>
+
+    <!-- tab04ここまで -->
 
     <!-- </div> -->
-    <!--  tab04メニュー nishida-->
-    <div id="tab04">
-      <!-- < id="layout"> -->
-      <div id="jsmind_nav2">
-        <div class="user">
-          選択したユーザ
-          のマップ表示
-          <select name="user_list" id="user_list" class="user_select">
-            <!-- ログイン中のユーザのMT時間を取得する -->
-            <?php
-            show_user();
-            ?>
-          </select>
-
-          <form id="reco_peri" class="user_select" method="post" action="">
-            <input type="button" class="ShowCurrentMapButton" onClick="ShowCurrentMap();" value="自分のマップを表示">
-            <input type="button" class="HideCurrentMapButton" onClick="HideCurrentMap();" value="自分のマップを隠す">
-            <input type="button" class="ShowCurrentMapButton" onClick="show_paper();" value="論文を表示">
-            <input type="button" class="HideCurrentMapButton" onClick="hide_paper();" value="論文を隠す">
-            <input id="pastmap_btn" type="button" onclick="show_otherMap();" value="他者のマップを全画面にする">
-          </form>
-          <label><input type="checkbox" name="Difference" id="Difference" onClick="show_annotation();">自分のアノテーション表示</label>
-
-          【paper】
-          <button class="zoom" onclick="zoomIn_paper();">
-            <!-- 拡大 -->
-            <i class="fas fa-search-plus"></i>
-          </button>
-
-          <button class="zoom" onclick="zoomOut_paper();">
-            <!-- 縮小 -->
-            <i class="fas fa-search-minus"></i>
-          </button>
-
-          <button class="zoom" onclick="zoomInit_paper();">
-            <!-- 縮小 -->
-            元のサイズ
-          </button>
-        </div>
-      </div>
-
-      <!-- 他者のマインドマップを表示する部分 -->
-      <!-- 現在のマインドマップのコピー -->
-      <div id="jsmind_container3" oncontextmenu="return false;"></div>
-      <!-- <div id="#paper_container"> </div> -->
-      <div id="paper_area" oncontextmenu="return false;"></div>
-
-
-      <div id="paper_conmenu">
-        <ul>
-          <li>
-            <button class="button6" id="b_someone" onclick="move2node_from_anno(annotations_s);">
-              紐づいた考えを参照（他者）
-            </button>
-          </li>
-          <li>
-            <button class="button6" id="b_my" onclick="move2node_from_anno(annotations);">
-              紐づいた考えを参照（自分）
-            </button>
-          </li>
-        </ul>
-      </div>
-
-      <!--<div>他者のマップ</div>-->
-      <div id="jsmind_container2" oncontextmenu="return false;"></div>
-
-
-      <div id="mindmap_conmenu_someone">
-        <ul>
-          <li>
-            <button class="button4" onclick="move2anno_from_node(annotations_s);">
-              紐付いた文参照
-            </button>
-
-
-          </li>
-        </ul>
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- tab04ここまで -->
-
-  <!-- </div> -->
-  <!-- メインメニュー　Finish -->
-  <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
-  <script type="text/javascript" src="js/node_tag.js"></script>
-  <script type="text/javascript" src="js/add_annotations.js"></script>
-  <script type="text/javascript" src="js/node_change.js"></script>
-  <script type="text/javascript" src="js/add_node.js"></script>
-  <script type="text/javascript" src="js/mindmap.js"></script>
-  <script type="text/javascript" src="js/user_sheet.js"></script>
-  <script type="text/javascript" src="js/document.js"></script>
-  <script type="text/javascript" src="plugins/Sortable-master/Sortable.js"></script>
-  <script type="text/javascript" src="plugins/Sortable-master/Sortable.min.js"></script>
-  <script type="text/javascript" src="plugins/Modaal-master/dist/js/modaal.js"></script>
-  <script type="text/javascript" src="plugins/Modaal-master/dist/js/modaal.min.js"></script>
-  <script type="text/javascript" src="js/ont_inquiry.js"></script>
-  <script type="text/javascript" src="js/ont_choose_inquiry.js"></script>
-  <script type="text/javascript" src="js/ont_rationality.js"></script>
-  <script type="text/javascript" src="js/exe.js"></script>
-  <script type="text/javascript" src="js/creat_other_question.js"></script>
-  <script type="text/javascript" src="js/get_other_from_annotation.js"></script>
-  <script type="text/javascript" src="js/get_question.js"></script>
-  <script type="text/javascript" src="js/add_comment.js"></script>
-  <script type="text/javascript" src="js/reflection.js"></script>
-  <!--<script type="text/javascript" src="js/summary.js"></script> -->
-  <!--<script type="text/javascript" src="js/summary2.js"></script> -->
-  <!--<script type="text/javascript" src="js/summary3.js"></script> -->
-  <script type="text/javascript" src="js/summary4.js"></script>
+    <!-- メインメニュー　Finish -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/node_tag.js"></script>
+    <script type="text/javascript" src="js/add_annotations.js"></script>
+    <script type="text/javascript" src="js/node_change.js"></script>
+    <script type="text/javascript" src="js/add_node.js"></script>
+    <script type="text/javascript" src="js/mindmap.js"></script>
+    <script type="text/javascript" src="js/user_sheet.js"></script>
+    <script type="text/javascript" src="js/document.js"></script>
+    <script type="text/javascript" src="plugins/Sortable-master/Sortable.js"></script>
+    <script type="text/javascript" src="plugins/Sortable-master/Sortable.min.js"></script>
+    <script type="text/javascript" src="plugins/Modaal-master/dist/js/modaal.js"></script>
+    <script type="text/javascript" src="plugins/Modaal-master/dist/js/modaal.min.js"></script>
+    <script type="text/javascript" src="js/ont_inquiry.js"></script>
+    <script type="text/javascript" src="js/ont_choose_inquiry.js"></script>
+    <script type="text/javascript" src="js/ont_rationality.js"></script>
+    <script type="text/javascript" src="js/exe.js"></script>
+    <script type="text/javascript" src="js/creat_other_question.js"></script>
+    <script type="text/javascript" src="js/get_other_from_annotation.js"></script>
+    <script type="text/javascript" src="js/get_question.js"></script>
+    <script type="text/javascript" src="js/add_comment.js"></script>
+    <script type="text/javascript" src="js/reflection.js"></script>
+    <!--<script type="text/javascript" src="js/summary.js"></script> -->
+    <!--<script type="text/javascript" src="js/summary2.js"></script> -->
+    <!--<script type="text/javascript" src="js/summary3.js"></script> -->
+    <script type="text/javascript" src="js/summary4.js"></script>
+    <script type="text/javascript" src="js/paper_display.js"></script>
 </body>
 
 </html>

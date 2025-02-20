@@ -48,19 +48,67 @@ const options = {
     },
     physics: {
         enabled: false
+    },
+    interaction: {
+        hover: true
     }
 };
 
 const network = new vis.Network(container, data, options);     //summary_areaの要素を書き換えてしまう  node_conmenuはsummary_areaの外に置く
 
 // ノード追加の関数　　　
-function add_paragraph() {
-    const nodeID = ++globalNodeId;
+function add_paragraph(granularity) {
+    //ユーザに段落番号・章番号を入力させる
+    let number = null;
+    while (true) {
+        if (granularity === "paragraph") {
+            number = prompt("段落番号を入力してください：");
+        } else {
+            number = prompt("章番号を入力してください：");
+        }
+
+        if (number === null) {
+            return;
+        }
+
+        //数字ではない場合は再入力
+        if (isNaN(number) || number.trim() === "") {
+            alert("数字を入力してください：");
+        } else {
+            break;
+        }
+    }
+
+    number = number.trim()
+
+    let label = null;
+    let background = null;
+    let border = null;
+    let highlight_background = null;
+    let highlight_border = null;
+    let initialPosition_x = 0;
+    let initialPosition_y = 0;
+
+    if (granularity === "paragraph") {
+        label = `${number}段落`;
+        background = "#85B9FF";
+        border = "#2B7CE9";
+        highlight_background = "#D2E5FF";
+        highlight_border = "#2B7CE9";
+    } else {
+        label = `${number}章`;
+        background = "#C1E58C";
+        border = "#6B8E23";
+        highlight_background = "#D8F5A2";
+        highlight_border = "#6B8E23";
+    }
+
+    const nodeId = ++globalNodeId;
     const newNode = {
-        id: nodeID,
-        label: `${nodeID}段落`,
-        x: 0,  // 初期位置（後でドラッグで調整）
-        y: 0,  // 初期位置（後でドラッグで調整）
+        id: nodeId,
+        label: label,
+        x: initialPosition_x,  // 初期位置（後でドラッグで調整）
+        y: initialPosition_y,  // 初期位置（後でドラッグで調整）
         shape: "box",
         font: {
             align: "left"
@@ -68,13 +116,43 @@ function add_paragraph() {
         widthConstraint: {
             maximum: 400
         },
+        color: {
+            background: background,
+            border: border,
+            highlight: {
+                background: highlight_background,
+                border: highlight_border
+            },
+            hover: {
+                background: highlight_background,
+                border: highlight_border
+            }
+        },
         // width: 1000,
         height: 60,
+        zIndex: 10,
         fixed: false  // ノードを動かせる状態に
     };
 
+    const newNode_tag = {
+        id: `tag${nodeId}`,
+        label: "aiueo",
+        x: initialPosition_x,         //初期位置
+        y: initialPosition_y - 20,         //初期位置
+        shape: "box",
+        color: {
+            background: background,
+            border: border
+        },
+        height: 60,
+        zIndex: 0,
+        fixed: true    //ノードを固定する
+    };
+
     // ノードを vis.js の DataSet に追加
-    nodes.add(newNode);
+    nodes.add([newNode, newNode_tag]);
+    //タグノードを追加
+    // nodes.add(newNode_tag);
 
     // ノードが追加された後、選択状態にしてエッジの作成を促進
     // if (selectedNodes.length === 1) {
@@ -84,7 +162,9 @@ function add_paragraph() {
     //     }
     // }
     // ネットワークを再描画して新しいノードが表示されるようにする
-    network.redraw();
+    network.redraw();  //これが必要な時と必要でない時
+    console.log(nodes.get(nodeId));
+    console.log(nodes.get(`${nodeId}`));
 }
 
 // //ノードのドラッグ開始時
@@ -217,12 +297,23 @@ network.on("dragStart", function () {
     // }
 });
 
+// network.on("dragging", function(event) {
+//     if (!event.nodes.length) return;  //ノードが選択されていない場合は処理しない
+
+//     event.nodes.forEach(nodeId => {
+//         const pos = network.getPositions([nodeId])[nodeId];
+
+//         //ノードIDに対応するHTML要素を取得
+//         if ()
+//     })
+// })
+
 tmp = node_conmenu.innerHTML;
 
 function changeMenu() {
     blockConmenu = false;
     node_conmenu.innerHTML = relationship_conmenu.innerHTML;
-    setTimeout(function() {           //すぐにhideMenuが実行されてしまうのを防ぐ
+    setTimeout(function () {           //すぐにhideMenuが実行されてしまうのを防ぐ
         blockConmenu = true;
     });
 }
@@ -230,7 +321,7 @@ function changeMenu() {
 function backMenu() {
     blockConmenu = false;
     node_conmenu.innerHTML = tmp;
-    setTimeout(function() {
+    setTimeout(function () {
         blockConmenu = true;
     });
 }
@@ -271,7 +362,7 @@ function connectNodes(binding) {
                     }
                 });
 
-                let edgeData =null;
+                let edgeData = null;
 
                 if (existingEdge.length === 0) {
                     switch (binding) {
@@ -280,8 +371,8 @@ function connectNodes(binding) {
                                 from: selectedNodesId[0],
                                 to: selectedNodesId[1],
                                 arrows: {
-                                    from: {enabled: true, type: "circle"},
-                                    to: {enabled: true, type: "circle"}
+                                    from: { enabled: true, type: "circle" },
+                                    to: { enabled: true, type: "circle" }
                                 },
                             };
                             break;
@@ -290,8 +381,8 @@ function connectNodes(binding) {
                                 from: selectedNodesId[0],
                                 to: selectedNodesId[1],
                                 arrows: {
-                                    from: {enabled: true, type: "inv_curve"},
-                                    to: {enabled: true, type: "inv_curve"}
+                                    from: { enabled: true, type: "inv_curve" },
+                                    to: { enabled: true, type: "inv_curve" }
                                 }
                             };
                             break;
@@ -307,8 +398,8 @@ function connectNodes(binding) {
                                 from: selectedNodesId[0],
                                 to: selectedNodesId[1],
                                 arrows: {
-                                    from: {enabled: true, type: "box"},
-                                    to: {enabled: true, type: "diamond"}
+                                    from: { enabled: true, type: "box" },
+                                    to: { enabled: true, type: "diamond" }
                                 }
                             };
                             break;
@@ -317,8 +408,8 @@ function connectNodes(binding) {
                                 from: selectedNodesId[0],
                                 to: selectedNodesId[1],
                                 arrows: {
-                                    from: {enabled: true, type: "box"},
-                                    to: {enabled: true, type: "inv_triangle"}
+                                    from: { enabled: true, type: "box" },
+                                    to: { enabled: true, type: "inv_triangle" }
                                 }
                             };
                             break;
@@ -327,8 +418,8 @@ function connectNodes(binding) {
                                 from: selectedNodesId[0],
                                 to: selectedNodesId[1],
                                 arrows: {
-                                    from: {enabled: true, type: "box"},
-                                    to: {enabled: true, type: "arrow"}
+                                    from: { enabled: true, type: "box" },
+                                    to: { enabled: true, type: "arrow" }
                                 }
                             };
                             break;

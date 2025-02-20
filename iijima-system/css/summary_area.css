@@ -96,6 +96,13 @@
 	position: absolute;
 }
 
+#paragraph_number {
+	position: absolute;
+	border: 1px;
+	padding: 5px;
+	display: none;
+}
+
 #node_conmenu {
 	width: 160px;
 	height: 250px;

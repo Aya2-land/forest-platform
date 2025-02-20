@@ -20,7 +20,7 @@ const setTaggedHTMLPaperData = (file_input_btn_id, paper_area_id) => {
                 //テキストエリアに表示する
                 const area = document.getElementById(paper_area_id);
                 console.log(area);
-                area.innerHTML = new_span.innerHTML;//bodyに追加
+                area.innerHTML = new_span.innerHTML;   //bodyに追加
 
 
 
