@@ -27,7 +27,7 @@
 
 		$id = $_SESSION['USERID'];
 
-		$sql = "SELECT * FROM map_mode_link WHERE user_id = '$id' AND mode_id = 2 ORDER BY updated_at DESC";
+		$sql = "SELECT * FROM map_mode_link WHERE user_id = '$id' AND mode_id = 2 AND deleted = 0 ORDER BY updated_at DESC";
 
 		if($result = $mysqli->query($sql)){
 			while($row = mysqli_fetch_assoc($result)){

@@ -226,6 +226,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <button class="button4" onclick="Unreflected_node();">未反映ノード</button>
                                     <!-- <button class="button4" onclick="CheckNodeAllLogicRelation();">関係性の一覧</button> -->
                                     <button class="button4" onclick="DeleteLogicRelation();">関係性の解消</button>
+                                    <button class="button4" onclick="AllItemVersionUpdate();">資料のバージョンを更新</button>
                                     <!-- <button class="button4" id="input_file" onclick="InputFile();">
                                         資料再現
                                         </button> -->

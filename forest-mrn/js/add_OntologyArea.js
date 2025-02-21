@@ -306,13 +306,13 @@ window.addEventListener("resize", function () {
 });
   
 targetElement.addEventListener("scroll", () =>{
-    console.log("スクロールを検知");
+    // console.log("スクロールを検知");
     // MoveImageArea();
     MoveAndExpensionImageArea();
 })
 
 window.addEventListener("scroll", () =>{
-    console.log("ブラウザのスクロール");
+    // console.log("ブラウザのスクロール");
     // MoveImageArea();
     MoveAndExpensionImageArea();
 })

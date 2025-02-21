@@ -122,7 +122,7 @@ function check_rationality_disp(){
 
 														rationality_mode = true;
 														jmnode[m].style.border = "5px solid #9fd94f";
-														console.log($jmnode[m]);
+														// console.log($jmnode[m]);
 
 													}
 

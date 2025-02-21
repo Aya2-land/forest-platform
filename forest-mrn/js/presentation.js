@@ -298,7 +298,7 @@ $(document).on('click', '.cspan', function(){
       }
     }
     var dom = this;
-    console.log(dom);
+    // console.log(dom);
     dom.style.border = "2px solid gray";
     var dom_id = this.getAttribute("id");
     console.log(dom_id);
@@ -348,7 +348,7 @@ $(document).on('click', '.tspan', function(){
 
 $(document).on('click', '.badge', function(){
   this.focus();
-  console.log("バッジクリック");
+  // console.log("バッジクリック");
   var badge_all = document.getElementsByClassName("badge");
   for(var j=0;j<badge_all.length;j++){
     badge_all[j].style.border = "";
@@ -363,21 +363,21 @@ $(document).on('click', '.badge', function(){
 
 $(document).on('dblclick', '.badge', async function(){
   this.focus();
-  console.log("バッジ ダブルクリック");
+  // console.log("バッジ ダブルクリック");
   var badge_all = document.getElementsByClassName("badge");
   for(var j=0;j<badge_all.length;j++){
     badge_all[j].style.border = "";
   }
 
   var dom = this;
-  console.log(dom);
-  console.log(dom.className);
+  // console.log(dom);
+  // console.log(dom.className);
   dom.style.border = "5px solid gray";
   // dom.style.backgroundColor = "#d3d3d3"
 
   if(dom.className == "badge bg-red"){
 
-    console.log("スライド間の関係性を確認");
+    // console.log("スライド間の関係性を確認");
     var Slide_all = document.getElementsByClassName('thread');
     await $.ajax({
       url: "php/get_LogicSlideRelation.php",
@@ -397,17 +397,17 @@ $(document).on('dblclick', '.badge', async function(){
           }
         }
 
-        console.log(dom.id);
+        // console.log(dom.id);
         var BadgeID_Array = dom.id.split(",");
         var BadgeID_SlideID = BadgeID_Array[1]; //ノードIDの部分
         console.log(BadgeID_SlideID);
         for(var r = 0; r<RelationSlideID_1.length; r++){
-          console.log(RelationSlideID_1[r]);
-          console.log(RelationSlideID_2[r]);
+          // console.log(RelationSlideID_1[r]);
+          // console.log(RelationSlideID_2[r]);
 
           if(RelationSlideID_1[r] == BadgeID_SlideID){
             var pairSlide2 = document.getElementById(RelationSlideID_2[r]);
-            console.log(pairSlide2)
+            // console.log(pairSlide2)
             // pairNode2.style.backgroundColor = "aquamarine";
             for(var i=0; i< Slide_all.length; i++){
               if(Slide_all[i].getAttribute("id") == RelationSlideID_2[r]){
@@ -417,7 +417,7 @@ $(document).on('dblclick', '.badge', async function(){
             }
           }else if(RelationSlideID_2[r] == BadgeID_SlideID){
             var pairSlide1 = document.getElementById(RelationSlideID_1[r]);
-            console.log(pairSlide1);
+            // console.log(pairSlide1);
             // pairNode1.style.backgroundColor = "aquamarine";
             for(var i=0; i< Slide_all.length; i++){
               if(Slide_all[i].getAttribute("id") == RelationSlideID_1[r]){
@@ -456,7 +456,7 @@ $(document).on('dblclick', '.badge', async function(){
           }
         }
 
-        console.log(dom.id);
+        // console.log(dom.id);
         var BadgeID_Array = dom.id.split(",");
         var BadgeID_NodeID = BadgeID_Array[1]; //ノードIDの部分
 
@@ -466,7 +466,7 @@ $(document).on('dblclick', '.badge', async function(){
 
           if(RelationNodeID_1[r] == BadgeID_NodeID){
             var pairNode2 = document.getElementById(RelationNodeID_2[r]);
-            console.log(pairNode2)
+            // console.log(pairNode2)
             // pairNode2.style.backgroundColor = "aquamarine";
             for(var i=0; i< Node_all.length; i++){
               if(Node_all[i].getAttribute("id") == RelationNodeID_2[r]){
@@ -476,7 +476,7 @@ $(document).on('dblclick', '.badge', async function(){
             }
           }else if(RelationNodeID_2[r] == BadgeID_NodeID){
             var pairNode1 = document.getElementById(RelationNodeID_1[r]);
-            console.log(pairNode1);
+            // console.log(pairNode1);
             // pairNode1.style.backgroundColor = "aquamarine";
             for(var i=0; i< Node_all.length; i++){
               if(Node_all[i].getAttribute("id") == RelationNodeID_1[r]){
@@ -509,7 +509,7 @@ $(document).on('dblclick', '.badge', async function(){
 $(document).on('dblclick', '.cspan', function(){
   var dom = this;
   var dom_text = dom.nextElementSibling;
-  console.log(dom_text);
+  // console.log(dom_text);
   $(dom).toggle(1);
   $(dom_text).toggle(1);
   dom_text.focus();//テキストエリアをフォーカスする
@@ -519,7 +519,7 @@ $(document).on('dblclick', '.cspan', function(){
 $(document).on('dblclick', '.tspan', function(){
   var dom = this;
   var dom_text = dom.nextElementSibling;
-  console.log(dom_text);
+  // console.log(dom_text);
   $(dom).toggle(1);
   $(dom_text).toggle(1);
   dom_text.focus();//テキストエリアをフォーカスする
@@ -559,9 +559,9 @@ $(document).on('blur', '.text_border', function(){
 
 $(document).on('blur', '.title_slide', function(){
   var dom = this;
-  console.log(dom);
+  // console.log(dom);
   var dom_span = dom.previousElementSibling;
-  console.log(dom_span);
+  // console.log(dom_span);
   $(dom).toggle(1);
   $(dom_span).toggle(1);
 });
@@ -571,7 +571,6 @@ function Keypress(code, dmm){
 	//エンターキー押下なら
 	if(13 === code){
     var dom = dmm;
-    console.log(dom);
     dom.blur();
     // var dom_span = dom.previousElementSibling;
     // console.log(dom_span);
@@ -1688,12 +1687,12 @@ function NewContent_Append(type){
   var data;
   for(var i=0; i<thread_dom.length; i++){
     if(thread_dom[i].style.border == "5px outset black"){
-      console.log(thread_dom[i]);
+      // console.log(thread_dom[i]);
       // var area = thread_dom[i];
      data = thread_dom[i].id;
     }
   }
-  console.log(data);
+  // console.log(data);
 
   //内容テキストエリアにノード内容を挿入
   let area = document.getElementById(data);
@@ -2214,38 +2213,35 @@ function Get_DocumentRank(slides){
     // console.log("brotherId: "+brotherId);
 
     // document_rankを記録する
-    // Record_document_rank(slide_id[i], brotherId);
+    Record_document_rank(slide_id[i], brotherId);
   }
 }
 
 function Get_ContentRank(){
   var slide_dom = document.getElementsByClassName("thread");
   var content_dom;
-  // console.log(slide_dom);
-  // console.log("KKKKKKKKKKKKKKKK");
-
 
   // 2025-02-10 kawa content_rank.phpで処理
-  // Update_content_rank().then(() => {
-    //最新のコンテントの順番を保存する処理
-    for(var i=0; i<slide_dom.length; i++){
-      var slide_id = slide_dom[i].id;
-      // console.log(slide_id);
-      var content_dom = $(slide_dom[i]).find('.scenario_content');
-      // console.log(content_dom);//これが欲しかった情報
-      for(var j=0; j<content_dom.length; j++){
-        var content_id = content_dom[j].id;
-        const content = content_dom[j].firstElementChild.innerHTML;
-        const node_id = content_dom[j].firstElementChild.getAttribute('node_id');
-        const type = content_dom[j].firstElementChild.getAttribute('type');
-        const brother_id = content_dom[j].firstElementChild.getAttribute('data-brother_id');
-        const parent_id = content_dom[j].firstElementChild.getAttribute('name');
-        const concept_id = content_dom[j].firstElementChild.getAttribute('concept_id');
+  // Update_content_rank().then(() => { });
 
-        Record_content_rank(content_id, brother_id, slide_id, content, node_id, type, parent_id, concept_id);
-      }
+  //最新のコンテントの順番を保存する処理
+  for(var i=0; i<slide_dom.length; i++){
+    var slide_id = slide_dom[i].id;
+    // console.log(slide_id);
+    var content_dom = $(slide_dom[i]).find('.scenario_content');
+    // console.log(content_dom);//これが欲しかった情報
+    for(var j=0; j<content_dom.length; j++){
+      var content_id = content_dom[j].id;
+      const content = content_dom[j].firstElementChild.innerHTML;
+      const node_id = content_dom[j].firstElementChild.getAttribute('node_id');
+      const type = content_dom[j].firstElementChild.getAttribute('type');
+      const brother_id = content_dom[j].firstElementChild.getAttribute('data-brother_id');
+      const parent_id = content_dom[j].firstElementChild.getAttribute('name');
+      const concept_id = content_dom[j].firstElementChild.getAttribute('concept_id');
+
+      Record_content_rank(content_id, brother_id, slide_id, content, node_id, type, parent_id, concept_id);
     }
-  // });
+  }
 }
 
 //2022-11-24 shimizu
@@ -2310,9 +2306,9 @@ function Get_DocumentContentRank(contents){
     updateNode.children[0].setAttribute('data-brother_id', brotherId);
     updateNode.children[0].setAttribute('name', newParentId);
 
-    console.log("Id: " + content_id);
-    console.log("parentId: " + newParentId);
-    console.log("brotherId: " + brotherId);
+    // console.log("Id: " + content_id);
+    // console.log("parentId: " + newParentId);
+    // console.log("brotherId: " + brotherId);
 
     // document_content_rankを記録する
     Record_document_content_rank(content_id, brotherId, newParentId);
@@ -2344,65 +2340,75 @@ $(function(){
             var text_dom = target_dom.nextElementSibling;
             var dom_SelectBox= document.getElementById("SelectBox-"+target_dom.id);
             // console.log(text_dom);
-            // console.log(e.which);
-            console.log(dom_SelectBox);
+            // console.log(target_dom.id);
+            // console.log(dom_SelectBox);
+
+            let currentMarginLeft = window.getComputedStyle(target_dom).marginLeft;
+            let currentMarginValue = parseInt(currentMarginLeft.replace('px', ''), 10) || 0;
+
 
             if(event.shiftKey && event.which == 9){// Key[→]３９
-              if(target_dom.style.width == "calc(100% - 85px)"){
-                // console.log(target_dom);
-                target_dom.style.width = "calc(100% - 65px)";
-                target_dom.style.marginLeft = "40px";
-                target_dom.setAttribute('name', '2');
-                text_dom.style.width = "calc(100% - 65px)";
-                text_dom.style.marginLeft = "40px";
-                //2022-shimizu
-                dom_SelectBox.style.marginLeft = "40px";
-              } else if(target_dom.style.width == "calc(100% - 65px)"){
-                target_dom.style.width = "calc(100% - 45px)";
-                target_dom.style.marginLeft = "20px";
-                target_dom.setAttribute('name', '1');
-                text_dom.style.width = "calc(100% - 45px)";
-                text_dom.style.marginLeft = "20px";
-                //2022-shimizu
-                dom_SelectBox.style.marginLeft = "20px";
-              } else if(target_dom.style.width == "calc(100% - 45px)"){
-                target_dom.style.width = "calc(100% - 25px)";
-                target_dom.style.marginLeft = "";
-                target_dom.setAttribute('name', '0');
-                text_dom.style.width = "calc(100% - 25px)";
-                text_dom.style.marginLeft = "";
-                //2022-shimizu
-                dom_SelectBox.style.marginLeft = "";
-              }
+              target_dom.setAttribute('name', target_dom.getAttribute('data-brother_id'));
+              target_dom.setAttribute('data-brother_id', 'root');
+              // marginLeftを更新
+              let newMarginValue = currentMarginValue + 20;
+              target_dom.style.marginLeft = newMarginValue + 'px';
+              // if(target_dom.style.width == "calc(100% - 85px)"){
+              //   // console.log(target_dom);
+              //   target_dom.style.width = "calc(100% - 65px)";
+              //   target_dom.style.marginLeft = "40px";
+              //   text_dom.style.width = "calc(100% - 65px)";
+              //   text_dom.style.marginLeft = "40px";
+              //   //2022-shimizu
+              //   dom_SelectBox.style.marginLeft = "40px";
+              // } else if(target_dom.style.width == "calc(100% - 65px)"){
+              //   target_dom.style.width = "calc(100% - 45px)";
+              //   target_dom.style.marginLeft = "20px";
+              //   text_dom.style.width = "calc(100% - 45px)";
+              //   text_dom.style.marginLeft = "20px";
+              //   //2022-shimizu
+              //   dom_SelectBox.style.marginLeft = "20px";
+              // } else if(target_dom.style.width == "calc(100% - 45px)"){
+              //   target_dom.style.width = "calc(100% - 25px)";
+              //   target_dom.style.marginLeft = "";
+              //   text_dom.style.width = "calc(100% - 25px)";
+              //   text_dom.style.marginLeft = "";
+              //   //2022-shimizu
+              //   dom_SelectBox.style.marginLeft = "";
+              // }
              }
-             else if(event.which == 9){// Key[←]37
-               if(target_dom.style.width == "calc(100% - 25px)"){
-                //  console.log(target_dom);
-                 target_dom.style.width = "calc(100% - 45px)";
-                 target_dom.style.marginLeft = "20px";
-                 target_dom.setAttribute('name', '1');
-                 text_dom.style.width = "calc(100% - 45px)";
-                 text_dom.style.marginLeft = "20px";
-                 //2022-shimizu
-                dom_SelectBox.style.marginLeft = "20px";
-               } else if(target_dom.style.width == "calc(100% - 45px)"){
-                 target_dom.style.width = "calc(100% - 65px)";
-                 target_dom.style.marginLeft = "40px";
-                 target_dom.setAttribute('name', '2');
-                 text_dom.style.width = "calc(100% - 65px)";
-                 text_dom.style.marginLeft = "40px";
-                 //2022-shimizu
-                dom_SelectBox.style.marginLeft = "40px";
-               } else if(target_dom.style.width == "calc(100% - 65px)"){
-                 target_dom.style.width = "calc(100% - 85px)";
-                 target_dom.style.marginLeft = "60px";
-                 target_dom.setAttribute('name', '3');
-                 text_dom.style.width = "calc(100% - 85px)";
-                 text_dom.style.marginLeft = "60px";
-                 //2022-shimizu
-                dom_SelectBox.style.marginLeft = "60px";
-               }
+             else if(event.which == 9 && currentMarginValue != 0){// Key[←]37
+              // marginLeftを更新
+              let newMarginValue = currentMarginValue - 20;
+              target_dom.style.marginLeft = newMarginValue + 'px';
+               target_dom.setAttribute('data-brother_id', target_dom.getAttribute('name'));
+               target_dom.setAttribute('name', 'root');
+              //  if(target_dom.style.width == "calc(100% - 25px)"){
+              //   //  console.log(target_dom);
+              //    target_dom.style.width = "calc(100% - 45px)";
+              //    target_dom.style.marginLeft = "20px";
+              //    text_dom.style.width = "calc(100% - 45px)";
+              //    text_dom.style.marginLeft = "20px";
+              //    //2022-shimizu
+              //   dom_SelectBox.style.marginLeft = "20px";
+              //  } else if(target_dom.style.width == "calc(100% - 45px)"){
+              //    target_dom.style.width = "calc(100% - 65px)";
+              //    target_dom.style.marginLeft = "40px";
+              //    text_dom.style.width = "calc(100% - 65px)";
+              //    text_dom.style.marginLeft = "40px";
+              //    //2022-shimizu
+              //   dom_SelectBox.style.marginLeft = "40px";
+              //  } else if(target_dom.style.width == "calc(100% - 65px)"){
+              //    target_dom.style.width = "calc(100% - 85px)";
+              //    target_dom.style.marginLeft = "60px";
+              //    text_dom.style.width = "calc(100% - 85px)";
+              //    text_dom.style.marginLeft = "60px";
+              //    //2022-shimizu
+              //   dom_SelectBox.style.marginLeft = "60px";
+              //  }
              }
+            //  console.log(target_dom);
+             Get_ContentRank()
           }
         }
         
@@ -2619,16 +2625,12 @@ class Slide{
 class SlideImage{
   constructor(obj){
     let area = $("#document_area");
-    console.log(obj)
-    console.log(obj.node_id);
     const image_ID = obj.node_id;
     const slide_id = obj.slide_id;
     const concept_id = obj.concept_id;
     const quot_slide_id = "\"" + slide_id + "\"";
     const brother_id = obj.brother_id;
     var phpURL="get_imageData.php?imageID="+ image_ID;
-    console.log(phpURL);
-  
     
     let label = "<div class='thread' id='"+slide_id+"' value='スレッド' data-node_id='"+image_ID+"' data-concept_id='"+concept_id+"' data-brother_id='"+brother_id+"' style='background-color:white; padding:5px; margin-top:5px; margin-bottom:5px; margin-right:5px; margin-left:5px;height:auto'>"+
     "<img id='preview-"+slide_id+"' class=Image src='"+phpURL+"' alt='選択した画像' width='95%'>"+
@@ -2697,7 +2699,7 @@ class Content{
     // console.log(slide_id);
     // console.log(quot_slide_id);
     let label = "<div id='"+content_id+"' class='scenario_content'>"+
-                  "<span id='"+content_id+"' class = 'cspan' name = '"+parent_id+"' data-node_id = '"+node_id+"'data-brother_id='"+brother_id+"' style = 'width:calc(100% - 25px)' type='"+type+"' tabindex='0'>"+content+"</span>"+
+                  "<span id='"+content_id+"' class = 'cspan' name = '"+parent_id+"' data-node_id = '"+node_id+"' data-brother_id='"+brother_id+"' style = 'width:calc(100% - 25px)' type='"+type+"' tabindex='0'>"+content+"</span>"+
                   "<textarea id='contents-"+content_id+"' class='text_border' class='statement' onFocus='TextboxClick()' onblur='Edit_save(this,"+quot_contentid+");' placeholder='内容' style='width:calc(100% - 25px)' onkeypress='Keypress(event.keyCode, this);'>"+content+"</textarea>"+
                   "<input id=DeleteButton-"+content_id+" class='content_delete' type='button' value='×' onclick='RemoveAppendNode("+quot_contentid+");'>"+
                   "<select id=SelectBox-"+content_id+" class='cp_ipselect cp_sl05' name='Logic_options_contents'>"+"</select>"+
@@ -2813,19 +2815,18 @@ async function Rebuild_s(){
           
           for(var i=0; i<parse.length; i++){
             for(var j=0; j<parse.length; j++){
-              // console.log(parse[j].brother_id);
               if(parse[j].brother_id == bro_id){
-                if(parse[j].node_id == "notid"){
+                // console.log(parse[j].brother_id); 
+                if(parse[j].title == ''){
                   const image = new SlideImage({
                     slide_title: parse[j].title,
                     slide_id: parse[j].item_id,
                     node_id: parse[j].node_id,
+                    logic_option: parse[j].logic_option,
                     brother_id: bro_id,
                   });
                   delete image;
                   console.log("画像再現完了");
-                  bro_id = parse[j].item_id; // 更新
-                  break; // 内部ループから抜け出し
                 } else {
                   const newslide = new Slide({
                     slide_title: parse[j].title,
@@ -2836,9 +2837,9 @@ async function Rebuild_s(){
                   });
                   delete newslide;
                   console.log("スライド再現完了");
-                  bro_id = parse[j].item_id; // 更新
-                  break; // 内部ループから抜け出し
                 }
+                bro_id = parse[j].item_id; // 更新
+                // console.log(bro_id);
               }
             }
           }
@@ -2889,7 +2890,6 @@ async function Rebuild_s(){
       if(arr == "[]"){
         //console.log(arr);
       }else{
-        //console.log(arr);
         var parse = JSON.parse(arr);
         console.log(parse);//スライド上に追加してあるのノードの内容
         console.log(parse.length);//スライド上に追加してあるのノードの個数
@@ -4059,7 +4059,6 @@ async function Rebuild_content_s(){
           for(var q=0; q<parse.length; q++){
             // console.log(parse[q].slide_id);
             var selected_id = "SelectBox-"+parse[q].item_content_id;
-            //console.log(selected_id);
             var objSelect = document.getElementById(selected_id);
             // console.log(parse[q].logic_option)
             objSelect.options[parse[q].logic_option].selected = true;
@@ -4081,7 +4080,7 @@ async function Rebuild_content_s(){
       if(arr == "[]"){
         //console.log(arr);
       }else{
-        //console.log(arr);
+        // console.log(arr);
         var parse = JSON.parse(arr);
         console.log(parse);
         // console.log(parse);//スライド上に追加してあるのノードの内容
@@ -4526,56 +4525,6 @@ function LogicConceptRelationADD(){
 
 }
 
-// バージョンを更新
-function ItemVersionUpdate(){
-  var thread_all = document.getElementsByClassName("thread");
-  var cspan_all = document.getElementsByClassName("cspan");
-  var t_dom_id;
-  var c_dom_id;
-  var data;
-  var id;
-
-  for(var j = 0; j< thread_all.length; j++){
-    //選択中のスレッドを取得
-    if(thread_all[j].style.border == "5px outset black"){
-      t_dom_id = thread_all[j].getAttribute("id");
-      break;
-    }
-  }
-  for(var i=0; i<cspan_all.length; i++){
-    // console.log(c_scenario[i].style.border);
-    if(cspan_all[i].style.border == "2px solid gray"){
-      c_dom_id = cspan_all[i].getAttribute("id");
-    }
-  }
-
-  //選択されている要素を見つけたら，それがitemなのかitem_contentなのかを判断
-  if(c_dom_id){
-    data = "item_content_versions";
-    id = c_dom_id;
-  }else if(t_dom_id){
-    data = "item_versions";
-    id = t_dom_id;
-  }
-  console.log(id);
-
-  $.ajax({
-
-    url: "php/version_update.php",
-    type: "POST",
-    data: {data: data,
-          id : id,},
-    success: function (e) {
-      if(e){
-        console.log(e);
-      }
-    },
-    error: function () {
-    console.log("登録失敗");},
-
-  });
-
-}
 
 //---
 // index.phpを読み込むたびに関数実行

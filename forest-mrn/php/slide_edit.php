@@ -12,7 +12,7 @@
     $map_id = $_SESSION['MAPID'];    //シートID
     $item_id = $_POST["id"]; //スライドID
     $title = $_POST["content"]; //スライドタイトル
-    $activity_id = uniqid();
+    $item_history_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
     $sql = "SELECT title FROM item_latest WHERE item_id = '$item_id'";

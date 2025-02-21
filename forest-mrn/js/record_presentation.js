@@ -336,7 +336,7 @@ function Delete_Document_content(contentID){
 
 //コンテンツの編集を記録する関数
 function Edit_save(obj,id){
-  var content = obj.innerHTML;//変更されたテキストエリアの内容
+  var content = obj.value;//変更されたテキストエリアの内容
   var nodeid = obj.getAttribute('data-node_id');
 
   $.ajax({
@@ -371,11 +371,8 @@ function Edit_save(obj,id){
 //スライドタイトルの編集を記録する関数
 function Edit_slide(obj, itemID){
   var slidetitle = obj.value;//変更されたテキストエリアの内容
-  console.log(itemID);
-  console.log(slidetitle);
 
   $.ajax({
-
       url: "php/slide_edit.php",
       type: "POST",
       data: {id : itemID,
@@ -387,7 +384,6 @@ function Edit_slide(obj, itemID){
       },
       error: function () {
       console.log("登録失敗");},
-
   });
 
   // ---------以下，ラベルへの変更結果を反映---------------
@@ -403,7 +399,6 @@ function Edit_slide(obj, itemID){
 //プレゼンテーション自体のタイトルの編集を記録する関数
 function Edit_title(obj){
   var title = obj.value;
-  console.log(title);
 
   $.ajax({
 
@@ -499,6 +494,7 @@ async function Update_Document_rank(){
 
 // 2025-02-10 kawa content_rank.phpで処理
 async function Update_content_rank(){
+  console.log("Update_content_rank()は動いていません");
   // await $.ajax({
 
   //     url: "php/update_content_rank.php",
@@ -556,6 +552,9 @@ function Record_slide_rank(itemID, brotherId){
 //2022-11-24 shimizu
 function Record_document_rank(itemID, brother_id){
   var id = getUniqueStr();
+  if(brother_id == "document_title"){
+    brother_id = "root";
+  }
 
   $.ajax({
       url: "php/document_rank.php",
@@ -572,7 +571,7 @@ function Record_document_rank(itemID, brother_id){
   });
 }
 
-function Record_content_rank(contentID, rank, itemID, content, nodeID, type, indent, concept_id){
+function Record_content_rank(contentID, brother_id, itemID, content, nodeID, type, parent_id, concept_id){
   var id = getUniqueStr();
 
   $.ajax({
@@ -581,15 +580,14 @@ function Record_content_rank(contentID, rank, itemID, content, nodeID, type, ind
       type: "POST",
       data: {id : id,
             content_id : contentID,
-            rank : rank,
+            brother_id : brother_id,
             slide_id : itemID,
             content : content,
             node_id : nodeID,
             type : type,
-            indent : indent,
+            parent_id : parent_id,
             concept_id : concept_id},
       success: function (e) {
-        console.log("登録成功");
         if(e){
           console.log(e);
         }
@@ -603,8 +601,6 @@ function Record_content_rank(contentID, rank, itemID, content, nodeID, type, ind
 //2022-11-24 shimizu
 function Record_document_content_rank(contentID, brother_id, parent_id){
   var id = getUniqueStr();
-  console.log(brother_id);
-  console.log(parent_id);
 
   $.ajax({
 
@@ -680,4 +676,76 @@ function Record_Timing(timing){
       console.log("登録失敗");},
 
   });
+}
+
+
+// バージョンを更新
+function ItemVersionUpdate(){
+  var thread_all = document.getElementsByClassName("thread");
+  var cspan_all = document.getElementsByClassName("cspan");
+  var t_dom_id;
+  var c_dom_id;
+  var data;
+  var id;
+
+  for(var j = 0; j< thread_all.length; j++){
+    //選択中のスレッドを取得
+    if(thread_all[j].style.border == "5px outset black"){
+      t_dom_id = thread_all[j].getAttribute("id");
+      break;
+    }
+  }
+  for(var i=0; i<cspan_all.length; i++){
+    // console.log(c_scenario[i].style.border);
+    if(cspan_all[i].style.border == "2px solid gray"){
+      c_dom_id = cspan_all[i].getAttribute("id");
+    }
+  }
+
+  //選択されている要素を見つけたら，それがitemなのかitem_contentなのかを判断
+  if(c_dom_id){
+    data = "item_content_versions";
+    id = c_dom_id;
+  }else if(t_dom_id){
+    data = "item_versions";
+    id = t_dom_id;
+  }
+
+  $.ajax({
+
+    url: "php/version_update.php",
+    type: "POST",
+    data: {data: data,
+          id : id,},
+    success: function (e) {
+      if(e){
+        console.log(e);
+      }
+    },
+    error: function () {
+    console.log("登録失敗");},
+
+  });
+
+}
+
+function AllItemVersionUpdate(){
+
+  var data = "all_items";
+
+  $.ajax({
+
+    url: "php/version_update.php",
+    type: "POST",
+    data: {data: data,},
+    success: function (e) {
+      if(e){
+        console.log(e);
+      }
+    },
+    error: function () {
+    console.log("登録失敗");},
+
+  });
+
 }
