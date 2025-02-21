@@ -8,13 +8,13 @@ require("connect_db.php");
 $map_id = $_SESSION["MAPID"];//"102774749"; //
 // $doc_id = $_GET["doc_id"];
 // $doc_id = $_POST["doc_id"];
-$slide_id = $_POST["slide_id"];
+$item_id = $_POST["slide_id"];
 // $slide_id = $_GET["slide_id"];
 //タイムゾーンの設定
 date_default_timezone_set('Asia/Tokyo');
 
 // $sql = "SELECT scenario_title FROM maps WHERE map_id='$map_id'";
-$sql = "SELECT * FROM document_content_rank WHERE map_id='$map_id' AND deleted='0' AND slide_id='$slide_id'";
+$sql = "SELECT * FROM item_content_latest WHERE item_id='$item_id'";
 
 $data = array();
 if($result = $mysqli->query($sql)){

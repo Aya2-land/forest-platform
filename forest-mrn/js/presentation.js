@@ -1919,6 +1919,7 @@ function OutputFile(){
       url: "php/create_html.php", // ファイル名をつける
       success:function(data){
         // ダウンロードリンクを作成
+        console.log(data);
         var link = document.createElement( 'a' );
       	link.href = window.URL.createObjectURL( new Blob( [html] ) );
       	link.download = data; // ファイル名
@@ -2084,15 +2085,15 @@ async function CreateMindmapNodeXML(){
       }else{
         // console.log(arr);
         var parse = JSON.parse(arr);
-          console.log(parse);
+          // console.log(parse);
         // console.log(parse);
         for(var i=0; i<parse.length; i++){
           // デバッグ用
           // console.log(parse[i]);
-          console.log("node_content : "+parse[i].content);
+          // console.log("node_content : "+parse[i].content);
           // console.log(parse[i].concept_id);
           // console.log(parse[i].parent_id);
-          console.log("node_type : "+parse[i].type)
+          // console.log("node_type : "+parse[i].type)
           xmlSource += '<Node node_id="'+parse[i].node_id+'" ';
           xmlSource += 'node_label="'+parse[i].content+'" ';
           xmlSource += 'node_concept_id="'+parse[i].concept_id+'" ';
@@ -2976,7 +2977,7 @@ async function CreateDocumentXML(){
       if(arr == "[]"){
         // console.log(arr);
       }else{
-        // console.log(arr);
+        console.log(arr);
         var parse = JSON.parse(arr);
         LR_counter += parse.length;
 
@@ -3013,7 +3014,7 @@ async function CreateDocumentXML(){
         for(var i=0; i<parse2.length; i++){
           // console.log(parse2[i]);
           // console.log(parse2[i].slide_id);
-          SlideIDs.push(parse2[i].slide_id);
+          SlideIDs.push(parse2[i].item_id);
           SlideLogicIndex[i] = parse2[i].logic_option;
         }
         //デバッグ用；中身確認
@@ -3042,15 +3043,17 @@ async function CreateDocumentXML(){
         if(arr3 == "[]"){
           console.log(arr3);
         }else{
-          // console.log(arr);
+          console.log(arr3);
           var parse3 = JSON.parse(arr3);
           for(var i=0; i<parse3.length; i++){
             // console.log("順番："+parse3[i].rank);
             // console.log("インデックス番号："+parse3[i].logic_option);
-            DocContetRank_LogicIndexNumber[parse3[i].rank] = parse3[i].logic_option;
+            DocContetRank_LogicIndexNumber[parse3[i].parent_id] = parse3[i].logic_option;
           }
         }
         SlideID_DCR_LINumber[slide_ID] = DocContetRank_LogicIndexNumber;
+        console.log(DocContetRank_LogicIndexNumber);
+        console.log(SlideID_DCR_LINumber);
         console.log("論理構成取得");
       },
       error:function(){
@@ -3082,8 +3085,8 @@ async function CreateDocumentXML(){
   //0.資料作成範囲の大きさ（横幅，縦幅）を取得する
   var DocumentAreaWidth = document.getElementById("document_area").clientWidth;
   var DocumentAreaHeight = document.getElementById("document_area").clientHeight;
-  console.log(DocumentAreaWidth); //838
-  console.log(DocumentAreaHeight);  //1296
+  // console.log(DocumentAreaWidth); //838
+  // console.log(DocumentAreaHeight);  //1296
   
   //1．資料タイトルの大きさ(横幅，縦幅）を取得する
   var SlideTitleWidth = document.getElementById("document_title").clientWidth;
@@ -3475,6 +3478,8 @@ async function CreateDocumentXML(){
         console.log("NodeWidth :"+NodeWidth);
         console.log(NodeHeight);
         console.log(selectElementHeight);
+        console.log();
+        console.log(h);
         
         var LogicIndexNumber = SlideID_DCR_LINumber[slide_id][h];
         var LogicConceptLabel = Base_IndexNumberToClassLabel[LogicIndexNumber];   
@@ -3714,6 +3719,7 @@ async function CreateDocumentXML(){
   xmlSource += '  </logic_relations>\n';
   xmlSource += '</relations>\n';
   xmlSource += '</Information>\n';
+  console.log(xmlSource);
 
   const japanStandardTime = new Date().toLocaleString({ timeZone: 'Asia/Tokyo' });
   
