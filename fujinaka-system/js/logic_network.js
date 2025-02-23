@@ -144,6 +144,7 @@ setOptions(options) {
         this.edges.remove(this.ownNetwork.getConnectedEdges(selectNodeId));
         this.nodes.remove({id: selectNodeId});
     }
+    defaultRecordLogicNetwork.delete_LogicNode(selectNodeId)
   }
 
   //エッジを追加する
@@ -182,7 +183,7 @@ setOptions(options) {
           return;
         }
         this.edges.add({ from: this.dragStartNodeId, to: this.dragEndNodeId });
-        // defaultRecordForestMRN.record_Edge(this.dragStartNodeId, this.dragEndNodeId);
+        defaultRecordLogicNetwork.record_LogicEdge(this.dragStartNodeId, this.dragEndNodeId);
       }
       this.dragStartNodeId = null;
       this.dragEndNodeId = null;
@@ -222,12 +223,12 @@ setOptions(options) {
 }
 
 class RecordLogicNetwork{
-  record_LogicNode (id, label, x, y){
+  record_LogicNode (node_id, label, x, y){
     $.ajax({
       url: "php/logic_maneger.php",
       type: "POST",
       data: {
-        node_id : id,
+        node_id : node_id,
         label : label,
         x : x,
         y : y,
@@ -259,6 +260,42 @@ class RecordLogicNetwork{
         y : y,
         purpose : 'update',
         update_thing : 'node'
+      },
+      dataType: "json",
+      success: function(response) {
+        console.log(response); // ← ここでレスポンス確認
+        if (response.status === "success") {
+          console.log("記録成功:", response.node_id);
+        } else {
+          console.error("エラー:", response.message);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error("通信エラー:", error);
+      }
+    })
+  }
+
+  delete_LogicNode (node_id){
+    $.ajax({
+      url: "php/logic_maneger.php",
+      type: "POST",
+      data: {
+        node_id : node_id,
+        purpose : 'delete',
+        delete_thing : 'node'
+      },
+      dataType: "json",
+      success: function(response) {
+        console.log(response); // ← ここでレスポンス確認
+        if (response.status === "success") {
+          console.log("記録成功:", response.node_id);
+        } else {
+          console.error("エラー:", response.message);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error("通信エラー:", error);
       }
     })
   }
