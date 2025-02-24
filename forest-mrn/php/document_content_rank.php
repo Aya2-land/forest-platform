@@ -16,29 +16,25 @@
 	$id = $_POST["id"];
 	$item_content_id = $_POST["item_content_id"];     //コンテントID
 	$brother_id = $_POST["brother_id"];            		//順番
-	$parent_id = $_POST["parent_id"];     		//インデント情報
 
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 	
 	// item_content_latest テーブルから一致するタプルを取得
-	$sql_check = "SELECT item_content_bro_id, item_content_par_id FROM item_content_latest WHERE item_content_id = '$item_content_id'";
+	$sql_check = "SELECT item_content_bro_id FROM item_content_latest WHERE item_content_id = '$item_content_id'";
 	$result_check = $mysqli->query($sql_check);
 
 	if ($result_check) {
 		$row = $result_check->fetch_assoc();
-
-		echo "Current brother_id: " . $row['item_content_bro_id'] . ", Input brother_id: " . $brother_id;
-		echo "Current parent_id: " . $row['item_content_par_id'] . ", Input parent_id: " . $parent_id;
 		
-		// brother_id と parent_id が不一致の場合のみ更新処理を実行
-		if ($row && ($row['item_content_bro_id'] !== $brother_id || $row['item_content_par_id'] !== $parent_id)) {
+		// brother_id が不一致の場合のみ更新処理を実行
+		if ($row && ($row['item_content_bro_id'] !== $brother_id )) {
 			
 			// TEMPORARY TABLEを用いてitem_content_historiesから必要箇所のみ変更し，新しいタプルとして挿入
 			// 挿入順を変えるとappeared_at，disappeared_atが狂うので注意
 			$sql_new_1 = "CREATE TEMPORARY TABLE tmp_item_content_histories AS SELECT * FROM item_content_histories 
 				WHERE item_content_history_id = (SELECT item_content_history_id FROM item_content_latest WHERE item_content_id = '$item_content_id');";
 			$sql_update = "UPDATE item_content_histories SET disappeared_at = '$timestamp' WHERE item_content_history_id = (SELECT item_content_history_id FROM tmp_item_content_histories);";
-			$sql_new_2 = "UPDATE tmp_item_content_histories SET item_content_history_id = '$id', item_content_bro_id = '$brother_id', item_content_par_id = '$parent_id', appeared_at = '$timestamp', disappeared_at = NULL;";
+			$sql_new_2 = "UPDATE tmp_item_content_histories SET item_content_history_id = '$id', item_content_bro_id = '$brother_id', appeared_at = '$timestamp', disappeared_at = NULL;";
 			$sql_new_3 = "INSERT INTO item_content_histories SELECT * FROM tmp_item_content_histories;";
 			$sql_i_update = "UPDATE item_contents set updated_at = '$timestamp' WHERE item_content_id = '$item_content_id';";
 
@@ -72,7 +68,7 @@
 
 		} else {
 			// 一致している場合の処理（必要ならば）
-			echo "No changes needed as brother_id and parent_id are consistent.";
+			echo "No changes needed as brother_id is consistent.";
 		}
 	} else {
 		echo "Error fetching record: " . $mysqli->error;

@@ -1020,77 +1020,76 @@ function Rebuild_title_Past(endtime){
   }
   async function Rebuild_content_s_Past(endtime){
     await $.ajax({
-          url: "php/document_content_rebuild_past.php",
-          type: "POST",
-          data: { endtime : endtime},
-          success: function(arr){
-  
-          if(arr == "[]"){
-            // console.log(arr);
-          }else{
-            // console.log(arr);
-            var parse = JSON.parse(arr);
-            // console.log(parse);//スライド上に追加してあるのノードの内容
-            // console.log(parse.length);//スライド上に追加してあるのノードの個数
-            for(var i=0; i<parse.length; i++){
-              for(var j=0; j<parse.length; j++){
-                // console.log(String(i), parse[j].rank);
-                if(String(i) == parse[j].rank){
-                  const newcontent = new Content({
-                        content_id: parse[j].content_id,
-                        node_id: parse[j].node_id,
-                    content: parse[j].content,
-                    slide_id: parse[j].slide_id,
-                    type: parse[j].type,
-                      indent: parse[j].indent});
-                  if(parse[j].node_id != ""){
-                    const content_id = parse[j].content_id;
-                    const node_id = parse[j].node_id;
-                    var dom_tmp = document.getElementById("contents-"+content_id);
-                    var dom_target = dom_tmp.previousElementSibling;
-                    // console.log(dom_target);
-                    dom_target.setAttribute("node_id",node_id);
-                  }
-                  if(parse[j].concept_id != ""){
-                    const content_id = parse[j].content_id;
-                    const concept_id = parse[j].concept_id;
-                    var dom_tmp = document.getElementById("contents-"+content_id);
-                    var dom_target = dom_tmp.previousElementSibling;
-                    // console.log(dom_target);
-                    dom_target.setAttribute("concept_id",concept_id);
-                  }
-                  
-                  delete newcontent;
-                  console.log("コンテント再現完了");
-                }
-              }
+	    url: "php/document_content_rebuild.php",
+	    type: "POST",
+	    success: function(arr){
+        if(arr == "[]" || arr == ""){
+          console.log(arr);
+        }else{
+          var parse = JSON.parse(arr);
+          // console.log(parse);
+          var bro_id = "root";
+          let j = 0;
+          let num = parse.length;
+          
+          while(num>0){
+            if(parse[j].brother_id == bro_id){
+              const newContent = new Content({
+                content_id: parse[j].item_content_id,
+                node_id: parse[j].node_id,
+                content: parse[j].content,
+                slide_id: parse[j].item_id,
+                type: parse[j].type,
+                brother_id: parse[j].brother_id,
+                indent: parse[j].indent,
+                logic_option: parse[j].logic_option,
+              });
+              delete newContent;
+
+              bro_id = parse[j].item_content_id; // 更新
+              console.log(parse[j].item_content_id);
+              num--;
+              j = 0;
+            }else{
+              j++;
             }
-            //2022-11-23 論理構成意図を選択するためのセレクトボックスの中身を追加
-            for(var LogicLabel in Output_ConceptIDtoClassLabel){
-              // console.log(LogicLabel);
-              // console.log(Output_ConceptIDtoClassLabel[LogicLabel]);
-              var Label = LogicLabel;
-              $("select[name='Logic_options_contents']").append(new Option(Label, Output_ConceptIDtoClassLabel[LogicLabel]));
-            }
-            let selectContentLogic = document.querySelectorAll("[name='Logic_options_contents']");
-            selectContentLogic.forEach(select => select.addEventListener('change', ChangeLogicSelectContent))
-            //選択ずみの値を設定
-            for(var q=0; q<parse.length; q++){
-              // console.log(parse[q].slide_id);
-              var selected_id = "SelectBox-"+parse[q].content_id;
-              //console.log(selected_id);
-              var objSelect = document.getElementById(selected_id);
-              // console.log(parse[q].logic_option)
-              objSelect.options[parse[q].logic_option].selected = true;
-              
-            }
-            console.log("選択肢を追加");
           }
-          },
-        error:function(){
-          console.log("エラーです");
+          
+
+          console.log("コンテント再現完了");
+
+          SetIndent();
+
+          //2022-11-23 論理構成意図を選択するためのセレクトボックスの中身を追加
+          for(var LogicLabel in Base_ClassLabeltoConceptID){
+            // console.log(LogicLabel);
+            // console.log(Output_ConceptIDtoClassLabel[LogicLabel]);
+            var Label = LogicLabel;
+            if(Label == "事実[自身]" || Label == "事実[世の中]" || Label == "仮説[自身]" || Label == "仮説[世の中]"){
+              $("select[name='Logic_options_contents']").append(new Option(Label, Base_ClassLabeltoConceptID[LogicLabel]));
+            }
+            // $("select[name='Logic_options_contents']").append(new Option(Label, Base_ClassLabeltoConceptID[LogicLabel]));
+          }
+          let selectContentLogic = document.querySelectorAll("[name='Logic_options_contents']");
+          selectContentLogic.forEach(select => select.addEventListener('change', ChangeLogicSelectContent))
+          //選択ずみの値を設定
+          for(var q=0; q<parse.length; q++){
+            // console.log(parse[q].slide_id);
+            var selected_id = "SelectBox-"+parse[q].item_content_id;
+            var objSelect = document.getElementById(selected_id);
+            // console.log(parse[q].item_content_id)
+            // console.log(parse[q].logic_option)
+            // console.log(objSelect);
+            objSelect.options[parse[q].logic_option].selected = true;
+            
+          }
+          // console.log("選択肢を追加");
         }
-      });
+      },
+      error:function(){
+        console.log("エラーです");
+      }
+	});
   
     //2022-12-21 付与した関係性があれば追加する
     await $.ajax({

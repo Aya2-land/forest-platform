@@ -19,24 +19,24 @@
 		$content = $_POST["content"];     //コンテンツの中身
 		$node_id = $_POST["node_id"];     //ノードID
 		$type = $_POST["type"];     //タイプ
-		$parent_id = $_POST["parent_id"];     //インデント情報
+		$indent = $_POST["indent"];     //インデント情報
 		$concept_id = $_POST["concept_id"];     //コンセプトID
 
 
 		$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 		// item_latest テーブルから一致するタプルを取得
-		$sql_check = "SELECT item_content_bro_id, item_content_par_id FROM item_content_latest WHERE item_content_id = '$item_content_id'";
+		$sql_check = "SELECT item_content_bro_id, indent FROM item_content_latest WHERE item_content_id = '$item_content_id'";
 		$result_check = $mysqli->query($sql_check);
 
 	if ($result_check) {
 		$row = $result_check->fetch_assoc();
 			
-		// brother_id と parent_id が不一致の場合のみ更新処理を実行
-		if ($row && ($row['item_content_bro_id'] !== $brother_id) || $row && ($row['item_content_par_id'] !== $parent_id)) {
+		// brother_id と indent が不一致の場合のみ更新処理を実行
+		if ($row && ($row['item_content_bro_id'] !== $brother_id) || $row && ($row['indent'] !== $indent)) {
 			
 			$sql_new_1 = "CREATE TEMPORARY TABLE tmp_item_content_histories AS SELECT * FROM item_content_histories WHERE item_content_history_id = (SELECT item_content_history_id FROM item_content_latest WHERE item_content_id = '$item_content_id');";
 			$sql_update = "UPDATE item_content_histories SET disappeared_at = '$timestamp' WHERE item_content_history_id = (SELECT item_content_history_id FROM tmp_item_content_histories);";
-			$sql_new_2 = "UPDATE tmp_item_content_histories set item_content_history_id = '$item_content_history_id', item_content_par_id = '$parent_id', item_content_bro_id = '$brother_id',appeared_at = '$timestamp', disappeared_at = NULL;";
+			$sql_new_2 = "UPDATE tmp_item_content_histories set item_content_history_id = '$item_content_history_id', indent = '$indent', item_content_bro_id = '$brother_id',appeared_at = '$timestamp', disappeared_at = NULL;";
 			$sql_new_3 = "INSERT INTO item_content_histories SELECT * FROM tmp_item_content_histories;";
 			$sql_i_update = "UPDATE item_contents set updated_at = '$timestamp' WHERE item_content_id = '$item_content_id';";
 

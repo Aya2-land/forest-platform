@@ -333,9 +333,11 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         let node_color = '#ffbaa1'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
+        var y_fixed = true;
 
         if(node_type == "versionsBro"){
             node_color = '#ffd7c9'; // ノードの背景色
+            y_fixed = false;
         }
 
         const newNode = {
@@ -345,10 +347,10 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             color: node_color,
             shape: node_shape,
             font: { color: text_color },
-            fixed: {y: true },
+            fixed: {y: y_fixed },
             x: node_x, y: node_y, 
         };
-        console.log(newNode);
+        // console.log(newNode);
         
         defaultThinkingProcess.nodes.add(newNode);
         return defaultThinkingProcess.nodes;
@@ -512,11 +514,19 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     deleteNode (){
         const selectNodeId = this.ownNetwork.getSelection().nodes[0];
         if(selectNodeId !== undefined){
-            this.edges.remove(this.ownNetwork.getConnectedEdges(selectNodeId));
-            this.nodes.remove({id: selectNodeId});
-            defaultRecordThinkingProcess.delete_db_Node(selectNodeId);
+            console.log(defaultThinkingProcess.nodes.get(selectNodeId));
+            const node_group = defaultThinkingProcess.nodes.get(selectNodeId).group;
+            console.log(node_group);
+            if(node_group == "trigger"){
+                defaultRecordThinkingProcess.delete_trigger_Node(selectNodeId);
+            }else{
+                defaultRecordThinkingProcess.delete_db_Node(selectNodeId);
+            }
             defaultRecordThinkingProcess.delete_db_Edge(null, selectNodeId, "");
             defaultRecordThinkingProcess.delete_db_Edge(null, "", selectNodeId);
+
+            this.edges.remove(this.ownNetwork.getConnectedEdges(selectNodeId));
+            this.nodes.remove({id: selectNodeId});
             // const ontology_index = this.OntologyConnectNodeId.indexOf(selectNodeId);
             // if(ontology_index !== -1){
             //     this.nodes.remove({ id: this.OntologyNodeId[ontology_index]});
@@ -952,6 +962,22 @@ class RecordThinkingProcess{
                 delete_thing : 'node'},
         });
     }
+
+    //triggerの削除
+    delete_trigger_Node (id){
+        $.ajax({
+            url: "../php/thinking_edit_processmap_maneger.php",
+            type: "POST",
+            data: {trigger_id : id,
+                purpose : 'delete',
+                delete_thing : 'trigger'},
+            success: function(e){
+                if(e){
+                    console.log(e);
+                }
+            }
+        });
+    }
     
     //エッジの削除(完了)
     delete_db_Edge (edge_id, edge_start,edge_end){
@@ -1081,7 +1107,7 @@ const getProcessMapDataFromDB = (callback) => {
                     },
                 }).success((r) => {
                     trigger_list = JSON.parse(r);
-                    console.log(trigger_list);
+                    // console.log(trigger_list);
                     callback(trigger_list);
                 });
             } catch (error){

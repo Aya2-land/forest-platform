@@ -12,7 +12,7 @@ date_default_timezone_set('Asia/Tokyo');
 $today_date = date("Y-m-d");
 
 
-$sql = "SELECT 	item_content_id, item_id, item_content_par_id, item_content_bro_id, node_id, concept_id, logic_option, title, type, map_id FROM item_content_latest WHERE map_id='$map_id' ";
+$sql = "SELECT 	item_content_id, item_id, indent, item_content_bro_id, node_id, concept_id, logic_option, title, type, map_id FROM item_content_latest WHERE map_id='$map_id' ";
 
 $reflections = array();
 
@@ -29,7 +29,7 @@ if($result = $mysqli->query($sql)){
     'slide_id'=> $row["item_id"],
     'type'=> $row["type"],
     'logic_option'=> $row["logic_option"],
-    'parent_id'=> $row["item_content_par_id"]);
+    'indent'=> $row["indent"]);
   }
 }
 

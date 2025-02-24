@@ -23,7 +23,7 @@
 	if ($result_check) {
 		$row = $result_check->fetch_assoc();
 		
-		// brother_id と parent_id が不一致の場合のみ更新処理を実行
+		// brother_id と indent が不一致の場合のみ更新処理を実行
 		if ($row && ($row['item_bro_id'] !== $brother_id)) {
 			
 			// TEMPORARY TABLEを用いてitem_historiesから必要箇所のみ変更し，新しいタプルとして挿入
@@ -64,7 +64,7 @@
 			}
 		} else {
 			// 一致している場合の処理（必要ならば）
-			echo "No changes needed as brother_id and parent_id are consistent.";
+			echo "No changes needed as brother_id and indent are consistent.";
 		}
 	} else {
 		echo "Error fetching record: " . $mysqli->error;

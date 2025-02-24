@@ -188,7 +188,7 @@ function Delete_concepts(doc_id){
 }
 
 //コンテンツ追加を記録する関数
-function Record_content(contentID, nodeID, conceptID, content, itemID, brother_id, parent_id, type){
+function Record_content(contentID, nodeID, conceptID, content, itemID, brother_id, indent, type){
 
   $.ajax({
 
@@ -200,7 +200,7 @@ function Record_content(contentID, nodeID, conceptID, content, itemID, brother_i
              content : content,
              slide_id : itemID,
              brother_id :brother_id,
-             parent_id: parent_id,
+             indent: indent,
              type : type,
              },
       success: function (e) {
@@ -571,7 +571,7 @@ function Record_document_rank(itemID, brother_id){
   });
 }
 
-function Record_content_rank(contentID, brother_id, itemID, content, nodeID, type, parent_id, concept_id){
+function Record_content_rank(contentID, brother_id, itemID, content, nodeID, type, indent, concept_id){
   var id = getUniqueStr();
 
   $.ajax({
@@ -585,7 +585,7 @@ function Record_content_rank(contentID, brother_id, itemID, content, nodeID, typ
             content : content,
             node_id : nodeID,
             type : type,
-            parent_id : parent_id,
+            indent : indent,
             concept_id : concept_id},
       success: function (e) {
         if(e){
@@ -599,12 +599,8 @@ function Record_content_rank(contentID, brother_id, itemID, content, nodeID, typ
 }
 
 //2022-11-24 shimizu
-function Record_document_content_rank(contentID, brother_id, parent_id){
+function Record_document_content_rank(contentID, brother_id){
   var id = getUniqueStr();
-  console.log("<<Record_document_content_rank>>");
-  console.log("id: "+contentID);
-  console.log("parent: "+parent_id);
-  console.log("brother: "+brother_id);
 
   $.ajax({
 
@@ -612,11 +608,9 @@ function Record_document_content_rank(contentID, brother_id, parent_id){
       type: "POST",
       data: {id : id,
             item_content_id : contentID,
-            brother_id : brother_id,
-            parent_id : parent_id,},
+            brother_id : brother_id,},
       success: function (e) {
         if(e){
-          console.log("<<php response>>");
           console.log(e);
         }
       },
