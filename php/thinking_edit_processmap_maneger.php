@@ -67,6 +67,15 @@
 		if($delete_thing === 'node'){
 			$node_id = $_POST["node_id"];
 			$mysqli->query("UPDATE process_nodes SET deleted = 1, updated_at = '$timestamp' WHERE process_node_id = '$node_id'");
+			if (!$mysqli->query($query)) {
+				echo "Error (node delete): " . $mysqli->error;
+			}
+		}else if($delete_thing === 'trigger'){
+			$trigger_id = $_POST["trigger_id"];
+			$mysqli->query("UPDATE triggers SET deleted = 1 WHERE trigger_id = '$trigger_id'");
+			if (!$mysqli->query($query)) {
+				echo "Error (trigger delete): " . $mysqli->error;
+			}
 		}else if($delete_thing === 'edge'){
 			$edge_start = $_POST["edge_start"];          //エッジ開始
 			$edge_end = $_POST["edge_end"]; 
@@ -78,6 +87,10 @@
 			}else{
 				$mysqli->query("UPDATE process_edges SET deleted = 1, updated_at = '$timestamp' WHERE process_edge_id = '$edge_id'");
 			}
+
+			if (!$mysqli->query($query)) {
+				echo "Error (edge delete): " . $mysqli->error;
+			}
 		}
 	}
 
@@ -85,24 +98,24 @@
 
 	//時間設定はいる
 	
-	//クエリ($sql)のエラー処理
-    if($sql == TRUE){
-		echo "true";
-		error_log('$sql成功しています！'.$timestamp, 0);
-	}else if($sql == FALSE){
-		error_log($sql.'$sql失敗です', 0);
-		// error_log('失敗しました。'.mysqli_error($link), 0);
-	}else{
-		error_log('$sql不明なエラーです', 0);
-	}
-    //php($result)のエラー処理
-    if($result == TRUE){
-		echo "true";
-		error_log('$result成功しています！'.$timestamp, 0);
-	}else if($result == FALSE){
-		error_log($result.'$result失敗です'.$mysqli->error, 0);
-		// error_log('失敗しました。'.mysqli_error($link), 0);
-	}else{
-		error_log('$result不明なエラーです', 0);
-	}
+	// //クエリ($sql)のエラー処理
+    // if($sql == TRUE){
+	// 	echo "true";
+	// 	error_log('$sql成功しています！'.$timestamp, 0);
+	// }else if($sql == FALSE){
+	// 	error_log($sql.'$sql失敗です', 0);
+	// 	// error_log('失敗しました。'.mysqli_error($link), 0);
+	// }else{
+	// 	error_log('$sql不明なエラーです', 0);
+	// }
+    // //php($result)のエラー処理
+    // if($result == TRUE){
+	// 	echo "true";
+	// 	error_log('$result成功しています！'.$timestamp, 0);
+	// }else if($result == FALSE){
+	// 	error_log($result.'$result失敗です'.$mysqli->error, 0);
+	// 	// error_log('失敗しました。'.mysqli_error($link), 0);
+	// }else{
+	// 	error_log('$result不明なエラーです', 0);
+	// }
 ?>
