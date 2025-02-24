@@ -415,20 +415,20 @@ function Edit_title(obj){
 
   });
 
-  $.ajax({
+//   $.ajax({
 
-    url: "php/update_scenario_title.php",
-    type: "POST",
-    data: {title : title,},
-    success: function (e) {
-      if(e){
-        console.log(e);
-      }
-    },
-    error: function () {
-    console.log("登録失敗");},
+//     url: "php/update_scenario_title.php",
+//     type: "POST",
+//     data: {title : title,},
+//     success: function (e) {
+//       if(e){
+//         console.log(e);
+//       }
+//     },
+//     error: function () {
+//     console.log("登録失敗");},
 
-});
+// });
 }
 
 //2022-11-24 shimizu
@@ -601,6 +601,10 @@ function Record_content_rank(contentID, brother_id, itemID, content, nodeID, typ
 //2022-11-24 shimizu
 function Record_document_content_rank(contentID, brother_id, parent_id){
   var id = getUniqueStr();
+  console.log("<<Record_document_content_rank>>");
+  console.log("id: "+contentID);
+  console.log("parent: "+parent_id);
+  console.log("brother: "+brother_id);
 
   $.ajax({
 
@@ -612,6 +616,7 @@ function Record_document_content_rank(contentID, brother_id, parent_id){
             parent_id : parent_id,},
       success: function (e) {
         if(e){
+          console.log("<<php response>>");
           console.log(e);
         }
       },

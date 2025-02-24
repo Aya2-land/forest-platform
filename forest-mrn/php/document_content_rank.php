@@ -26,6 +26,9 @@
 
 	if ($result_check) {
 		$row = $result_check->fetch_assoc();
+
+		echo "Current brother_id: " . $row['item_content_bro_id'] . ", Input brother_id: " . $brother_id;
+		echo "Current parent_id: " . $row['item_content_par_id'] . ", Input parent_id: " . $parent_id;
 		
 		// brother_id と parent_id が不一致の場合のみ更新処理を実行
 		if ($row && ($row['item_content_bro_id'] !== $brother_id || $row['item_content_par_id'] !== $parent_id)) {

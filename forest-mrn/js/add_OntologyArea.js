@@ -346,6 +346,7 @@ async function AddAOI_on_ImageArea(){
           if(arr == "[]"){
             console.log(arr);
           }else{
+            console.log(arr);
             var parse = JSON.parse(arr);
             console.log(parse);//スライド上に追加してあるのノードの内容
             console.log(parse.length);//スライド上に追加してあるのノードの個数

@@ -14,20 +14,19 @@
     $activity_id = uniqid();
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-    // $sql = "SELECT presentation_title FROM presentation_title WHERE edit_time = (select max(edit_time) from presentation_title)";
-    // if($result = $mysqli->query($sql)) {
-    //   while($row = mysqli_fetch_assoc($result)){
-    //     $pre_title = $row['presentation_title'];
-    //   }
-    // }
-    // file_put_contents("error_log.txt", $pre_title);
-    // file_put_contents("error_log.txt", $slide_title);
+    $sql = "SELECT title FROM document_titles WHERE edit_time = (select max(edit_time) from presentation_title)";
+    if($result = $mysqli->query($sql)) {
+      while($row = mysqli_fetch_assoc($result)){
+        $pre_title = $row['presentation_title'];
+      }
+    }
+    file_put_contents("error_log.txt", $pre_title);
+    file_put_contents("error_log.txt", $slide_title);
 
 
-    // if($presentation_title != $pre_title){
+    if($presentation_title != $pre_title){
 
-      $sql = "INSERT INTO presentation_title (id, presentation_title, user_id, map_id, edit_time)
-  		VALUES ('$activity_id', '$presentation_title', '$user_id', '$map_id', '$timestamp')";
+      $sql = "UPDATE document_titles SET updated_at='$timestamp', title='$presentation_title' WHERE map_id='$map_id'";
 
 
   		$result = $mysqli->query($sql);
@@ -54,5 +53,5 @@
   			error_log('$result不明なエラーです', 0);
   		}
 
-    // }
+    }
 ?>

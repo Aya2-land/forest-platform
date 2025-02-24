@@ -2264,7 +2264,6 @@ function Get_DocumentContentRank(contents){
 
     // parent_idの同じものの中からbrotherIdを設定
     while(previousSibling){
-      console.log(brotherId);
       if(previousSibling.children[0].getAttribute('name') == updateNode.children[0].getAttribute('name')){
         brotherId = previousSibling.id; // 前の兄弟のIDを取得
         break;
@@ -2307,9 +2306,10 @@ function Get_DocumentContentRank(contents){
     updateNode.children[0].setAttribute('data-brother_id', brotherId);
     updateNode.children[0].setAttribute('name', newParentId);
 
-    // console.log("Id: " + content_id);
-    // console.log("parentId: " + newParentId);
-    // console.log("brotherId: " + brotherId);
+    console.log("<<Get_DocumentContentRank>>")
+    console.log("Id: " + content_id);
+    console.log("parentId: " + newParentId);
+    console.log("brotherId: " + brotherId);
 
     // document_content_rankを記録する
     Record_document_content_rank(content_id, brotherId, newParentId);
@@ -2713,22 +2713,29 @@ class Content{
     $slide_topic.push(content);
     // console.log($slide_topic);
 
-    // console.log("contents-"+content_id);
-    var dom_tmp = document.getElementById("contents-"+content_id);
-    // console.log(dom_tmp);
-    var dom_target = dom_tmp.previousElementSibling;
-    // console.log(dom_target);
-    if(type=="toi"){
-      // dom_target.style.backgroundColor = "#d3d3d3";
-      dom_target.style.backgroundColor = "#ffffff";
-      dom_target.style.border = "0.3px solid #b8daff";
-      dom_target.setAttribute("type","toi");
-    } else{
-      // dom_target.style.backgroundColor = "#d3d3d3";
-      dom_target.style.backgroundColor = "#ffffff";
-      dom_target.style.border = "0.3px solid #ffeeba";
-      dom_target.setAttribute("type","answer");
-    }
+    
+    var dom_tmp;
+    setTimeout(function() {
+      dom_tmp = document.getElementById("contents-" + content_id);
+      // console.log("contents-"+content_id);
+      // console.log(dom_tmp);  // null が返されなければ成功
+
+      var dom_target = dom_tmp.previousElementSibling;
+      // console.log(dom_target);
+
+      if(type=="toi"){
+        // dom_target.style.backgroundColor = "#d3d3d3";
+        dom_target.style.backgroundColor = "#ffffff";
+        dom_target.style.border = "0.3px solid #b8daff";
+        dom_target.setAttribute("type","toi");
+      } else{
+        // dom_target.style.backgroundColor = "#d3d3d3";
+        dom_target.style.backgroundColor = "#ffffff";
+        dom_target.style.border = "0.3px solid #ffeeba";
+        dom_target.setAttribute("type","answer");
+      }
+    }, 0); // DOMに追加された後に実行されるように
+
     
 
   }
@@ -4066,7 +4073,9 @@ async function Rebuild_content_s(){
             // console.log(parse[q].slide_id);
             var selected_id = "SelectBox-"+parse[q].item_content_id;
             var objSelect = document.getElementById(selected_id);
+            // console.log(parse[q].item_content_id)
             // console.log(parse[q].logic_option)
+            // console.log(objSelect);
             objSelect.options[parse[q].logic_option].selected = true;
             
           }

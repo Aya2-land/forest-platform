@@ -1415,7 +1415,7 @@ function ModeChangeButtonClick() {
     $('.badge').css('height', '20px');
     $('.badge').css('padding','0.125rem 0.3rem');
     BeforeSelectModeNumber = 1;
-    AddAOI_on_ImageArea();
+    // AddAOI_on_ImageArea();
     MoveAndExpensionImageArea();
   }else if(num == 2 ){
     var text2 = document.getElementsByClassName("cspan");
