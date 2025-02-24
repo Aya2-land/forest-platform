@@ -144,7 +144,9 @@ setOptions(options) {
         this.edges.remove(this.ownNetwork.getConnectedEdges(selectNodeId));
         this.nodes.remove({id: selectNodeId});
     }
-    defaultRecordLogicNetwork.delete_LogicNode(selectNodeId)
+    defaultRecordLogicNetwork.delete_LogicNode(selectNodeId);
+    defaultRecordLogicNetwork.delete_LogicEdge(selectNodeId, "");
+    defaultRecordLogicNetwork.delete_LogicEdge("", selectNodeId);
   }
 
   //エッジを追加する
@@ -215,9 +217,12 @@ setOptions(options) {
 
   deleteEdge() {
     const selectEdgeId = this.ownNetwork.getSelection().edges[0];
+    const startid = this.edges.get(selectEdgeId).from;
+    const endid = this.edges.get(selectEdgeId).to;
         if(selectEdgeId !== undefined){
             this.edges.remove({id: selectEdgeId});
         }
+    defaultRecordLogicNetwork.delete_LogicEdge(startid, endid);
   }
 
 }
@@ -309,6 +314,31 @@ class RecordLogicNetwork{
         edge_end: edge_end,
         purpose: 'record',
         record_thing: 'edge'
+      },
+      dataType: "json",
+      success: function(response) {
+        console.log(response); // ← ここでレスポンス確認
+        if (response.status === "success") {
+          console.log("記録成功:", response.node_id);
+        } else {
+          console.error("エラー:", response.message);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error("通信エラー:", error);
+      }
+    })
+  }
+
+  delete_LogicEdge (edge_start, edge_end){
+    $.ajax({
+      url: "php/logic_maneger.php",
+      type: "POST",
+      data: {
+        edge_start: edge_start,
+        edge_end: edge_end,
+        purpose : 'delete',
+        delete_thing : 'edge'
       },
       dataType: "json",
       success: function(response) {

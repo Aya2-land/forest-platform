@@ -62,6 +62,12 @@ else if ($purpose === 'update') {
         $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
         $sql = "UPDATE logic_node SET x = '$x', y = '$y', updated_at = '$timestamp' WHERE logic_node_id =  '$movedNodeId'";
+
+        if ($mysqli->query($sql)) {
+            echo json_encode(["status" => "success", "message" => "ノードが更新されました", "edge_id" => $logic_edges_id]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "データベースエラー: " . $mysqli->error]);
+        }
     }
 }
 
@@ -79,7 +85,23 @@ else if ($purpose === 'delete') {
         }
     }
     else if ($delete_thing === 'edge') {
-        
+        $edge_start = $_POST["edge_start"];
+        $edge_end = $_POST["edge_end"];
+        if($edge_start === ""){
+            $sql = "DELETE FROM object_edges WHERE edge_end = '$edge_end'";
+        //$edge_end のみが空の場合：
+        }else if($edge_end === ""){
+            $sql = "DELETE FROM logic_edge WHERE edge_start = '$edge_start'";
+        //$edge_start と $edge_end が両方指定されている場合
+        }else{
+            $sql = "DELETE FROM logic_edge  WHERE edge_start = '$edge_start' AND edge_end = '$edge_end'";
+        }
+
+        if ($mysqli->query($sql)) {
+            echo json_encode(["status" => "success", "message" => "エッジが削除されました", "edge_start" => $edge_start]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "データベースエラー: " . $mysqli->error]);
+        }
     }
 
 }
