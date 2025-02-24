@@ -1,5 +1,6 @@
 let defaultLogicNetwork;
 let defaultRecordLogicNetwork;
+
 class LogicNetwork {
   constructor(container, load) {
     defaultRecordLogicNetwork = new RecordLogicNetwork();
@@ -27,7 +28,7 @@ class LogicNetwork {
         this.ownNetwork.on('doubleClick', this.doubleclick.bind(this));
   }
 
-  setNodes(newNodes) {
+setNodes(newNodes) {
     this.nodes = newNodes;
 }
 setEdges(newEdges) {
@@ -80,6 +81,49 @@ setOptions(options) {
       },
       this.options
     );
+  }
+
+  addReloadNode(node_id, node_label, node_x, node_y) {
+
+    let node_shape = 'box';     // ノードの形状
+    let position_fixed = false; // ノードを動かせるかどうか（Falseなら動かせる）
+
+    // ラベルを10文字ごとに改行する
+    let result_label = '';
+    const lines = node_label.split('\n'); // 改行ごとに分割
+    for (let line of lines) {
+
+        // 10文字ごとに改行
+        for (let i = 0; i < line.length; i += 10) {
+            result_label += line.substring(i, i + 10) + '\n';
+        }
+    }
+
+    result_label = result_label.trim(); // 末尾の不要な改行を除去
+
+    // 実際にネットワークに追加するノードのデータを作成
+    const newNode = {
+        id: `${node_id}`, 
+        label: result_label,
+        shape: node_shape,
+        fixed: position_fixed,
+        x: node_x, y: node_y,
+        size: 30,
+    };
+
+    // ノードをthis.nodesに追加
+    this.nodes.add(newNode);
+
+    // ノードが追加された後に確認
+    console.log("Created newNode:", newNode);
+
+    // ノードの位置調整
+    const boundingBox = this.ownNetwork.getBoundingBox(`${node_id}`);
+    this.latest_selected_node_info.x = node_x;
+    this.latest_selected_node_info.y = boundingBox.bottom + 10;
+
+    // 最後に、ノードが追加された後、現在のノードリスト（this.nodes）を返します。
+    return this.nodes;
   }
 
   //ノードを追加する
@@ -224,6 +268,28 @@ setOptions(options) {
         }
     defaultRecordLogicNetwork.delete_LogicEdge(startid, endid);
   }
+
+  CheckSelectedNode(){
+    let selected_node = null;
+    if(_jm.get_selected_node() == false){
+      selected_node = last_selected_node;
+    }else{
+      selected_node = _jm.get_selected_node();
+    }
+    return selected_node; // 選択中のノード情報を返す
+  }
+
+  jm_to_ls(){
+
+    let selected_node = CheckSelectedNode();
+    if(selected_node == null || selected_node.topic == undefined){
+     // (textareaのid名).value = "ノードを選択してください";
+     return;
+   }else{
+    this.addNode(this.generateUniqueNumberText(), selected_node.topic, 0, 0);
+   }
+  }
+  
 
 }
 
@@ -372,6 +438,9 @@ window.addEventListener('load', () => {
   });
   $(`#ln_deleteEdge`).on("click", e => {
     defaultLogicNetwork.deleteEdge();
+  });
+  $(`ln_addjmNode`).on("click", e => {
+    defaultLogicNetwork.jm_to_ls();
   });
 });
 

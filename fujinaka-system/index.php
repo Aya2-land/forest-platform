@@ -229,16 +229,19 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
               <div id="jsmind_area">
                 <div id="jsmind_container" oncontextmenu="return false;"></div>
               </div>
+
+              <div id="logic_area">
+                <div id="mynetwork"></div>
+              </div>
+
               <div id="mindmap_conmenu">
                 <ul>
+                  <li><a href="javascript:void(0);" onClick="jm_to_ls()">論理構造に反映</a></li>
                   <li><a href="javascript:void(0);" onClick="SetPurposeonChapter()">章を作成</a></li>
                   <li><a href="javascript:void(0);" onClick="SetPurposeonSection()">節を作成</a></li>
                   <li><a href="javascript:void(0);" onClick="SetPurpose()">パラグラフを作成</a></li>
                   <li><a href="javascript:void(0);" onClick="NodeAppend()">パラグラフに内容を追加</a></li>
                 </ul>
-              </div>
-              <div id="logic_area">
-                <div id="mynetwork"></div>
               </div>
 
               <div id="document_area"> 
