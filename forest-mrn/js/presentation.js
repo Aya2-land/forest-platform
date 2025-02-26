@@ -3897,7 +3897,7 @@ async function Rebuild_content_s(){
           // console.log(arr);
         }else{
           var parse = JSON.parse(arr);
-          // console.log(parse);
+          console.log(parse);
           
           const itemGroups = {};
           parse.forEach(content => {
@@ -3955,27 +3955,29 @@ async function Rebuild_content_s(){
             var Label = LogicLabel;
             if(Label == "事実[自身]" || Label == "事実[世の中]" || Label == "仮説[自身]" || Label == "仮説[世の中]"){
               $("select[name='Logic_options_contents']").append(new Option(Label, Base_ClassLabeltoConceptID[LogicLabel]));
+              // console.log(Label);
             }
             // $("select[name='Logic_options_contents']").append(new Option(Label, Base_ClassLabeltoConceptID[LogicLabel]));
           }
           let selectContentLogic = document.querySelectorAll("[name='Logic_options_contents']");
-          selectContentLogic.forEach(select => select.addEventListener('change', ChangeLogicSelectContent))
-          //選択ずみの値を設定
-          document.addEventListener("DOMContentLoaded", () => {
-            for (var q = 0; q < parse.length; q++) {
-              var selected_id = "SelectBox-" + parse[q].item_content_id;
-              var objSelect = document.getElementById(selected_id);
-              
-              // console.log("Expected ID:", selected_id); 
-              // console.log("Found element:", objSelect);
-          
-              if (objSelect) {
-                objSelect.options[parse[q].logic_option].selected = true;
-              } else {
-                console.warn("Element not found:", selected_id);
-              }
+          selectContentLogic.forEach(select => select.addEventListener('change', ChangeLogicSelectContent));
+
+          // ここで要素を確認して処理
+          for(var q = 0; q < parse.length; q++) {
+            // console.log(parse[q].item_id);
+            var selected_id = "SelectBox-" + parse[q].item_content_id;
+            // console.log(selected_id);
+            var objSelect = document.getElementById(selected_id);
+
+            if (objSelect) {
+              // console.log("Element found:", objSelect);
+              // console.log("logic: "+parse[q].logic_option);
+              objSelect.options[parse[q].logic_option].selected = true;
+            } else {
+              console.warn("Element not found:", selected_id);
             }
-          });          
+          }
+                    
           // console.log("選択肢を追加");
         }
       },
@@ -4089,6 +4091,7 @@ function Rebuild_title(){
 	    url: "php/title_rebuild.php",
 	    type: "POST",
 	    success: function(title){
+        // console.log(title);
         var parse = JSON.parse(title);
         var scenario_title = parse[0].scenario_title;
         const title_value = document.getElementById("scenario_title");

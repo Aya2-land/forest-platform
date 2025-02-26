@@ -125,7 +125,7 @@ function NodeVersionUpdate(nodes){
               content : nodes['content'],
               concept_id: nodes['concept_id'],
               x: nodes['x'],
-              y: nodes[y],
+              y: nodes['y'],
             },
       success: function (res) {
          if(res){
@@ -195,6 +195,7 @@ function MapSnapShot(){
             alert("マップverが更新されました");
             show_edit_reason();
           }else{
+            console.log(e);
             var nodes = JSON.parse(e);
             for(var i=0; i<Object.keys(nodes).length; i++){
               NodeVersionUpdate(nodes[i]);

@@ -47,8 +47,8 @@
 		$_SESSION["MAPID"] = rand(); //ここでセッションが定義されているらしい
 		$map_version = rand();	
 		$map_mode_link = rand();
-		$document_id = uniqid();
-		$scenario_id = uniqid();
+		$document_id = rand();
+		$scenario_id = rand();
 		$created_at = date("Y-m-d H:i:s");
 		$deleted = 0;
 		$mode_id = 1; //自己内対話モード
@@ -56,7 +56,7 @@
 		//if($name == ""){
 
 			$sql1 = "INSERT INTO maps (map_id, user_id, name, created_at, updated_at, deleted) 
-				VALUES (".$_SESSION['MAPID'].", ".$_SESSION['USERID'].", '".$_POST['mapname']."', '".$created_at."', '".$created_at."','".$deleted."')";			
+				VALUES (".$_SESSION['MAPID'].", ".$_SESSION['USERID'].", '".$_POST['mapname']."', '".$created_at."', '".$created_at."', '".$deleted."')";			
 			$sql2 = "INSERT INTO map_mode_links (id, map_id, mode_id) VALUES (".$map_mode_link.", ".$_SESSION['MAPID'].", ".$mode_id.")";
 			
 			if (!$result = $mysqli->query($sql1)) {
@@ -81,17 +81,17 @@
 				exit();
 			}
 
-			$sql2 = "INSERT INTO document_titles (document_id, map_id, title, created_at, updated_at, deleted) VALUES ('$document_id', ".$_SESSION['MAPID'].", NULL, '$created_at','$created_at',0)";
+			$sql3 = "INSERT INTO document_titles (document_id, map_id, title, created_at, updated_at, deleted) VALUES (".$document_id.", ".$_SESSION['MAPID'].", NULL, '".$created_at."', '".$created_at."', 0)";
 			
-			if (!$result = $mysqli->query($sql1)) {
+			if (!$result = $mysqli->query($sql3)) {
 		      print('Error - SQLSTATE4'. mysqli_error($mysqli));
 		      exit();
 		    }
 
-			$sql2 = "INSERT INTO scenario_titles (scenario_id, map_id, title, created_at, updated_at, deleted) VALUES ('$scenario_id', ".$_SESSION['MAPID'].", NULL, '$created_at','$created_at',0)";
+			$sql4 = "INSERT INTO scenario_titles (scenario_id, map_id, title, created_at, updated_at, deleted) VALUES (".$scenario_id.", ".$_SESSION['MAPID'].", NULL, '".$created_at."', '".$created_at."', 0)";
 			
-			if (!$result = $mysqli->query($sql1)) {
-		      print('Error - SQLSTATE5'. mysqli_error($mysqli));
+			if (!$result = $mysqli->query($sql4)) {
+		      echo 'Error - SQLSTATE5'. mysqli_error($mysqli);
 		      exit();
 		    }
 

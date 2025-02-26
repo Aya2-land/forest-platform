@@ -11,6 +11,7 @@ $map_id = $_SESSION["MAPID"];//"102774749"; //
 date_default_timezone_set('Asia/Tokyo');
 $today_date = date("Y-m-d");
 
+$reflections = [];
 
 $sql = "SELECT title FROM document_titles WHERE map_id='$map_id'";
 
