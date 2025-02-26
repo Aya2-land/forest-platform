@@ -1586,6 +1586,28 @@ function closeThinkingProcessMap(){
     $('#mind').css('height','90%');
 }
 
+function proposeThinkingProcess(nodeID){
+
+    const nodeClass = Get_NodeInfo(nodeID, "class").replace(" selected", "");
+    console.log(nodeClass);
+    if(nodeClass =='primary_label' || nodeClass =='issue_label' || nodeClass =='consistency_label' ){
+        var label_name = "注目すべきである";
+        switch (nodeClass){
+            case 'primary_label':
+                label_name = "主軸である";
+                break;
+            case 'issue_label':
+                label_name = "課題である";
+                break;
+            case 'consistency_label':
+                label_name = "整合性を保つべきである";
+                break;
+        }
+        alert("「"+ label_name +"」と考えていた思考が変わりましたね．なぜそのように考えたのかを振り返ってみましょう！");
+        showThinkingProcessMap();
+    }
+}
+
 // ロードした際の関数
 window.addEventListener('load', () => {
 

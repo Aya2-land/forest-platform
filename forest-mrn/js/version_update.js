@@ -56,8 +56,9 @@ function NodeEdit(nodeVERSION, nodeID, parentID, nodeTEXT, reasonLEARNER, reason
 
 function NodeVersionUpdate(nodes){
 
+  var typeID;
+
   if(!nodes){
-    console.log(nodes);
     var nodeVERSION = jsMind.util.uuid.newid();
     var node = _jm.get_selected_node();
     var nodeID = node.id;
@@ -75,7 +76,7 @@ function NodeVersionUpdate(nodes){
       type: "POST",
       data: { class: class_name, type: type_name },
       success: function(response) {
-        const typeID = JSON.parse(response)['node_type_id'];
+        typeID = JSON.parse(response)['node_type_id'];
         
         //　node_type_idを取得できたらversion更新
         $.ajax({
@@ -94,10 +95,24 @@ function NodeVersionUpdate(nodes){
                 },
     
           success: function (res) {
-             if(!res || res){
+            if(res){
               console.log(res);
-             }
-             GetPairNodeId_ContentRelationTable(nodeID);
+            }
+            GetPairNodeId_ContentRelationTable(nodeID);
+    
+            // 親ノードIDがnodeIDと一致する子ノードのインデックスを取得
+            node.children.forEach(childNode => {
+                // ノードのDOM要素を取得
+                const childID = childNode.id;
+                
+                if (childID) {
+                    proposeThinkingProcess(childID);
+                }
+            });
+    
+            console.log(nodeID)
+            proposeThinkingProcess(nodeID);
+             
           },
           error: function () {
             console.log("node_versionsに保存失敗");
@@ -113,6 +128,8 @@ function NodeVersionUpdate(nodes){
 
     console.log(nodes);
     var nodeVERSION = jsMind.util.uuid.newid();
+    typeID = nodes['node_type_id'];
+
     $.ajax({
       url: "php/version_update.php",
       type: "POST",
@@ -120,7 +137,7 @@ function NodeVersionUpdate(nodes){
               data : "node",
               node_version_id : nodeVERSION,
               node_id : nodes['node_id'],
-              node_type_id: nodes['node_type_id'],
+              node_type_id: typeID,
               parent_id : nodes['parent_id'],
               content : nodes['content'],
               concept_id: nodes['concept_id'],
@@ -138,9 +155,6 @@ function NodeVersionUpdate(nodes){
       },
     });
   }
-
-    
-
     
 }
 
