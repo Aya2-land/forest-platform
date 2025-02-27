@@ -136,6 +136,29 @@ body{
 }
 /* ここまで大槻修正 */
 
+/* kii-system */
+.select_paper {
+	float: left;
+	width: 75%;
+	height: 100%;
+	margin: 0;
+	font-size: 1.5em;
+	background-color: #E6FFE9;
+}
+
+.select_paper .scr{
+	/* float: left; */
+	width: 96%;
+  /* height: 300px; */
+	height:50%;
+	/* padding-right: 25%; */
+  overflow:auto;
+	border:groove;
+	padding-left: 3%;
+	margin-left: 2%;
+	font-size: 0.8em;
+}
+
 /*OK，目的選択ボタン*/
 .button {
 	background-color: #ff8c00;

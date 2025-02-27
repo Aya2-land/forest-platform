@@ -68,92 +68,6 @@
 	// 	echo $data['paper_content'];
 
 	// }　　なんで？
-		
-	/*select_sheet.phpからシートを新規作成する*/
-	function createSheet(){
-		
-		session_start();
-
-		require "connect_db.php";
-		date_default_timezone_set('Asia/Tokyo');
-
-		$_SESSION["MAPID"] = rand();
-		$created_at = date("Y-m-d H:i:s");
-		$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
-		$deleted = 0;
-		$paper_id = rand();
-		$map_mode_link = rand();
-		$map_version = rand();
-		$mode_id = 2; //論文読解モード
-		
-		// $paper_content = "asdgan"; //nishida
-		$paper_content = $_SESSION["paper_content"]; //nishida
-  
-		$sql2 = "INSERT INTO papers (id,paper_content,created_at,paper_title)
-		VALUES ('$paper_id','$paper_content','$timestamp', '".$_POST['paper_title']."')";
-	
-	
-	
-		$result2 = $mysqli->query($sql2);
-		//クエリ($sql)のエラー処理
-		if($sql2 == TRUE){
-			echo "true";
-			echo "$paper_id";
-			// error_log('$paper_sql成功しています！'.$, 0);
-		}else if($sql2 == FALSE){
-			// error_log($sql.'$paper_sql失敗です', 0);
-			error_log('失敗しました。'.mysqli_error($link), 0);
-		}else{
-			// error_log('paper_$sql不明なエラーです', 0);
-		}
-	
-		//php($result)のエラー処理
-		if($result2 == TRUE){
-			echo "true";
-			error_log('$result成功しています！'.$timestamp, 0);
-		}else if($result2 == FALSE){
-	  		echo "false";
-			error_log($result2.'$result失敗です'.$mysqli->error, "3", "error_log.txt");
-			// error_log('失敗しました。'.mysqli_error($link), 0);
-		}else{
-			error_log('$result不明なエラーです', 0);
-		}
-	
-		//if($name == ""){
-
-			$sql1 = "INSERT INTO maps (map_id, user_id, name, paper_id, created_at, updated_at, deleted) 
-				VALUES (".$_SESSION['MAPID'].", ".$_SESSION['USERID'].", '".$_POST['mapname']."', '".$paper_id."', '".$created_at."', '".$created_at."','".$deleted."')";			
-			$sql2 = "INSERT INTO map_mode_links (id, map_id, mode_id) VALUES (".$map_mode_link.", ".$_SESSION['MAPID'].", ".$mode_id.")";
-
-			
-			if (!$result = $mysqli->query($sql1)) {
-		      print('Error - SQLSTATE'. mysqli_error($link));
-		      exit();
-		    }
-			if (!$result = $mysqli->query($sql2)) {
-				print('Error - SQLSTATE'. mysqli_error($link));
-				exit();
-			}
-
-			$sql_mv = "INSERT INTO map_versions (map_version_id, map_id, name, appeared_at, disappeared_at) VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$_POST['mapname']."', NULL, '".$created_at."', NULL)";
-			if (!$result = $mysqli->query($sql_mv)) {
-				print('Error - SQLSTATE'. mysqli_error($link));
-				exit();
-			}
-
-			header("Location: index.php");
-
-	
-
-			
-		/*}else{
-
-			echo "<script>alert('既に存在するシート名');</script>";
-			header("Location: select_sheet.php");
-
-		}*/
-
-	}
 
 
 	/*select_sheet.phpから登録すみの論文を選択した際、シートを新規作成する*/
@@ -183,19 +97,19 @@
 
 			$result1 = $mysqli->query($sql1);
 			if (!$result1) {
-		      print('Error - SQLSTATE1'. mysqli_error($link));
+		      print('Error - SQLSTATE1 map');
 		      exit();
 		    }
 
 			$result2 = $mysqli->query($sql2);
 			if (!$result2) {
-				print('Error - SQLSTATE2'. mysqli_error($link));
+				print('Error - SQLSTATE2 map mode link');
 				exit();
 			}
 
 			$sql_mv = "INSERT INTO map_versions (map_version_id, map_id, name, appeared_at, disappeared_at) VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$_POST['mapname']."', NULL, '".$created_at."', NULL)";
 			if (!$result = $mysqli->query($sql_mv)) {
-				print('Error - SQLSTATE3'. mysqli_error($mysqli));
+				print('Error - SQLSTATE3 map version');
 				exit();
 			}
 
@@ -215,14 +129,14 @@
 		$sql = "UPDATE maps SET delete = 1 WHERE map_id = ".$_SESSION['MAPID']." ";
 		$result = $mysqli->query($sql);
 		if (!$result) {
-		     print('Error - SQLSTATE');
+		     print('Error - SQLSTATE map update');
 		     exit();
 		 }
 
 		 $sql_mvd = "UPDATE map_versions SET disappeared_at = '".$updated_at."' WHERE map_id = ".$_SESSION['MAPID']." AND appeared_at = (select max(appeared_at) from (select appeared_at from map_versions) temp)";
 		$result_mvd = $mysqli->query($sql_mvd);
 		if (!$result_mvd) {
-			print('Error - SQLSTATE');
+			print('Error - SQLSTATE map version');
 			exit();
 		}
 
@@ -254,7 +168,7 @@ function get_mttiming(){
 	require "connect_db.php";
 
 	$id = $_SESSION['USERID'];
-  $sql = " SELECT mt_time FROM mt_timing WHERE user_id = '$id' ORDER BY mt_time DESC";
+  	$sql = " SELECT mt_time FROM mt_timing WHERE user_id = '$id' ORDER BY mt_time DESC";
 
 	$array = array();
 

@@ -133,16 +133,16 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                 })
             }
         });
-        const selectElement = document.getElementById("selectionlist");
-        while (selectElement.options.length > 0) {
-            selectElement.remove(0);
-        }
-        this.output_list.map((n) => {
-            const optionElement = document.createElement('option');
-            optionElement.value = n;
-            optionElement.text = n;
-            selectElement.appendChild(optionElement);
-        })
+        // const selectElement = document.getElementById("selectionlist");
+        // while (selectElement.options.length > 0) {
+        //     selectElement.remove(0);
+        // }
+        // this.output_list.map((n) => {
+        //     const optionElement = document.createElement('option');
+        //     optionElement.value = n;
+        //     optionElement.text = n;
+        //     selectElement.appendChild(optionElement);
+        // })
     }
 
     // //オントロジーノードを選択不可に
@@ -1586,6 +1586,7 @@ function closeThinkingProcessMap(){
     $('#mind').css('height','90%');
 }
 
+// nodeIDをidにもつノードのtypeがラベルの時，思考過程表出化マップを開く
 function proposeThinkingProcess(nodeID){
 
     const nodeClass = Get_NodeInfo(nodeID, "class").replace(" selected", "");

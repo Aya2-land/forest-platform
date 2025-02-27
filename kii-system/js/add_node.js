@@ -4,7 +4,7 @@ function make_micro_strat(node) {
     node.addEventListener('click', function(event) {
         
         clickedType = event.target.getAttribute('type');
-        console.log(clickedType);
+        // console.log(clickedType);
         var nodeid= event.target.getAttribute("nodeid");
 		document.getElementById("make_micro_strat_form").setAttribute("type", clickedType);
 		document.getElementById("make_micro_strat_form").setAttribute("nid", nodeid);

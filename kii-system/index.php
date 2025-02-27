@@ -286,11 +286,11 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                     批評ノード追加
                   </button> 
                 </li>
-                <li>
+                <!-- <li>
                   <button class="button4" onclick="add_Label('primary_label');">
                     ラベル追加
                   </button> 
-                </li>
+                </li> -->
                 <li>  
                   
                   <button class="button6 other" onclick="test_show_other_mindmap()">
@@ -423,59 +423,71 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
 
           <!-- 思考過程表出化マップ　By川 -->
           <div id="process_network_container" oncontextmenu="return false;" >
-              <div id="myProcessnetwork2">
-                  <div id="buttoncluster">
-                      <input type="button" class="thinkingProcess_network_button"
-                              id="process_addNode" value="要約ノード追加" />
-                      <input type="button" class="thinkingProcess_network_button"
-                              id="process_removeNode" value="ノード削除" />
-                      <input type="button" class="thinkingProcess_network_button"
-                              id="process_startEditEdge" value="エッジ追加" />
-                      <input type="button" class="thinkingProcess_network_button"
-                              id="process_removeEdge" value="エッジ削除" />
-                      <input type="button" class="thinkingProcess_network_button"
-                              id="process_ZoomIn" value="拡大" />
-                      <input type="button" class="thinkingProcess_network_button"
-                              id="process_ZoomOut" value="縮小" />
-                  </div>
-                  <div id="t_Process_conmenu">
-                      <ul>
-                          <li><a href="javascript:void(0);" id="process_conmenu1">概念をつける</a></li>
-                          <li><a href="javascript:void(0);" id="process_conmenu2">マインドマップと対応付ける</a></li>
-                          <li><a href="javascript:void(0);" id="process_conmenu3" style="display:none">採用/棄却をつける</a></li>
-                          <li><a href="javascript:void(0);" id="process_conmenu4">キャンセル</a></li>
-                      </ul>
-                  </div>
-                  <div id="t_Process_labelselect">
-                      <select id="t_Process_selectionlist" size="3">
-                          <!-- いるやつあれば追加やけど未実装（研究活動オントロジー読み込みかな？） -->
-                      </select>
-                      <input type="button" value="選択完了" id="p_ontology_select">
-                  </div>
-                  <div id="t_Process_recruitselect">
-                      <select id="t_Process_recruitselectionlist">
-                          <option value="採用">採用</option>
-                          <option value="棄却">棄却</option>
-                      </select>
-                      <input type="button" value="選択完了" id="p_recruit_select">
-                  </div>
-                  <div id="myProcessnetwork"></div>
-              </div>
-              <div id="trigger_area">
-                  <div id="trigger_area_display">
-                      <div id="conceptdisplay"></div>
-                      <div id="trigger_click"></div>
-                      <div id="trigger_area_add">
-                          <input type="button" id="inputTriggerbutton" value=" ＋ 活動を入力" onclick="inputTriggerAreaOpen()"/>
-                          <div id="trigger_add">
-                          </div>
-                      </div>
-                  </div>
-                  <div id="trigger_area_list">
-                  </div>
-              </div>
-          </div>
-          <!-- 思考過程表出化マップ　fin -->
+            <div id="myProcessnetwork2">
+                <div id="buttoncluster">
+                    <input type="button" class="process_close" onclick="closeThinkingProcessMap()"
+                            id="process_close" value="×" />
+                    <input type="button" class="thinkingProcess_network_button"
+                            id="process_addNode" value="思考ノード追加" />
+                    <input type="button" class="thinkingProcess_network_button"
+                            id="process_removeNode" value="ノード削除" />
+                    <input type="button" class="thinkingProcess_network_button"
+                            id="process_startEditEdge" value="エッジ追加" />
+                    <input type="button" class="thinkingProcess_network_button"
+                            id="process_removeEdge" value="エッジ削除" />
+                    <input type="button" class="thinkingProcess_network_button"
+                            id="process_ZoomIn" value="拡大" />
+                    <input type="button" class="thinkingProcess_network_button"
+                            id="process_ZoomOut" value="縮小" />
+                    <div class="checkbox_process">
+                        <input type="checkbox" id="checkbox_process" class="checkbox_process" name="check_process" onclick="ShowRelatedProcess('brother')">
+                        <label for="checkbox_process" data-on-label="On" data-off-label="Off"></label>
+                        <span class="checkbox_process_text">【兄弟ノード表示】<br></span>
+                    </div>
+                    <!-- <div class="checkbox_process">
+                        <input type="checkbox" id="checkbox_process" class="checkbox_process" name="check_process" onclick="ShowRelatedProcess('consistency')">
+                        <label for="checkbox_process" data-on-label="On" data-off-label="Off"></label>
+                        <span class="checkbox_process_text">【整合性ノード表示】<br></span>
+                    </div> -->
+                </div>
+                <div id="t_Process_conmenu">
+                    <ul>
+                        <li><a href="javascript:void(0);" id="process_conmenu1">概念をつける</a></li>
+                        <li><a href="javascript:void(0);" id="process_conmenu2">マインドマップと対応付ける</a></li>
+                        <li><a href="javascript:void(0);" id="process_conmenu3" style="display:none">採用/棄却をつける</a></li>
+                        <li><a href="javascript:void(0);" id="process_conmenu4">キャンセル</a></li>
+                    </ul>
+                </div>
+                <div id="t_Process_labelselect">
+                    <select id="t_Process_selectionlist" size="3">
+                        <!-- いるやつあれば追加やけど未実装（研究活動オントロジー読み込みかな？） -->
+                    </select>
+                    <input type="button" value="選択完了" id="p_ontology_select">
+                </div>
+                <div id="t_Process_recruitselect">
+                    <select id="t_Process_recruitselectionlist">
+                        <option value="採用">採用</option>
+                        <option value="棄却">棄却</option>
+                    </select>
+                    <input type="button" value="選択完了" id="p_recruit_select">
+                </div>
+                <div id="myProcessnetwork"></div>
+            </div>
+            <div id="trigger_area">
+                <div id="trigger_area_display">
+                    <div id="conceptdisplay"></div>
+                    <div id="trigger_click"></div>
+                    <div id="trigger_area_add">
+                        <input type="button" id="inputTriggerbutton" value=" ＋ 活動を入力" onclick="inputTriggerAreaOpen()"/>
+                        <div id="trigger_add">
+                        </div>
+                    </div>
+                </div>
+                <div id="trigger_area_list">
+                </div>
+            </div>
+        </div>
+        <!-- 思考過程表出化マップ　fin -->
 
           <!-- <iframe id="document_area" src="papaer\contemporary_self.html" frameborder="0">
 

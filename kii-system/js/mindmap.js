@@ -26,7 +26,7 @@ var parent_concept_id;
 
 
 function mouseoverNode(jmnodes=document.querySelectorAll('jmnode')){
-    console.log(jmnodes);
+    // console.log(jmnodes);
     jmnodes.forEach(function(jmnode) {
         var s = parseInt(jmnode.getAttribute('start_char_id'));
         var e = parseInt(jmnode.getAttribute('end_char_id'));

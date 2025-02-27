@@ -166,21 +166,21 @@ if(isset($_POST['map'])){
               </div>
               <p>
                 <span class="paper_title">選択した論文</span>
-                 <?php echo $_SESSION["PAPERID"]; ?>
+                <?php echo isset($_SESSION["PAPERID"]) ? $_SESSION["PAPERID"] : "選択されていません"; ?>
               </p>
               
     	       <!-- <p><input class="button2"  name="paper" value="登録済みの論文" onclick="CreateSheet()" id="create_sheet"></p> -->
     	       <p><input class="button" type="submit" name="newmap" value="新規作成"  id="create_sheet"></p>
              <div>
               <p><strong>新しい論文をDBに登録</strong></p>
+              <p><input type="text" name="paper_title" placeholder="論文のタイトル"></p>
               <p>HTMLファイルを選択</p>
+              <p>※ファイルを選択すると<br>新しいマップが作成されます</p>
               <p><input type="file" value="【テキストファイルを選択】"  id="input_htmlfile"></p>
               <!-- <p><input type="text" id="paper_read_area"></p> -->
-              <div id ="paper_read_area"></div>
-              <p><input type="text" name="paper_title" placeholder="論文のタイトル"></p>
-              <p><input class="button" type="button" name="newmap" value="新規登録"  id="create_sheet"></p>
-              
-          </div>
+              <p><div id ="paper_read_area"></div></p>
+              <!-- <p><input class="button" type="button" name="newmap" value="新規登録"  id="create_sheet"></p> -->
+            </div>
            </div>
   	     </form>
        </div>

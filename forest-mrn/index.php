@@ -295,12 +295,39 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <ul>
                                         <!-- <li><a href="javascript:void(0);" onClick="SetPurpose()">スライドを作成する</a></li> -->
                                         <!-- <li><a href="javascript:void(0);" onClick="NodeAppend()">資料に追加する</a></li> -->
+                                        <!--  -->
                                         
                                         <li>
-                                            <button class="button4" onclick="NodeVersionUpdate(null)">
+                                            ノードの変更
+                                        </li> 
+                                        <li>
+                                            <button class="button4" onclick="add_Qnode();">
+                                                問いノードを追加
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="button4" onclick="add_Anode();">
+                                                答えノードを追加
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="button4" onclick="add_Anode();">
+                                                ノードを削除
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="button4" onclick="remove_node();">
                                                 ノードを更新
                                             </button>
                                         </li>
+                                        <li>
+                                            <button class="button4" onclick="showThinkingProcessMap();">
+                                                思考過程表出化マップ
+                                            </button>
+                                        </li>
+                                        <li>
+                                            ノードを資料へ追加
+                                        </li> 
                                         <li>
                                             <button class="button4" onclick="ItemAddDocument()">
                                                 項目として追加する
@@ -309,11 +336,6 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                         <li>
                                             <button class="button4" onclick="NodeAppendLogic()">
                                                 内容として追加する 
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="button4" onclick="showThinkingProcessMap();">
-                                                思考過程表出化マップ
                                             </button>
                                         </li>
                                         <!-- <li>

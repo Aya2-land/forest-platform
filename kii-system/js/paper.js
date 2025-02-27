@@ -54,10 +54,12 @@ let add_id = () => {
 // textareaの内容をテキストファイルを出力する
 function InputFile(){
 var obj1 = document.getElementById("input_file");
+console.log(obj1);
 
 obj1.addEventListener("change", function(evt){
  var file = evt.target.files;
  alert(file[0].name + "を取得しました。");
+ console.log(file);
 
 // ... スクレイピング処理 ...//
     //FileReaderの作成
@@ -154,7 +156,6 @@ $.ajax({
 }
 }
 
-
 // 登録済み論文表示モードを切り替えたときの動作
 function CheckClick_paper(){
   // checkboxの状態を取得
@@ -169,6 +170,8 @@ function CheckClick_paper(){
     $('.select_sheet').show();
   }
 }
+
+
 // ----------------------------登録済み論文の表示ボタン------------------------------------
 
 
