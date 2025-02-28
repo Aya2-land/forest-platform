@@ -14,7 +14,7 @@ $today_date = date("Y-m-d");
 $map_id = $_POST['map'];    //シートID
 
 if($_POST["val"] == "all"){
-  $sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM annotations 
+  $sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM paper_annotations 
         WHERE deleted=0 and map_id='$map_id' 
         ORDER BY 'created_at' DESC"; 
 
@@ -54,7 +54,7 @@ else if($_POST['val'] == 'one'){
 
   /* and user_id=${user_id} */
 
-  $sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM annotations 
+  $sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM paper_annotations 
           WHERE deleted=0 and map_id='$map_id' and parent_id='$parent_id'
           ORDER BY 'created_at' DESC"; 
 

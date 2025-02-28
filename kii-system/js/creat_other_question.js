@@ -293,7 +293,7 @@ function show_other_mindmap(button=null, map_id, parent_id=null){
     //     alert('通信ができない状態です。');
     //   }
     // })
-    console.log(parent_id);
+    console.log("Parent_id: "+parent_id);
 
     if (parent_id != null){
         Rebuild_paper3("paper_area",map_id, parent_id); 
@@ -307,7 +307,7 @@ function show_other_mindmap(button=null, map_id, parent_id=null){
 
 
 
-function test_show_other_mindmap(){
+function show_other_mindmap_all(){
 
     //nodeid取得
     nodeid = get_selected_nodeid();

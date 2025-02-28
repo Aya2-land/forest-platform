@@ -279,7 +279,7 @@ function show_other_mindmap(button, map_id, parent_id=null){
   }
 }
 
-function test_show_other_mindmap(){
+function show_other_mindmap_all(){
 
     //nodeid取得
     nodeid = get_selected_nodeid();

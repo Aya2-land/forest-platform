@@ -18,7 +18,7 @@
 	$comment_id = $_POST["comment_id"];
 	$version_id = $_POST["version_id"];
 	
-	$sql = "INSERT INTO annotations (id, start_char_id, end_char_id, type, content, created_at, map_id, user_id, comment_id, version_id)
+	$sql = "INSERT INTO paper_annotations (id, start_char_id, end_char_id, type, content, created_at, map_id, user_id, comment_id, version_id)
 	VALUES ('$send_annotation_id', '$start_char_id', '$end_char_id', '$type', '$paper_content', '$timestamp', '$map_id', '$user_id', '$comment_id', '$version_id')";
 
 	$result = $mysqli->query($sql);

@@ -16,10 +16,10 @@
     $paper_content = $_POST["content"];
 	$node_id= $_POST["node_id"];
 
-	// $sql = "INSERT INTO annotations (id, start_char_id, end_char_id, type, content, created_at, deleted, map_id)
+	// $sql = "INSERT INTO paper_annotations (id, start_char_id, end_char_id, type, content, created_at, deleted, map_id)
 	// VALUES ('$send_annotation_id','$start_char_id','$end_char_id','$type','$paper_content', '$timestamp', 0, '.$map_id.')";
 
-	$sql = "INSERT INTO annotations (id, start_char_id, end_char_id, type, content, created_at, deleted, map_id, node_id)
+	$sql = "INSERT INTO paper_annotations (id, start_char_id, end_char_id, type, content, created_at, deleted, map_id, node_id)
 	VALUES ('$send_annotation_id','$start_char_id','$end_char_id','$type','$paper_content', '$timestamp', 0, '$map_id', '$node_id')";
 
 	$result = $mysqli->query($sql);

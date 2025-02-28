@@ -196,7 +196,7 @@
 
 	} else if($_POST["val"] == "annotation"){
 
-		$sql = "SELECT id, start_char_id, end_char_id, type, content, comment_id  FROM annotations 
+		$sql = "SELECT id, start_char_id, end_char_id, type, content, comment_id  FROM paper_annotations 
         WHERE deleted=0 and version_id='$id' 
         ORDER BY 'created_at' DESC";
 

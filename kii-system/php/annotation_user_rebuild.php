@@ -14,20 +14,18 @@ $today_date = date("Y-m-d");
 $map_id = $_POST['map'];    //シートID
 
 if($_POST["val"] == "all"){
-  $sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM annotations 
-        WHERE deleted=0 and map_id='$map_id' 
-        ORDER BY 'created_at' DESC"; 
+  $sql = "SELECT pa.annnotation_id, pa.start_char_id, pa.end_char_id, pa.content, pa.node_id, nl.type FROM paper_annotations pa JOIN node_latest nl ON pa.node_id = nl.node_id 
+        WHERE deleted=0 and node_id IN (SELECT node_id WHERE map_node_links WHERE map_id='$map_id') ORDER BY 'created_at' DESC"; 
 
 $reflections = array();
 
 if($result = $mysqli->query($sql)){
 
-
   //$reflections
   while($row = mysqli_fetch_assoc($result)){
     
     $reflections[] = array(
-      'id'=> (int) $row["id"],
+      'id'=> (int) $row["annotation_id"],
       'start_char_id'=> (int) $row["start_char_id"],
       'end_char_id'=> (int) $row["end_char_id"],
       'type' => $row["type"],
@@ -49,14 +47,14 @@ echo json_encode($reflections);
 }
 
 else if($_POST['val'] == 'one'){
-  $parent_id = $_POST['parent_id'];    
+  $parent_id = $_POST['parent_id'];   
 
 
   /* and user_id=${user_id} */
 
-  $sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM annotations 
-          WHERE deleted=0 and map_id='$map_id' and parent_id='$parent_id'
-          ORDER BY 'created_at' DESC"; 
+  $sql = "SELECT pa.annnotation_id, pa.start_char_id, pa.end_char_id, pa.content, pa.node_id, nl.type FROM paper_annotations pa JOIN node_latest nl ON pa.node_id = nl.node_id 
+    WHERE deleted=0 and node_id IN (SELECT node_id WHERE map_node_links WHERE map_id='$map_id') nl.parent_id='$parent_id' ORDER BY 'created_at' DESC"; 
+  
 
   $reflections = array();
 
@@ -67,7 +65,7 @@ else if($_POST['val'] == 'one'){
     while($row = mysqli_fetch_assoc($result)){
       
       $reflections[] = array(
-        'id'=> (int) $row["id"],
+        'id'=> (int) $row["annotation_id"],
         'start_char_id'=> (int) $row["start_char_id"],
         'end_char_id'=> (int) $row["end_char_id"],
         'type' => $row["type"],

@@ -20,7 +20,7 @@ if($_POST["data"] == "map"){
         //map_versionsにINSERTする
         $map_version = rand();	//not unique
         $sql_mvi = "INSERT INTO map_versions(map_version_id, map_id, name, appeared_at, disappeared_at)
-                VALUES (".$map_version.", '".$_SESSION['MAPID']."', (SELECT name FROM maps WHERE map_id = ".$_SESSION['MAPID']."), (SELECT scenario_title FROM maps WHERE map_id = ".$_SESSION['MAPID']."), '".$timestamp."', NULL)";	//後で理由入れる
+                VALUES (".$map_version.", '".$_SESSION['MAPID']."', (SELECT name FROM maps WHERE map_id = ".$_SESSION['MAPID']."), '".$timestamp."', NULL)";	//後で理由入れる
         $result_mvi = $mysqli->query($sql_mvi);
         if($mysqli->error){
                 echo "Error: ". $mysqli->error;

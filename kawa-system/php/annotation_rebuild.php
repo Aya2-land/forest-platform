@@ -16,7 +16,7 @@ $map_id = $_SESSION['MAPID'];    //シートID
 
 /* and user_id=${user_id} */
 
-$sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM annotations 
+$sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM paper_annotations 
         WHERE deleted=0 and map_id='$map_id' 
         ORDER BY 'created_at' DESC"; 
 

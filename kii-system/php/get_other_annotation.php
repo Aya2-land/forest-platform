@@ -64,10 +64,10 @@ require "connect_db.php";
         $data_array = array(); // contentとmapidを格納する配列
     
         // SQLクエリを構築
-        $sql = "SELECT * FROM annotations WHERE ";
-        $sql .= "((start_char_id >= $start_char_id AND end_char_id <= $end_char_id) ";
-        $sql .= "OR (start_char_id < $start_char_id AND end_char_id > $end_char_id) ";
-        $sql .= "AND (paper_id = $paper_id))";
+        $sql = "SELECT pa.*, nl.concept_id, nl.parent_id, nl.map_id FROM paper_annotations pa JOIN node_latest nl ON pa.node_id = nl.node_id 
+                    WHERE ((pa.start_char_id >= '$start_char_id' AND pa.end_char_id <= '$end_char_id')
+                        OR (pa.start_char_id < '$start_char_id' AND pa.end_char_id > '$end_char_id'))
+                        AND nl.map_id IN (SELECT map_id FROM map_mode_links WHERE paper_id = '$paper_id' AND map_id NOT LIKE '$map_id');";
 
         if ($result = $mysqli->query($sql)) {
             $i = 0;
@@ -102,7 +102,7 @@ require "connect_db.php";
                 $data_array[$i] = [
                     "content" => $row["content"],
                     "map_id" => $s_id,
-                    "id" => $row["id"],
+                    "id" => $row["node_id"],
                     "concept_id" => $row["concept_id"]
                 ];
                 $i++;

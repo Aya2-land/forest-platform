@@ -63,7 +63,7 @@ require "connect_db.php";
         $data_array = array(); // contentとmapidを格納する配列
     
         // SQLクエリを構築
-        $sql = "SELECT * FROM annotations WHERE ";
+        $sql = "SELECT * FROM paper_annotations WHERE ";
         $sql .= "((start_char_id >= $start_char_id AND end_char_id <= $end_char_id) ";
         $sql .= "OR (start_char_id < $start_char_id AND end_char_id > $end_char_id) ";
         $sql .= "AND (paper_id = $paper_id))";

@@ -249,7 +249,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
 </li>
                 <li>  
                   
-                  <button class="button6 other" onclick="test_show_other_mindmap()">
+                  <button class="button6 other" onclick="show_other_mindmap_all()">
                     マインドマップ表示
                   </button>
                   
@@ -294,7 +294,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                 <li>
                   他者刺激
                 </li>
-                <li>  <button class="button6" onclick="test_show_other_mindmap()">
+                <li>  <button class="button6" onclick="show_other_mindmap_all()">
                     マインドマップ表示
                   </button>
                 <li>  

@@ -146,23 +146,28 @@ const remove_annotation = () => {
 
 //ハイライトボタンでannotationを追加する
 function add_annotation(type_fromNode, node_id){
-    let selected_obj = window.getSelection().toString().length;
+    let selected_obj = window.getSelection().toString();
+    console.log(selected_obj.length);
 
-    
-    console.log(selected_obj);
-            // 論文の文字を先に選択してるか判定
-    if(selected_obj != 0){
+    // 論文の文字を先に選択してるか判定
+    if(selected_obj.length != 0){
         
-        console.log("anchorNode:", selected_obj.parentElement);
-        let start_t_id_str = window.getSelection().anchorNode.parentElement.getAttribute("char_id").substr(6);
-        let end_t_id_str = window.getSelection().focusNode.parentElement.getAttribute("char_id").substr(6);
+        console.log("anchorNode:", selected_obj);
+        let start_t_id_str = window.getSelection().anchorNode.parentElement.getAttribute("char_id");
+        let end_t_id_str = window.getSelection().focusNode.parentElement.getAttribute("char_id");
+        console.log(start_t_id_str);
+        console.log(end_t_id_str);
        
         let start_t_id = parseInt(start_t_id_str, 10);
         let end_t_id = parseInt(end_t_id_str, 10);
         var paper_content = window.getSelection().toString();
+        console.log(start_t_id);
+        console.log(end_t_id);
 
         let s = Number.isNaN(start_t_id);
         let e = Number.isNaN(end_t_id);
+        console.log(s);
+        console.log(e);
 
         
 

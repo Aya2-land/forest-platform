@@ -16,9 +16,8 @@ $map_id = $_SESSION['MAPID'];    //シートID
 
 /* and user_id=${user_id} */
 
-$sql = "SELECT id, start_char_id, end_char_id, type, content, node_id  FROM annotations 
-        WHERE deleted=0 and map_id='$map_id' 
-        ORDER BY 'created_at' DESC"; 
+$sql = "SELECT pa.annotation_id, pa.start_char_id, pa.end_char_id, pa.content, nl.type FROM paper_annotations pa JOIN node_latest nl ON pa.node_id = nl.node_id 
+        WHERE node_id IN (SELECT node_id WHERE map_node_links WHERE map_id='$map_id') ORDER BY 'created_at' DESC"; 
 
 $reflections = array();
 
@@ -29,7 +28,7 @@ if($result = $mysqli->query($sql)){
   while($row = mysqli_fetch_assoc($result)){
     
     $reflections[] = array(
-      'id'=> (int) $row["id"],
+      'id'=> (int) $row["annotation_id"],
       'start_char_id'=> (int) $row["start_char_id"],
       'end_char_id'=> (int) $row["end_char_id"],
       'type' => $row["type"],

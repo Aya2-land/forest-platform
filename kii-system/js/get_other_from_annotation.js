@@ -63,6 +63,7 @@ function get_charid(){
 
 function judge_charid(callback) {
     var charid = get_charid(); // 文字IDを取得
+    console.log(charid);
 
     if (charid !== null) { // 選択が行われているかを確認
         $.ajax({
