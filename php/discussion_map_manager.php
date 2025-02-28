@@ -18,7 +18,7 @@ $return_data = []; // DBアクセスの結果として返すキー・バリュ�
 /*
  * すべてのマップ履歴について，開始と終了（リフレクションの開始＿過去のリフレクションの終了）時刻を取得
  */
-$result_map_create_start_and_end = $mysqli->query("SELECT * FROM network_sturuct_activity WHERE user_id = $user_id AND map_id = $map_id ORDER BY start_time DESC");
+$result_map_create_start_and_end = $mysqli->query("SELECT * FROM network_maps WHERE user_id = $user_id AND map_id = $map_id ORDER BY start_time DESC");
 
 $map_create_start_and_end = [];
 $latest_map_created_time = null; // 最初にヒットしたもの（現在の最新状態のもの）を履歴情報から除外するためのフラグ
@@ -44,30 +44,30 @@ if($purpose === "record_meeting_utterance") {
      * マップ作成開始時間の記録・直前までのMapの終了時刻のアップデート
      *   手続きは，まず過去の最新のマップの終了時刻を更新，次に，その更新した時刻TIMESTAMPをSELECT取得，最後にそのタイムスタンプと同じ時刻の新規マップデータを挿入
      */
-    $et_update_query = "UPDATE network_sturuct_activity SET end_time = CURRENT_TIMESTAMP(), situation = 'end'
+    $et_update_query = "UPDATE network_maps SET end_time = CURRENT_TIMESTAMP(), situation = 'end'
                                                        WHERE user_id = $user_id AND
                                                              map_id = $map_id AND
                                                              start_time in
-                                                             ( SELECT * FROM (SELECT MAX(start_time) FROM network_sturuct_activity
+                                                             ( SELECT * FROM (SELECT MAX(start_time) FROM network_maps
                                                                                     WHERE user_id = $user_id AND
                                                                                           map_id = $map_id
                                                              ) AS MAX_START_TIME)";
     $mysqli->query($et_update_query);
-    $map_renewal_time_query = "SELECT MAX(end_time) FROM network_sturuct_activity WHERE user_id = $user_id AND map_id = $map_id ORDER BY end_time DESC"; // XMLからのデータを引き渡された時間（マップを新しく作り始めた時間＝リフレクションが次のフェーズにうつったとき）
+    $map_renewal_time_query = "SELECT MAX(end_time) FROM network_maps WHERE user_id = $user_id AND map_id = $map_id ORDER BY end_time DESC"; // XMLからのデータを引き渡された時間（マップを新しく作り始めた時間＝リフレクションが次のフェーズにうつったとき）
     $result_map_renewal_time_tmp = $mysqli->query($map_renewal_time_query);
     $row = $result_map_renewal_time_tmp->fetch_assoc();
     $map_renewal_time_tmp = $row['MAX(end_time)'];
     $map_renewal_time = $map_renewal_time_tmp === null ? "CURRENT_TIMESTAMP" : "'$map_renewal_time_tmp'"; // 過去に作ったマップが１つもないときは現在時刻指定
-    $st_record_query = "INSERT INTO network_sturuct_activity (user_id, map_id, start_time, end_time, situation) VALUES
+    $st_record_query = "INSERT INTO network_maps (user_id, map_id, start_time, end_time, situation) VALUES
                                               ($user_id, $map_id, $map_renewal_time, $map_renewal_time, 'start')";
     $res = $mysqli->query($st_record_query);
 
         /*
-    * 発話ノードの記録（network_textへのデータ挿入）
+    * 発話ノードの記録（network_textsへのデータ挿入）
     */
     $jsonDataArray = json_decode($_POST['utters'], true);
     
-    $nt_record_query = "INSERT INTO network_text (user_id, map_id, area_id, sender, content, time, JPNtime, ST_Time) VALUES ";
+    $nt_record_query = "INSERT INTO network_texts (user_id, map_id, area_id, sender, content, time, JPNtime, ST_Time) VALUES ";
     foreach ($jsonDataArray as $jsonData) {
         $id = $mysqli->real_escape_string($jsonData['message_id']);
         $content = $mysqli->real_escape_string($jsonData['content']);
@@ -182,7 +182,7 @@ if($purpose === "select_meeting_utterance") {
     /*
      * 議論内省マップのノードデータと思考整理マップのノードの対応関係データを取得する処理
      */
-    $result_forest_node_and_discussionmap_node_relation = $mysqli->query("SELECT network_node_id, mindmap_node_id FROM network_mindmap_connect
+    $result_forest_node_and_discussionmap_node_relation = $mysqli->query("SELECT network_node_id, mindmap_node_id FROM network_mindmap_connects
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND time > '$target_map_created_start_times'
               ORDER BY time DESC ");
     
@@ -196,7 +196,7 @@ if($purpose === "select_meeting_utterance") {
     /* 
      * オントロジーとの対応データの読み込み
      */
-    $result_discussionmap_node_and_ontology_relation = $mysqli->query("SELECT ontology_id, node_id FROM network_ontology_activity
+    $result_discussionmap_node_and_ontology_relation = $mysqli->query("SELECT ontology_id, node_id FROM network_ontology_connects
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND time > '$target_map_created_start_times'
               ORDER BY time DESC ");
     $discussionmap_node_and_ontology_relation = [];
@@ -208,9 +208,9 @@ if($purpose === "select_meeting_utterance") {
     /*
      * 議論内省マップのノードデータの取得
      */
-    $result_discussionmap_node = $mysqli->query("SELECT node_id, label, node_x, node_y, node_type FROM network_nodes_activity
-            WHERE user_id = '$user_id' AND map_id = '$map_id' AND updated_time >= '$target_map_created_start_times'
-            ORDER BY updated_time DESC ");
+    $result_discussionmap_node = $mysqli->query("SELECT node_id, label, node_x, node_y, node_type FROM network_nodes
+            WHERE user_id = '$user_id' AND map_id = '$map_id' AND updated_at >= '$target_map_created_start_times'
+            ORDER BY updated_at DESC ");
     $discussionmap_node = [];
     while ($row = $result_discussionmap_node->fetch_assoc()) {
         array_push($discussionmap_node, $row);
@@ -220,7 +220,7 @@ if($purpose === "select_meeting_utterance") {
     /*
      * 議論内省マップのエッジデータの取得
      */
-    $result_discussionmap_edge = $mysqli->query("SELECT edge_start, edge_end, edge_label FROM network_edges_activity
+    $result_discussionmap_edge = $mysqli->query("SELECT edge_start, edge_end, edge_label FROM network_edges
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND time >= '$target_map_created_start_times'
               ORDER BY time DESC ");
     $discussionmap_edge = [];
@@ -232,7 +232,7 @@ if($purpose === "select_meeting_utterance") {
     /*
      * 採用のデータの取得
      */
-    $result_recruit = $mysqli->query("SELECT node_id, ontology_id, result_recruit, reason FROM network_recruit
+    $result_recruit = $mysqli->query("SELECT node_id, ontology_id, result_recruit, reason FROM network_recruits
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND time > '$target_map_created_start_times'
               ORDER BY time DESC ");
     $recruit = [];
@@ -274,7 +274,7 @@ if($purpose === "select_meeting_utterance") {
     /*
      * 議論における発話パーツ一覧
      */
-    $result_utterance = $mysqli->query("SELECT * FROM network_text
+    $result_utterance = $mysqli->query("SELECT * FROM network_texts
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND ST_Time = '$target_map_created_start_times'
               ORDER BY time ASC");
     $utterance = [];
@@ -294,14 +294,14 @@ if($purpose === "select_meeting_utterance") {
 
 
 }else if($purpose === "select_version_discussionmap"){
-    $result_discussionmap_create_start_time = $mysqli->query("SELECT start_time FROM network_sturuct_activity 
+    $result_discussionmap_create_start_time = $mysqli->query("SELECT start_time FROM network_maps 
                 WHERE user_id = '$user_id' AND map_id = '$map_id' 
                 AND start_time < '$first_load_flag' AND end_time > '$first_load_flag'");
     if (empty($result_discussionmap_create_start_time) ||
         $result_discussionmap_create_start_time->num_rows === 0 ||
         $result_discussionmap_create_start_time->num_rows === null) {
         // エンドタイムが今の最新時刻を含むものが存在しない（まだ最新のリフレクションを閉じていない）場合，現状最新の時刻のマップを取得する
-        $res = $mysqli->query("SELECT MAX(start_time) FROM network_sturuct_activity 
+        $res = $mysqli->query("SELECT MAX(start_time) FROM network_maps 
                 WHERE user_id = '$user_id' AND map_id = '$map_id'"); // 一番最新のマップの時間
         $result_discussionmap_create_start_time = $res->fetch_assoc()['MAX(start_time)'];
     }else{
@@ -312,7 +312,7 @@ if($purpose === "select_meeting_utterance") {
      /*
      * 議論内省マップのノードデータと思考整理マップのノードの対応関係データを取得する処理
      */
-    $result_forest_node_and_discussionmap_node_relation = $mysqli->query("SELECT network_node_id, mindmap_node_id FROM network_mindmap_connect
+    $result_forest_node_and_discussionmap_node_relation = $mysqli->query("SELECT network_node_id, mindmap_node_id FROM network_mindmap_connects
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND time > '$result_discussionmap_create_start_time' AND time < '$first_load_flag'
               ORDER BY time DESC ");
     
@@ -326,7 +326,7 @@ if($purpose === "select_meeting_utterance") {
     /* 
      * オントロジーとの対応データの読み込み
      */
-    $result_discussionmap_node_and_ontology_relation = $mysqli->query("SELECT ontology_id, node_id FROM network_ontology_activity
+    $result_discussionmap_node_and_ontology_relation = $mysqli->query("SELECT ontology_id, node_id FROM network_ontology_connects
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND time > '$result_discussionmap_create_start_time' AND time < '$first_load_flag'
               ORDER BY time DESC ");
     $discussionmap_node_and_ontology_relation = [];
@@ -338,9 +338,9 @@ if($purpose === "select_meeting_utterance") {
     /*
      * 議論内省マップのノードデータの取得
      */
-    $result_discussionmap_node = $mysqli->query("SELECT node_id, label, node_x, node_y, node_type FROM network_nodes_activity
-            WHERE user_id = '$user_id' AND map_id = '$map_id' AND updated_time >= '$result_discussionmap_create_start_time' AND updated_time < '$first_load_flag'
-            ORDER BY updated_time DESC ");
+    $result_discussionmap_node = $mysqli->query("SELECT node_id, label, node_x, node_y, node_type FROM network_nodes
+            WHERE user_id = '$user_id' AND map_id = '$map_id' AND updated_at >= '$result_discussionmap_create_start_time' AND updated_at < '$first_load_flag'
+            ORDER BY updated_at DESC ");
     $discussionmap_node = [];
     while ($row = $result_discussionmap_node->fetch_assoc()) {
         array_push($discussionmap_node, $row);
@@ -350,7 +350,7 @@ if($purpose === "select_meeting_utterance") {
     /*
      * 議論内省マップのエッジデータの取得
      */
-    $result_discussionmap_edge = $mysqli->query("SELECT edge_start, edge_end, edge_label FROM network_edges_activity
+    $result_discussionmap_edge = $mysqli->query("SELECT edge_start, edge_end, edge_label FROM network_edges
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND time >= '$result_discussionmap_create_start_time' AND time < '$first_load_flag'
               ORDER BY time DESC ");
     $discussionmap_edge = [];
@@ -362,7 +362,7 @@ if($purpose === "select_meeting_utterance") {
     /*
      * 採用の取得
      */
-    $result_recruit = $mysqli->query("SELECT node_id, ontology_id, result_recruit FROM network_recruit
+    $result_recruit = $mysqli->query("SELECT node_id, ontology_id, result_recruit FROM network_recruits
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND time > '$result_discussionmap_create_start_time' AND time < '$first_load_flag'
               ORDER BY time DESC ");
     $recruit = [];
@@ -385,7 +385,7 @@ if($purpose === "select_meeting_utterance") {
      /*
      * 議論内省マップのノードデータと思考整理マップのノードの対応関係データを取得する処理
      */
-    $result_forest_node_and_discussionmap_node_relation = $mysqli->query("SELECT network_node_id, mindmap_node_id FROM network_mindmap_connect
+    $result_forest_node_and_discussionmap_node_relation = $mysqli->query("SELECT network_node_id, mindmap_node_id FROM network_mindmap_connects
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND time > '$discussion_start_time' AND time < '$discussion_end_time'
               ORDER BY time DESC ");
     
@@ -399,7 +399,7 @@ if($purpose === "select_meeting_utterance") {
     /* 
      * オントロジーとの対応データの読み込み
      */
-    $result_discussionmap_node_and_ontology_relation = $mysqli->query("SELECT ontology_id, node_id FROM network_ontology_activity
+    $result_discussionmap_node_and_ontology_relation = $mysqli->query("SELECT ontology_id, node_id FROM network_ontology_connects
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND time > '$discussion_start_time' AND time < '$discussion_end_time'
               ORDER BY time DESC ");
     $discussionmap_node_and_ontology_relation = [];
@@ -411,9 +411,9 @@ if($purpose === "select_meeting_utterance") {
     /*
      * 議論内省マップのノードデータの取得
      */
-    $result_discussionmap_node = $mysqli->query("SELECT node_id, label, node_x, node_y, node_type FROM network_nodes_activity
-            WHERE user_id = '$user_id' AND map_id = '$map_id' AND updated_time >= '$discussion_start_time' AND updated_time < '$discussion_end_time'
-            ORDER BY updated_time DESC ");
+    $result_discussionmap_node = $mysqli->query("SELECT node_id, label, node_x, node_y, node_type FROM network_nodes
+            WHERE user_id = '$user_id' AND map_id = '$map_id' AND updated_at >= '$discussion_start_time' AND updated_at < '$discussion_end_time'
+            ORDER BY updated_at DESC ");
     $discussionmap_node = [];
     while ($row = $result_discussionmap_node->fetch_assoc()) {
         array_push($discussionmap_node, $row);
@@ -423,7 +423,7 @@ if($purpose === "select_meeting_utterance") {
     /*
      * 議論内省マップのエッジデータの取得
      */
-    $result_discussionmap_edge = $mysqli->query("SELECT edge_start, edge_end, edge_label FROM network_edges_activity
+    $result_discussionmap_edge = $mysqli->query("SELECT edge_start, edge_end, edge_label FROM network_edges
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND time >= '$discussion_start_time' AND time < '$discussion_end_time'
               ORDER BY time DESC ");
     $discussionmap_edge = [];
@@ -435,7 +435,7 @@ if($purpose === "select_meeting_utterance") {
     /*
      * 採用の取得
      */
-    $result_recruit = $mysqli->query("SELECT node_id, ontology_id, result_recruit FROM network_recruit
+    $result_recruit = $mysqli->query("SELECT node_id, ontology_id, result_recruit FROM network_recruits
               WHERE user_id = '$user_id' AND map_id = '$map_id' AND time > '$discussion_start_time' AND time < '$discussion_end_time'
               ORDER BY time DESC ");
     $recruit = [];

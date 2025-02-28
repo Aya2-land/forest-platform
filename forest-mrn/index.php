@@ -209,38 +209,40 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <div id="comment_balloon3"class="comment three" hidden><!--hatakeyama-->
                                         <p>何度もバージョン更新を行っている重要なノードです．<br/>定期的に考えを確認しましょう！</p>
                                     </div>
-                                </div>
+                                    
                                     <!-- ここから清水さん１ -->
-                                <div id ="presen_menu">
-                                    <!-- 【Slide】 -->
-                                    <!-- <button class="button4" onclick="MakeSlide();">スライド追加</button> -->
-                                    <!-- <button class="button4" onclick="MakeNewPage();">ページ追加</button> -->
-                                    <!-- <button class="button4" onclick="AddImage();">画像追加</button> -->
-                                    <!-- <input type="file" id="myFile" style="display: none">
-                                        <button class="button4" onclick="selectImage()">画像追加</button> -->
-                                    <!-- <button class="button4" type="submit" name="selectImage">画像追加</button> -->
+                                    <div id ="presen_menu">
+                                        <!-- 【Slide】 -->
+                                        <!-- <button class="button4" onclick="MakeSlide();">スライド追加</button> -->
+                                        <!-- <button class="button4" onclick="MakeNewPage();">ページ追加</button> -->
+                                        <!-- <button class="button4" onclick="AddImage();">画像追加</button> -->
+                                        <!-- <input type="file" id="myFile" style="display: none">
+                                            <button class="button4" onclick="selectImage()">画像追加</button> -->
+                                        <!-- <button class="button4" type="submit" name="selectImage">画像追加</button> -->
 
-                                    <button class="button4" onclick="NewContent_Append('問い')">問いノード追加</button>
-                                    <button class="button4" onclick="NewContent_Append('答え')">答えノード追加</button>
-                                    <button class="button4" onclick="add_Confirm();">マップ側へ反映</button>
-                                    <button class="button4" onclick="Unreflected_node();">未反映ノード</button>
-                                    <!-- <button class="button4" onclick="CheckNodeAllLogicRelation();">関係性の一覧</button> -->
-                                    <button class="button4" onclick="DeleteLogicRelation();">関係性の解消</button>
-                                    <!-- <button class="button4" onclick="AllItemVersionUpdate();">資料のバージョンを更新</button> -->
-                                    <!-- <button class="button4" id="input_file" onclick="InputFile();">
-                                        資料再現
-                                        </button> -->
-                                    <!-- <button class="button4" onclick="Get_SlideRank();Get_ContentRank();Get_SlideTitle();">
-                                        スライド保存
-                                        </button> -->
-                                    <!-- 【Export】
-                                        <button class="button4" onclick="OutputScenario();">
-                                        test
-                                        </button> -->
-                                    <!-- <button class="button4" onclick="OutputFile()">
-                                        test
-                                        </button> -->
+                                        <button class="button4" onclick="NewContent_Append('問い')">問いノード追加</button>
+                                        <button class="button4" onclick="NewContent_Append('答え')">答えノード追加</button>
+                                        <button class="button4" onclick="add_Confirm();">マップ側へ反映</button>
+                                        <button class="button4" onclick="Unreflected_node();">未反映ノード</button>
+                                        <!-- <button class="button4" onclick="CheckNodeAllLogicRelation();">関係性の一覧</button> -->
+                                        <button class="button4" onclick="DeleteLogicRelation();">関係性の解消</button>
+                                        <!-- <button class="button4" onclick="AllItemVersionUpdate();">資料のバージョンを更新</button> -->
+                                        <!-- <button class="button4" id="input_file" onclick="InputFile();">
+                                            資料再現
+                                            </button> -->
+                                        <!-- <button class="button4" onclick="Get_SlideRank();Get_ContentRank();Get_SlideTitle();">
+                                            スライド保存
+                                            </button> -->
+                                        <!-- 【Export】
+                                            <button class="button4" onclick="OutputScenario();">
+                                            test
+                                            </button> -->
+                                        <!-- <button class="button4" onclick="OutputFile()">
+                                            test
+                                            </button> -->
+                                    </div>
                                 </div>
+                                    
                                 <!-- presen_menu fin -->
 
                                 <!--  <div id ="presen_menu"> -->

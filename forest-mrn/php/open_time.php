@@ -7,8 +7,8 @@ $user_id = $_SESSION['USERID'];      //ユーザID
 $map_id = $_SESSION['MAPID'];    //シートID
 $type = $_POST['type'];
 
-$result = $mysqli->query("SELECT start_time, end_time FROM network_sturuct_activity
-          WHERE user_id = '$user_id' AND map_id = '$map_id' AND situation = '$type'
+$result = $mysqli->query("SELECT start_time, end_time FROM network_maps
+          WHERE map_id = '$map_id' AND situation = '$type'
           ORDER BY start_time DESC ");
 
 $data = array();

@@ -5,7 +5,7 @@ require("connect_db.php");
 
 $user_id = $_SESSION['USERID'];      //ユーザID
 $map_id = $_SESSION['MAPID'];    //シートID
-$start_time_result = $mysqli->query("SELECT start_time FROM network_sturuct_activity WHERE user_id = '$user_id' AND map_id = '$map_id' AND situation = 'start'");
+$start_time_result = $mysqli->query("SELECT start_time FROM network_maps WHERE user_id = '$user_id' AND map_id = '$map_id' AND situation = 'start'");
 
 // クエリの結果を確認
 if ($start_time_result && $start_time_result->num_rows > 0) {

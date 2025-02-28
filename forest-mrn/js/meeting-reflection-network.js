@@ -271,7 +271,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
      */
     //ノード追加(完了)
     addNode(node_id, node_label, node_type, node_x, node_y) {
-        let node_color = 'skyblue'; // ノードの背景色
+        let node_color = '#cbe0f4'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
         let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
@@ -279,16 +279,16 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             case "material-content": // 議論資料に書かれた内容に関するノードの場合
                 break;
             case "self-summary": // 自分で考えた要約に関するノードの場合
-                node_color = 'green';
-                text_color = 'white';
+                node_color = '#e3d7e6';
+                // text_color = 'white';
                 break;
             case "utterance": // 議論内での発言ノードの場合
-                node_color = 'pink';
+                node_color = '#c5b4df';
                 break;
             case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                node_color = 'blue';
+                node_color = '#a0a7ee';
                 node_shape = 'ellipse';
-                text_color = 'white';
+                // text_color = 'white';
                 position_fixed = true;
                 break;
             default: // その他
@@ -326,7 +326,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     }
 
     addReloadNode(node_id, node_label, node_type, node_x, node_y) {
-        let node_color = 'skyblue'; // ノードの背景色
+        let node_color = '#cbe0f4'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
         let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
@@ -334,16 +334,16 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             case "material-content": // 議論資料に書かれた内容に関するノードの場合
                 break;
             case "self-summary": // 自分で考えた要約に関するノードの場合
-                node_color = 'green';
-                text_color = 'white';
+                node_color = '#e3d7e6';
+                // text_color = 'white';
                 break;
             case "utterance": // 議論内での発言ノードの場合
-                node_color = 'pink';
+                node_color = '#c5b4df';
                 break;
             case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                node_color = 'blue';
+                node_color = '#a0a7ee';
                 node_shape = 'ellipse';
-                text_color = 'white';
+                // text_color = 'white';
                 position_fixed = true;
                 break;
             default: // その他
@@ -371,23 +371,23 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     //操作できないノードを作る（過去のマインドマップのため）
     addShowNode(node_id, node_label, node_type, node_x, node_y) {
-        let node_color = 'skyblue'; // ノードの背景色
+        let node_color = '#cbe0f4'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
         switch(node_type) {
             case "material-content": // 議論資料に書かれた内容に関するノードの場合
                 break;
             case "self-summary": // 自分で考えた要約に関するノードの場合
-                node_color = 'green';
-                text_color = 'white';
+                node_color = '#e3d7e6';
+                // text_color = 'white';
                 break;
             case "utterance": // 議論内での発言ノードの場合
-                node_color = 'pink';
+                node_color = '#c5b4df';
                 break;
             case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                node_color = 'blue';
+                node_color = '#a0a7ee';
                 node_shape = 'ellipse';
-                text_color = 'white';
+                // text_color = 'white';
                 break;
             default: // その他
                 break;
@@ -410,8 +410,8 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         defaultRecordForestMRN.record_Material_Edge(edge_start, edge_end, edge_label);
     }
 
-    addReloadEdge(edge_start, edge_end, edge_label) {
-        this.edges.add({ from: edge_start, to: edge_end ,label: edge_label});
+    addReloadEdge(edge_id, edge_start, edge_end, edge_label) {
+        this.edges.add({ id: edge_id, from: edge_start, to: edge_end ,label: edge_label});
     }
 
     //未完成　要約ノード追加(一旦資料ノードにしてる)
@@ -421,7 +421,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     addmaterialNode(node_id, node_label){
         this.addNode(node_id, node_label, "material-content", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
-        console.log(this.latest_selected_node_info.x,this.latest_selected_node_info.y)
+        // console.log(this.latest_selected_node_info.x,this.latest_selected_node_info.y)
     }
 
     addutteranceNode(utterance){
@@ -572,7 +572,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 id : Ontology_Node_Id,
                 borderWidth: 5,
                 color: {
-                    border: "green",
+                    border: "#a0a7ee",
                 },
             });
         }else if(selectionlist.value === "棄却"){
@@ -580,7 +580,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 id : Ontology_Node_Id,
                 borderWidth: 5,
                 color: {
-                    border: "red",
+                    border: "#da5077",
                 },
             });
         }
@@ -751,9 +751,9 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
   
     }
 
-    addNewEdge(E_start, E_end){
-        this.edges.add({ from: E_start, to: E_end });
-        defaultRecordForestMRN.record_Edge(E_start, E_end);
+    addNewEdge(E_id, E_start, E_end){
+        this.edges.add({ id: E_id, from: E_start, to: E_end });
+        defaultRecordForestMRN.record_Edge(E_id, E_start, E_end);
     }
 
     //ドラッグ開始(完成)
@@ -767,6 +767,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
 
     //ドラッグ終了(完成)
     dragend (params) {
+        let edge_id = this.generateUniqueNumberText();
         if(this.edgeEditMode){
             this.dragEndNodeId = this.ownNetwork.getNodeAt(params.pointer.DOM);
             if(this.dragStartNodeId !== null && this.dragEndNodeId !== null && this.dragEndNodeId !== this.dragStartNodeId && this.dragEndNodeId !== undefined && this.nodes.get(this.dragStartNodeId).shape != "ellipse" && this.nodes.get(this.dragEndNodeId).shape != "ellipse"){
@@ -784,8 +785,8 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 if(notable == false){
                     return;
                 }
-                this.edges.add({ from: this.dragStartNodeId, to: this.dragEndNodeId });
-                defaultRecordForestMRN.record_Edge(this.dragStartNodeId, this.dragEndNodeId);
+                this.edges.add({ id: edge_id, from: this.dragStartNodeId, to: this.dragEndNodeId });
+                defaultRecordForestMRN.record_Edge(edge_id, this.dragStartNodeId, this.dragEndNodeId);
             }
             this.dragStartNodeId = null;
             this.dragEndNodeId = null;
@@ -793,17 +794,17 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
             const movedNodeId = params.nodes[0];
             if (movedNodeId !== undefined) {
                 //なぜか更新したら色変わってしまうから一時的に
-                let node_color = 'skyblue';
-                let border_color = 'skyblue'; 
+                let node_color = '#cbe0f4';
+                let border_color = '#cbe0f4'; 
                 switch(this.nodes.get(movedNodeId).group) {
                     case "self-summary": // 自分で考えた要約に関するノードの場合
-                        node_color = 'green';
+                        node_color = '#e3d7e6';
                         break;
                     case "utterance": // 議論内での発言ノードの場合
-                        node_color = 'pink';
+                        node_color = '#c5b4df';
                         break;
                     case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                        node_color = 'blue';
+                        node_color = '#a0a7ee';
                         break;
                     default: // その他
                         break;
@@ -822,11 +823,11 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                     const ontology_y = nodeBoundingBox.top;
                     console.log(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]);
                     if(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]==="採用"){
-                        border_color = 'green'; 
+                        border_color = '#e3d7e6'; 
                     }else if(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]==="棄却"){
-                        border_color = 'red'; 
+                        border_color = '#da5077'; 
                     }
-                    this.nodes.update({ id: this.OntologyNodeId[ontology_index], color: { background: 'blue', border: border_color}, x: ontology_x, y: ontology_y });
+                    this.nodes.update({ id: this.OntologyNodeId[ontology_index], color: { background: '#a0a7ee', border: border_color}, x: ontology_x, y: ontology_y });
                     defaultRecordForestMRN.update_Node("point" ,this.OntologyNodeId[ontology_index], ontology_x, ontology_y);
                 }
             }
@@ -840,7 +841,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         const endid = this.edges.get(selectEdgeId).to;
         if(selectEdgeId !== undefined){
             this.edges.remove({id: selectEdgeId});
-            defaultRecordForestMRN.delete_db_Edge(startid, endid);
+            defaultRecordForestMRN.delete_db_Edge(selectEdgeId, startid, endid);
             const Edge_index = this.OntologyConnectNodeId.indexOf(startid);
             if(Edge_index !== -1){
                 this.EdgeStartId.splice(Edge_index, 1);
@@ -854,18 +855,18 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
         const feedbacknode_index = this.Feedback.indexOf(this.FeedbackNodeId);
         this.Feedback.splice(feedbacknode_index, 1);
         const feedbacknode = this.nodes.get(this.FeedbackNodeId);
-        let node_color = 'skyblue'; // ノードの背景色
+        let node_color = '#cbe0f4'; // ノードの背景色
         switch(feedbacknode.group) {
             case "material-content": // 議論資料に書かれた内容に関するノードの場合
                 break;
             case "self-summary": // 自分で考えた要約に関するノードの場合
-                node_color = 'green';
+                node_color = '#e3d7e6';
                 break;
             case "utterance": // 議論内での発言ノードの場合
-                node_color = 'pink';
+                node_color = '#c5b4df';
                 break;
             case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                node_color = 'blue';
+                node_color = '#a0a7ee';
                 break;
             default: // その他
                 break;
@@ -876,24 +877,24 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
     Nodeblinking() {
         this.Feedback.map((n) => {
             const feedbacknode = this.nodes.get(n);
-            let node_color = 'skyblue'; // ノードの背景色
+            let node_color = '#cbe0f4'; // ノードの背景色
             switch(feedbacknode.group) {
                 case "material-content": // 議論資料に書かれた内容に関するノードの場合
                     break;
                 case "self-summary": // 自分で考えた要約に関するノードの場合
-                    node_color = 'green';
+                    node_color = '#e3d7e6';
                     break;
                 case "utterance": // 議論内での発言ノードの場合
-                    node_color = 'pink';
+                    node_color = '#c5b4df';
                     break;
                 case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-                    node_color = 'blue';
+                    node_color = '#a0a7ee';
                     break;
                 default: // その他
                     break;
             }
             const borderWidth = feedbacknode.borderWidth === 0 ? 5 : 0;
-            this.nodes.update({ id: n, color: { background: node_color, border: "red"}, borderWidth: borderWidth });
+            this.nodes.update({ id: n, color: { background: node_color, border: "#"}, borderWidth: borderWidth });
         })
     }
 
@@ -911,7 +912,7 @@ class ForestMRN { // forestMRN: forest Meeting Reflection Network
                 concept.map((content)=>{
                     if(content.getAttribute('id') === concept_id){
                         const slot_content = Array.from(content.getElementsByTagName("SLOT"));
-                        console.log(content)
+                        // console.log(content);
                         slot_content.map((content_slot) => {
                             if(content_slot.getAttribute("role") === "出力"){
                                 const nodeBoundingBox = defaultForestMRN.ownNetwork.getBoundingBox(material_id);
@@ -955,15 +956,22 @@ class RecordForestMRN{
                 node_type : node_type,
                 purpose : 'record',
                 record_thing: 'node'},
+            success: function(e){
+                if(e){
+                    console.log(e);
+                }
+            }
         });
     }
 
     //エッジの記録(完了)
-    record_Edge (edge_start, edge_end){
+    record_Edge (edge_id, edge_start, edge_end){
+        // console.log(edge_id+", "+edge_start+", "+edge_end);
         $.ajax({
             url: "php/discussion_edit_structmap_maneger.php",
             type: "POST",
-            data: {edge_start : edge_start,
+            data: {edge_id: edge_id,
+                edge_start : edge_start,
                 edge_end : edge_end,
                 purpose : 'record',
                 record_thing: 'edge'},
@@ -1020,11 +1028,12 @@ class RecordForestMRN{
     }
     
     //エッジの削除(完了)
-    delete_db_Edge (edge_start,edge_end){
+    delete_db_Edge (edge_id, edge_start,edge_end){
         $.ajax({
             url: "php/discussion_edit_structmap_maneger.php",
             type: "POST",
-            data: {edge_start : edge_start,
+            data: {edge_id: edge_id,
+                edge_start : edge_start,
                 edge_end : edge_end,
                 purpose : 'delete',
                 delete_thing : 'edge'},
@@ -1109,8 +1118,8 @@ const getDiscussionMapDataFromDB = (target_time, end_time, callback) => {
         type: "POST",
         data: data,
     }).success((r) => {
+        // console.log(r);
         utterance_list = JSON.parse(r);
-        console.log(utterance_list)
         callback(utterance_list);
     });
 }
@@ -1140,7 +1149,7 @@ const update_text_on = (areaid) => {
     $.ajax({
         url: "php/update_network_text.php",
         type: "POST",
-        data: {areaid: areaid,
+        data: {area_id: areaid,
               purpose : "network_on"},
     });
 }
@@ -1185,13 +1194,13 @@ const displayUtteranceNodeInList = (display_target_area_id, target_reflection_ti
     getDiscussionMapDataFromDB(target_reflection_time, null, (utterance_list_info) => {
         // データの取得と挿入
         utterance_list_info.utterance.map(u => {
-            const utter_dom = makeUtteranceNodeInList(u.area_id, u.content, u.sender, u.JPNtime, u.network_on);
+            const utter_dom = makeUtteranceNodeInList(u.network_text_id, u.content, u.sender, u.JPNtime, u.network_on);
             target_area.append(utter_dom); // 挿入            
         });
         for(var i=0; i<utterance_list_info.document.length; i++){
-            defaultForestMRN.addmaterialNode(utterance_list_info.document[i].content_id, utterance_list_info.document[i].content);
+            defaultForestMRN.addmaterialNode(utterance_list_info.document[i].item_content_id, utterance_list_info.document[i].item_content_id);
             document.getElementById("labelselect").style.display = "none";
-            defaultForestMRN.addMaterialOntology('material-content_'+utterance_list_info.document[i].content_id, utterance_list_info.document[i].concept_id);
+            defaultForestMRN.addMaterialOntology('material-content_'+utterance_list_info.document[i].item_content_id, utterance_list_info.document[i].concept_id);
         }
         utterance_list_info.item_content_relation.map(u => {
             defaultForestMRN.addmaterialEdge("material-content_"+u.item_content1_id, "material-content_"+u.item_content2_id, u.item_content1_label+"→"+u.item_content2_label)        
@@ -1258,16 +1267,18 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
     const timedisplay_area = $(`#timedisplay`); // 発話ノードの議論内での時間を表示するエリア
     let mousedownId = null;
     getDiscussionMapDataFromDB(target_reflection_time, null, (utterance_list_info) => {
+        // console.log(utterance_list_info);
         // データの取得と挿入
         utterance_list_info.utterance.map(u => {
-            const utter_dom = makeUtteranceNodeInList(u.area_id, u.content, u.sender, u.JPNtime, u.network_on);
+            const utter_dom = makeUtteranceNodeInList(u.network_text_id, u.content, u.sender, u.JPNtime, u.network_on);
             target_area.append(utter_dom); // 挿入            
         });
         utterance_list_info.dnode.map((n) => {
-            defaultForestMRN.addReloadNode(n.node_id, n.label, n.node_type, n.node_x, n.node_y);
+            console.log(n);
+            defaultForestMRN.addReloadNode(n.network_node_id, n.label, n.node_type, n.node_x, n.node_y);
         });
         utterance_list_info.dedge.map((n) => {
-            defaultForestMRN.addReloadEdge(n.edge_start, n.edge_end, n.edge_label);
+            defaultForestMRN.addReloadEdge(n.edge_id, n.edge_start, n.edge_end, n.edge_label);
         });
         utterance_list_info.fnode_dnode_rel.map((n) => {
             defaultForestMRN.ConnectNetworkNodeId.push(n.network_node_id);
@@ -1275,7 +1286,7 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
         });
         utterance_list_info.dnode_ontology_rel.map((n) => {
             defaultForestMRN.OntologyNodeId.push(n.ontology_id);
-            defaultForestMRN.OntologyConnectNodeId.push(n.node_id);
+            defaultForestMRN.OntologyConnectNodeId.push(n.network_node_id);
         });
         utterance_list_info.map_create_start_and_end.map((n) => {
             const selectElement = document.getElementById("selectiontime");
@@ -1285,11 +1296,11 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
             selectElement.appendChild(optionElement);
         });
         utterance_list_info.recruit.map((n) => {
-            defaultForestMRN.RecruitNodeId.push(n.node_id);
+            defaultForestMRN.RecruitNodeId.push(n.network_node_id);
             defaultForestMRN.Recruit.push(n.result_recruit);
-            let back_color = "green";
+            let back_color = "#a0a7ee";
             if(n.result_recruit==="棄却"){
-                back_color = "red"
+                back_color = "#da5077"
             }
             defaultForestMRN.nodes.update({
                 id : n.ontology_id,
@@ -1299,9 +1310,9 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
                 }
             });
             if(n.reason === null){
-                defaultForestMRN.Feedback.push(n.node_id);
+                defaultForestMRN.Feedback.push(n.network_node_id);
             }
-            document.getElementById("accordion_discussion").innerHTML += "<div id='"+n.node_id+"' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「"+defaultForestMRN.nodes.get(n.node_id).label+"」は"+n.result_recruit+"されたのですか？</div><div class='accordion-content'><textarea id='text"+ n.node_id +"' class='accordion-input'>"+n.reason+"</textarea></div></div>";
+            document.getElementById("accordion_discussion").innerHTML += "<div id='"+n.network_node_id+"' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「"+defaultForestMRN.nodes.get(n.network_node_id).label+"」は"+n.result_recruit+"されたのですか？</div><div class='accordion-content'><textarea id='text"+ n.network_node_id +"' class='accordion-input'>"+n.reason+"</textarea></div></div>";
         });
         console.log(defaultForestMRN.Feedback);
     }).then(() => {
@@ -1373,28 +1384,39 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
 * XMLファイルのアップロードとデータ取得処理
 */
 const getXMLTagInfo = () => {
-  // アップロードされたXMLファイルの中身をJSONデータとして取得
-  parser = new DOMParser();
-  const meeting_utterances = parser.parseFromString($("#meeting_utterance_xml").html(),"text/xml");
-  const getTaggedInfo = (utter, tag) => {
-    return $(utter).find(tag).html()
-  }
+    try {
+        // アップロードされたXMLファイルの中身をJSONデータとして取得
+        const parser = new DOMParser();
+        const meeting_utterances = parser.parseFromString($("#meeting_utterance_xml").html(), "text/xml");
+        
+        // XMLが正常に解析されなかった場合のエラーチェック
+        const parseError = meeting_utterances.querySelector('parsererror');
+        if (parseError) {
+        console.error("XML Parsing Error: ", parseError);
+        return []; // エラーの場合は空の配列を返す
+        }
 
-    /*
-     * ここで同じ発話者のやつなら統合するとかの前処理する
-     */
+        const getTaggedInfo = (utter, tag) => {
+        return $(utter).find(tag).html();
+        }
 
-  const utter_list = Array.prototype.slice.call(meeting_utterances.getElementsByTagName("messagedata")).map(u => {
-    return {
-      message_id: getTaggedInfo(u, "id"),
-      content: getTaggedInfo(u, "type"),
-      sender: getTaggedInfo(u, "sender_id"),
-      time: getTaggedInfo(u, "time"),
-      JPNtime: getTaggedInfo(u, "jpntime")
+        const utter_list = Array.prototype.slice.call(meeting_utterances.getElementsByTagName("messagedata")).map(u => {
+        return {
+            message_id: getTaggedInfo(u, "id"),
+            content: getTaggedInfo(u, "type"),
+            sender: getTaggedInfo(u, "sender_id"),
+            time: getTaggedInfo(u, "time"),
+            JPNtime: getTaggedInfo(u, "jpntime")
+        };
+        });
+
+        return utter_list;
+    } catch (error) {
+        console.error("Error in getXMLTagInfo: ", error);
+        return []; // エラーが発生した場合、空の配列を返す
     }
-  })
-  return utter_list;
-}
+};
+  
 
 // アップロードされたXMLを一旦別の場所においておく
 const setUploadedXMLData = (file_input_btn_id, xml_area_id) => {
@@ -1426,7 +1448,7 @@ const setUploadedXMLData = (file_input_btn_id, xml_area_id) => {
 // 発言をアップロードする関数
 const uploadMeetingUtteranceXML = () => {
   // フォームデータを作成
-  //console.log(getXMLTagInfo())
+  console.log(getXMLTagInfo());
   recordMeetingUtteranceNodes(getXMLTagInfo())
 }
   
@@ -1440,8 +1462,7 @@ function OpenNetwork(start_time, end_time) {
             defaultShowForestMRN.addShowNode(n.node_id, n.label, n.node_type, n.node_x, n.node_y);
         });
         utterance_list_info.dedge.map((n) => {
-            console.log(n);
-            defaultShowForestMRN.addReloadEdge(n.edge_start, n.edge_end, n.edge_label);
+            defaultShowForestMRN.addReloadEdge(n.edge_id, n.edge_start, n.edge_end, n.edge_label);
         });
         utterance_list_info.fnode_dnode_rel.map((n) => {
             defaultShowForestMRN.ConnectNetworkNodeId.push(n.network_node_id);
@@ -1458,9 +1479,9 @@ function OpenNetwork(start_time, end_time) {
         utterance_list_info.recruit.map((n) => {
             defaultShowForestMRN.RecruitNodeId.push(n.node_id);
             defaultShowForestMRN.Recruit.push(n.result_recruit);
-            let back_color = "green";
+            let back_color = "#a0a7ee";
             if(n.result_recruit==="棄却"){
-                back_color = "red"
+                back_color = "#da5077"
             }
             defaultShowForestMRN.nodes.update({
                 id : n.ontology_id,
@@ -1499,9 +1520,14 @@ const recordMeetingUtteranceNodes = (utterances) => {
       purpose: "record_meeting_utterance",
       utters: JSON.stringify(utterances),
     }
-  }).success((r) => {
-    console.log(r);
-    displayUtteranceNodeInList("utterance_area2", null); 
+  }).done((r) => {
+    console.log("Request succeeded:", utterances);
+    console.log("Server response:", r);
+    displayUtteranceNodeInList("utterance_area2", null);
+  })
+  .fail((jqXHR, textStatus, errorThrown) => {
+    console.error("Request failed:", textStatus, errorThrown);
+    // 失敗時の処理を追加（例えば、エラーメッセージの表示など）
   });
 }
 
@@ -1547,7 +1573,6 @@ window.addEventListener('load', () => {
     displayDiscussionMapData("utterance_area2", null); // 最新の議論内省マップの発話リストを表示
     // 内省マップ編集ボタンにイベント付与
     $(`#mrnb_addNode`).on("click", e => {
-        console.log("aaa");
         defaultForestMRN.addNewNode();
     });
     $(`#mrnb_removeNode`).on("click", e => {

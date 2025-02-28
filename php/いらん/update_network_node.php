@@ -15,12 +15,12 @@
 
 	
 	if($change == "label"){
-		$sql = "UPDATE network_nodes_activity SET label = '$change_thing', updated_time = '$timestamp' WHERE user_id = '$user_id' AND map_id = '$map_id' AND node_id = '$node_id' AND updated_time > '$st_time'";
+		$sql = "UPDATE network_nodes SET label = '$change_thing', updated_at = '$timestamp' WHERE user_id = '$user_id' AND map_id = '$map_id' AND node_id = '$node_id' AND updated_at > '$st_time'";
 		$result = $mysqli->query($sql);
 	}
 	//後でwhereのところに時間設定はいる
 	else if($change == "delete"){
-		$sql = "DELETE FROM network_nodes_activity WHERE user_id = '$user_id' AND map_id = '$map_id' AND node_id = '$node_id' AND updated_time > '$st_time'";
+		$sql = "DELETE FROM network_nodes WHERE user_id = '$user_id' AND map_id = '$map_id' AND node_id = '$node_id' AND updated_at > '$st_time'";
 		$result = $mysqli->query($sql);
 	}
 	//ここから変更するものが増えていけばifの中身をいじる

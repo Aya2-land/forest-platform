@@ -23,9 +23,9 @@ $shape = $_POST["shape"];  //形
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 
-	$sql1 = "INSERT INTO network_nodes_activity (user_id, map_id, node_id, label, node_x, node_y, color, shape, time, updated_time)
+	$sql1 = "INSERT INTO network_nodes (user_id, map_id, node_id, label, node_x, node_y, color, shape, time, updated_at)
 	VALUES ('$user_id', '$map_id', '$ontology_id', '$label', '$x', '$y', '$color', '$shape', '$timestamp', '$timestamp')";
-	$sql2 = "INSERT INTO network_ontology_activity (user_id, map_id, ontology_id, node_id, time)
+	$sql2 = "INSERT INTO network_ontology_connects (user_id, map_id, ontology_id, node_id, time)
 	VALUES ('$user_id', '$map_id', '$ontology_id', '$node_id', '$timestamp')";
 	$result1 = $mysqli->query($sql1);
 	$result2 = $mysqli->query($sql2);

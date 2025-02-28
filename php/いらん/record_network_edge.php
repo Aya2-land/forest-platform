@@ -18,7 +18,7 @@ $end = $_POST["end"];              //エッジ終了
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 
-	$sql = "INSERT INTO network_edges_activity (user_id, map_id, edge_start, edge_end, time)
+	$sql = "INSERT INTO network_edges (user_id, map_id, edge_start, edge_end, time)
 	VALUES ('$user_id', '$map_id', '$start', '$end', '$timestamp')";
 
 	$result = $mysqli->query($sql);

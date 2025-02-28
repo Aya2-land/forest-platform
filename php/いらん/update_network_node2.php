@@ -15,7 +15,7 @@
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 	if($change == "point"){
-		$sql = "UPDATE network_nodes_activity SET node_x = '$change_thing1', node_y = '$change_thing2', updated_time = '$timestamp' WHERE user_id = '$user_id' AND map_id = '$map_id' AND node_id = '$node_id' AND updated_time > '$st_time'";
+		$sql = "UPDATE network_nodes SET node_x = '$change_thing1', node_y = '$change_thing2', updated_at = '$timestamp' WHERE user_id = '$user_id' AND map_id = '$map_id' AND node_id = '$node_id' AND updated_at > '$st_time'";
 		$result = $mysqli->query($sql);
 	}
 	//ここから変更するものが増えていけばifの中身をいじる

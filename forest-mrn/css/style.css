@@ -1126,7 +1126,7 @@ select[name="mttime_list"] {
 	top: 0;
 	width: calc((100vw - 350px)*0.15);
 	height:80px;
-	background:#c6deff;
+	background:#e6edf8;
 }
 #utterance_area{
 	width: calc((100vw - 350px)*0.15);
@@ -1134,7 +1134,7 @@ select[name="mttime_list"] {
 	height:70vh;
 	min-height: 450px;
 	margin-bottom:2vh;
-	background:#c6deff;
+	background:#e6edf8;
 	overflow-y: scroll;
 }
 #utterance_area2{
@@ -1142,7 +1142,7 @@ select[name="mttime_list"] {
 	min-width: 100px;
 	margin-bottom:2vh;
 	border:solid 5px #cccccc00;
-	background:#c6deff;
+	background:#e6edf8;
 	overflow-y: scroll;
 	float:left;
 	line-height:20px;

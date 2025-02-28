@@ -20,8 +20,8 @@ foreach ($jsonDataArray as $jsonData) {
     $time = $mysqli->real_escape_string($jsonData['time']);
 	$JPNtime = $mysqli->real_escape_string($jsonData['JPNtime']);
     
-    $query = "INSERT INTO network_text (user_id, map_id, area_id, sender, content, time, JPNtime, ST_Time) 
-	VALUES ($user_id, $map_id, $id, '$sender', '$content', $time, '$JPNtime', '$sttime')";
+    $query = "INSERT INTO network_texts (user_id, map_id, area_id, sender, content, network_on, time, JPNtime, ST_Time) 
+	VALUES ($user_id, $map_id, $id, '$sender', '$content', 0, $time, '$JPNtime', '$sttime')";
     
     if ($mysqli->query($query) !== TRUE) {
         // 失敗時の処理

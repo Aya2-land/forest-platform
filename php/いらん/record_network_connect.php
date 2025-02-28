@@ -18,7 +18,7 @@ $mm_node_id = $_POST["mm_nodeid"];              //ラベル
 $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
 
-	$sql = "INSERT INTO network_mindmap_connect(user_id, map_id, network_node_id, mindmap_node_id, time)
+	$sql = "INSERT INTO network_mindmap_connects(user_id, map_id, network_node_id, mindmap_node_id, time)
 	VALUES ('$user_id', '$map_id', '$net_node_id', '$mm_node_id', '$timestamp')";
 
 	$result = $mysqli->query($sql);

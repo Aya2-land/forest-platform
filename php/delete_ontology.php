@@ -11,9 +11,9 @@
 	$nodeid = $_POST['nodeid'];
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-	$sql1 = "DELETE FROM network_ontology_activity WHERE node_id = '$nodeid' AND time > '$st_time'";
+	$sql1 = "DELETE FROM network_ontology_connects WHERE node_id = '$nodeid' AND time > '$st_time'";
 	$result1 = $mysqli->query($sql1);
-	$sql2 = "DELETE FROM network_mindmap_connect WHERE network_node_id = '$nodeid' AND time > '$st_time'";
+	$sql2 = "DELETE FROM network_mindmap_connects WHERE network_node_id = '$nodeid' AND time > '$st_time'";
 	$result2 = $mysqli->query($sql2);
 
 	//クエリ($sql)のエラー処理

@@ -12,9 +12,9 @@
 	$delete_id = $_POST['delete_id'];
 	$content = $_POST['content'];
 
-	$sql1 = "UPDATE network_text SET content = '$content' WHERE user_id = '$user_id' AND map_id = '$map_id' AND ST_Time = '$sttime' AND area_id = '$remain_id'";
+	$sql1 = "UPDATE network_texts SET content = '$content' WHERE user_id = '$user_id' AND map_id = '$map_id' AND ST_Time = '$sttime' AND area_id = '$remain_id'";
 	$result1 = $mysqli->query($sql1);
-	$sql2 = "DELETE FROM network_text WHERE user_id = '$user_id' AND map_id = '$map_id' AND ST_Time = '$sttime' AND area_id = '$delete_id'";
+	$sql2 = "DELETE FROM network_texts WHERE user_id = '$user_id' AND map_id = '$map_id' AND ST_Time = '$sttime' AND area_id = '$delete_id'";
 	$result2 = $mysqli->query($sql2);
 
 	//クエリ($sql)のエラー処理

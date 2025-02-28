@@ -1,62 +1,63 @@
 
 let select_c = document.querySelector('[name="add_criticism"]');
 
-select_c.onchange = event => { 
-  value = select_c.value;
-  console.log(value);
+if(select_c){
+  select_c.onchange = event => { 
+    value = select_c.value;
+    console.log(value);
 
-  switch (value){
-    case 'criticism':
-            add_Cnode(value, "批評：");
-            break;
-    case 'evaluation':
-            add_Cnode(value, "価値判断：");
-            break;
-            case 'objection':
-                add_Cnode(value, "意見：");        
-                break;
-    case 'modification':
-        add_Cnode(value, "問題点：");
+    switch (value){
+      case 'criticism':
+              add_Cnode(value, "批評：");
+              break;
+      case 'evaluation':
+              add_Cnode(value, "価値判断：");
+              break;
+              case 'objection':
+                  add_Cnode(value, "意見：");        
+                  break;
+      case 'modification':
+          add_Cnode(value, "問題点：");
+          break;
+
+      case 'e_1':
+          add_Cnode(value, "有用性："); 
         break;
-
-    case 'e_1':
-        add_Cnode(value, "有用性："); 
-      break;
-    case 'e_2':
-     add_Cnode(value, "新規性："); 
-      break;
-    case 'e_3':
-        add_Cnode(value, "信頼性："); 
-      break;
-    case 'o_1':
-        add_Cnode(value, "反論："); 
-      break;
-    case '0_2':
-      add_Cnode(value, "改善策："); 
-      break;
-    case '0_3':
-            add_Cnode(value, "代替案："); 
-      break;
-    case 'm_1':
-            add_Cnode(value, "語の妥当性："); 
-      break;
-    case 'm_2':
-            add_Cnode(value, "証拠の十分性："); 
-      break;
-    case 'm_3':
-            add_Cnode(value, "論理の整合性："); 
-      break;
-    case '':
-        add_NodeLabel(value, "【主軸】："); 
-      break;
-    default:
-        // それ以外はevaluation
-        add_Cnode("criticism", "New node");
-    //   console.log('住所はその他です');
+      case 'e_2':
+      add_Cnode(value, "新規性："); 
+        break;
+      case 'e_3':
+          add_Cnode(value, "信頼性："); 
+        break;
+      case 'o_1':
+          add_Cnode(value, "反論："); 
+        break;
+      case '0_2':
+        add_Cnode(value, "改善策："); 
+        break;
+      case '0_3':
+              add_Cnode(value, "代替案："); 
+        break;
+      case 'm_1':
+              add_Cnode(value, "語の妥当性："); 
+        break;
+      case 'm_2':
+              add_Cnode(value, "証拠の十分性："); 
+        break;
+      case 'm_3':
+              add_Cnode(value, "論理の整合性："); 
+        break;
+      case '':
+          add_NodeLabel(value, "【主軸】："); 
+        break;
+      default:
+          // それ以外はevaluation
+          add_Cnode("criticism", "New node");
+      //   console.log('住所はその他です');
+    }
   }
-
-
 }
+
 
 
 
