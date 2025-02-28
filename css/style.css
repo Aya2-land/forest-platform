@@ -225,6 +225,7 @@ table[type] {
 	overflow-x: auto;
 	overflow-y: visible;
 	float:left;
+	resize: vertical;
 }
 
 
@@ -411,7 +412,7 @@ input:checked+label::after {
 	float:left;
 	overflow-x: scroll;
 	box-sizing: border-box;
-	resize: vertical;
+	resize: both;
 	
 }
 #jsmind_container2_menu{
@@ -631,19 +632,19 @@ input:checked+label::after {
 /* 文書を作成するエリア */
 #document_area {
 	/*（全体）ー（サイドメニュー */
-	width:40%; /* ここで設定しても意味がない */
+	width:(50%-3px); /* ここで設定しても意味がない */
 	position: relative;
 	z-index:3 ;	
 	/* チェックボックスが押されるたびにCSSを上書きしている  */
 	height:100%;
 	/* font-size:25px; */
 	display: none;
-	float: left;
-	background-color:	#ffffff; 
-    border-left: 3px  #B3E0D8;
+	/* float: right; */
+	background-color: #ffffff; 
+    border: 3px double #a8cde0;
 	overflow: auto;
 	user-select: text;
-
+	resize: vertical;
 }
 
 /* ドラッグの際に見える枠線 */
@@ -699,14 +700,15 @@ h3 {
 	cursor: pointer;
 }
 #document_title .document_title_area{
-	width:400px;
+	width:100%;
 	height:50px;
 	font-size:20px;
 	padding-top:0px;
 	padding-bottom:0px;
-	margin-left:30px;
+	/* margin-left:30px; */
 	text-align:center;
 	border: solid 1px #7f8080;
+	resize: vertical;
 }
 
 #ref_text{
@@ -1389,7 +1391,7 @@ select[name="user_list"] {
 	height:70vh;
 	min-height: 450px;
 	margin-bottom:2vh;
-	border:solid 5px #c5c3c3;
+	border:solid 2px #9bb7ba;
 	background:#fff;
 	overflow: auto;
 	float:left;
@@ -1397,26 +1399,28 @@ select[name="user_list"] {
 
 /*ネットワーク*/
 #network_container{
-	width: calc((100vw - 350px)*0.6);
-	min-width: 300px;
-	height:70vh;
+	width: (50%-5px);
+	min-width: 30vw;
+	height:100%;
 	min-height: 450px;
-	margin-bottom:2vh;
-	border:solid 5px #c5c3c3;
+	/* margin-bottom:2vh; */
+	border:solid 5px #9bb7ba;
 	background:#fff;
 	overflow: hidden;
-	float:left;
+	/* float:right; */
 	display: none;
+	resize: both;
 }
 #mynetwork2{
-	width: calc((100vw - 350px)*0.45);
+	width: 100%;
 	min-width: 300px;
-	height:70vh;
+	/* height:70vh; */
 	min-height: 450px;
-	margin-bottom:2vh;
-	border:solid 5px #c5c3c3;
+	/* margin-bottom:2vh; */
+	border-left:solid 2px #9bb7ba;
 	background:#fff;
-	overflow: auto;
+	/* overflow: auto; */
+	resize: auto;
 }
 #timedisplay{
 	height:50px;
@@ -1426,23 +1430,23 @@ select[name="user_list"] {
 	top: 0;
 	width: calc((100vw - 350px)*0.15);
 	height:80px;
-	background:#c6deff;
+	background:#e6edf8;
 }
 #utterance_area{
 	width: calc((100vw - 350px)*0.15);
 	min-width: 100px;
-	height:70vh;
+	/* height:70vh; */
 	min-height: 450px;
-	margin-bottom:2vh;
-	background:#c6deff;
+	/* margin-bottom:2vh; */
+	background:#e6edf8;
 	overflow-y: scroll;
 }
 #utterance_area2{
 	width: calc((100vw - 350px)*0.15);
 	min-width: 100px;
 	margin-bottom:2vh;
-	border:solid 5px #cccccc00;
-	background:#c6deff;
+	/* border-top:solid 2px #9bb7ba; */
+	background:#e6edf8;
 	overflow-y: scroll;
 	float:left;
 	line-height:20px;
@@ -1450,14 +1454,16 @@ select[name="user_list"] {
 }
 #mynetwork {
 	position: relative;
-	width: calc((100vw - 350px)*0.45);
+	width: 100%;
 	min-width: 300px;
-	height:70vh;
+	/* height:70vh; */
 	min-height: 450px;
-	margin-bottom:2vh;
-	border:solid 0.5px #000000;
+	/* margin-bottom:2vh; */
+	border-left: solid 0.5px #a8cde0;
+    border-top: solid 0.5px #a8cde0;
 	background:#fff;
 	overflow: auto;
+	/* resize: auto; */
 }
 
 /* only mrn */

@@ -1372,10 +1372,10 @@ function ModeChangeButtonClick() {
 
 
     $('#scenario_title').css('margin-left','15px');
-    $('#scenario_title').css('width','90%');
+    $('#scenario_title').css('width','100%');
 
     $('#scenario_title').css('border','Black');
-    $('#document_area').css('width','50%');　//資料作成箇所
+    $('#document_area').css('width','(50%-3px)');　//資料作成箇所
     $('#document_area').css('height','100%');
     $('#document_area').css('overflow','scroll');
     // height:84vh;overflow: scroll;
@@ -1423,8 +1423,8 @@ function ModeChangeButtonClick() {
     for (var i = 0; i < text2.length; i++){
       // console.log(text2[i].nodeType);
     }
-    $('#document_area').css('width','50%');//資料作成箇所
-    $('#document_area').css('height','100%'); //統合前はauto
+    // $('#document_area').css('width','49%');//資料作成箇所
+    // $('#document_area').css('height','100%'); //統合前はauto
     
     $('.content_delete').css('visibility', 'hidden');
     $('.simple_btn').css('visibility', 'hidden');
@@ -1455,7 +1455,7 @@ function ModeChangeButtonClick() {
     // $('#scenario_title').css('font-size', '30');
     $('#scenario_title').css('border','White');
     $('#scenario_title').css('margin-left','0');
-    $('#scenario_title').css('width','calc(70vw - 350px)');
+    $('#scenario_title').css('width','100%');
     //$('#jsmind_container').hide();//横幅を無くす
     $('#jsmind_container').css('width','30vw');//横幅を全体の20％で表示？
 
@@ -1478,7 +1478,7 @@ function ModeChangeButtonClick() {
     document.getElementById('xml_upload_area').style.display = "block";
     $('#network_container').toggle('fast');
     $('#network_container').css('display','flex');
-    $('#jsmind_container').css('width','calc((100vw - 350px)*0.4)');
+    $('#jsmind_container').css('width','50%');
     $('#mind').css('height','90%');
     $('#document').hide();
     // $('#mind').show();
