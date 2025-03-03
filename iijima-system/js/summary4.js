@@ -27,24 +27,24 @@ const options = {
     manipulation: {
         enabled: true,
         initiallyActive: true,
-        addNode: function (data, callback) {
-            data.label = `${++globalNodeId}`;
-            nodes.add(data);
-            callback(data);
-        },
-        editNode: function (data, callback) {
-            enableEditing(data, callback); // 編集用関数を追加
-        },
-        deleteNode: function (data) {
-            nodes.remove(data);
-        },
-        addEdge: function (data, callback) {
-            edges.add(data);
-            callback(data);
-        },
-        deleteEdge: function (data) {
-            edges.remove(data);
-        }
+        // addNode: function (data, callback) {
+        //     data.label = `${++globalNodeId}`;
+        //     nodes.add(data);
+        //     callback(data);
+        // },
+        // editNode: function (data, callback) {
+        //     enableEditing(data, callback); // 編集用関数を追加
+        // },
+        // deleteNode: function (data) {
+        //     nodes.remove(data);
+        // },
+        // addEdge: function (data, callback) {
+        //     edges.add(data);
+        //     callback(data);
+        // },
+        // deleteEdge: function (data) {
+        //     edges.remove(data);
+        // }
     },
     physics: {
         enabled: false
@@ -58,6 +58,14 @@ const network = new vis.Network(container, data, options);     //summary_areaの
 
 // ノード追加の関数　　　
 function add_paragraph(granularity) {
+    const selection = window.getSelection();
+    if (!selection || selection.toString().trim() === "") {
+        alert("ノードと対応付ける範囲を選択してください");
+        return;
+    }
+    const range = selection.getRangeAt(0);
+    selection.removeAllRanges();
+
     //ユーザに段落番号・章番号を入力させる
     let number = null;
     while (true) {
@@ -88,6 +96,7 @@ function add_paragraph(granularity) {
     let highlight_border = null;
     let initialPosition_x = 0;
     let initialPosition_y = 0;
+    let classname = null;
 
     if (granularity === "paragraph") {
         label = `${number}段落`;
@@ -95,18 +104,21 @@ function add_paragraph(granularity) {
         border = "#2B7CE9";
         highlight_background = "#D2E5FF";
         highlight_border = "#2B7CE9";
+        classname = "paragraph"
     } else {
         label = `${number}章`;
         background = "#C1E58C";
         border = "#6B8E23";
         highlight_background = "#D8F5A2";
         highlight_border = "#6B8E23";
+        classname = "chapter";
     }
 
     const nodeId = ++globalNodeId;
     const newNode = {
         id: nodeId,
-        label: label,
+        label: "newNode",
+        className: classname,
         x: initialPosition_x,  // 初期位置（後でドラッグで調整）
         y: initialPosition_y,  // 初期位置（後でドラッグで調整）
         shape: "box",
@@ -131,12 +143,16 @@ function add_paragraph(granularity) {
         // width: 1000,
         height: 60,
         zIndex: 10,
-        fixed: false  // ノードを動かせる状態に
+        fixed: false,  // ノードを動かせる状態に
+        customData: {
+            range: range,       // Range オブジェクトは JavaScript のネイティブオブジェクトであり、シリアライズ（JSON化）できない ため、そのまま保存すると vis.js の toJSON() などを使うときに問題が起こる可能性がある．
+            highlight: []
+        }
     };
 
     const newNode_tag = {
         id: `tag${nodeId}`,
-        label: "aiueo",
+        label: label,
         x: initialPosition_x,         //初期位置
         y: initialPosition_y - 20,         //初期位置
         shape: "box",
@@ -164,7 +180,7 @@ function add_paragraph(granularity) {
     // ネットワークを再描画して新しいノードが表示されるようにする
     network.redraw();  //これが必要な時と必要でない時
     console.log(nodes.get(nodeId));
-    console.log(nodes.get(`${nodeId}`));
+    console.log(nodes.get(`tag${nodeId}`), nodes.get(nodeId).info);
 }
 
 // //ノードのドラッグ開始時
@@ -190,6 +206,7 @@ function add_paragraph(granularity) {
 
 const node_conmenu = document.getElementById("node_conmenu");
 const relationship_conmenu = document.getElementById("relationship_conmenu");
+const saveHighlight_conmenu = document.getElementById("saveHighlight_conmenu");
 // let canvasCoords = null;
 
 network.on("oncontext", function (params) {
@@ -202,6 +219,10 @@ network.on("oncontext", function (params) {
     const nodeId = network.getNodeAt(pointer);
 
     if (nodeId) {
+        //nodeIdがtagノードであった場合は処理しない
+        if (isNaN(nodeId)) {
+            return;
+        }
 
         selectedNodeId = nodeId;
 
@@ -230,9 +251,11 @@ network.on("oncontext", function (params) {
         //vis.jsの座標をブラウザの絶対座標に変換
         const canvasCoords = network.canvasToDOM({ x: nodeX, y: nodeY });
 
-        // const conmenu = document.getElementById("node_conmenu");
+        //親要素（summary_area）のオフセットを取得
+        const containerOffset = container.getBoundingClientRect();
 
-        node_conmenu.style.left = `${canvasCoords.x}px`;      //絶対座標に基づいて位置を設定
+        // 親要素のオフセットを加算して、node_conmenu の位置を調整
+        node_conmenu.style.left = `${canvasCoords.x + containerOffset.left}px`;      //絶対座標に基づいて位置を設定
         node_conmenu.style.top = `${canvasCoords.y}px`;
         node_conmenu.style.display = "block";                 //メニューを表示
 
@@ -245,21 +268,7 @@ network.on("oncontext", function (params) {
         //他の場所をクリックしたらメニューを非表示にする
         document.addEventListener("click", function hideMenu(event) {
             if (blockConmenu) {
-                if (!node_conmenu.contains(event.target)) {
-
-                    // nodes.update({
-                    //     id: selectedNodeId,
-                    //     color: {
-                    //         background: "#97C2FC"
-                    //     }
-                    // });
-                    //ノードを右クリックしたときに色を変える処理
-                    // if (rightClickedNode) {
-                    //     const node = nodes.get(rightClickedNode);
-                    //     node.color = { background: "blue" };   //元の色に戻す
-                    //     nodes.update(node);
-                    //     rightClickedNode = null;   //右クリックノードの記録解除
-                    // }
+                if (!node_conmenu.contains(event.target) && !documentArea.contains(event.target) && !highlight_conmenu.contains(event.target)) {
 
                     node_conmenu.style.display = "none";
                     document.removeEventListener("click", hideMenu);     //登録した関数を削除するため引数必要ない
@@ -270,6 +279,18 @@ network.on("oncontext", function (params) {
         });
 
     }
+});
+
+network.on("selectNode", function (event) {
+    if (event.nodes.length > 0) {   // この条件は必要なのか
+        selectedNodeId = event.nodes[0];
+        highlightRanges(selectedNodeId);
+    }
+});
+
+network.on("deselectNode", function () {
+    //document_areaのハイライトを解除する
+    clearHighlights();
 });
 
 //ノードを動かし始めた瞬間にもメニューを消す
@@ -297,22 +318,39 @@ network.on("dragStart", function () {
     // }
 });
 
-// network.on("dragging", function(event) {
-//     if (!event.nodes.length) return;  //ノードが選択されていない場合は処理しない
+network.on("dragging", function (event) {
+    if (!event.nodes.length) return;  //ノードが選択されていない場合は処理しない
 
-//     event.nodes.forEach(nodeId => {
-//         const pos = network.getPositions([nodeId])[nodeId];
+    const moveNodeId = event.nodes[0];
+    const pos = network.getPositions(moveNodeId);
+    const newX = pos[moveNodeId].x;
+    const newY = pos[moveNodeId].y;
 
-//         //ノードIDに対応するHTML要素を取得
-//         if ()
-//     })
-// })
+    const tagNode = nodes.get(`tag${moveNodeId}`);
+    console.log("dragging");
+    console.log(tagNode);
 
-tmp = node_conmenu.innerHTML;
+    if (tagNode) {
+        nodes.update({
+            id: `tag${moveNodeId}`,
+            x: newX,
+            y: newY - 20,   //newNodeとの相対位置を維持
+            // fixed: false
+        });
+        console.log(tagNode);
+    }
+});
 
-function changeMenu() {
+const tmp = node_conmenu.innerHTML;
+
+function changeMenu(menu) {
     blockConmenu = false;
-    node_conmenu.innerHTML = relationship_conmenu.innerHTML;
+    if (menu === "relationship") {
+        node_conmenu.innerHTML = relationship_conmenu.innerHTML;
+    } else {
+        node_conmenu.innerHTML = saveHighlight_conmenu.innerHTML;
+        tohighlight()
+    }
     setTimeout(function () {           //すぐにhideMenuが実行されてしまうのを防ぐ
         blockConmenu = true;
     });
@@ -550,9 +588,13 @@ function enableEditing() {
 // ノード削除の関数
 function deleteNode() {
     if (selectedNodeId) {
-        nodes.remove({ id: selectedNodeId });
+        nodes.remove([selectedNodeId, `tag${selectedNodeId}`]);
         node_conmenu.style.display = "none";
 
     }
     selectedNodeId = null;
+}
+
+function drawhighlight() {
+
 }

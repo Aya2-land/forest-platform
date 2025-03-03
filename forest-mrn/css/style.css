@@ -450,7 +450,7 @@ input:checked+label::after {
 /*ここまで大槻修正*/
 
 /* 文書を作成するエリア */
-#document_area {
+#document_ {
 	/*（全体）ー（サイドメニュー */
 	width:calc(60vw - 450px); /* ここで設定しても意味がない */
 	/* チェックボックスが押されるたびにCSSを上書きしている  */
@@ -460,7 +460,7 @@ input:checked+label::after {
 	min-height: 80vh;
 	margin-bottom:2vh;
 	font-size:25px;
-	display: none;
+	display: block; /*display: none*/
 	float:left;
 	padding-left: 0px;
 	padding-top: 0px;
@@ -486,29 +486,27 @@ input:checked+label::after {
 	padding-bottom:15px;
 }
 /* テンプレートの設定 */
-#document_area .thread{
+#document_ .thread{
 	/* overflow: visible; */
 	overflow: scroll;
 	border: solid 0.7px #000000;
 }
 /* テンプレートにマウスをのせたとき */
-#document_area .thread:hover{
+#document_ .thread:hover{
 	cursor: pointer;
 }
-#document_area .thread::-webkit-scrollbar{
+#document_ .thread::-webkit-scrollbar{
 	display: none;
 }
 /* 議論目的にマウスをのせたとき */
-/* #document_area .purpose:hover{
+/* #document_ .purpose:hover{
 	background-color: #FF6666;
 } */
 
 /* スライドのコンテンツを入れ替え可能にする */
-.scenario_content:hover{
-	/* cursor: pointer; */
-}
 
-#document_area .thread-contents:hover{
+
+#document_ .thread-contents:hover{
 	background-color: #CCFFFF;
 	cursor: grabbing;
 }
@@ -532,7 +530,7 @@ h3 {
 #document_title .document_purpose{
 	cursor: pointer;
 }
-#document_title .document_title_area{
+#document_title .document_title_{
 	width:400px;
 	height:50px;
 	font-size:20px;
@@ -545,7 +543,7 @@ h3 {
 
 
 /* ドキュメントエリア内で右クリックしたときのメニュー */
-#document_area_conmenu{
+#document__conmenu{
 	width:160px;
 	background-color:#ffffff;
 	border:2px solid #999999;
@@ -555,19 +553,19 @@ h3 {
 	  z-index: 1000;
 	  text-align: center;
 }
-#document_area_conmenu.on{
+#document__conmenu.on{
   display:block;
 }
-#document_area_conmenu ul{
+#document__conmenu ul{
   list-style:none;
   margin:0px;
   padding:5px;
 }
-#document_area_conmenu li:hover{
+#document__conmenu li:hover{
 	background-color: #CCFFFF;
 }
 /* ドキュメントエリア内で右クリックしたとき[ノード2個選択時]のメニュー */
-#document_area_conmenu2{
+#document__conmenu2{
 	width:auto;
 	min-width: 350px;
 	padding: 5px;
@@ -579,20 +577,20 @@ h3 {
 	z-index: 1000;
 	text-align: center;
 }
-#document_area_conmenu2.on{
+#document__conmenu2.on{
   display:block;
 }
-#document_area_conmenu2 ul{
+#document__conmenu2 ul{
   list-style:none;
   margin:0px;
   padding:5px;
 }
-#document_area_conmenu2 li:hover{
+#document__conmenu2 li:hover{
 	background-color: #CCFFFF;
 }
 
 /* スライドに関係性を設定するためのメニュー */
-#document_area_conmenu3{
+#document__conmenu3{
 	width:auto;
 	min-width: 350px;
 	padding: 5px;
@@ -604,20 +602,20 @@ h3 {
 	z-index: 1000;
 	text-align: center;
 }
-#document_area_conmenu3.on{
+#document__conmenu3.on{
   display:block;
 }
-#document_area_conmenu3 ul{
+#document__conmenu3 ul{
   list-style:none;
   margin:0px;
   padding:5px;
 }
-#document_area_conmenu3 li:hover{
+#document__conmenu3 li:hover{
 	background-color: #CCFFFF;
 }
 
 /* スライドに関係性を設定するためのメニュー */
-#document_area_conmenu4{
+#document__conmenu4{
 	width:auto;
 	min-width: 350px;
 	padding: 5px;
@@ -629,15 +627,15 @@ h3 {
 	z-index: 1000;
 	text-align: center;
 }
-#document_area_conmenu4.on{
+#document__conmenu4.on{
   display:block;
 }
-#document_area_conmenu4 ul{
+#document__conmenu4 ul{
   list-style:none;
   margin:0px;
   padding:5px;
 }
-#document_area_conmenu4 li:hover{
+#document__conmenu4 li:hover{
 	background-color: #CCFFFF;
 }
 /* -------------------- サイドメニューの設定 ---------------------- */
@@ -688,7 +686,7 @@ h3 {
 	font-size: 20px;
 }
 
-#feedback_area{
+#feedback_{
 	background-color: #f0f0f0;
 	height: 200px;
 	padding: 10px;
@@ -798,7 +796,7 @@ h3 {
 	margin-bottom: 5px;
 }
 /* 問い一覧の全体 */
-#side_menu .inquiry_area {
+#side_menu .inquiry_ {
 	height: 47vw;
 	overflow-y: auto;
 	border:solid 5px #ccc;
@@ -894,7 +892,7 @@ h3 {
 }
 
 /* 【選択中のノード】の部分乗せ亭 */
-#selected_node_area{
+#selected_node_{
 	width:250px;
 	height:100px;
 	margin-left: 15px;
@@ -1128,7 +1126,7 @@ select[name="mttime_list"] {
 	height:80px;
 	background:#c6deff;
 }
-#utterance_area{
+#utterance_{
 	width: calc((100vw - 350px)*0.15);
 	min-width: 100px;
 	height:70vh;
@@ -1137,7 +1135,7 @@ select[name="mttime_list"] {
 	background:#c6deff;
 	overflow-y: scroll;
 }
-#utterance_area2{
+#utterance_2{
 	width: calc((100vw - 350px)*0.15);
 	min-width: 100px;
 	margin-bottom:2vh;
@@ -1593,7 +1591,7 @@ select[name="mttime_list"] {
 }
 
 /* 修正理由記入テキストエリア */
-#edit_reason_area {
+#edit_reason_ {
     width: 85%;
     height: 80px;
 }
@@ -1686,7 +1684,7 @@ select[name="mttime_list"] {
 }
 
 
-#macro_feedback_area{
+#macro_feedback_{
 	/* width: 100vw; */
 	width: 35%;
 	height: auto;

@@ -2,7 +2,7 @@
 let annotations = []; //annotation_text_object
 let obj = {};
 
-function Rebuild_paper(area_id) {
+function Rebuild_paper(area_id) {     //Rebuild_paper("document_area");で使用されている
     $.ajax({
         url: "php/paper_rebuild.php",
         type: "POST",
@@ -21,7 +21,6 @@ function Rebuild_paper(area_id) {
             console.log("エラーです");
         }
     });
-
 }
 
 //アノテーション再現の関数

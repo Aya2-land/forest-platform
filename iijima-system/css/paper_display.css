@@ -8,3 +8,25 @@
 	z-index: 1000;
 	text-align: center;
 }
+
+#highlight_conmenu ul {
+	list-style: none;
+	margin: 0px;
+	padding: 5px;
+}
+
+.paragraph-highlight {
+	background: yellow;
+	color: black;
+}
+
+.chapter-highlight {
+	background: #B8E55C;
+	color: black;
+}
+
+.range-highlight {
+	background: #C6E7FF;
+	color: black;
+}
+

@@ -104,7 +104,7 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
   <!---          タイトルメニューFinish              -->
 
   <!--      タブメニュー Start        -->
-  <ul div class="tabnav">
+  <ul class="tabnav">
     <li class="active"><a href="#tab01">文章要約スキル育成システム</a></li>
     <!-- <li class="active"><a href="#tab03" >リフレクション</a></li>yoshioka            -->
     <!-- yoshioka -->
@@ -119,140 +119,156 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
     <div id="tab01">
       <div id="layout">
 
-        <iframe id="paper_display" src="index.html" oncontextmenu="return false;"></iframe>
         <div id="highlight_conmenu" oncontextmenu="return false;">
           <ul>
             <li>
-              <button class="button4">
+              <button class="button4" id="question_node_b" onclick="add_paragraph('paragraph');"> <!--question_node_b-->
+                段落ノードの追加
+              </button>
+            </li>
+            <li>
+              <button class="button4" id="chapter_node" onclick="add_paragraph('chapter');">
+                章ノードの追加
+              </button>
+            </li>
+            <li>
+              <button class="button4" onclick="saveHighlights();">
                 ハイライトの追加
               </button>
             </li>
             <li>
-              <button class="button4">
+              <button class="button4" onclick="removeHighlights();">
                 ハイライトの削除
               </button>
             </li>
           </ul>
         </div>
 
-
         <div id="system">
           <div id="area">
+            <!-- <div id="document_area" oncontextmenu="return false;"></div> -->
             <div id="document_area" oncontextmenu="return false;"></div>
-            <div id="jsmind_nav">
-              【Edit】
-              <button class="button4" id="question_node_b" onclick="add_paragraph('paragraph');"> <!--question_node_b-->
-                段落ノードの追加
-              </button>
-              <button class="button4" id="chapter_node" onclick="add_paragraph('chapter');">
-                章ノードの追加
-              </button>
+            <div id="summary_map">
+              <div id="jsmind_nav">
+                【Edit】
+                <button class="button4" id="question_node_b" onclick="add_paragraph('paragraph');"> <!--question_node_b-->
+                  段落ノードの追加
+                </button>
+                <button class="button4" id="chapter_node" onclick="add_paragraph('chapter');">
+                  章ノードの追加
+                </button>
 
-              【paper】
-              <button class="zoom" onclick="zoomIn_paper();">
-                <!-- 拡大 -->
-                <i class="fas fa-search-plus"></i>
-              </button>
+                【paper】
+                <button class="zoom" onclick="zoomIn_paper();">
+                  <!-- 拡大 -->
+                  <i class="fas fa-search-plus"></i>
+                </button>
 
-              <button class="zoom" onclick="zoomOut_paper();">
-                <!-- 縮小 -->
-                <i class="fas fa-search-minus"></i>
-              </button>
+                <button class="zoom" onclick="zoomOut_paper();">
+                  <!-- 縮小 -->
+                  <i class="fas fa-search-minus"></i>
+                </button>
 
-              <button class="zoom" onclick="zoomInit_paper();">
-                <!-- 縮小 -->
-                元のサイズ
-              </button>
+                <button class="zoom" onclick="zoomInit_paper();">
+                  <!-- 縮小 -->
+                  元のサイズ
+                </button>
 
-              <button id="help_button" class="button3" onclick="toggleImage()">help</button>
-              <div id="floatingImage">
-                <img src="image/help.png" alt="Floating Image">
+                <button id="help_button" class="button3" onclick="toggleImage()">help</button>
+                <div id="floatingImage">
+                  <img src="image/help.png" alt="Floating Image">
+                </div>
+
+
+
+                【Screenshot】
+                <button class="button4" style="width:80px" onclick="screen_shot();">
+                  screenshot
+                </button>
               </div>
 
 
+              <div id="digest_area" oncontextmenu="return false;"></div> <!--エリアは一つでよいとのこと -->
+              <div id="summary_area" oncontextmenu="return false;">
+                </svg>
 
-              【Screenshot】
-              <button class="button4" style="width:80px" onclick="screen_shot();">
-                screenshot
-              </button>
-            </div>
+                <div id="mindmap_conmenu">
+                  <ul>
 
-
-            <!-- <div id="digest_area" oncontextmenu="return false;"></div> エリアは一つでよいとのこと -->
-            <div id="summary_area" oncontextmenu="return false;">
-              <svg id="svg_area" oncontextmenu="return false;">
-              </svg>
-
-              <div id="mindmap_conmenu">
-                <ul>
-
-                  <li>
-                    ノード情報変更
-                  </li>
-                  <li>
-                    <button class="button4" onclick="remove_node();">
-                      ノードの削除
-                    </button>
-                  </li>
-                  <li>
-                    <!-- <button class="button4" onclick="move2anno_from_node(annotations);">
+                    <li>
+                      ノード情報変更
+                    </li>
+                    <li>
+                      <button class="button4" onclick="remove_node();">
+                        ノードの削除
+                      </button>
+                    </li>
+                    <li>
+                      <!-- <button class="button4" onclick="move2anno_from_node(annotations);">
                       紐付いた文参照
                 </button> -->
-                  </li>
+                    </li>
 
-                  <li>
-                    <!-- onclick="move_papaer();" -->
-                  </li>
+                    <li>
+                      <!-- onclick="move_papaer();" -->
+                    </li>
 
-                  <li>
-                    論文からノード追加
-                  </li>
-                  <li>
-                    <button class="button4" onclick="add_Qnode2();">
-                      並列
-                    </button>
-                  </li>
-                  <li>
-                    <button class="button4" onclick="add_contrast();"> <!--add_Anodes2('konkyo');-->
-                      対比
-                    </button>
-                  </li>
-                  <!-- <li><a href="javascript:void(0);" target="_blank" onClick="SetPurpose('提案')">ノード追加</a></li>  -->
-                  <li>
-                    <button class="button4" onclick="add_Anode2('predict');">
-                      原因ー結果
-                    </button>
-                  </li>
-                  <li>
-                    <button class="button4" onclick="add_Cnode('criticism');">
-                      批評ノード追加
-                    </button>
-                  </li>
-                  <li>
-                    <button class="button4" onclick="free_description();">
-                      その他
-                    </button>
-                  </li>
+                    <li>
+                      論文からノード追加
+                    </li>
+                    <li>
+                      <button class="button4" onclick="add_Qnode2();">
+                        並列
+                      </button>
+                    </li>
+                    <li>
+                      <button class="button4" onclick="add_contrast();"> <!--add_Anodes2('konkyo');-->
+                        対比
+                      </button>
+                    </li>
+                    <!-- <li><a href="javascript:void(0);" target="_blank" onClick="SetPurpose('提案')">ノード追加</a></li>  -->
+                    <li>
+                      <button class="button4" onclick="add_Anode2('predict');">
+                        原因ー結果
+                      </button>
+                    </li>
+                    <li>
+                      <button class="button4" onclick="add_Cnode('criticism');">
+                        批評ノード追加
+                      </button>
+                    </li>
+                    <li>
+                      <button class="button4" onclick="free_description();">
+                        その他
+                      </button>
+                    </li>
 
-                </ul>
+                  </ul>
+                </div>
+
               </div>
-
             </div>
 
+
             <!-- ノードの段落番号・章番号を表示するためのdiv要素 -->
-             <div id="paragraph_number" oncontextmenu="return false;"></div>
+            <div id="paragraph_number" oncontextmenu="return false;"></div>
 
             <!-- vis.jsによってsummary_areaの中身が書き換えられるため，外に配置 -->
             <div id="node_conmenu" oncontextmenu="return false;">
               <ul>
                 <li>
-                  <button class="button4" onclick="changeMenu();"> <!--connectNodes();-->
+                  <button class="button4" onclick="changeMenu('relationship');"> <!--connectNodes();-->
                     結束関係の定義
                   </button>
                 </li>
                 <li>
                   <button class="button4" onclick="enableEditing();">
                     ノードの編集
+                  </button>
+                </li>
+                <li>
+                  <button class="button4" onclick="changeMenu('highlight');">
+                    ハイライトの追加
                   </button>
                 </li>
                 <li>
@@ -299,7 +315,24 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
                 </li>
               </ul>
               <!-- 戻るボタン -->
-              <button id="backButton" onclick="backMenu();">
+              <button class="backButton" onclick="backMenu();">
+                戻る
+              </button>
+            </div>
+
+            <div id="saveHighlight_conmenu" oncontextmenu="return false;">
+              <ul>
+                <li>
+                  本文中にハイライトしてください
+                </li>
+                <li>
+                  <button class="button4" onclick="completeHighlight();">
+                    ハイライトを保存
+                  </button>
+                </li>
+              </ul>
+              <!-- 戻るボタン -->
+              <button class="backButton" onclick="backMenu();">
                 戻る
               </button>
             </div>

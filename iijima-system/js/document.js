@@ -493,7 +493,7 @@ function CreateThread(meta, topic, id){
 
  // ドラッグでの入れ替えをつける
  // ここではスレッド間の入れ替えを許可
- new Sortable(document_area, {
+ new Sortable(documentArea, {
    group:'nested',
    animation:150,
    ghostClass: "sortable-ghost",

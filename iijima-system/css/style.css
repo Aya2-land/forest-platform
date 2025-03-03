@@ -158,7 +158,8 @@ table[type] {
 /* -------------------- メインの設定 ---------------------- */
 /* タブメニュー */
 .tabnav {
-	width: calc(50vw + 200px);
+	/* calc(50vw + 200px) */
+	width: 20%;
 	min-width: 280px;
 	padding: 0;
 	float: left;
@@ -235,16 +236,22 @@ table[type] {
 
 /* 「問いノード追加」等のボタンがある箇所 */
 #jsmind_nav {
-	width: 100%;
+	width: 100%; /*100%*/
 	height: 34px;
 	display: inline;
 	font-size: 1em;
-	border-bottom: double 2px #F6D4D8;
+	border: double 2px #F6D4D8; /*border-bottom*/
 	box-sizing: border-box;
 	overflow-x: auto;
 	overflow-y: visible;
-	float: left;
-	/* display: none;   追加した */
+	float: right;
+}
+
+#summary_map {
+	display: flex;
+	flex-direction: column;
+	width: 65%;
+	height: 100%;
 }
 
 
@@ -410,7 +417,7 @@ input:checked+label::after {
 }
 
 #area {
-	width: 97vw;  /*85*/
+	width: 98.5vw;  /*85*/
 	height: 85vh;     /*98*/
 	margin-bottom: 2vh;
 	border: solid 5px #F6D4D8;
@@ -419,6 +426,8 @@ input:checked+label::after {
 	float: left;
 	resize: horizontal;
 	position: relative;
+	display: flex;
+	flex-direction: row;  /*横並びに配置*/
 }
 
 #jsmind_container {
@@ -578,22 +587,21 @@ input:checked+label::after {
 /* 文書を作成するエリア */
 #document_area {
 	/*（全体）ー（サイドメニュー */
-	width: calc(60vw - 350px);
+	/* flex: 0 0 35vw; */
+	width: 35vw;
 	/* ここで設定しても意味がない */
 	position: relative;
 	z-index: 3;
 	/* チェックボックスが押されるたびにCSSを上書きしている  */
 
-	height: calc(100% - 34px);
+	height: 100%;
 	/* font-size:25px; */
-	display: none;
+	display: block; /*display: none;*/
 	float: left;
 	background-color: #e2f8e5;
-
 	border-left: 3px #F6D4D8;
 	overflow: auto;
 	user-select: text;
-
 }
 
 /* ドラッグの際に見える枠線 */
