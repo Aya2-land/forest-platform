@@ -193,6 +193,11 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <button class="button4" id="map-snapshot-button" onclick="MapSnapShot();RecordRelation();">
                                         マップver更新 <!--hatakeyama-->
                                     </button>
+                                    
+                                    【Screenshot】
+                                    <button class="button4" style="width:80px" onclick="screen_shot();">
+                                        screenshot
+                                    </button>
                                     <!-- 【Reason】
                                         <button class="button4" onclick="add_edit_reason();">
                                         修正理由の追加
