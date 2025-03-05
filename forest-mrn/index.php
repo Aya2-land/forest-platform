@@ -313,12 +313,12 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                             </button>
                                         </li>
                                         <li>
-                                            <button class="button4" onclick="add_Anode();">
+                                            <button class="button4" onclick="remove_node();">
                                                 ノードを削除
                                             </button>
                                         </li>
                                         <li>
-                                            <button class="button4" onclick="remove_node();">
+                                            <button class="button4" onclick="NodeVersionUpdate(null);">
                                                 ノードを更新
                                             </button>
                                         </li>

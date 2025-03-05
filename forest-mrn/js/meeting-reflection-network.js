@@ -1274,7 +1274,7 @@ const displayDiscussionMapData = (display_target_area_id, target_reflection_time
             target_area.append(utter_dom); // 挿入            
         });
         utterance_list_info.dnode.map((n) => {
-            console.log(n);
+            // console.log(n);
             defaultForestMRN.addReloadNode(n.network_node_id, n.label, n.node_type, n.node_x, n.node_y);
         });
         utterance_list_info.dedge.map((n) => {

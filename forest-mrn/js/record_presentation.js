@@ -298,6 +298,7 @@ async function getContentID(item_content_id){
 
 //コンテンツ削除を記録する関数
 function Delete_content(contentID){
+  // console.log(contentID);
 
   $.ajax({
 

@@ -47,9 +47,9 @@
 			$sql = "SELECT * FROM papers  ORDER BY created_at DESC";
 			if($result = $mysqli->query($sql)){
 				while($row = mysqli_fetch_assoc($result)){
-					echo"<p><label><input type='radio' name='paper' value='".$row['id']."'>"  .$row['created_at'].  "  "  .$row['paper_title'].  "</label></p>";
+					echo"<p><label><input type='radio' name='paper' value='".$row['id']."'>"  .$row['created_at'].  "  "  .$row['paper_title'].  "</label></p>";	
 				}
-	
+				$_SESSION['paper_content'];
 			}
 	
 		}
@@ -73,7 +73,7 @@
 	/*select_sheet.phpから登録すみの論文を選択した際、シートを新規作成する*/
 	function createSheet_selectedPaper(){
 		
-		session_start();
+		// session_start();
 
 		require "connect_db.php";
 		date_default_timezone_set('Asia/Tokyo');
@@ -107,7 +107,7 @@
 				exit();
 			}
 
-			$sql_mv = "INSERT INTO map_versions (map_version_id, map_id, name, appeared_at, disappeared_at) VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$_POST['mapname']."', NULL, '".$created_at."', NULL)";
+			$sql_mv = "INSERT INTO map_versions (map_version_id, map_id, name, appeared_at, disappeared_at) VALUES (".$map_version.", '".$_SESSION['MAPID']."', '".$_POST['mapname']."', '".$created_at."', NULL)";
 			if (!$result = $mysqli->query($sql_mv)) {
 				print('Error - SQLSTATE3 map version');
 				exit();

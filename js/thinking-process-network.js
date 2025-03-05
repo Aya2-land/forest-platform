@@ -324,7 +324,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         return defaultThinkingProcess.nodes;
     }
 
-    addVersionNode(node_id, node_label, node_type, appeared_at, node_x, node_y){
+    addVersionNode(node_id, node_l, node_type, appeared_at, node_x, node_y){
         const existingNode = defaultThinkingProcess.nodes.get(node_id);
         if (existingNode) {
             console.log(`Node with ID ${node_id} already exists. Skipping addition.`);
@@ -334,6 +334,13 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
         var y_fixed = true;
+        let node_label;
+        
+        if(node_l == '<select name="change_labels" id="select_labels"><optgroup label="ラベル付与"><option value="node_labels">ラベル選択</option>          <option value="primary_label">主軸</option></optgroup><optgroup label="----L主軸"><option value="pl_1">---L有用性</option><option value="pl_2">---L新規性</option> <option value="pl_3">---L信頼性</option><option value="pl_0">---Lその他</option>                   </optgroup>              <option value="issue_label">課題</option> <optgroup label="----L未検討"> <option value="il_non_1">---L語の妥当性</option><option value="il_non_2">---L証拠の十分性</option><option value="il_non_3">---L論理の整合性</option><option value="il_non_0">---Lその他</option></optgroup><optgroup label="----L再検討"> <option value="il_re_1">---L語の妥当性</option><option value="il_re_2">---L証拠の十分性</option><option value="il_re_3">---L論理の整合性</option><option value="il_re_0">---Lその他</option></optgroup><option value="cl_0">整合性</option></select>'){
+            node_label = "【ラベル選択】";
+        }else{
+            node_label = node_l
+        }
 
         if(node_type == "versionsBro"){
             node_color = '#ffd7c9'; // ノードの背景色
@@ -1134,6 +1141,7 @@ const makeTriggerInList = (id, activity_type, concept_label, content, timestamp,
                  trigger_content='${content}'
                  timestamp='${timestamp}'
                  trigger_on='${trigger_on}'
+                 activity_type='${activity_type}'
             >【${timestamp}：${activity_type}】<br>${concept_label}：<br>${content}</div>`);
 }
 
@@ -1317,7 +1325,7 @@ const addeventdisplayTriggerData = () => {
             const selected_edge_id = defaultThinkingProcess.ownNetwork.getSelection().edges;
             const activity_id = clicked_trigger.getAttribute('id');
             const t_label = clicked_trigger.innerHTML;
-            const t_type = "自己内対話";
+            const t_type = clicked_trigger.getAttribute('activity_type');
             const t_time = clicked_trigger.getAttribute('timestamp');
             let edge_id =selected_edge_id;
             let trigger_id = defaultThinkingProcess.generateUniqueNumberText();

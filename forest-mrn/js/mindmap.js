@@ -773,7 +773,7 @@ async function add_Label(node_type){
       }
 
   }
-  var topic = '<select name="change_labels" id="select_labels"><optgroup label="ラベル付与"><option value="node_labels">ラベル選択</option>          <option value="primary_label">主軸</option><optgroup label="----L主軸"><option value="pl_1">---L有用性</option><option value="pl_2">---L新規性</option> <option value="pl_3">---L信頼性</option><option value="pl_0">---Lその他</option>                   </optgroup>              <option value="issue_label">課題</option> <optgroup label="----L未検討"> <option value="il_non_1">---L語の妥当性</option><option value="il_non_2">---L証拠の十分性</option><option value="il_non_3">---L論理の整合性</option><option value="il_non_0">---Lその他</option><optgroup label="----L再検討"> <option value="il_re_1">---L語の妥当性</option><option value="il_re_2">---L証拠の十分性</option><option value="il_re_3">---L論理の整合性</option><option value="il_re_0">---Lその他</option></optgroup><option value="cl_0">整合性</option></select>'
+  var topic = '<select name="change_labels" id="select_labels"><optgroup label="ラベル付与"><option value="node_labels">ラベル選択</option>          <option value="primary_label">主軸</option><optgroup label="----L主軸"><option value="pl_1">---L有用性</option><option value="pl_2">---L新規性</option> <option value="pl_3">---L信頼性</option><option value="pl_0">---Lその他</option>                   </optgroup>              <option value="issue_label">課題</option> <optgroup label="----L未検討"> <option value="il_non_1">---L語の妥当性</option><option value="il_non_2">---L証拠の十分性</option><option value="il_non_3">---L論理の整合性</option><option value="il_non_0">---Lその他</option><optgroup label="----L再検討"> <option value="il_re_1">---L語の妥当性</option><option value="il_re_2">---L証拠の十分性</option><option value="il_re_3">---L論理の整合性</option><option value="il_re_0">---Lその他</option></optgroup><option value="cl_0">整合性</option></select>';
 
   var nodeid = jsMind.util.uuid.newid();//idの生成
  
@@ -1529,21 +1529,24 @@ function hide_mindmap(){
 //スライド（コンテンツ）のバツボタンに付与されてるもの
 function RemoveThread(data){
   if(window.confirm('本当にこのスライドを削除しますか？')){
-    console.log(data);
-    console.log(document.getElementById(data));
+    // console.log(data);
+    // console.log(document.getElementById(data));
     var slide_Node = document.getElementById(data).getElementsByClassName('scenario_content')
     for(var nodeCount =0; nodeCount<slide_Node.length; nodeCount++){
       console.log(slide_Node[nodeCount].id);
       var nodeID = slide_Node[nodeCount].id;
+      // console.log(nodeID);
+      Delete_Document_content(nodeID);
       Delete_document_relation_node(nodeID);
+
     }
-    console.log(target);
-    Delete_slide(data);
+    // console.log(target);
+    // Delete_slide(data);
     //2022-12-16 shimizu
     Delete_Document(data);
     Delete_document_relation_slide(data);
     var node_array = $('#'+data).data('node_id');
-    console.log(node_array);
+    // console.log(node_array);
 
     var jmnode = document.getElementsByTagName("jmnode");
     var arr = $('#'+data).data('node_id');//nodeidの配列
@@ -1562,8 +1565,8 @@ function RemoveThread(data){
         }
       }
     }
-    console.log(delete_topic);
-    console.log($slide_topic);
+    // console.log(delete_topic);
+    // console.log($slide_topic);
 
 
     for(i=0; i<delete_topic.length; i++){
@@ -1575,7 +1578,7 @@ function RemoveThread(data){
         }
       }
     }
-    console.log($slide_topic);
+    // console.log($slide_topic);
 
     $('#'+data).fadeOut('fast').queue(function() {
       $('#'+data).remove();
@@ -1653,7 +1656,7 @@ function RemoveAppendNode(data){
       $('#'+data).remove();
     });
     console.log(data);
-    Delete_content(data);
+    // Delete_content(data);
     //2022-12-16 shimizu
     Delete_Document_content(data);
     Delete_document_relation_node(data);

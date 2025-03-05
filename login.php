@@ -52,7 +52,7 @@ if (isset($_POST["login"])) {
     $timestamp = time();
     $updated_at = date("Y-m-d H:i:s", $timestamp);
 
-    $l_query = "UPDATE users SET login_time = '".$updated_at."' WHERE user_id = ".$user_id;
+    $l_query = "UPDATE users SET login_time = '".$updated_at."' WHERE user_id = ".$user_id."";
     $l_result = $mysqli->query($l_query);
 
     // データベースの切断

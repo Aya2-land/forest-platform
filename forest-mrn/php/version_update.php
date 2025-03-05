@@ -305,13 +305,13 @@
     if ($mysqli->error) {
 		echo "Error items: " . $mysqli->error;
 	}
-    $sql_item_v = "UPDATE item_versions SET disappeared_at='$timestamp' WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id') AND disappeared_at=NULL";
+    $sql_item_v = "UPDATE item_versions SET disappeared_at='$timestamp' WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id') AND disappeared_at IS NULL";
 	$result = $mysqli->query($sql_item_v);
     //クエリ($sql)のエラー処理
     if ($mysqli->error) {
 		echo "Error item_versions: " . $mysqli->error;
 	}
-	$sql_item_h = "UPDATE item_histories SET disappeared_at='$timestamp' WHERE item_version_id IN (SELECT item_version_id FROM item_versions WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id')) AND disappeared_at = NULL";
+	$sql_item_h = "UPDATE item_histories SET disappeared_at='$timestamp' WHERE item_version_id IN (SELECT item_version_id FROM item_versions WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id')) AND disappeared_at ";
 	$result = $mysqli->query($sql_item_h);
     //クエリ($sql)のエラー処理
     if ($mysqli->error) {
@@ -325,13 +325,13 @@
     if ($mysqli->error) {
 		echo "Error items: " . $mysqli->error;
 	}
-    $sql_item_v = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_id IN (SELECT item_content_id FROM item_contents WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id') AND disappeared_at=NULL";
+    $sql_item_v = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_id IN (SELECT item_content_id FROM item_contents WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id') AND disappeared_at IS NULL";
 	$result = $mysqli->query($sql_item_v);
     //クエリ($sql)のエラー処理
     if ($mysqli->error) {
 		echo "Error item_versions: " . $mysqli->error;
 	}
-	$sql_item_h = "UPDATE item_content_histories SET disappeared_at='$timestamp' WHERE item_content_version_id IN (SELECT item_content_version_id FROM item_content_versions WHERE item_content_id IN (SELECT item_content_id FROM item_contents WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id'))) AND disappeared_at = NULL";
+	$sql_item_h = "UPDATE item_content_histories SET disappeared_at='$timestamp' WHERE item_content_version_id IN (SELECT item_content_version_id FROM item_content_versions WHERE item_content_id IN (SELECT item_content_id FROM item_contents WHERE item_id IN (SELECT item_id FROM items WHERE map_id='$map_id'))) AND disappeared_at ";
 	$result = $mysqli->query($sql_item_h);
     //クエリ($sql)のエラー処理
     if ($mysqli->error) {

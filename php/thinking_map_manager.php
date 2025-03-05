@@ -56,7 +56,7 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     */
 
 
-    $result_t_candidate = $mysqli->query("SELECT activity_id, activity_type, concept_id, content, appeared_at, trigger_on FROM trigger_candidates
+    $result_t_candidate = $mysqli->query("SELECT DISTINCT activity_id, activity_type, concept_id, content, appeared_at, trigger_on FROM trigger_candidates
                                                         WHERE map_id = '$map_id' AND (concept_id IN ($conIDs) OR concept_id = '$selected_conID') ORDER BY appeared_at DESC");
     $t_candidate = [];
     $t_candidate_concept = [];

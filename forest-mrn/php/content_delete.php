@@ -16,8 +16,8 @@
 
 
     $sql_ic = "UPDATE item_contents SET updated_at='$timestamp', deleted=1 WHERE item_content_id='$content_id'";
-    $sql_icv = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_id='$content_id' AND disappeared_at = NULL";
-    $sql_ich = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_version_id=(SELECT item_version_id FROM item_versions WHERE item_content_id = '$content_id' order BY appeared_at DESC LIMIT 1) AND disappeared_at = NULL ";
+    $sql_icv = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_id='$content_id' AND disappeared_at IS NULL";
+    $sql_ich = "UPDATE item_content_histories SET disappeared_at='$timestamp' WHERE item_content_version_id=(SELECT item_version_id FROM item_versions WHERE item_content_id = '$content_id' order BY appeared_at DESC LIMIT 1) AND disappeared_at IS NULL ";
 
     $result_ic = $mysqli->query($sql_ic);
 		if($mysqli->error){

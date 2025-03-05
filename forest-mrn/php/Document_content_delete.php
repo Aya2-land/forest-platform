@@ -13,23 +13,21 @@
     $item_content_id = $_POST["id"]; //コンテントID
     $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-    $sql = "UPDATE document_content_rank SET updated_at='$timestamp', deleted=1 WHERE id='$item_content_id'";
-
 		$sql_item_content = "UPDATE item_contents SET updated_at='$timestamp', deleted=1 WHERE item_content_id='$item_content_id' AND deleted = 0";
-    $result = $mysqli->query($sql_item);
+    $result = $mysqli->query($sql_item_content);
       //クエリ($sql)のエラー処理
       if ($mysqli->error) {
       echo "Error item_contents: " . $mysqli->error;
     }
 
-    $sql_item_content_v = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_id='$item_content_id' AND disappeared_at=NULL";
+    $sql_item_content_v = "UPDATE item_content_versions SET disappeared_at='$timestamp' WHERE item_content_id='$item_content_id' AND disappeared_at IS NULL";
     $result = $mysqli->query($sql_item_content_v);
       //クエリ($sql)のエラー処理
       if ($mysqli->error) {
       echo "Error item_content_versions: " . $mysqli->error;
     }
 
-    $sql_item_content_h = "UPDATE item_content_histories SET disappeared_at='$timestamp' WHERE item_content_version_id = (SELECT item_content_version_id FROM item_content_versions WHERE item_content_id='$item_content_id' order by appeared_at DESC LIMIT 1) AND disappeared_at=NULL";
+    $sql_item_content_h = "UPDATE item_content_histories SET disappeared_at='$timestamp' WHERE item_content_version_id = (SELECT item_content_version_id FROM item_content_versions WHERE item_content_id='$item_content_id' order by appeared_at DESC LIMIT 1) AND disappeared_at IS NULL";
     $result = $mysqli->query($sql_item_content_h);
       //クエリ($sql)のエラー処理
       if ($mysqli->error) {
