@@ -25,6 +25,7 @@ var Count_LogicRelationNodes = {};
 var Count_LogicRelationConceptID = {};
 
 var SlideID_DCR_LINumber = {};
+var ContentLogicConceptNumber = {};
 //2022-12-14 論理関係の数を設定
 
 
@@ -2932,6 +2933,7 @@ async function CreateDocumentXML(){
 
   var SlideIDs = [];
   var SlideLogicIndex = {};
+  var SlideLogicConcept = {};
   await $.ajax({
     url: "php/get_SlideID.php",
     type: "POST",
@@ -2948,6 +2950,7 @@ async function CreateDocumentXML(){
           // console.log(parse2[i].slide_id);
           SlideIDs.push(parse2[i].item_id);
           SlideLogicIndex[i] = parse2[i].logic_option;
+          SlideLogicConcept[i] = parse2[i].concept_id;
         }
         //デバッグ用；中身確認
         // for(var i=0; i<parse.length; i++){
@@ -2972,6 +2975,7 @@ async function CreateDocumentXML(){
       success: function(arr3){
         var slide_ID = SlideIDs[SlideCount];
         var DocContetRank_LogicIndexNumber = {};
+        var ContentLogicConcept = {};
         if(arr3 == "[]"){
           // console.log(arr3);
         }else{
@@ -2981,9 +2985,11 @@ async function CreateDocumentXML(){
             // console.log("順番："+parse3[i].rank);
             // console.log("インデックス番号："+parse3[i].logic_option);
             DocContetRank_LogicIndexNumber[parse3[i].indent] = parse3[i].logic_option;
+            ContentLogicConcept[i] = parse3[i].concept_id
           }
         }
         SlideID_DCR_LINumber[slide_ID] = DocContetRank_LogicIndexNumber;
+        ContentLogicConceptNumber[slide_ID] = ContentLogicConcept;
         // console.log(DocContetRank_LogicIndexNumber);
         // console.log(SlideID_DCR_LINumber);
         console.log("論理構成取得");
@@ -3053,12 +3059,11 @@ async function CreateDocumentXML(){
     const slide_margin_int = parseInt(slide_margin); // 'px' を除いた数値に変換する
     var slide_id = slide_dom[i].id;
     var slide_node_id = slide_dom[i].getAttribute("data-node_id");
-    var slide_concept_id = slide_dom[i].getAttribute("data-concept_id");
+    // var slide_concept_id = slide_dom[i].getAttribute("data-concept_id");
     var slide_label = slide_dom[i].firstElementChild.innerHTML;
 
     // console.log("slide_width : "+slide_width);
 
-    var research_Slide_label = ConceptID_ClassLabel[slide_concept_id];
     
     if(i == 0){
       SlideTitleStartY = SlideTitleHeight+slide_margin_int;
@@ -3066,8 +3071,10 @@ async function CreateDocumentXML(){
       SlideTitleStartY += slide_dom[i-1].clientHeight+slide_margin_int+1; //この1は調整の1
     }
     var SlideLogicIndexNumber = SlideLogicIndex[i];
-    // console.log(SlideLogicIndexNumber);
-    // console.log(slide_dom[i].childElementCount)
+    var SlideLogicConceptNumber = SlideLogicConcept[i];
+    var research_Slide_label = ConceptID_ClassLabel[SlideLogicConceptNumber];
+    console.log(SlideLogicConceptNumber);
+    console.log(research_Slide_label);
 
     var SlideLogicConceptLabel =  Base_IndexNumberToClassLabel[SlideLogicIndexNumber];
     // console.log(SlideLogicConceptLabel);
@@ -3084,7 +3091,7 @@ async function CreateDocumentXML(){
     xmlSource +=  '     <semantics>\n';
     xmlSource +=  '       <research_activity_concept>\n';
     xmlSource +=  '         <research_activity_concept_instance_id>'+(200+AOI_InstanceIDnumber)+'</research_activity_concept_instance_id>\n';
-    xmlSource +=  '         <research_activity_concept_id>'+slide_concept_id+'</research_activity_concept_id>\n';//concept_id
+    xmlSource +=  '         <research_activity_concept_id>'+SlideLogicConceptNumber+'</research_activity_concept_id>\n';//concept_id
     xmlSource +=  '         <research_activity_label>'+research_Slide_label+'</research_activity_label>\n';//ノードのラベル
     xmlSource +=  '       </research_activity_concept>\n';
     xmlSource +=  '       <logic_instances>\n';//論理構成は複数あることを想定
@@ -3384,7 +3391,8 @@ async function CreateDocumentXML(){
         // const content = content_dom[h].firstElementChild.innerHTML;
         const node_id = content_dom[h].firstElementChild.getAttribute('node_id');
         const indent = content_dom[h].firstElementChild.getAttribute('name');
-        const concept_id = content_dom[h].firstElementChild.getAttribute('concept_id');
+        // const concept_id = content_dom[h].firstElementChild.getAttribute('concept_id');
+        var concept_id = ConceptID_ClassLabel[ContentLogicConceptNumber[slide_id][h]];
         const sentence_label =  content_dom[h].firstElementChild.innerHTML;
         const NodeWidth = content_dom[h].firstElementChild.clientWidth;
         var NodeHeight = content_dom[h].firstElementChild.clientHeight;
