@@ -42,7 +42,6 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
   <link rel="stylesheet" type="text/css" href="css/annotation.css">
   <link rel="stylesheet" type="text/css" href="css/summary_area.css">
   <link rel="stylesheet" type="text/css" href="css/paper_display.css">
-  <!-- <link rel="stylesheet" type="text/css" href="css/digest_area.css"> -->
   <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
   <script type="text/javascript" src="js/jquery-ui.min.js"></script>
   <script type="text/javascript" src="js/create_question.js"></script>
@@ -174,23 +173,17 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
                   元のサイズ
                 </button>
 
-                <button id="help_button" class="button3" onclick="toggleImage()">help</button>
+                <!-- <button id="help_button" class="button3" onclick="toggleImage()">help</button> -->
                 <div id="floatingImage">
                   <img src="image/help.png" alt="Floating Image">
                 </div>
+                
+                [save]
+                <button class="button4" onclick="saveNetwork();">マップの保存</button>
 
-
-
-                【Screenshot】
-                <button class="button4" style="width:80px" onclick="screen_shot();">
-                  screenshot
-                </button>
               </div>
 
-
-              <div id="digest_area" oncontextmenu="return false;"></div> <!--エリアは一つでよいとのこと -->
               <div id="summary_area" oncontextmenu="return false;">
-                </svg>
 
                 <div id="mindmap_conmenu">
                   <ul>
@@ -202,11 +195,6 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
                       <button class="button4" onclick="remove_node();">
                         ノードの削除
                       </button>
-                    </li>
-                    <li>
-                      <!-- <button class="button4" onclick="move2anno_from_node(annotations);">
-                      紐付いた文参照
-                </button> -->
                     </li>
 
                     <li>
@@ -247,8 +235,15 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
                 </div>
 
               </div>
-            </div>
 
+              <div id="labelEditing_area" oncontextmenu="return false;">
+                <textarea id="nodeLabelText"></textarea>
+                <button id="saveLabelButton">変更を保存</button>
+              </div>
+
+              <div id="other_summary_area" oncontextmenu="return false;"></div>
+              <textarea id="other_nodeLabelText"></textarea>
+            </div>
 
             <!-- ノードの段落番号・章番号を表示するためのdiv要素 -->
             <div id="paragraph_number" oncontextmenu="return false;"></div>
@@ -341,6 +336,12 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
             <div id="document_area" oncontextmenu="return false;"></div>   -->
 
           </div>
+          <input type="file" id="fileInput" accept=".json" onchange="loadNetwork();"><!-- JSONファイル選択 -->
+          <label for="representation">
+            <input type="checkbox" id="representation" class="button4" onchange="displayOtherMap();">
+            表示する
+          </label>
+          <!-- <button id=representation class="button4" onclick="loadNetwork();">表示する</button> -->
         </div>
 
 

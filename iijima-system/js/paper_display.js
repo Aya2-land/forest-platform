@@ -1,8 +1,6 @@
 const highlight_conmenu = document.getElementById("highlight_conmenu");
 const documentArea = document.getElementById("document_area");
 console.log(documentArea);
-
-let highlightedRanges = [];
 // const documentArea = document.getElementById("document_area");
 // console.log(documentArea);
 
@@ -27,31 +25,46 @@ documentArea.addEventListener("contextmenu", function (event) {
     console.log(highlight_conmenu);
 });
 
+document.addEventListener("click", function (event) {
+    if (!highlight_conmenu.contains(event.target)) {
+        highlight_conmenu.style.display = "none";
+        console.log("hairimashita");
+    }
+});
+
 //ノードをクリックするとハイライトを表示する
 function highlightRanges(selectedNodeId) {
+    console.log(selectedNodeId);
     const currentNode = nodes.get(selectedNodeId);
     const classlist = currentNode.className === "paragraph" ? "paragraph-highlight" : "chapter-highlight";
-    // const currentNodeRange = currentNode.info;
 
     const currentNodeRange = currentNode.customData.range;
-    // 選択範囲の内容をコピー
-    const rangeContents = currentNodeRange.cloneContents();
-
-    // `p_txt_` を含む `span` タグだけを取得
-    const spanElements = Array.from(rangeContents.querySelectorAll("span[char_id^='p_txt_']"));
-
-    // ハイライト適用
-    spanElements.forEach(span => {
+    currentNodeRange.forEach(span => {
         // 実際のDOM上の対応する `SPAN` を取得してクラスを追加
-        const realSpan = document.querySelector(`span[char_id="${span.getAttribute("char_id")}"]`);
+        const realSpan = document.querySelector(`span[char_id="${span}"]`);
         if (realSpan) {
             realSpan.classList.add("range-highlight");
         }
     });
 
-    const currentNodeHighlightRange = currentNode.customData.highlight;
+    // // 選択範囲の内容をコピー
+    // const rangeContents = currentNodeRange.cloneContents();
 
-    currentNodeHighlightRange.forEach(realSpan => {
+    // // `p_txt_` を含む `span` タグだけを取得
+    // const spanElements = Array.from(rangeContents.querySelectorAll("span[char_id^='p_txt_']"));
+
+    // // ハイライト適用
+    // spanElements.forEach(span => {
+    //     // 実際のDOM上の対応する `SPAN` を取得してクラスを追加
+    //     const realSpan = document.querySelector(`span[char_id="${span.getAttribute("char_id")}"]`);
+    //     if (realSpan) {
+    //         realSpan.classList.add("range-highlight");
+    //     }
+    // });
+
+    const currentNodeHighlightRange = currentNode.customData.highlight;
+    currentNodeHighlightRange.forEach(span => {
+        const realSpan = document.querySelector(`span[char_id="${span}"]`);
         if (realSpan) {
             realSpan.classList.remove("range-highlight");
             realSpan.classList.add(classlist);
@@ -79,57 +92,196 @@ function highlightRanges(selectedNodeId) {
     // })
 }
 
+function otherHighlightRanges(otherSelectedNodeId) {
+    const currentOtherNode = otherNodes.get(otherSelectedNodeId);
+    const classlist = currentOtherNode.className === "paragraph" ? "other-paragraph-highlight" : "other-chapter-highlight";
+
+    const currentOtherNodeRange = currentOtherNode.customData.range;
+    currentOtherNodeRange.forEach(span => {
+        const realSpan = document.querySelector(`span[char_id="${span}"]`);
+        if (realSpan) {
+            realSpan.classList.add("range-highlight");
+        }
+    });
+
+    const currentOtherNodeHighlightRange = currentOtherNode.customData.highlight;
+    currentOtherNodeHighlightRange.forEach(span => {
+        const realSpan = document.querySelector(`span[char_id="${span}"]`);
+        if (realSpan) {
+            realSpan.classList.remove("range-highlight");
+            realSpan.classList.add(classlist);
+        }
+    });
+}
+
+function myHighlights(selectedNodeId) {
+    const currentNode = nodes.get(selectedNodeId);
+    const classlist = currentNode.className === "paragraph" ? "paragraph-highlight" : "chapter-highlight";
+    const currentNodeHighlightRange = currentNode.customData.highlight;
+    currentNodeHighlightRange.forEach(span => {
+        const realSpan = document.querySelector(`span[char_id="${span}"]`);
+        if (realSpan) {
+            realSpan.classList.remove("range-highlight");
+            if (classlist === "paragraph-highlight" && realSpan.classList.contains("other-paragraph-highlight")) {
+                realSpan.classList.remove("other-paragraph-highlight");
+                realSpan.classList.add("mix-paragraph-highlight");
+            } else if (classlist === "chapter-highlight" && realSpan.classList.contains("other-chapter-highlight")) {
+                realSpan.classList.remove("other-chapter-highlight");
+                realSpan.classList.add("mix-chapter-highlight");
+            } else {
+                realSpan.classList.add(classlist);
+            }
+        }
+    });
+}
+
+//二つマップを表示した状態で編集するとハイライトが消えない
+//マップを表示した状態で別のファイルを参照するとハイライトが消えるようにする
+
+function otherHighlights(otherSelectedNodeId) {
+    const currentOtherNode = otherNodes.get(otherSelectedNodeId);
+    const classlist = currentOtherNode.className === "paragraph" ? "other-paragraph-highlight" : "other-chapter-highlight";
+    const currentOtherNodeHighlightRange = currentOtherNode.customData.highlight;
+    currentOtherNodeHighlightRange.forEach(span => {
+        const realSpan = document.querySelector(`span[char_id="${span}"]`);
+        if (realSpan) {
+            realSpan.classList.remove("range-highlight");
+            if (classlist === "other-paragraph-highlight" && realSpan.classList.contains("paragraph-highlight")) {
+                realSpan.classList.remove("paragraph-highlight");
+                realSpan.classList.add("mix-paragraph-highlight");
+            } else if (classlist === "other-chapter-highlight" && realSpan.classList.contains("chapter-highlight")) {
+                realSpan.classList.remove("chapter-highlight");
+                realSpan.classList.add("mix-chapter-highlight");
+            } else {
+                realSpan.classList.add(classlist);
+            }
+        }
+    });
+}
+
+function myCompareHighlightRanges(selectedNodeId) {
+    const selectedNode = nodes.get(selectedNodeId);
+    const targetIdentify = selectedNode.customData.identify;
+    // const otherNode = otherNodes.get().find(node => node.customData?.identify === targetIdentify && node.className !== "tag");
+    const otherNode = otherNodes.get({
+        filter: node => node.customData?.identify === targetIdentify && node.className !== "tag"
+    })[0];
+    highlightRanges(selectedNodeId);
+    if (otherNode) {
+        otherNetwork.selectNodes([otherNode.id]);
+        otherNodeLabel.value = otherNode.label;
+        otherHighlights(otherNode.id);
+    }
+}
+
+function otherCompareHighlightRanges(otherSelectedNodeId) {
+    const otherSelectedNode = otherNodes.get(otherSelectedNodeId);
+    console.log(otherSelectedNode);
+    const targetIdentify = otherSelectedNode.customData.identify;
+    console.log(targetIdentify);
+    // const myNode = nodes.get().find(node => node.customData?.identify === targetIdentify && node.className !== "tag");
+    const myNode = nodes.get({
+        filter: node => node.customData?.identify === targetIdentify && node.className !== "tag"
+    })[0];
+    console.log(myNode);
+    otherHighlightRanges(otherSelectedNodeId);
+    if (myNode) {
+        network.selectNodes([myNode.id]);
+        nodeLabel.value = myNode.label;
+        myHighlights(myNode.id);
+        // network.emit("selectNode", { nodes: [myNode.id] });
+    }
+}
+
+//自身のマップのノードの選択状態を解除
+function myDeselectNode(otherSelectedNodeId) {
+    const otherSelectedNode = otherNodes.get(otherSelectedNodeId);
+    const targetIdentify = otherSelectedNode.customData.identify;
+    // const myNode = nodes.get().find(node => node.customData?.identify === targetIdentify && node.className !== "tag");
+    const myNode = nodes.get({
+        filter: node => node.customData?.identify === targetIdentify && node.className !== "tag"
+    })[0];
+    if (myNode) {
+        network.deselectNodes([myNode.id]);
+        nodeLabel.value = "";
+    }
+}
+
+//他者のマップのノードの選択状態を解除
+function otherDeselectNode(selectedNodeId) {
+    const selectedNode = nodes.get(selectedNodeId);
+    const targetIdentify = selectedNode.customData.identify;
+    // const otherNode = otherNodes.get().find(node => node.customData?.identify === targetIdentify && node.className !== "tag");
+    const otherNode = otherNodes.get({
+        filter: node => node.customData?.identify === targetIdentify && node.className !== "tag"
+    })[0];
+    if (otherNode) {
+        otherNetwork.deselectNodes([otherNode.id]);
+        otherNodeLabel.value = "";
+    }
+}
+
 function saveHighlights() {
     highlight_conmenu.style.display = "none";
     const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
     if (!selectedNodeId) {
         alert("紐づけるノードを選択してからハイライトしてください");
         selection.removeAllRanges();
         return;
     }
+    const currentNode = nodes.get(selectedNodeId);
+
+    const range = selection.getRangeAt(0);
+    //選択範囲のchar_idを取得
+    const selectedSpans = Array.from(range.cloneContents().querySelectorAll("span[char_id^='p_txt_']"));
+    const selectedCharIds = selectedSpans.map(span => span.getAttribute("char_id"));
 
     //選択範囲が段落や章を超えていないか判定する
-    const currentNode = nodes.get(selectedNodeId);
-    // const currentNodeRange = currentNode.info;
     const currentNodeRange = currentNode.customData.range;
-    // const isRangeInside = currentNodeRange[0].isPointInRange(range.startContainer, range.startOffset) && currentNodeRange[0].isPointInRange(range.endContainer, range.endOffset);
-    const isRangeInside = currentNodeRange.isPointInRange(range.startContainer, range.startOffset) && currentNodeRange.isPointInRange(range.endContainer, range.endOffset);
+    //ノードが管理する範囲(char_idの配列)と比較
+    const isRangeInside = selectedCharIds.every(charId => currentNodeRange.includes(charId));
 
     if (!isRangeInside) {
         const classnameTojpn = currentNode.className === "paragraph" ? "段落" : "章";
-
         alert(`該当する${classnameTojpn}以外の範囲を選択しています`);
+        selection.removeAllRanges();
         return;
     }
+    // //選択範囲が段落や章を超えていないか判定する
+    // const currentNode = nodes.get(selectedNodeId);
+    // const currentNodeRange = currentNode.customData.range;
+    // const isRangeInside = currentNodeRange.isPointInRange(range.startContainer, range.startOffset) && currentNodeRange.isPointInRange(range.endContainer, range.endOffset);
+
+    // if (!isRangeInside) {
+    //     const classnameTojpn = currentNode.className === "paragraph" ? "段落" : "章";
+    //     alert(`該当する${classnameTojpn}以外の範囲を選択しています`);
+    //     return;
+    // }
 
     // currentNodeRange.push(range);
     console.log(currentNodeRange);
-    // highlightedRanges.push({ id: selectedNodeId, range: range });   //どのノードと対応付けるか，また選択範囲を保存
     console.log("highlight saved: ", selectedNodeId, range);   //ノードIDと対応しており，段落番号と対応してない
-
-    // const highlightNode = nodes.get(selectedNodeId);
 
     const classlist = currentNode.className === "paragraph" ? "paragraph-highlight" : "chapter-highlight";
 
-    // 選択範囲の内容をコピー
-    const rangeContents = range.cloneContents();
+    // // 選択範囲の内容をコピー
+    // const rangeContents = range.cloneContents();
 
-    // `p_txt_` を含む `span` タグだけを取得
-    const spanElements = Array.from(rangeContents.querySelectorAll("span[char_id^='p_txt_']"));
+    // // `p_txt_` を含む `span` タグだけを取得
+    // const spanElements = Array.from(rangeContents.querySelectorAll("span[char_id^='p_txt_']"));
 
     let currentNodeHighlightRange = currentNode.customData.highlight;
     // ハイライト適用
-    spanElements.forEach(span => {
+    selectedSpans.forEach(span => {
+        currentNodeHighlightRange.push(span.getAttribute("char_id"));    //Javascriptの仕様によりcustomData.highlightにも代入される
         // 実際のDOM上の対応する `SPAN` を取得してクラスを追加
-        const realSpan = document.querySelector(`span[char_id="${span.getAttribute("char_id")}"]`);
+        const realSpan = document.querySelector(`span[char_id="${span.getAttribute("char_id")}"]`);     //spanはコピーであるため，実際のDOMに変換する必要がある
         if (realSpan) {
             realSpan.classList.remove("range-highlight");
             realSpan.classList.add(classlist);
-            currentNodeHighlightRange.push(realSpan);
         }
     });
-
+    console.log(currentNodeHighlightRange);
 
 
     //選択範囲を解除　デフォルトの水色のラインを消す
@@ -250,10 +402,16 @@ function clearHighlights() {
     });
 }
 
+function allClearHighlights() {
+    const highlightedElements = document.querySelectorAll(".paragraph-highlight, .chapter-highlight, .other-paragraph-highlight, .other-chapter-highlight, .mix-paragraph-highlight, .mix-chapter-highlight, .range-highlight");
+    highlightedElements.forEach(element => {
+        element.classList.remove("paragraph-highlight", "chapter-highlight", "other-paragraph-highlight", "other-chapter-highlight", "mix-paragraph-highlight", "mix-chapter-highlight", "range-highlight");
+    });
+}
+
 function removeHighlights() {
     highlight_conmenu.style.display = "none";
     const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
 
     if (!selectedNodeId) {
         alert("ハイライトを消すノードを選択してください");
@@ -262,32 +420,53 @@ function removeHighlights() {
     }
 
     const currentNode = nodes.get(selectedNodeId);
+    const range = selection.getRangeAt(0);
+    //選択範囲のchar_idを取得
+    const selectedSpans = Array.from(range.cloneContents().querySelectorAll("span[char_id^='p_txt_']"));
+    const selectedCharIds = selectedSpans.map(span => span.getAttribute("char_id"));
 
     //選択範囲が段落や章を超えていないか判定する
     const currentNodeRange = currentNode.customData.range;
-    const isRangeInside = currentNodeRange.isPointInRange(range.startContainer, range.startOffset) && currentNodeRange.isPointInRange(range.endContainer, range.endOffset);
+    const isRangeInside = selectedCharIds.every(charId => currentNodeRange.includes(charId));
+    // const isRangeInside = currentNodeRange.isPointInRange(range.startContainer, range.startOffset) && currentNodeRange.isPointInRange(range.endContainer, range.endOffset);
 
     if (!isRangeInside) {
         const classnameTojpn = currentNode.className === "paragraph" ? "段落" : "章";
         alert(`該当する${classnameTojpn}以外の範囲を選択しています`);
+        selection.removeAllRanges();
         return;
     }
 
     // DOM 上で対応する `span` タグからハイライトを削除
-    const spanElements = Array.from(range.cloneContents().querySelectorAll("span[char_id^='p_txt_']"));
+    // const spanElements = Array.from(range.cloneContents().querySelectorAll("span[char_id^='p_txt_']"));
 
     // `customData.highlight` から該当の `span` を削除
-    let highlightArray = currentNode.customData.highlight;
-    highlightArray = highlightArray.filter(realSpan => {
-        //realSpanと選択範囲のspanのうちidが同じものが一つでもあればrealSpanを削除する
-        const shouldRemove = spanElements.some(span => span.getAttribute("char_id") === realSpan.getAttribute("char_id"));
-        if (shouldRemove) {
-            realSpan.classList.remove("paragraph-highlight", "chapter-highlight");
-            realSpan.classList.add("range-highlight");
+    currentNode.customData.highlight = currentNode.customData.highlight.filter(charId => {
+        if (selectedCharIds.includes(charId)) {
+            const realSpan = document.querySelector(`span[char_id="${charId}"]`);
+            if (realSpan) {
+                realSpan.classList.remove("paragraph-highlight", "chapter-highlight");
+                realSpan.classList.add("range-highlight");
+            }
+            return false;    //削除対象
         }
-        return !shouldRemove;
+        return true;   //残す
     });
 
-    // 更新後の配列を `customData.highlight` に反映
-    currentNode.customData.highlight = highlightArray;
+    // let highlightArray = currentNode.customData.highlight;
+    // highlightArray = highlightArray.filter(realSpan => {
+    //     //realSpanと選択範囲のspanのうちidが同じものが一つでもあればrealSpanを削除する
+    //     const shouldRemove = spanElements.some(span => span.getAttribute("char_id") === realSpan.getAttribute("char_id"));
+    //     if (shouldRemove) {
+    //         realSpan.classList.remove("paragraph-highlight", "chapter-highlight");
+    //         realSpan.classList.add("range-highlight");
+    //     }
+    //     return !shouldRemove;
+    // });
+
+    // // 更新後の配列を `customData.highlight` に反映
+    // currentNode.customData.highlight = highlightArray;
+
+    //選択範囲を解除　デフォルトの水色のラインを消す
+    selection.removeAllRanges();
 }

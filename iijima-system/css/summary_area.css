@@ -66,28 +66,104 @@
 	/*ノードの外にテキストがはみ出ないようにする*/
 }
 
+#area {
+	width: 98.5vw;  /*85*/
+	height: 88vh;     /*98*/ /*85*/
+	margin-bottom: 2vh;
+	border: solid 5px #F6D4D8;
+	box-sizing: border-box;
+	background: #fff;
+	float: left;
+	resize: horizontal;
+	position: relative;
+	display: flex;
+	flex-direction: row;  /*横並びに配置*/
+}
+
+#summary_map {
+	display: flex;
+	flex-direction: column;
+	width: 65%;
+	height: 100%;
+}
+
+/* 「問いノード追加」等のボタンがある箇所 */
+#jsmind_nav {
+	width: 100%; /*100%*/
+	height: 42px;
+	display: inline;
+	/* display: none; */
+	font-size: 1em;
+	border-bottom: solid 2px #F6D4D8; /*border-bottom*/
+    border-top: solid 2px #F6D4D8;
+	border-left: solid 4px #F6D4D8;
+	box-sizing: border-box;
+	overflow-x: auto;
+	overflow-y: visible;
+	float: right;
+}
+
 #summary_area {
-	/* width: 100vw; */
-	/* flex: 1 1 auto; */
-	flex-grow: 1;
-	height: calc(100% - 34px);
+	width: 100%;
+	height: calc(100% - 142px);
+	border-left: solid 4px #F6D4D8;
+	border-bottom: solid 1px #F6D4D8;
 	background: #fff;
 	float: right;
 	position: relative;
+	box-sizing: border-box;
 }
 
-/*
-#summary_area {
+#labelEditing_area {
 	width: 100%;
-	height: 100%;
-
-	background: #fff;
-	overflow: scroll;
-	float: left;
-	overflow-x: scroll;
+	height: 100px;
+	background-color: #f0f0f0;
+	/* border-bottom: solid 2px #F6D4D8; */
+    border-top: solid 1px #F6D4D8;
+	border-left: solid 4px #F6D4D8;
+	float: right;
+	position: relative;
+	display: flex;
 	box-sizing: border-box;
-	resize: horizontal;
-}   */
+}
+
+#nodeLabelText {
+	/* width: 100%; */
+	flex: 1;
+	height: 100%;
+	border: none;
+	font-size: 16px;
+	background-color: #fff;
+	border-right: solid 2px #F6D4D8;
+	box-sizing: border-box;
+	resize: none;        /*サイズ変更不可*/
+}
+
+#other_summary_area {
+	width: 100%;
+	height: 45%;             /*残りの高さすべてを占める*/
+	display: none;
+	position: relative;
+	border-top: solid 4px #ADD8E6;
+	border-bottom: solid 1px #ADD8E6;
+	border-left: solid 4px #ADD8E6;
+	border-right: solid 4px #ADD8E6;
+	box-sizing: border-box;
+}
+
+#other_nodeLabelText {
+	width: 100%;
+	height: 50px;
+	border-top: solid 1px #ADD8E6;
+	border-bottom: solid 4px #ADD8E6;
+	border-left: solid 4px #ADD8E6;
+	border-right: solid 4px #ADD8E6;
+	position: relative;
+	font-size: 16px;
+	box-sizing: border-box;
+	resize: none;
+	display: none;
+}
 
 #paragraph_number {
 	position: absolute;

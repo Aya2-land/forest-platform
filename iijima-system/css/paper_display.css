@@ -25,8 +25,28 @@
 	color: black;
 }
 
-.range-highlight {
+.other-paragraph-highlight {
 	background: #C6E7FF;
+	color: black;
+}
+
+.other-chapter-highlight {
+	background: #A0D7A4;
+	color: black;
+}
+
+.mix-paragraph-highlight {
+	background: #E2F380;
+	color: black;
+}
+
+.mix-chapter-highlight {
+	background: #ACDE80;
+	color: black;
+}
+
+.range-highlight {
+	background: #F6D4D8;   /*#C6E7FF*/
 	color: black;
 }
 

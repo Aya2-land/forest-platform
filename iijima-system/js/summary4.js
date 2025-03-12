@@ -2,15 +2,18 @@
 let nodes = new vis.DataSet();
 let edges = new vis.DataSet();
 
+// グローバルで定義する
+let otherNodes = new vis.DataSet();
+let otherEdges = new vis.DataSet();
+
 // 選択されたノードを管理する
-// let selectedNodes = [];
 let selectedNodeId = null;
+let otherSelectedNodeId = null;
 
 //node_conmenuを削除するかどうか決める変数
 let blockConmenu = true;
 
 //ノードの色を管理する
-let draggedNode = null;        //ドラッグ中
 let rightClickedNode = null;   //右クリック中
 
 // ノードのIDを自動で増やすカウンター
@@ -27,24 +30,6 @@ const options = {
     manipulation: {
         enabled: true,
         initiallyActive: true,
-        // addNode: function (data, callback) {
-        //     data.label = `${++globalNodeId}`;
-        //     nodes.add(data);
-        //     callback(data);
-        // },
-        // editNode: function (data, callback) {
-        //     enableEditing(data, callback); // 編集用関数を追加
-        // },
-        // deleteNode: function (data) {
-        //     nodes.remove(data);
-        // },
-        // addEdge: function (data, callback) {
-        //     edges.add(data);
-        //     callback(data);
-        // },
-        // deleteEdge: function (data) {
-        //     edges.remove(data);
-        // }
     },
     physics: {
         enabled: false
@@ -64,7 +49,14 @@ function add_paragraph(granularity) {
         return;
     }
     const range = selection.getRangeAt(0);
-    selection.removeAllRanges();
+    const rangeContents = range.cloneContents();
+    const spanElements = Array.from(rangeContents.querySelectorAll("span[char_id^='p_txt_']"));
+
+    let currentNodeRange = [];
+    spanElements.forEach(span => {
+        currentNodeRange.push(span.getAttribute("char_id"));
+    });
+    selection.removeAllRanges();     //highlight_conmenu表示したままハイライトさせるとエラー発生する．
 
     //ユーザに段落番号・章番号を入力させる
     let number = null;
@@ -123,7 +115,7 @@ function add_paragraph(granularity) {
         y: initialPosition_y,  // 初期位置（後でドラッグで調整）
         shape: "box",
         font: {
-            align: "left"
+            align: "left",
         },
         widthConstraint: {
             maximum: 400
@@ -140,21 +132,22 @@ function add_paragraph(granularity) {
                 border: highlight_border
             }
         },
-        // width: 1000,
         height: 60,
         zIndex: 10,
         fixed: false,  // ノードを動かせる状態に
         customData: {
-            range: range,       // Range オブジェクトは JavaScript のネイティブオブジェクトであり、シリアライズ（JSON化）できない ため、そのまま保存すると vis.js の toJSON() などを使うときに問題が起こる可能性がある．
-            highlight: []
+            range: currentNodeRange,       // Range オブジェクトは JavaScript のネイティブオブジェクトであり、シリアライズ（JSON化）できない ため、そのまま保存すると vis.js の toJSON() などを使うときに問題が起こる可能性がある．
+            highlight: [],
+            identify: label
         }
     };
-
+    //newNode_tagをクリックするとバグる
     const newNode_tag = {
         id: `tag${nodeId}`,
         label: label,
-        x: initialPosition_x,         //初期位置
-        y: initialPosition_y - 20,         //初期位置
+        className: "tag",
+        x: initialPosition_x,              //初期位置
+        y: initialPosition_y - 25,         //初期位置
         shape: "box",
         color: {
             background: background,
@@ -162,7 +155,7 @@ function add_paragraph(granularity) {
         },
         height: 60,
         zIndex: 0,
-        fixed: true    //ノードを固定する
+        fixed: false    //ノードを固定する
     };
 
     // ノードを vis.js の DataSet に追加
@@ -180,29 +173,21 @@ function add_paragraph(granularity) {
     // ネットワークを再描画して新しいノードが表示されるようにする
     network.redraw();  //これが必要な時と必要でない時
     console.log(nodes.get(nodeId));
-    console.log(nodes.get(`tag${nodeId}`), nodes.get(nodeId).info);
+    console.log(nodes.get(`tag${nodeId}`), nodes.get(nodeId).customData.range);
 }
 
-// //ノードのドラッグ開始時
-// network.on("dragStart", function (event) {
-//     const nodeId = event.nodes[0];
-//     if (nodeId) {
-//         const node = nodes.get(nodeId);
-//         node.color = { background: "lightblue" };    //ドラッグ中の色変更
-//         nodes.update(node);
-//         draggedNode = nodeId;    //ドラッグ中のノードの記録
-//     }
-// });
+//ドラッグ終了時に元の色に戻す
+network.on("dragEnd", function (event) {
+    if (event.nodes.length > 0) {
+        const nodeId = event.nodes[0];     //ドラッグされたノードのIDを取得
+        const nodePosition = network.getPositions([nodeId])[nodeId];   //新しい座標を取得
 
-// //ドラッグ終了時に元の色に戻す
-// network.on("dragEnd", function (event) {
-//     if (draggedNode) {
-//         const node = nodes.get(draggedNode);
-//         node.color = { background: "blue" };
-//         nodes.update(node);
-//         draggedNode = null;   //ドラッグ中ノードの記録解除
-//     }
-// });
+        const currentNode = nodes.get(nodeId);
+        currentNode.x = nodePosition.x;
+        currentNode.y = nodePosition.y;
+        nodes.update(currentNode);
+    }
+});
 
 const node_conmenu = document.getElementById("node_conmenu");
 const relationship_conmenu = document.getElementById("relationship_conmenu");
@@ -226,23 +211,6 @@ network.on("oncontext", function (params) {
 
         selectedNodeId = nodeId;
 
-        //右クリックされたノードの色を変更
-        // nodes.update({
-        //     id: selectedNodeId,
-        //     color: {
-        //         background: "#ffcccc"   //背景色を変更
-        //     }
-        // })
-        // const node = nodes.get(nodeId);
-        // selectedNode = node;
-
-        // const node = nodes.get(nodeId);
-        // const node_color = options.nodes.highlight.background;
-        // console.log(node_color);
-        // node.color = { background: `${node_color}` };   //右クリック時の色変更
-        // nodes.update(node);
-        // rightClickedNode = nodeId;    //右クリックさせたノードの記録
-
         const nodePosition = network.getPositions([nodeId]);
 
         const nodeX = nodePosition[nodeId].x;
@@ -259,16 +227,10 @@ network.on("oncontext", function (params) {
         node_conmenu.style.top = `${canvasCoords.y}px`;
         node_conmenu.style.display = "block";                 //メニューを表示
 
-        //エッジを引くボタンをクリックしたときの処理
-        // const edgeButton = document.getElementById("drawingEdge");
-        // edgeButton.onclick = function () {
-        //     connectNodes(nodeId);
-        // };
-
         //他の場所をクリックしたらメニューを非表示にする
         document.addEventListener("click", function hideMenu(event) {
             if (blockConmenu) {
-                if (!node_conmenu.contains(event.target) && !documentArea.contains(event.target) && !highlight_conmenu.contains(event.target)) {
+                if (!node_conmenu.contains(event.target) && !documentArea.contains(event.target)) {    //!highlight_conmenu.contains(event.target)  一度node_conmenuの中をクリックした後別の場所をクリックしても非表示にならない
 
                     node_conmenu.style.display = "none";
                     document.removeEventListener("click", hideMenu);     //登録した関数を削除するため引数必要ない
@@ -281,61 +243,107 @@ network.on("oncontext", function (params) {
     }
 });
 
+const nodeLabel = document.getElementById("nodeLabelText");
+const saveButton = document.getElementById("saveLabelButton");
+// const cancelButton = document.getElementById("cancelLabelButton");
+
 network.on("selectNode", function (event) {
     if (event.nodes.length > 0) {   // この条件は必要なのか
         selectedNodeId = event.nodes[0];
-        highlightRanges(selectedNodeId);
+        const selectedNode = nodes.get(selectedNodeId);
+
+        //テキストエリアに現在のラベルを表示
+        nodeLabel.value = selectedNode.label;
+
+        //保存ボタンを押したときの処理
+        saveButton.onclick = function () {
+            if (selectedNodeId) {
+                const newLabel = document.getElementById("nodeLabelText").value;
+                const boundingBox = network.getBoundingBox(selectedNodeId);
+                const newHeight = boundingBox.bottom - boundingBox.top;
+                //ノードのラベルを更新
+                nodes.update({
+                    id: selectedNodeId,
+                    label: newLabel,
+                    height: newHeight
+                });
+
+                const tagNode = nodes.get(`tag${selectedNodeId}`);
+                if (tagNode) {
+                    nodes.update({
+                        id: `tag${selectedNodeId}`,
+                        x: selectedNode.x,
+                        y: selectedNode.y - 25
+                    });
+                }
+                console.log(selectedNode, tagNode);
+            } else {
+                return;
+            }
+        }
+
+        //キャンセルボタンを押したときの処理
+        // cancelButton.onclick = function () {
+        //     deselectNode();
+        // }
+        console.log(selectedNode.customData.range);
+        console.log(selectedNode.customData.highlight);
+
+        if (otherMap) {
+            myCompareHighlightRanges(selectedNodeId);
+        } else {
+            highlightRanges(selectedNodeId);
+        }
     }
 });
 
-network.on("deselectNode", function () {
-    //document_areaのハイライトを解除する
-    clearHighlights();
+network.on("deselectNode", function () {     //直接deselectNode()を呼び出してはいけない
+    if (otherMap) {
+        bothDeselectNode();
+    } else {
+        deselectNode();
+    }
 });
+
+function deselectNode() {
+    //document_areaのハイライトを解除する
+    selectedNodeId = null;
+    nodeLabel.value = "";
+    clearHighlights();
+}
+
+function bothDeselectNode() {
+    //他者のマップのノードの選択を解除
+    otherDeselectNode(selectedNodeId);
+    selectedNodeId = null;
+    nodeLabel.value = "";
+    allClearHighlights();
+}
 
 //ノードを動かし始めた瞬間にもメニューを消す
 network.on("dragStart", function () {
     if (node_conmenu) {
         node_conmenu.style.display = "none";
     }
-    selectedNodeId = null;
-
-    //relationshipの表示位置を更新する条件
-    // if (relationship.style.display === "block") {
-    //     //既に表示されているrelationshipがそのエッジに関連しているかチェック
-    //     edges.forEach(function (edge) {
-    //         const fromNodePosition = network.getPositions([edge.from])[edge.from];
-    //         const toNodePosition = network.getPositions([edge.to])[edge.to];
-
-    //         const centerX = (fromNodePosition.x + toNodePosition.x) / 2;
-    //         const centerY = (fromNodePosition.y + toNodePosition.y) / 2;
-
-    //         const domPosition = network.canvasToDOM({ x: centerX, y: centerY });
-
-    //         relationship.style.left = `${domPosition.x}px`;
-    //         relationship.style.top = `${domPosition.y}px`;
-    //     });
-    // }
+    // selectedNodeId = null;
 });
 
 network.on("dragging", function (event) {
     if (!event.nodes.length) return;  //ノードが選択されていない場合は処理しない
 
     const moveNodeId = event.nodes[0];
+    const moveNode = nodes.get(moveNodeId);
     const pos = network.getPositions(moveNodeId);
     const newX = pos[moveNodeId].x;
     const newY = pos[moveNodeId].y;
 
     const tagNode = nodes.get(`tag${moveNodeId}`);
-    console.log("dragging");
-    console.log(tagNode);
 
     if (tagNode) {
         nodes.update({
             id: `tag${moveNodeId}`,
             x: newX,
-            y: newY - 20,   //newNodeとの相対位置を維持
-            // fixed: false
+            y: newY - 25       //newNodeとの相対位置を維持
         });
         console.log(tagNode);
     }
@@ -469,22 +477,6 @@ function connectNodes(binding) {
                     console.log(edgeData);
                     edges.add(edgeData);
 
-                    // //ノードの座標を取得
-                    // const fromNode = network.getPositions([selectedNodesId[0]])[selectedNodesId[0]];    //{1: {x: 100, y: 200}}
-                    // const toNode = network.getPositions([selectedNodesId[1]])[selectedNodesId[1]];
-
-                    // //エッジの中心座標を計算
-                    // const centerX = (fromNode.x + toNode.x) / 2;
-                    // const centerY = (fromNode.y + toNode.y) / 2;
-
-                    // //vis.jsの座標をブラウザの絶対座標に変換
-                    // const domPosition = network.canvasToDOM({ x: centerX, y: centerY });
-
-                    // //relationshipを配置
-                    // relationship.style.display = "block";
-                    // relationship.style.left = `${domPosition.x}px`;
-                    // relationship.style.top = `${domPosition.y}px`;
-
                 } else {
                     alert("この2つのノードには既にエッジが引かれています");
                 }
@@ -499,70 +491,8 @@ function connectNodes(binding) {
 
         network.on("selectNode", selectNodeHandler);
 
-        // network.on("selectNode", function (event) {
-        //     console.log(selectedNodesId[0]);
-        //     if (event.nodes[0] !== selectedNodesId[0]) {
-        //         selectedNodesId.push(event.nodes[0]);
-        //     } else {
-        //         alert("別のノードを選択してください");
-        //         network.unselectAll();
-        //         return;                                  //network.on("selectNode", function ())の処理を終える
-        //     }
-
-        //     if (selectedNodesId.length === 2) {
-        //         alert("ノードの選択完了しました");
-
-        //         network.unselectAll();
-
-        //         const existingEdge = edges.get({
-        //             filter: function (edge) {
-        //                 return (edge.from === selectedNodesId[0] && edge.to === selectedNodesId[1]) ||
-        //                     (edge.from === selectedNodesId[1] && edge.to === selectedNodesId[0]);
-        //             }
-        //         });
-
-        //         if (existingEdge.length === 0) {
-        //             const edgeData = {
-        //                 from: selectedNodesId[0],
-        //                 to: selectedNodesId[1]
-        //             };
-        //             edges.add(edgeData);
-        //         } else {
-        //             alert("この2つのノードには既にエッジが引かれています");
-
-        //             network.unselectAll();
-        //         }
-        //         //ノードの選択をリセット
-        //         selectedNodesId = [];
-        //     }
-
-        // });
     }
 }
-
-// network.on("afterDrawing", function() {
-//     //ここに描画後のカスタム処理を記述
-//     console.log("ネットワークの描画が完了しました");
-
-//     //エッジの中心にHTML要素を追加したい場合の処理
-//     edges.forEach(function (edge) {
-//         const fromNodePosition = network.getPositions([edge.from])[edge.from];
-//         const toNodePosition = network.getPositions([edge.to])[edge.to];
-
-//         //エッジの中心座標を計算
-//         const centerX = (fromNodePosition.x + toNodePosition.x) / 2;
-//         const centerY = (fromNodePosition.y + toNodePosition.y) / 2;
-
-//         //vis.jsの座標をブラウザの絶対座標に変換
-//         const domPosition = network.canvasToDOM({ x: centerX, y: centerY});
-
-//         //エッジ中心にHTML要素を配置
-//         const edgeLabel = document.getElementById("binding_relationship");
-//         edgeLabel.style.left = `${domPosition.x}px`;
-//         edgeLabel.style.top = `${domPosition.y}px`;
-//         edgeLabel.style.display = "block";
-//     })
-// });
 
 let editBox = document.getElementById("editBox");
 
@@ -581,7 +511,6 @@ function enableEditing() {
         });
 
         selectedNodeId = null;
-
     }
 }
 
@@ -590,11 +519,109 @@ function deleteNode() {
     if (selectedNodeId) {
         nodes.remove([selectedNodeId, `tag${selectedNodeId}`]);
         node_conmenu.style.display = "none";
-
+        deselectNode();
     }
     selectedNodeId = null;
 }
 
-function drawhighlight() {
+function saveNetwork() {
+    const savedData = {
+        nodes: nodes.get(),
+        edges: edges.get()
+    };
 
+    // 保存されたデータをJSONとして生成
+    const jsonData = JSON.stringify(savedData, null, 2);
+
+    // JSONデータをBlobに変換してファイルとして保存
+    const blob = new Blob([jsonData], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "network_data.json";
+    a.click();
 }
+
+const otherContainer = document.getElementById("other_summary_area");
+const otherNodeLabel = document.getElementById("other_nodeLabelText");
+let otherNetwork = null;
+
+// JSONファイルからデータを読み込んで再表示
+function loadNetwork() {
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("ファイルが選択されていません");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        try {
+            const loadedData = JSON.parse(event.target.result);
+
+            otherNodes.clear();
+            otherEdges.clear();
+
+            // 読み込んだデータでノードをエッジを更新
+            otherNodes.add(loadedData.nodes);
+            otherEdges.add(loadedData.edges);
+            otherNetwork = new vis.Network(otherContainer, {
+                nodes: otherNodes,
+                edges: otherEdges
+            }, options);
+
+            
+            otherNetwork.on("selectNode", function (event) {
+                if (event.nodes.length > 0) {   // この条件は必要なのか
+                    otherSelectedNodeId = event.nodes[0];
+                    const otherSelectedNode = otherNodes.get(otherSelectedNodeId);
+
+                    //テキストエリアに現在のラベルを表示
+                    otherNodeLabel.value = otherSelectedNode.label;
+
+                    otherCompareHighlightRanges(otherSelectedNodeId);
+                }
+            });
+
+            otherNetwork.on("deselectNode", function () {     //直接deselectNode()を呼び出してはいけない
+                //自身のマップのノードの選択状態を解除する
+                myDeselectNode(otherSelectedNodeId);
+                //document_areaのハイライトを解除する
+                otherSelectedNodeId = null;
+                otherNodeLabel.value = "";
+                allClearHighlights();
+            });
+
+        } catch (e) {
+            alert("読み込んだファイルが無効です");
+        }
+    };
+    reader.readAsText(file);
+}
+
+let otherMap = false;
+
+function displayOtherMap() {
+    const representation = $("#representation");
+    if (representation.prop("checked")) {
+        otherMap = true;
+        $("#summary_area").css("height", "calc(50% - 92px)");
+        $("#labelEditing_area").css({
+            height: "50px",
+            borderBottom: "solid 4px #F6D4D8"
+        });
+        $("#other_summary_area").css("display", "block");
+        $("#other_nodeLabelText").css("display", "block");
+    } else {
+        otherMap = false;
+        $("#summary_area").css("height", "calc(100% - 142px)");
+        $("#labelEditing_area").css({
+            height: "100px",
+            borderBottom: "none"
+        });
+        $("#other_summary_area").css("display", "none");
+        $("#other_nodeLabelText").css("display", "none");
+    }
+}
+
