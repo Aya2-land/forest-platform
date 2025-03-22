@@ -11,7 +11,7 @@
 	$content = $_POST["content"];
 	$paper_title = $_POST["paper_title"];
 
-	$sql = "INSERT INTO papers (id, paper_content, created_at, paper_title) VALUE ('$id','$content','$timestamp', '$paper_title')";
+	$sql = "INSERT INTO papers (id, paper_content, created_at, paper_title) VALUES ('$id','$content','$timestamp', '$paper_title')";
 	$result = $mysqli->query($sql);
 	echo $sql;
 	

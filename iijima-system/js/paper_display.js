@@ -92,6 +92,7 @@ function highlightRanges(selectedNodeId) {
     // })
 }
 
+//他者のマップのハイライトを表示する関数
 function otherHighlightRanges(otherSelectedNodeId) {
     const currentOtherNode = otherNodes.get(otherSelectedNodeId);
     const classlist = currentOtherNode.className === "paragraph" ? "other-paragraph-highlight" : "other-chapter-highlight";
@@ -159,6 +160,7 @@ function otherHighlights(otherSelectedNodeId) {
     });
 }
 
+//自身のマップのノードが選択されたとき
 function myCompareHighlightRanges(selectedNodeId) {
     const selectedNode = nodes.get(selectedNodeId);
     const targetIdentify = selectedNode.customData.identify;
@@ -169,11 +171,13 @@ function myCompareHighlightRanges(selectedNodeId) {
     highlightRanges(selectedNodeId);
     if (otherNode) {
         otherNetwork.selectNodes([otherNode.id]);
+        otherSelectedNodeId = otherNode.id;
         otherNodeLabel.value = otherNode.label;
-        otherHighlights(otherNode.id);
+        otherHighlights(otherSelectedNodeId);
     }
 }
 
+//他者のマップのノードが選択されたとき
 function otherCompareHighlightRanges(otherSelectedNodeId) {
     const otherSelectedNode = otherNodes.get(otherSelectedNodeId);
     console.log(otherSelectedNode);
@@ -187,37 +191,10 @@ function otherCompareHighlightRanges(otherSelectedNodeId) {
     otherHighlightRanges(otherSelectedNodeId);
     if (myNode) {
         network.selectNodes([myNode.id]);
+        selectedNodeId = myNode.id;
         nodeLabel.value = myNode.label;
-        myHighlights(myNode.id);
+        myHighlights(selectedNodeId);
         // network.emit("selectNode", { nodes: [myNode.id] });
-    }
-}
-
-//自身のマップのノードの選択状態を解除
-function myDeselectNode(otherSelectedNodeId) {
-    const otherSelectedNode = otherNodes.get(otherSelectedNodeId);
-    const targetIdentify = otherSelectedNode.customData.identify;
-    // const myNode = nodes.get().find(node => node.customData?.identify === targetIdentify && node.className !== "tag");
-    const myNode = nodes.get({
-        filter: node => node.customData?.identify === targetIdentify && node.className !== "tag"
-    })[0];
-    if (myNode) {
-        network.deselectNodes([myNode.id]);
-        nodeLabel.value = "";
-    }
-}
-
-//他者のマップのノードの選択状態を解除
-function otherDeselectNode(selectedNodeId) {
-    const selectedNode = nodes.get(selectedNodeId);
-    const targetIdentify = selectedNode.customData.identify;
-    // const otherNode = otherNodes.get().find(node => node.customData?.identify === targetIdentify && node.className !== "tag");
-    const otherNode = otherNodes.get({
-        filter: node => node.customData?.identify === targetIdentify && node.className !== "tag"
-    })[0];
-    if (otherNode) {
-        otherNetwork.deselectNodes([otherNode.id]);
-        otherNodeLabel.value = "";
     }
 }
 
@@ -258,9 +235,7 @@ function saveHighlights() {
     //     return;
     // }
 
-    // currentNodeRange.push(range);
-    console.log(currentNodeRange);
-    console.log("highlight saved: ", selectedNodeId, range);   //ノードIDと対応しており，段落番号と対応してない
+    // currentNodeRange.push(range)
 
     const classlist = currentNode.className === "paragraph" ? "paragraph-highlight" : "chapter-highlight";
 
@@ -277,8 +252,13 @@ function saveHighlights() {
         // 実際のDOM上の対応する `SPAN` を取得してクラスを追加
         const realSpan = document.querySelector(`span[char_id="${span.getAttribute("char_id")}"]`);     //spanはコピーであるため，実際のDOMに変換する必要がある
         if (realSpan) {
-            realSpan.classList.remove("range-highlight");
-            realSpan.classList.add(classlist);
+            if (otherMap && realSpan.classList.contains(`other-${classlist}`)) {
+                realSpan.classList.remove(`other-${classlist}`);
+                realSpan.classList.add(`mix-${classlist}`);
+            } else {
+                realSpan.classList.remove("range-highlight");
+                realSpan.classList.add(classlist);
+            }
         }
     });
     console.log(currentNodeHighlightRange);
@@ -402,6 +382,7 @@ function clearHighlights() {
     });
 }
 
+//自身と他者の両方のハイライトを削除する（clearHighlightと分ける必要はあまりない）
 function allClearHighlights() {
     const highlightedElements = document.querySelectorAll(".paragraph-highlight, .chapter-highlight, .other-paragraph-highlight, .other-chapter-highlight, .mix-paragraph-highlight, .mix-chapter-highlight, .range-highlight");
     highlightedElements.forEach(element => {
@@ -439,14 +420,19 @@ function removeHighlights() {
 
     // DOM 上で対応する `span` タグからハイライトを削除
     // const spanElements = Array.from(range.cloneContents().querySelectorAll("span[char_id^='p_txt_']"));
-
+    const classlist = currentNode.className === "paragraph" ? "paragraph-highlight" : "chapter-highlight";
     // `customData.highlight` から該当の `span` を削除
     currentNode.customData.highlight = currentNode.customData.highlight.filter(charId => {
         if (selectedCharIds.includes(charId)) {
             const realSpan = document.querySelector(`span[char_id="${charId}"]`);
             if (realSpan) {
-                realSpan.classList.remove("paragraph-highlight", "chapter-highlight");
-                realSpan.classList.add("range-highlight");
+                if (otherMap && realSpan.classList.contains(`mix-${classlist}`)) {
+                    realSpan.classList.remove(`mix-${classlist}`);
+                    realSpan.classList.add(`other-${classlist}`);
+                } else {
+                    realSpan.classList.remove(classlist); //"paragraph-highlight", "chapter-highlight"
+                    realSpan.classList.add("range-highlight");
+                }
             }
             return false;    //削除対象
         }

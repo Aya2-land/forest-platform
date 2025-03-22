@@ -1,6 +1,6 @@
 #highlight_conmenu {
     width: 160px;
-	height: 250px;
+	height: auto;
 	background-color: #f0f0f0;
 	border: 1px solid #999999;
 	display: none;

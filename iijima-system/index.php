@@ -257,6 +257,11 @@ if (isset($_POST["logout"])) { //logoutボタンが押された
                   </button>
                 </li>
                 <li>
+                  <button class="button4" onclick="deleteEdge();">
+                    結束関係の削除
+                  </button>
+                </li>
+                <li>
                   <button class="button4" onclick="enableEditing();">
                     ノードの編集
                   </button>

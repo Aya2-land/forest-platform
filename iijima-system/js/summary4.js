@@ -43,9 +43,11 @@ const network = new vis.Network(container, data, options);     //summary_areaの
 
 // ノード追加の関数　　　
 function add_paragraph(granularity) {
+    highlight_conmenu.style.display = "none";
     const selection = window.getSelection();
     if (!selection || selection.toString().trim() === "") {
         alert("ノードと対応付ける範囲を選択してください");
+        highlight_conmenu.style.display = "none";
         return;
     }
     const range = selection.getRangeAt(0);
@@ -69,6 +71,9 @@ function add_paragraph(granularity) {
 
         if (number === null) {
             return;
+        } else {
+            number = number.trim();   //前後の空白を削除
+            number = number.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
         }
 
         //数字ではない場合は再入力
@@ -78,8 +83,6 @@ function add_paragraph(granularity) {
             break;
         }
     }
-
-    number = number.trim()
 
     let label = null;
     let background = null;
@@ -150,8 +153,8 @@ function add_paragraph(granularity) {
         y: initialPosition_y - 25,         //初期位置
         shape: "box",
         color: {
-            background: background,
-            border: border
+            background: "#D3D3D3",     //background
+            border: "black"              //border
         },
         height: 60,
         zIndex: 0,
@@ -261,6 +264,7 @@ network.on("selectNode", function (event) {
                 const newLabel = document.getElementById("nodeLabelText").value;
                 const boundingBox = network.getBoundingBox(selectedNodeId);
                 const newHeight = boundingBox.bottom - boundingBox.top;
+                console.log(newHeight);
                 //ノードのラベルを更新
                 nodes.update({
                     id: selectedNodeId,
@@ -310,14 +314,17 @@ function deselectNode() {
     selectedNodeId = null;
     nodeLabel.value = "";
     clearHighlights();
+    // selection.removeAllRanges();
 }
 
 function bothDeselectNode() {
-    //他者のマップのノードの選択を解除
-    otherDeselectNode(selectedNodeId);
+    otherNetwork.unselectAll();
     selectedNodeId = null;
+    otherSelectedNodeId = null;
     nodeLabel.value = "";
+    otherNodeLabel.value = "";
     allClearHighlights();
+    // selection.removeAllRanges();
 }
 
 //ノードを動かし始めた瞬間にもメニューを消す
@@ -395,6 +402,8 @@ function connectNodes(binding) {
                 selectedNodesId.push(event.nodes[0]);
             } else {
                 alert("別のノードを選択してください");
+                selectedNodesId = [];         //リセットする必要はあるのか
+                network.off("selectNode", selectNodeHandler);
                 return;                                  //network.on("selectNode", function ())の処理を終える
             }
 
@@ -410,76 +419,75 @@ function connectNodes(binding) {
 
                 let edgeData = null;
 
-                if (existingEdge.length === 0) {
-                    switch (binding) {
-                        case "parallel":
-                            edgeData = {
-                                from: selectedNodesId[0],
-                                to: selectedNodesId[1],
-                                arrows: {
-                                    from: { enabled: true, type: "circle" },
-                                    to: { enabled: true, type: "circle" }
-                                },
-                            };
-                            break;
-                        case "contrast":
-                            edgeData = {
-                                from: selectedNodesId[0],
-                                to: selectedNodesId[1],
-                                arrows: {
-                                    from: { enabled: true, type: "inv_curve" },
-                                    to: { enabled: true, type: "inv_curve" }
-                                }
-                            };
-                            break;
-                        case "adversative":
-                            edgeData = {
-                                from: selectedNodesId[0],
-                                to: selectedNodesId[1],
-                                arrows: "from,to"
-                            };
-                            break;
-                        case "causeAndeffect":
-                            edgeData = {
-                                from: selectedNodesId[0],
-                                to: selectedNodesId[1],
-                                arrows: {
-                                    from: { enabled: true, type: "box" },
-                                    to: { enabled: true, type: "diamond" }
-                                }
-                            };
-                            break;
-                        case "abstractAndconcrete":
-                            edgeData = {
-                                from: selectedNodesId[0],
-                                to: selectedNodesId[1],
-                                arrows: {
-                                    from: { enabled: true, type: "box" },
-                                    to: { enabled: true, type: "inv_triangle" }
-                                }
-                            };
-                            break;
-                        default:
-                            edgeData = {
-                                from: selectedNodesId[0],
-                                to: selectedNodesId[1],
-                                arrows: {
-                                    from: { enabled: true, type: "box" },
-                                    to: { enabled: true, type: "arrow" }
-                                }
-                            };
-                            break;
-                    }
-                    // const edgeData = {
-                    //     from: selectedNodesId[0],
-                    //     to: selectedNodesId[1]
-                    // };
-                    console.log(edgeData);
-                    edges.add(edgeData);
-
-                } else {
-                    alert("この2つのノードには既にエッジが引かれています");
+                if (existingEdge.length > 0) {
+                    //既存のエッジを削除
+                    edges.remove(existingEdge);
                 }
+
+
+                switch (binding) {
+                    case "parallel":
+                        edgeData = {
+                            from: selectedNodesId[0],
+                            to: selectedNodesId[1],
+                            arrows: {
+                                from: { enabled: true, type: "circle" },
+                                to: { enabled: true, type: "circle" }
+                            },
+                        };
+                        break;
+                    case "contrast":
+                        edgeData = {
+                            from: selectedNodesId[0],
+                            to: selectedNodesId[1],
+                            arrows: {
+                                from: { enabled: true, type: "inv_curve" },
+                                to: { enabled: true, type: "inv_curve" }
+                            }
+                        };
+                        break;
+                    case "adversative":
+                        edgeData = {
+                            from: selectedNodesId[0],
+                            to: selectedNodesId[1],
+                            arrows: "from,to"
+                        };
+                        break;
+                    case "causeAndeffect":
+                        edgeData = {
+                            from: selectedNodesId[0],
+                            to: selectedNodesId[1],
+                            arrows: {
+                                from: { enabled: true, type: "box" },
+                                to: { enabled: true, type: "diamond" }
+                            }
+                        };
+                        break;
+                    case "abstractAndconcrete":
+                        edgeData = {
+                            from: selectedNodesId[0],
+                            to: selectedNodesId[1],
+                            arrows: {
+                                from: { enabled: true, type: "box" },
+                                to: { enabled: true, type: "inv_triangle" }
+                            }
+                        };
+                        break;
+                    default:
+                        edgeData = {
+                            from: selectedNodesId[0],
+                            to: selectedNodesId[1],
+                            arrows: {
+                                from: { enabled: true, type: "box" },
+                                to: { enabled: true, type: "arrow" }
+                            }
+                        };
+                        break;
+                }
+                console.log(edgeData);
+                edges.add(edgeData);
+
+                network.unselectAll();
 
                 network.off("selectNode", selectNodeHandler);
 
@@ -492,6 +500,144 @@ function connectNodes(binding) {
         network.on("selectNode", selectNodeHandler);
 
     }
+}
+
+function deleteEdge() {
+    let selectedNodesId = [];
+
+    if (selectedNodeId) {
+        blockConmenu = false;
+        node_conmenu.style.display = "none";
+
+        selectedNodesId.push(selectedNodeId);
+        selectedNodeId = null;
+
+        //ノード選択時の処理
+        const selectNodeHandler = function (event) {
+            if (event.nodes[0] !== selectedNodesId[0]) {
+                selectedNodesId.push(event.nodes[0]);
+            } else {
+                alert("別のノードを選択してください");
+                selectedNodesId = [];
+                network.off("selectNode", selectNodeHandler);
+                return;
+            }
+
+            console.log(selectedNodesId);
+            if (selectedNodesId.length === 2) {
+                const existingEdge = edges.get({
+                    filter: function (edge) {
+                        return (edge.from === selectedNodesId[0] && edge.to === selectedNodesId[1]) ||
+                            (edge.to === selectedNodesId[0] && edge.from === selectedNodesId[1])
+                    }
+                });
+
+                if (existingEdge.length > 0) {
+                    //エッジが存在する場合にエッジを削除
+                    edges.remove(existingEdge);
+                } else {
+                    alert("このノード間にはエッジはありません");
+                }
+
+                network.unselectAll();
+
+                network.off("selectNode", selectNodeHandler);
+                //ノード選択のリセット
+                selectedNodesId = [];
+            }
+        };
+
+        network.on("selectNode", selectNodeHandler);
+    }
+}
+
+//エッジの違いを赤色でハイライト
+function updateDifferingEdges() {
+    //ノードマップを作成
+    const nodeMap = new Map();
+    const otherNodeMap = new Map();
+    nodes.forEach(node => {
+        nodeMap.set(node.id, node.customData?.identify || null);
+    });
+    otherNodes.forEach(node => {
+        otherNodeMap.set(node.id, node.customData?.identify || null);
+    });
+
+    //自身のエッジを全て調べる
+    edges.forEach(edge => {
+        const fromIdentify = nodeMap.get(edge.from);
+        const toIdentify = nodeMap.get(edge.to);
+
+        //他者のエッジから端点が同じエッジを取得
+        const matchingEdges = otherEdges.get({
+            filter: function (e) {
+                const otherFromIdentify = otherNodeMap.get(e.from);
+                const otherToIdentify = otherNodeMap.get(e.to);
+                return (fromIdentify === otherFromIdentify && toIdentify === otherToIdentify) ||
+                    (fromIdentify === otherToIdentify && toIdentify === otherFromIdentify);
+            }
+        });
+
+        if (matchingEdges.length === 0) {
+            //他者のエッジが存在しない場合，自身のエッジのみ赤色に変更
+            edges.update({
+                id: edge.id,
+                color: { color: "red" }
+            });
+        } else {
+            const otherEdge = matchingEdges[0];
+
+            // arrows プロパティはオブジェクトまたは文字列の可能性があるため、文字列化して比較
+            const arrowSelf = edge.arrows ? (typeof edge.arrows === "object" ? JSON.stringify(edge.arrows) : edge.arrows) : "";
+            const arrowOther = otherEdge.arrows ? (typeof otherEdge.arrows === "object" ? JSON.stringify(otherEdge.arrows) : otherEdge.arrows) : "";
+
+            if (arrowSelf === arrowOther) {
+                //矢印設定が同じ場合，双方のエッジの色を青に戻る（エッジを変更した場合）
+                edges.update({
+                    id: edge.id,
+                    color: { color: "#85B9FF" }
+                });
+                otherEdges.update({
+                    id: otherEdge.id,
+                    color: { color: "#85B9FF" }
+                });
+            }
+            if (arrowSelf !== arrowOther) {
+                //矢印設定が異なる場合，双方のエッジの色を赤に変更
+                edges.update({
+                    id: edge.id,
+                    color: { color: "red" }
+                });
+                otherEdges.update({
+                    id: otherEdge.id,
+                    color: { color: "red" }
+                });
+            }
+        }
+    });
+
+    //他者のエッジを全て調べる
+    otherEdges.forEach(otherEdge => {
+        const otherFromIdentify = otherNodeMap.get(otherEdge.from);
+        const otherToIdentify = otherNodeMap.get(otherEdge.to);
+
+        const matchingEdges = edges.get({
+            finlter: function (e) {
+                const fromIdentify = nodeMap.get(e.from);
+                const toIdentify = nodeMap.get(e.to);
+                return (otherFromIdentify === fromIdentify && otherToIdentify === toIdentify) ||
+                    (otherFromIdentify === toIdentify && otherToIdentify === fromIdentify);
+            }
+        });
+
+        if (matchingEdges.length === 0) {
+            //自身のエッジに存在しない場合，他者のエッジを赤色に変更
+            otherEdges.update({
+                id: otherEdge.id,
+                color: { color: "red" }
+            });
+        }
+    });
 }
 
 let editBox = document.getElementById("editBox");
@@ -517,11 +663,17 @@ function enableEditing() {
 // ノード削除の関数
 function deleteNode() {
     if (selectedNodeId) {
+        //ノードに接続されているエッジを削除
+        edges.remove(edges.get({
+            filter: function (edge) {
+                return edge.from === selectedNodeId || edge.to === selectedNodeId;
+            }
+        }));
         nodes.remove([selectedNodeId, `tag${selectedNodeId}`]);
         node_conmenu.style.display = "none";
         deselectNode();
     }
-    selectedNodeId = null;
+    // selectedNodeId = null;  deselectNode()でselectedNodeId = nullがある
 }
 
 function saveNetwork() {
@@ -571,7 +723,7 @@ function loadNetwork() {
                 edges: otherEdges
             }, options);
 
-            
+
             otherNetwork.on("selectNode", function (event) {
                 if (event.nodes.length > 0) {   // この条件は必要なのか
                     otherSelectedNodeId = event.nodes[0];
@@ -585,12 +737,26 @@ function loadNetwork() {
             });
 
             otherNetwork.on("deselectNode", function () {     //直接deselectNode()を呼び出してはいけない
-                //自身のマップのノードの選択状態を解除する
-                myDeselectNode(otherSelectedNodeId);
                 //document_areaのハイライトを解除する
                 otherSelectedNodeId = null;
+                selectedNodeId = null;
                 otherNodeLabel.value = "";
+                nodeLabel.value = "";
+                network.unselectAll();
                 allClearHighlights();
+                // selection.removeAllRanges();
+            });
+
+            updateDifferingEdges();   //エッジの違いを強調
+
+            //エッジの追加および更新された場合
+            edges.on("add", function (event, properties, senderId) {
+                updateDifferingEdges();
+            });
+
+            //エッジが削除された場合
+            edges.on("remove", function (event, properties, senderId) {
+                updateDifferingEdges();
             });
 
         } catch (e) {
@@ -600,21 +766,24 @@ function loadNetwork() {
     reader.readAsText(file);
 }
 
+//マップが比較されているか否か格納する
 let otherMap = false;
 
 function displayOtherMap() {
     const representation = $("#representation");
     if (representation.prop("checked")) {
         otherMap = true;
-        $("#summary_area").css("height", "calc(50% - 92px)");
+        allClearHighlights();
+        $("#summary_area").css("height", "calc(50% - 112px)");
         $("#labelEditing_area").css({
-            height: "50px",
+            height: "70px",
             borderBottom: "solid 4px #F6D4D8"
         });
         $("#other_summary_area").css("display", "block");
         $("#other_nodeLabelText").css("display", "block");
     } else {
         otherMap = false;
+        allClearHighlights();
         $("#summary_area").css("height", "calc(100% - 142px)");
         $("#labelEditing_area").css({
             height: "100px",
