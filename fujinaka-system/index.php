@@ -204,6 +204,8 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                 <input type="button" id="ln_deleteNode" value="ノード削除">
                 <input type="button" id="ln_startEditEdge" value="エッジ追加">
                 <input type="button" id="ln_deleteEdge" value="エッジ削除">
+                <input type="button" id="ln_maketriangle" value="三角ロジックを作成する">
+                <input type="button" id="ln_createtriangle" value="三角ロジックを追加する">
               </div>
               <div id ="preview_menu">
                   <!-- 【Preview】 -->

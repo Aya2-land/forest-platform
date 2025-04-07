@@ -28,15 +28,15 @@ class LogicNetwork {
         this.ownNetwork.on('doubleClick', this.doubleclick.bind(this));
   }
 
-setNodes(newNodes) {
+  setNodes(newNodes) {
     this.nodes = newNodes;
-}
-setEdges(newEdges) {
+  }
+  setEdges(newEdges) {
     this.edges = newEdges;
-}
-setOptions(options) {
+  }
+  setOptions(options) {
     this.options = options;
-}
+  }
 
   //エッジ編集できるか切り替え
   SelectEditEdge(){
@@ -279,6 +279,97 @@ setOptions(options) {
     return selected_node; // 選択中のノード情報を返す
   }
 
+  maketriangle() {
+    // 三角形の中心座標とサイズを設定
+    const centerX = 0; // 中心のX座標
+    const centerY = 0; // 中心のY座標
+    const size = 100; // 三角形の辺の長さ
+
+    // 三角形の頂点の座標を計算
+    const node1X = centerX;
+    const node1Y = centerY - size / Math.sqrt(3); // 上の頂点
+    const node2X = centerX - size / 2;
+    const node2Y = centerY + size / (2 * Math.sqrt(3)); // 左下の頂点
+    const node3X = centerX + size / 2;
+    const node3Y = centerY + size / (2 * Math.sqrt(3)); // 右下の頂点
+
+    // ノードを追加
+    const node1Id = this.generateUniqueNumberText();
+    const node2Id = this.generateUniqueNumberText();
+    const node3Id = this.generateUniqueNumberText();
+
+    this.addNode(node1Id, "Node 1", node1X, node1Y);
+    this.addNode(node2Id, "Node 2", node2X, node2Y);
+    this.addNode(node3Id, "Node 3", node3X, node3Y);
+
+    // データベースにノードを記録
+    defaultRecordLogicNetwork.record_LogicNode(node1Id, "Node 1", node1X, node1Y);
+    defaultRecordLogicNetwork.record_LogicNode(node2Id, "Node 2", node2X, node2Y);
+    defaultRecordLogicNetwork.record_LogicNode(node3Id, "Node 3", node3X, node3Y);
+
+    // エッジを追加して三角形を形成
+    this.addEdge(node1Id, node2Id);
+    this.addEdge(node2Id, node3Id);
+    this.addEdge(node3Id, node1Id);
+
+    defaultRecordLogicNetwork.record_LogicEdge(node1Id, node2Id);
+    defaultRecordLogicNetwork.record_LogicEdge(node2Id, node3Id);
+    defaultRecordLogicNetwork.record_LogicEdge(node3Id, node1Id);
+
+    console.log("三角形を作成しました");
+  }
+
+  createTriangleFromSelectedNode() {
+    // 選択されているノードを取得
+    const selectedNodeId = this.ownNetwork.getSelection().nodes[0];
+    if (!selectedNodeId) {
+      console.error("ノードが選択されていません");
+      alert("ノードを選択してください");
+      return;
+    }
+  
+    // 選択されたノードの情報を取得
+    const baseNode = this.nodes.get(selectedNodeId);
+    if (!baseNode) {
+      console.error("選択されたノードが見つかりません");
+      return;
+    }
+  
+    // 基準ノードの座標
+    const centerX = baseNode.x;
+    const centerY = baseNode.y;
+    const size = 100; // 三角形の辺の長さ
+  
+    // 三角形の他の2つの頂点の座標を計算
+    const node2X = centerX - size / 2;
+    const node2Y = centerY + size / (2 * Math.sqrt(3)); // 左下の頂点
+    const node3X = centerX + size / 2;
+    const node3Y = centerY + size / (2 * Math.sqrt(3)); // 右下の頂点
+  
+    // 新しいノードのIDを生成
+    const node2Id = this.generateUniqueNumberText();
+    const node3Id = this.generateUniqueNumberText();
+  
+    // 新しいノードを追加
+    this.addNode(node2Id, "Node 2", node2X, node2Y);
+    this.addNode(node3Id, "Node 3", node3X, node3Y);
+  
+    // エッジを追加して三角形を形成
+    this.addEdge(selectedNodeId, node2Id);
+    this.addEdge(node2Id, node3Id);
+    this.addEdge(node3Id, selectedNodeId);
+  
+    // データベースに記録
+    defaultRecordLogicNetwork.record_LogicNode(node2Id, "Node 2", node2X, node2Y);
+    defaultRecordLogicNetwork.record_LogicNode(node3Id, "Node 3", node3X, node3Y);
+    defaultRecordLogicNetwork.record_LogicEdge(selectedNodeId, node2Id);
+    defaultRecordLogicNetwork.record_LogicEdge(node2Id, node3Id);
+    defaultRecordLogicNetwork.record_LogicEdge(node3Id, selectedNodeId);
+  
+    console.log("三角形を作成しました");
+  }
+  
+
   jm_to_ls(){
 
     let selected_node = CheckSelectedNode();
@@ -441,6 +532,12 @@ window.addEventListener('load', () => {
   });
   $(`ln_addjmNode`).on("click", e => {
     defaultLogicNetwork.jm_to_ls();
+  });
+  $(`#ln_maketriangle`).on("click", e => {
+    defaultLogicNetwork.maketriangle();
+  });
+  $(`#ln_createtriangle`).on("click", e => {
+    defaultLogicNetwork.createTriangleFromSelectedNode();
   });
 });
 
