@@ -111,7 +111,7 @@ function NodeVersionUpdate(nodes){
 
   }else if(nodes){
 
-    // console.log(nodes);
+    console.log(nodes);
     var nodeVERSION = jsMind.util.uuid.newid();
     $.ajax({
       url: "php/version_update.php",
@@ -191,7 +191,6 @@ function MapSnapShot(){
         type: "POST",
         data: { data : "map"},
         success: function(e){
-          console.log(e);
           if(e == 'null'){
             alert("マップverが更新されました");
             show_edit_reason();
