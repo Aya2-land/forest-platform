@@ -137,7 +137,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             <input class="button5" type="button" onclick="showGeneration();" value="問い一覧">
                         </div>
                         <div id="mind_all">
-                            <input class="button5" type="button" onclick="showObjectMap();" value="過去の目標"> 
+                            <input class="button5" type="button" onclick="showObjectMap();" value="目標一覧"> 
                         </div>
                     </div>
 
