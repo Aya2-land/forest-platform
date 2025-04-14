@@ -3471,54 +3471,49 @@
 //2023-01-28 shimizu
 async function GetNodeId_ContentRelationTable(node1_id)
 {
+    console.log("これ動いているん？？？？？？？？？？");
     await $.ajax({
         url: "php/get_NodeIDLogicRelation.php",
         type: "POST",
-        data: { node1_id : node1_id},
+        data: { node1_id : node1_id },
         success: function(arr){
-          if(arr == "[]"){
-            // console.log(arr);
-            // console.log("何もなかった");
-          }else{
-            //console.log(arr);
-            var parse = JSON.parse(arr);
-            console.log(parse);
+            console.log("返ってきたデータ:", arr); // ←ここで中身を確認！
 
-            console.log("これには関係性がある");
-            //1.関係性があるノードの色を変更する
-            console.log(parse.length);
+            if (arr == "[]") {
+                // 何もない場合の処理
+                console.log("関係性データなし");
+            } else {
+                try {
+                    var parse = JSON.parse(arr);
+                    console.log("パース後のデータ:", parse);
+                    
+                    console.log("これには関係性がある");
+                    console.log(parse.length);
 
-            var jmnode = document.getElementsByTagName("jmnode");
+                    var jmnode = document.getElementsByTagName("jmnode");
 
-            for(var logic_pair_count = 0; logic_pair_count<parse.length; logic_pair_count++){
-                //console.log(parse[logic_pair_count].node2_id); //ペアのnode_id
-                // var LogicPairNodeID  = parse[logic_pair_count].node2_id;
-                for(var node_count=0; node_count<jmnode.length; node_count++){
-                    var LogicPairNodeID1  = parse[logic_pair_count].node1_id;
-                    var LogicPairNodeID2  = parse[logic_pair_count].node2_id;
-                    //選択したノードにペアとなるノードがあればそのノードの色を変更
-                    if(jmnode[node_count].getAttribute("nodeid") == LogicPairNodeID1 || jmnode[node_count].getAttribute("nodeid") == LogicPairNodeID2){
-                        jmnode[node_count].style.backgroundColor = "#ff69b4";
-                        jmnode[node_count].style.border = "5px solid #9fd94f";
+                    for (var logic_pair_count = 0; logic_pair_count < parse.length; logic_pair_count++) {
+                        var LogicPairNodeID1 = parse[logic_pair_count].node1_id;
+                        var LogicPairNodeID2 = parse[logic_pair_count].node2_id;
+
+                        for (var node_count = 0; node_count < jmnode.length; node_count++) {
+                            var nodeId = jmnode[node_count].getAttribute("nodeid");
+                            if (nodeId == LogicPairNodeID1 || nodeId == LogicPairNodeID2) {
+                                jmnode[node_count].style.backgroundColor = "#ff69b4";
+                                jmnode[node_count].style.border = "5px solid #9fd94f";
+                            }
+                        }
                     }
+                } catch (e) {
+                    console.error("JSON.parse に失敗:", e);
+                    console.log("受け取った生データ（不正な可能性あり）:", arr);
                 }
-
-                // //追記
-                // for(var node_count=0; node_count<jmnode.length; node_count++){
-                //     var LogicPairNodeID  = parse[logic_pair_count].node1_id;
-                //     //選択したノードにペアとなるノードがあればそのノードの色を変更
-                //     if(jmnode[node_count].getAttribute("nodeid") == LogicPairNodeID){
-                //         jmnode[node_count].style.backgroundColor = "#ff69b4";
-                //         jmnode[node_count].style.border = "5px solid #9fd94f";
-                //     }
-                // }
-                // //追記
             }
-            
-          }
         },
-        error:function(){
-          console.log("エラーです");
+        error: function(xhr, status, error){
+            console.log("AJAX通信エラーです");
+            console.log("status:", status);
+            console.log("error:", error);
         }
     });
 }

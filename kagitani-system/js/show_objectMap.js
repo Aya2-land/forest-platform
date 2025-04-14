@@ -1,6 +1,6 @@
 //目標マップの切り替えを行う
 let object_map_id = null; // グローバル変数の定義
-let isObjectMapVisible = false;  // オブジェクトマップが表示されているかどうかを管理するフラグ
+//let isObjectMapVisible = false;  // オブジェクトマップが表示されているかどうかを管理するフラグ
 
 
 // "過去の目標" ボタンをクリックした時に実行される関数
