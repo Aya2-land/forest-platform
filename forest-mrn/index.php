@@ -1,11 +1,7 @@
 <?php
 session_start();
-// require("../php/connect_db.php");
-require("php/function.php");
-
+require("../php/connect_db.php");
 require("php/sheet.php");
-
-$pdo = connectDB_Test();
 
 // ログイン状態のチェック
 if (!isset($_SESSION["USERID"]) ) { //ログイン出来ていない
@@ -85,7 +81,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/get_thinking.js"></script>
         <script type="text/javascript" src="js/jsmind.screenshot.js"></script>
         <script type="text/javascript" src="js/change_tab.js"></script>
-        <script type="text/javascript" src="./js/meeting-reflection-network.js"></script>
+        <script type="text/javascript" src="../js/meeting-reflection-network.js"></script>
         <link rel="stylesheet" type="text/css" href="../css/meeting-reflection-network.css" />
         <script type="text/javascript">
         window.onbeforeunload = function(e) {e.returnValue = "ページを離れようとしています。よろしいですか？";}
