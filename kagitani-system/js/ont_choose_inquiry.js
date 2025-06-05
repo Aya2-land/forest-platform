@@ -2,7 +2,6 @@
 
 //問いエリアの初期化とhozo.xmlの読み込み
 function choose_xmlLoad(){
-
     $("#testxml").html("");
     $("#intention").html("");
     $("#rationality").html("");
@@ -27,9 +26,17 @@ function choose_xmlLoad(){
 
 
 // hozo.xmlのパースが成功した場合に，<W_CONCEPTS>のそれぞれに指定関数を適用
-function choose_parse_xml(xml,status){
-	if(status!='success')return;
-	$(xml).find('W_CONCEPTS').each(choose_disp);
+function choose_parse_xml(xml, status) {
+    console.log("Status:", status);  // statusの値を確認
+    if (status != 'success') {
+        console.log("Request was not successful. Status:", status);
+        return;
+    }
+
+    $(xml).find('W_CONCEPTS').each(function(index, element) {
+        console.log("Found W_CONCEPTS:", element);  // 各 <W_CONCEPTS> 要素を確認
+        choose_disp(element);  // choose_disp関数を適用
+    });
 }
 
 // HTML生成関数

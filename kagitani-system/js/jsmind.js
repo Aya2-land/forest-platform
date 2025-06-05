@@ -1281,11 +1281,12 @@
                     }
 
                 }
-
                 //yoshioka root(真ん中の⭐️のやつ)クリック時は，問いは絞らない設定にしてみたよ
                 if(thisId != "root"){
+                     console.log("これでどうよ");
                      //問い一覧の表示を，選択した問いと関連した問いに絞る
                      choose_xmlLoad();
+                     console.log("dekita?");
                 }
 
                 for(i=0; i<jmnode.length; i++){
@@ -3471,24 +3472,23 @@
 //2023-01-28 shimizu
 async function GetNodeId_ContentRelationTable(node1_id)
 {
-    console.log("これ動いているん？？？？？？？？？？");
     await $.ajax({
         url: "php/get_NodeIDLogicRelation.php",
         type: "POST",
         data: { node1_id : node1_id },
         success: function(arr){
-            console.log("返ってきたデータ:", arr); // ←ここで中身を確認！
+            // console.log("返ってきたデータ:", arr); // ←ここで中身を確認！
 
             if (arr == "[]") {
                 // 何もない場合の処理
-                console.log("関係性データなし");
+                // console.log("関係性データなし");
             } else {
                 try {
                     var parse = JSON.parse(arr);
-                    console.log("パース後のデータ:", parse);
+                    // console.log("パース後のデータ:", parse);
                     
-                    console.log("これには関係性がある");
-                    console.log(parse.length);
+                    // console.log("これには関係性がある");
+                    // console.log(parse.length);
 
                     var jmnode = document.getElementsByTagName("jmnode");
 
@@ -3505,8 +3505,8 @@ async function GetNodeId_ContentRelationTable(node1_id)
                         }
                     }
                 } catch (e) {
-                    console.error("JSON.parse に失敗:", e);
-                    console.log("受け取った生データ（不正な可能性あり）:", arr);
+                    // console.error("JSON.parse に失敗:", e);
+                    // console.log("受け取った生データ（不正な可能性あり）:", arr);
                 }
             }
         },

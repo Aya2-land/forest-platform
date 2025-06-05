@@ -166,43 +166,43 @@ function showGeneration(){
 
 }
 
-// function showGeneration() {
-//     console.log("showGeneration関数が実行されました");
+function showGeneration() {
+    console.log("showGeneration関数が実行されました");
 
-//     // もしオブジェクトマップが表示されていたら非表示にする
-//     if (isObjectMapVisible) {
-//         const objectMapArea = document.getElementById("objectMap_area");
-//         if (objectMapArea) {
-//             objectMapArea.style.display = "none";
-//             console.log("objectMap_areaを非表示にしました");
-//             isObjectMapVisible = false; // フラグをリセット
-//         } else {
-//             console.error("objectMap_areaが見つかりません");
-//         }
-//     }
+    // もしオブジェクトマップが表示されていたら非表示にする
+    if (isObjectMapVisible) {
+        const objectMapArea = document.getElementById("objectMap_area");
+        if (objectMapArea) {
+            objectMapArea.style.display = "none";
+            console.log("objectMap_areaを非表示にしました");
+            isObjectMapVisible = false; // フラグをリセット
+        } else {
+            console.error("objectMap_areaが見つかりません");
+        }
+    }
 
-// 	// objectMap_areaを表示
-//     const inquiryArea = document.getElementById("inquiry_area");
-//     if (inquiryArea) {
-//         inquiryArea.style.display = "block";
-//         console.log("inquiryAreaを表示しました");
-//     } else {
-//         console.error("objectMap_areaが見つかりません");
-//     }
+	// objectMap_areaを表示
+    const inquiryArea = document.getElementById("inquiry_area");
+    if (inquiryArea) {
+        inquiryArea.style.display = "block";
+        console.log("inquiryAreaを表示しました");
+    } else {
+        console.error("objectMap_areaが見つかりません");
+    }
 
-// 	console.log("今から問い一覧を表示するよ");
-//     // 問い一覧を表示
-//     $("div#testxml").html("");      //[情報の表出化]　を空白に
-//     $("div#intention").html("");    //[理由・目的]　を空白に
-//     $("div#rationality").html("");  //[合理性]　を空白に
+	console.log("今から問い一覧を表示するよ");
+    // 問い一覧を表示
+    $("div#testxml").html("");      //[情報の表出化]　を空白に
+    $("div#intention").html("");    //[理由・目的]　を空白に
+    $("div#rationality").html("");  //[合理性]　を空白に
 
-//     // 問い一覧のデータを読み込む
-//     c_xmlLoad();
-// }
+    // 問い一覧のデータを読み込む
+    c_xmlLoad();
+}
 
 
 // index.phpを読み込むたびに関数実行
-$(function(){
-	c_xmlLoad();
-	// c_xmlLoadLogicIntention();
-});
+// $(function(){
+// 	c_xmlLoad();
+// 	// c_xmlLoadLogicIntention();
+// });
