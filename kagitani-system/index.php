@@ -188,9 +188,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <button class="button3" id="zoom-out-button" onclick="zoomOut();">
                                         縮小
                                     </button>
-                                    <button class="button4" id="map-snapshot-button" onclick="MapSnapShot();RecordRelation();">
-                                        マップver更新 <!--hatakeyama-->
-                                    </button>
+                                    <!-- <button class="button4" id="map-snapshot-button" onclick="MapSnapShot();RecordRelation();">
+                                        マップver更新 
+                                    </button> -->
                                     
                                     【Screenshot】
                                     <button class="button4" style="width:80px" onclick="screen_shot();">
@@ -302,7 +302,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                         <!-- <li><a href="javascript:void(0);" onClick="NodeAppend()">資料に追加する</a></li> -->
                                         <!--  -->
                                         
-                                        <li>
+                                        <!-- <li>
                                             ノードの変更
                                         </li> 
                                         <li>
@@ -319,18 +319,18 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                             <button class="button4" onclick="remove_node();">
                                                 ノードを削除
                                             </button>
-                                        </li>
-                                        <li>
+                                        </li> -->
+                                        <!-- <li>
                                             <button class="button4" onclick="NodeVersionUpdate(null);">
                                                 ノードを更新
                                             </button>
-                                        </li>
+                                        </li> -->
                                         <li>
                                             <button class="button4" onclick="showThinkingProcessMap();">
-                                                思考過程表出化マップ
+                                                目標手段階層マップ
                                             </button>
                                         </li>
-                                        <li>
+                                        <!-- <li>
                                             ノードを資料へ追加
                                         </li> 
                                         <li>
@@ -342,7 +342,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                             <button class="button4" onclick="NodeAppendLogic()">
                                                 内容として追加する 
                                             </button>
-                                        </li>
+                                        </li> -->
                                         <!-- <li>
                                             <button class="button4" onclick="VersionSpread();RecordRelation()">
                                                 ノードの更新をマップ全体に波及させる
@@ -364,9 +364,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                 <ul>
                                     <li><a href="javascript:void(0);" onClick="LogicRelationChecker()">設定した関係を確認する</a></li>
                                 </ul>
-                                <ul>
+                                <!-- <ul>
                                     <li><a href="javascript:void(0);" onClick="ItemVersionUpdate()">バージョンを更新</a></li>
-                                </ul>
+                                </ul> -->
                             </div>
                             
                             <div id="document_area_conmenu2" >

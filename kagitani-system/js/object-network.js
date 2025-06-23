@@ -287,6 +287,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         return this.nodes;
     }
 
+    //ノードの追加（リロード用）(完了)
     addReloadNode(node_id, node_label, node_type, node_x, node_y) {
         const existingNode = this.nodes.get(node_id);
         if (existingNode) {
@@ -799,17 +800,27 @@ class RecordThinkingProcess{
     }
 
     //エッジの記録(完了)
-    record_Edge (edge_id, edge_start, edge_end){
+    record_Edge(edge_id, edge_start, edge_end) {
         $.ajax({
-            url: "../php/thinking_edit_processmap_maneger.php",
+            url: "php/edit_object_map_maneger.php",
             type: "POST",
-            data: {edge_id: edge_id,
-                edge_start : edge_start,
-                edge_end : edge_end,
-                purpose : 'record',
-                record_thing: 'edge'},
+            data: {
+                edge_id: edge_id,
+                edge_start: edge_start,
+                edge_end: edge_end,
+                purpose: 'record',
+                record_thing: 'edge'
+            },
+            success: function (response) {
+                console.log("✅ edge記録成功:", response);
+            },
+            error: function (xhr, status, error) {
+                console.error("❌ edge記録エラー:", status, error);
+                console.warn("📄 レスポンステキスト:", xhr.responseText);
+            }
         });
     }
+    
 
     //ノードの更新(完了)
     update_Node (select_update, id, node_update_thing1, node_update_thing2){
@@ -960,53 +971,42 @@ class RecordThinkingProcess{
 let process_mode;
 let trigger_list;
 const getProcessMapDataFromDB = (callback) => {
+    //選択されているノードIDとconcept_id
     let selected_node_id;
     let selected_concept_id;
-    if (process_mode == "all") {
+    if(process_mode == "all"){
         selected_node_id = _jm.get_selected_node().id;
         selected_concept_id = Get_NodeInfo(selected_node_id, "concept_id");
-    } else {
+    }else{
         const conceptDiplay = document.getElementById("conceptdisplay");
         selected_node_id = conceptDiplay.getAttribute('nodeid');
-        selected_concept_id = conceptDiplay.getAttribute('conceptid');
+        selected_concept_id = conceptDiplay.getAttribute('conceptid');;
     }
-
-    choose_trigger_xmlLoad()
-        .then(conceptIds => {
-            return new Promise((resolve, reject) => {
-                $.ajax({
+    choose_trigger_xmlLoad().then(conceptIds => {
+        return new Promise((resolve, reject) => {
+            try{
+                return $.ajax({
                     url: "php/object_map_manager.php",
                     type: "POST",
-                    data: {
+                    data: data =  {
                         process_mode: process_mode,
                         selected_node_id: selected_node_id,
                         selected_concept_id: selected_concept_id,
                         concept_ids: conceptIds
                     },
-                    success: (response) => {
-                        try {
-                            const trigger_list = JSON.parse(response);
-                            console.log(trigger_list);
-                            callback(trigger_list);
-                            resolve(trigger_list);
-                        } catch (parseError) {
-                            console.error("JSONパースエラー:", parseError);
-                            reject(parseError);
-                        }
-                    },
-                    error: (xhr, status, error) => {
-                        console.error("AJAX通信エラー:", status, error);
-                        reject(new Error(`AJAX通信エラー: ${status} - ${error}`));
-                    }
+                }).success((r) => {
+                    trigger_list = JSON.parse(r);
+                    console.log(trigger_list);
+                    callback(trigger_list);
                 });
-            });
-        })
-        .catch(error => {
-            console.error("getProcessMapDataFromDBエラー:", error);
-            // 必要ならユーザー通知やフォールバック処理をここで行う
+            } catch (error){
+                reject(error);
+            }
         });
-};
-
+    }).catch(error => {
+        console.error(error); // エラー処理
+    });
+}
 
 const makeTriggerInList = (id, activity_type, concept_label, content, timestamp, trigger_on) => {
     // 左側の発話ノードのリストのところのノードのDOMを構成する
@@ -1098,10 +1098,11 @@ const displayTriggerData = (mode, display_target_area_id) => {
                     defaultThinkingProcess.addTriggerNode("Reload", u.trigger_id, edge_id, from_node, to_node, u.activity_id, u.content, u.activity_type, u.activity_time, u.x, u.y);
                 }
             });
-            console.log("pnodeの中身:", trigger_list_info.pnode);
+            console.log("onodeの中身:", trigger_list_info.onode);
+            console.log("pedgeの中身:", trigger_list_info.pedge);
 
-            trigger_list_info.pnode.map((n) => {
-                defaultThinkingProcess.addReloadNode(n.process_node_id, n.content, n.process_node_type, n.node_x, n.node_y);
+            trigger_list_info.onode.map((n) => {
+                defaultThinkingProcess.addReloadNode(n.object_node_id, n.content, n.object_nodes_type, n.node_x, n.node_y);
             });
             trigger_list_info.pedge.map((n) => {
                 defaultThinkingProcess.addReloadEdge(n.process_edge_id, n.edge_start, n.edge_end, n.label);
@@ -1114,61 +1115,61 @@ const displayTriggerData = (mode, display_target_area_id) => {
             
         });
     }else if(mode=="AddBrother"){
-        getProcessMapDataFromDB ((trigger_list_info) => {
-            // versionノードの表示
-            let bronum = trigger_list_info.brother_num;
-            trigger_list_info.node_versions.forEach((v) => {
-                console.log(bronum[v.node_id]);
-                if(v.broversion){
-                    node_x = defaultThinkingProcess.nodes.get(v.broversion).x;
-                    node_y = v.y;
-                }else{
-                    node_x -= 150
-                }
-                if(!v.y || v.y == '233px'){
-                    node_y = 100;
-                }
-                console.log(node_y);
-                // versionノードで時間軸が同じになるようにx座標を合わせる
-                defaultThinkingProcess.addVersionNode(v.node_version_id, v.content, "versionsBro", v.appeared_at, node_x, node_y);
-                if(from_id != ""){
-                    defaultThinkingProcess.addVersionEdge(from_id, v.node_version_id);
-                }
-                from_id = v.node_version_id;
-                node_x += 150;
-            });
-            // triggerノードの表示
-            trigger_list_info.trigger.forEach((u) => {
-                j++;
-                if(u){
-                    let from_node = u.node_version_from;
-                    let to_node = u.node_version_to;
-                    let edge_ids = defaultThinkingProcess.ownNetwork.getConnectedEdges(from_node);
-                    let num = 0;
-                    for(i = 0; i<edge_ids.length; i++){
-                        if(defaultThinkingProcess.edges.get(edge_ids[i]).group == "versionEdges" || defaultThinkingProcess.edges.get(edge_ids[i]).group == "trigger_from"){
-                            //(versionEdgesのときなど)自身が指されている(左側のものと繋がっている)edgeを除外
-                            if(defaultThinkingProcess.ownNetwork.getConnectedNodes(edge_ids[i])[1] != from_node){
-                                num = i;
-                            }
-                        }
-                    }
-                    let edge_id = edge_ids[num];
-                    node_x = (defaultThinkingProcess.nodes.get(from_node).x + defaultThinkingProcess.nodes.get(to_node).x)/2;
-                    node_y = defaultThinkingProcess.nodes.get(from_node).y;
-                    defaultThinkingProcess.addTriggerNode("Reload", u.trigger_id, edge_id, from_node, to_node, u.activity_id, u.content, u.activity_type, u.activity_time, node_x, node_y);
-                }
-            });
-            trigger_list_info.pnode.map((n) => {
-                defaultThinkingProcess.addReloadNode(n.process_node_id, n.content, n.process_node_type, n.node_x, n.node_y);
-            });
-            trigger_list_info.pedge.map((n) => {
-                defaultThinkingProcess.addReloadEdge(n.process_edge_id, n.edge_start, n.edge_end, n.label);
-            });
+        // getProcessMapDataFromDB ((trigger_list_info) => {
+        //     // versionノードの表示
+        //     let bronum = trigger_list_info.brother_num;
+        //     trigger_list_info.node_versions.forEach((v) => {
+        //         console.log(bronum[v.node_id]);
+        //         if(v.broversion){
+        //             node_x = defaultThinkingProcess.nodes.get(v.broversion).x;
+        //             node_y = v.y;
+        //         }else{
+        //             node_x -= 150
+        //         }
+        //         if(!v.y || v.y == '233px'){
+        //             node_y = 100;
+        //         }
+        //         console.log(node_y);
+        //         // versionノードで時間軸が同じになるようにx座標を合わせる
+        //         defaultThinkingProcess.addVersionNode(v.node_version_id, v.content, "versionsBro", v.appeared_at, node_x, node_y);
+        //         if(from_id != ""){
+        //             defaultThinkingProcess.addVersionEdge(from_id, v.node_version_id);
+        //         }
+        //         from_id = v.node_version_id;
+        //         node_x += 150;
+        //     });
+        //     // triggerノードの表示
+        //     trigger_list_info.trigger.forEach((u) => {
+        //         j++;
+        //         if(u){
+        //             let from_node = u.node_version_from;
+        //             let to_node = u.node_version_to;
+        //             let edge_ids = defaultThinkingProcess.ownNetwork.getConnectedEdges(from_node);
+        //             let num = 0;
+        //             for(i = 0; i<edge_ids.length; i++){
+        //                 if(defaultThinkingProcess.edges.get(edge_ids[i]).group == "versionEdges" || defaultThinkingProcess.edges.get(edge_ids[i]).group == "trigger_from"){
+        //                     //(versionEdgesのときなど)自身が指されている(左側のものと繋がっている)edgeを除外
+        //                     if(defaultThinkingProcess.ownNetwork.getConnectedNodes(edge_ids[i])[1] != from_node){
+        //                         num = i;
+        //                     }
+        //                 }
+        //             }
+        //             let edge_id = edge_ids[num];
+        //             node_x = (defaultThinkingProcess.nodes.get(from_node).x + defaultThinkingProcess.nodes.get(to_node).x)/2;
+        //             node_y = defaultThinkingProcess.nodes.get(from_node).y;
+        //             defaultThinkingProcess.addTriggerNode("Reload", u.trigger_id, edge_id, from_node, to_node, u.activity_id, u.content, u.activity_type, u.activity_time, node_x, node_y);
+        //         }
+        //     });
+        //     trigger_list_info.pnode.map((n) => {
+        //         defaultThinkingProcess.addReloadNode(n.process_node_id, n.content, n.process_node_type, n.node_x, n.node_y);
+        //     });
+        //     trigger_list_info.pedge.map((n) => {
+        //         defaultThinkingProcess.addReloadEdge(n.process_edge_id, n.edge_start, n.edge_end, n.label);
+        //     });
 
-            const nodes = this.nodes;
-            const edges = this.edges;
-        })
+        //     const nodes = this.nodes;
+        //     const edges = this.edges;
+        // })
 
     }
     

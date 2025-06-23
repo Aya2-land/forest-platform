@@ -75,37 +75,42 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     /*
         * 思考過程表出化マップのノードデータの取得    	
     */
-    $processmap_node = [];
-    $query = "SELECT object_node_id, content, object_node_type, node_x, node_y 
-              FROM object_nodes
-              WHERE node_id = '".$selected_node_id."' AND deleted = 0";
-    
-    if ($result_processmap_node = $mysqli->query($query)) {
-        while ($row = $result_processmap_node->fetch_assoc()) {
-            $processmap_node[] = $row;
-        }
-        $return_data = array_merge($return_data, ['pnode' => $processmap_node]);
-    } else {
-        // エラー時のログとレスポンス
-        $error_message = "SQLエラー: " . $mysqli->error;
-        error_log("[object_maneger.php] " . $error_message); // ログに記録
-        $return_data = array_merge($return_data, [
-            'pnode' => [],
-            'pnode_error' => $error_message,
-            'pnode_query' => $query
-        ]);
+    $result_object_node = $mysqli->query("SELECT object_node_id, content, object_nodes_type, node_x, node_y FROM object_nodes
+            WHERE node_id = '".$selected_node_id."' AND deleted = 0");
+    $object_node = [];
+    while ($row = $result_object_node->fetch_assoc()) {
+        array_push($object_node, $row);
     }
-    
+    $return_data = array_merge($return_data, ['onode' => $object_node]);
+
     /*
         * 思考過程表出化マップのエッジデータの取得
         */
-    $result_processmap_edge = $mysqli->query("SELECT process_edge_id, edge_start, edge_end, label FROM process_edges
-                WHERE (edge_start IN (SELECT process_node_id FROM process_nodes WHERE node_id = '".$selected_node_id."' AND deleted = 0) OR edge_end IN (SELECT process_node_id FROM process_nodes WHERE node_id = '".$selected_node_id."' AND deleted = 0))AND deleted = 0");
-    $processmap_edge = [];
-    while ($row = $result_processmap_edge->fetch_assoc()) {
-        array_push($processmap_edge, $row);
+        $result_processmap_edge = $mysqli->query("SELECT object_edge_id, edge_start, edge_end, label FROM object_edges
+        WHERE (edge_start IN (SELECT object_node_id FROM object_nodes WHERE node_id = '".$selected_node_id."' AND deleted = 0) 
+           OR edge_end IN (SELECT object_node_id FROM object_nodes WHERE node_id = '".$selected_node_id."' AND deleted = 0)) 
+        AND deleted = 0");
+    
+    if (!$result_processmap_edge) {
+        // クエリエラーを出力
+        error_log("SQLエラー: " . $mysqli->error);
+        $return_data = array_merge($return_data, [
+            'pedge' => [],
+            'pedge_error' => $mysqli->error,
+            'pedge_query' => "SELECT object_edge_id, edge_start, edge_end, label FROM object_edges
+                WHERE (edge_start IN (SELECT object_node_id FROM object_nodes WHERE node_id = '".$selected_node_id."' AND deleted = 0) 
+                   OR edge_end IN (SELECT object_node_id FROM object_nodes WHERE node_id = '".$selected_node_id."' AND deleted = 0)) 
+                AND deleted = 0"
+        ]);
+    } else {
+        $processmap_edge = [];
+        while ($row = $result_processmap_edge->fetch_assoc()) {
+            $processmap_edge[] = $row;
+        }
+        $return_data = array_merge($return_data, ['pedge' => $processmap_edge]);
     }
-    $return_data = array_merge($return_data, ['pedge' => $processmap_edge]);
+    
+    
 
     // ノードのバージョン情報を取得
     $result_node_versions = $mysqli->query("SELECT node_version_id, parent_id, appeared_at, disappeared_at, content FROM node_versions WHERE node_id = '".$selected_node_id."'ORDER BY appeared_at ASC");
