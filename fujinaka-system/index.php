@@ -238,7 +238,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
 
               <div id="mindmap_conmenu">
                 <ul>
-                  <li><a href="javascript:void(0);" onClick="jm_to_ls()">論理構造に反映</a></li>
+                  <li><a href="javascript:void(0);" onClick="defaultLogicNetwork.Settriangle()">論理構造に反映</a></li>
                   <li><a href="javascript:void(0);" onClick="SetPurposeonChapter()">章を作成</a></li>
                   <li><a href="javascript:void(0);" onClick="SetPurposeonSection()">節を作成</a></li>
                   <li><a href="javascript:void(0);" onClick="SetPurpose()">パラグラフを作成</a></li>

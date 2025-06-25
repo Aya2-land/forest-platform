@@ -26,6 +26,67 @@ class LogicNetwork {
         this.ownNetwork.on('dragStart', this.dragstart.bind(this));
         this.ownNetwork.on('dragEnd', this.dragend.bind(this));
         this.ownNetwork.on('doubleClick', this.doubleclick.bind(this));
+        this.ownNetwork.on('click', (params) => {
+          // 既存のタグメニューを消す
+          const oldTagMenu = document.getElementById('tagMenu');
+          if (oldTagMenu) oldTagMenu.remove();
+      
+          if (params.nodes.length > 0) {
+            const nodeId = params.nodes[0];
+            const nodePosition = this.ownNetwork.getPositions([nodeId])[nodeId];
+            const canvasPosition = this.ownNetwork.canvasToDOM(nodePosition);
+      
+            // ノードのサイズを仮定（必要なら取得方法を工夫）
+            const nodeRadius = 30; // ノードの半径（px）
+      
+            // タグメニューを作成
+            const tagMenu = document.createElement('div');
+            tagMenu.id = 'tagMenu';
+            tagMenu.style.position = 'absolute';
+            tagMenu.style.left = (canvasPosition.x + nodeRadius) + 'px'; // 右へ
+            tagMenu.style.top = (canvasPosition.y - nodeRadius) + 'px';  // 上へ
+            tagMenu.style.background = '#fff';
+            tagMenu.style.border = '1px solid #ccc';
+            tagMenu.style.padding = '4px';
+            tagMenu.style.zIndex = 1000;
+      
+            // タグボタンA
+            const btnA = document.createElement('button');
+            btnA.textContent = '主張';
+            btnA.onclick = () => {
+              addTagToNode(nodeId, '主張');
+              tagMenu.remove();
+            };
+            tagMenu.appendChild(btnA);
+      
+            // タグボタンB
+            const btnB = document.createElement('button');
+            btnB.textContent = '事実';
+            btnB.onclick = () => {
+              this.addTagToNode(nodeId, '事実');
+              tagMenu.remove();
+            };
+            tagMenu.appendChild(btnB);
+      
+            const btnC = document.createElement('button');
+            btnC.textContent = '理由付け';
+            btnC.onclick = () => {
+              this.addTagToNode(nodeId, '理由付け');
+              tagMenu.remove();
+            };
+            tagMenu.appendChild(btnC);
+      
+            document.body.appendChild(tagMenu);
+      
+            // メニュー外クリックで消す
+            setTimeout(() => {
+              document.addEventListener('click', function handler(e) {
+                if (!tagMenu.contains(e.target)) tagMenu.remove();
+                document.removeEventListener('click', handler);
+              });
+            }, 0);
+          }
+        });
   }
 
   setNodes(newNodes) {
@@ -279,7 +340,7 @@ class LogicNetwork {
     return selected_node; // 選択中のノード情報を返す
   }
 
-  maketriangle() {
+  maketriangle(topic) {
     // 三角形の中心座標とサイズを設定
     const centerX = 0; // 中心のX座標
     const centerY = 0; // 中心のY座標
@@ -298,7 +359,7 @@ class LogicNetwork {
     const node2Id = this.generateUniqueNumberText();
     const node3Id = this.generateUniqueNumberText();
 
-    this.addNode(node1Id, "Node 1", node1X, node1Y);
+    this.addNode(node1Id, topic, node1X, node1Y);
     this.addNode(node2Id, "Node 2", node2X, node2Y);
     this.addNode(node3Id, "Node 3", node3X, node3Y);
 
@@ -318,6 +379,22 @@ class LogicNetwork {
 
     console.log("三角形を作成しました");
   }
+
+  // Forestのノードを起点に三角ロジックを作成する
+  Settriangle() {
+    // マインドマップ側から選択ノード情報を取得
+    let selected_fnode = CheckSelectedNode();
+    if (!selected_fnode || !selected_fnode.topic) {
+      alert("ノードを選択してください");
+      return;
+    }
+
+
+    // maketriangleを呼び出し、中心座標を渡す
+    this.maketriangle(selected_fnode.topic);
+    console.log(selected_fnode.topic);
+  }
+
 
   createTriangleFromSelectedNode() {
     // 選択されているノードを取得
@@ -368,18 +445,7 @@ class LogicNetwork {
   
     console.log("三角形を作成しました");
   }
-  
 
-  jm_to_ls(){
-
-    let selected_node = CheckSelectedNode();
-    if(selected_node == null || selected_node.topic == undefined){
-     // (textareaのid名).value = "ノードを選択してください";
-     return;
-   }else{
-    this.addNode(this.generateUniqueNumberText(), selected_node.topic, 0, 0);
-   }
-  }
   
 
 }
@@ -558,3 +624,20 @@ window.addEventListener('load', () => {
 //     defaultLogicNetwork.deleteEdge();
 //   });
 // });
+function addTagToNode(nodeId, tag) {
+  const node = defaultLogicNetwork.nodes.get(nodeId);
+  // 既存のタグ（[主張][事実][理由付け]）を除去してから新しいタグを付与
+  const newLabel = node.label.replace(/\s*\[(主張|事実|理由付け)\]$/, '') + ' [' + tag + ']';
+  defaultLogicNetwork.nodes.update({ id: nodeId, label: newLabel });
+}
+
+// タグボタン生成
+['主張', '事実', '理由付け'].forEach(tag => {
+  const btn = document.createElement('button');
+  btn.textContent = tag;
+  btn.onclick = () => {
+    addTagToNode(nodeId, tag);
+    tagMenu.remove();
+  };
+  tagMenu.appendChild(btn);
+});
