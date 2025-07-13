@@ -74,6 +74,12 @@
 				if($mysqli->error){
 					echo "Error update content: " . $mysqli->error;
 				}
+			}else if($select_update === 'status'){
+				
+				$mysqli->query("UPDATE object_nodes SET status = '$node_update_thing1', updated_at = '$timestamp' WHERE object_node_id = '$node_id'");
+				if($mysqli->error){
+					echo "Error update content: " . $mysqli->error;
+				}
 			}
 		}
 

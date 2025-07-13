@@ -501,7 +501,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     </div>
                                     <div id="t_Process_conmenu">
                                         <ul>
-                                            <li><a href="javascript:void(0);" id="process_conmenu1">概念をつける</a></li>
+                                            <li><a href="javascript:void(0);" id="object_conmenu1">開始</a></li>
                                             <li><a href="javascript:void(0);" id="process_conmenu2">マインドマップと対応付ける</a></li>
                                             <li><a href="javascript:void(0);" id="process_conmenu3" style="display:none">採用/棄却をつける</a></li>
                                             <li><a href="javascript:void(0);" id="process_conmenu4">キャンセル</a></li>
