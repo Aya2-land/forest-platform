@@ -10,6 +10,9 @@ class LogicNetwork {
       physics: false,
       interaction: {
         multiselect: false,
+      },
+      edges: {
+      smooth: false // これを追加
       }
     };
     this.latest_selected_node_info = {
@@ -26,67 +29,6 @@ class LogicNetwork {
         this.ownNetwork.on('dragStart', this.dragstart.bind(this));
         this.ownNetwork.on('dragEnd', this.dragend.bind(this));
         this.ownNetwork.on('doubleClick', this.doubleclick.bind(this));
-        this.ownNetwork.on('click', (params) => {
-          // 既存のタグメニューを消す
-          const oldTagMenu = document.getElementById('tagMenu');
-          if (oldTagMenu) oldTagMenu.remove();
-      
-          if (params.nodes.length > 0) {
-            const nodeId = params.nodes[0];
-            const nodePosition = this.ownNetwork.getPositions([nodeId])[nodeId];
-            const canvasPosition = this.ownNetwork.canvasToDOM(nodePosition);
-      
-            // ノードのサイズを仮定（必要なら取得方法を工夫）
-            const nodeRadius = 30; // ノードの半径（px）
-      
-            // タグメニューを作成
-            const tagMenu = document.createElement('div');
-            tagMenu.id = 'tagMenu';
-            tagMenu.style.position = 'absolute';
-            tagMenu.style.left = (canvasPosition.x + nodeRadius) + 'px'; // 右へ
-            tagMenu.style.top = (canvasPosition.y - nodeRadius) + 'px';  // 上へ
-            tagMenu.style.background = '#fff';
-            tagMenu.style.border = '1px solid #ccc';
-            tagMenu.style.padding = '4px';
-            tagMenu.style.zIndex = 1000;
-      
-            // タグボタンA
-            const btnA = document.createElement('button');
-            btnA.textContent = '主張';
-            btnA.onclick = () => {
-              addTagToNode(nodeId, '主張');
-              tagMenu.remove();
-            };
-            tagMenu.appendChild(btnA);
-      
-            // タグボタンB
-            const btnB = document.createElement('button');
-            btnB.textContent = '事実';
-            btnB.onclick = () => {
-              this.addTagToNode(nodeId, '事実');
-              tagMenu.remove();
-            };
-            tagMenu.appendChild(btnB);
-      
-            const btnC = document.createElement('button');
-            btnC.textContent = '理由付け';
-            btnC.onclick = () => {
-              this.addTagToNode(nodeId, '理由付け');
-              tagMenu.remove();
-            };
-            tagMenu.appendChild(btnC);
-      
-            document.body.appendChild(tagMenu);
-      
-            // メニュー外クリックで消す
-            setTimeout(() => {
-              document.addEventListener('click', function handler(e) {
-                if (!tagMenu.contains(e.target)) tagMenu.remove();
-                document.removeEventListener('click', handler);
-              });
-            }, 0);
-          }
-        });
   }
 
   setNodes(newNodes) {
@@ -144,72 +86,24 @@ class LogicNetwork {
     );
   }
 
-  addReloadNode(node_id, node_label, node_x, node_y) {
-
-    let node_shape = 'box';     // ノードの形状
-    let position_fixed = false; // ノードを動かせるかどうか（Falseなら動かせる）
-
-    // ラベルを10文字ごとに改行する
-    let result_label = '';
-    const lines = node_label.split('\n'); // 改行ごとに分割
-    for (let line of lines) {
-
-        // 10文字ごとに改行
-        for (let i = 0; i < line.length; i += 10) {
-            result_label += line.substring(i, i + 10) + '\n';
-        }
-    }
-
-    result_label = result_label.trim(); // 末尾の不要な改行を除去
-
-    // 実際にネットワークに追加するノードのデータを作成
-    const newNode = {
-        id: `${node_id}`, 
-        label: result_label,
-        shape: node_shape,
-        fixed: position_fixed,
-        x: node_x, y: node_y,
-        size: 30,
-    };
-
-    // ノードをthis.nodesに追加
-    this.nodes.add(newNode);
-
-    // ノードが追加された後に確認
-    console.log("Created newNode:", newNode);
-
-    // ノードの位置調整
-    const boundingBox = this.ownNetwork.getBoundingBox(`${node_id}`);
-    this.latest_selected_node_info.x = node_x;
-    this.latest_selected_node_info.y = boundingBox.bottom + 10;
-
-    // 最後に、ノードが追加された後、現在のノードリスト（this.nodes）を返します。
-    return this.nodes;
-  }
-
   //ノードを追加する
-  addNode(node_id, node_label, node_x, node_y) {
+  addNode(node_id, label, node_x, node_y, concept_id = null) {
     let node_color = '#fffacd';
     let node_shape = 'box';
     const newNode = {
       id: node_id,
-      label: node_label,
+      label: label,
       color: node_color,
       shape: node_shape,
       x: node_x,
       y: node_y,
+      concept_id: concept_id // conceptIDを追加
     };
     this.nodes.add(newNode);
-    console.log(node_x);
-    defaultRecordLogicNetwork.record_LogicNode(node_id, node_label, node_x, node_y);
+    console.log(concept_id);
+    defaultRecordLogicNetwork.record_LogicNode(node_id, label, node_x, node_y, concept_id);
     return this.nodes;
   }
-
-  addNewNode() {
-    this.addNode(this.generateUniqueNumberText(), "newNode", this.latest_selected_node_info.x, this.latest_selected_node_info.y);
-    console.log("addGoalできた");
-}
-
 
   //ノードのラベル編集(完了)
   editNode(node_id, node_content) {
@@ -240,6 +134,7 @@ class LogicNetwork {
         this.editNode(clickedNodeId, newLabel);
       }
     }
+    
   }
 
   //ノードを削除する
@@ -340,7 +235,37 @@ class LogicNetwork {
     return selected_node; // 選択中のノード情報を返す
   }
 
-  maketriangle(topic) {
+  // nodeIDを引数にしてconceptIDを取得する関数（presentation.jsと同様）
+  GetConceptId(nodeID){
+    var node_obj = document.getElementsByTagName("jmnode");
+    var conceptID = "default";
+
+    for(let k=0; k<node_obj.length; k++){
+      if(node_obj[k].getAttribute("nodeid") == nodeID){//回ってきたidが選択中ノードの時
+        conceptID = node_obj[k].getAttribute("concept_id");//コンセプトid
+        console.log("Logic Network - ConceptID:", conceptID);
+      }
+      if(conceptID != "default"){//同じコンセプトIDがいくつか存在するから
+        break;
+      }
+    }
+    return conceptID;
+  }
+
+  // 現在選択されているマインドマップノードのconceptIDを取得
+  getSelectedNodeConceptId(){
+    const selected_node = this.CheckSelectedNode();
+    if(selected_node && selected_node.id){
+      return this.GetConceptId(selected_node.id);
+    }
+    return "default";
+  }
+
+  maketriangle(topic, concept_id = null) {
+    if (topic === undefined) {
+      topic = "New claim";
+    }
+
     // 三角形の中心座標とサイズを設定
     const centerX = 0; // 中心のX座標
     const centerY = 0; // 中心のY座標
@@ -359,43 +284,56 @@ class LogicNetwork {
     const node2Id = this.generateUniqueNumberText();
     const node3Id = this.generateUniqueNumberText();
 
-    this.addNode(node1Id, topic, node1X, node1Y);
-    this.addNode(node2Id, "Node 2", node2X, node2Y);
-    this.addNode(node3Id, "Node 3", node3X, node3Y);
-
-    // データベースにノードを記録
-    defaultRecordLogicNetwork.record_LogicNode(node1Id, "Node 1", node1X, node1Y);
-    defaultRecordLogicNetwork.record_LogicNode(node2Id, "Node 2", node2X, node2Y);
-    defaultRecordLogicNetwork.record_LogicNode(node3Id, "Node 3", node3X, node3Y);
+    this.addNode(node1Id, topic, node1X, node1Y, concept_id); // 最初のノードにconceptIDを設定
+    this.addNode(node2Id, "New Node", node2X, node2Y);
+    this.addNode(node3Id, "New Node", node3X, node3Y);
 
     // エッジを追加して三角形を形成
     this.addEdge(node1Id, node2Id);
     this.addEdge(node2Id, node3Id);
     this.addEdge(node3Id, node1Id);
 
-    defaultRecordLogicNetwork.record_LogicEdge(node1Id, node2Id);
-    defaultRecordLogicNetwork.record_LogicEdge(node2Id, node3Id);
-    defaultRecordLogicNetwork.record_LogicEdge(node3Id, node1Id);
-
     console.log("三角形を作成しました");
   }
 
   // Forestのノードを起点に三角ロジックを作成する
-  Settriangle() {
+  createTriangleFromForest() {
     // マインドマップ側から選択ノード情報を取得
-    let selected_fnode = CheckSelectedNode();
+    let selected_fnode = this.CheckSelectedNode();
     if (!selected_fnode || !selected_fnode.topic) {
       alert("ノードを選択してください");
       return;
     }
 
+    // 選択されたノードのconceptIDを取得
+    const conceptID = this.GetConceptId(selected_fnode.id);
+    console.log("Selected node conceptID:", conceptID);
 
-    // maketriangleを呼び出し、中心座標を渡す
-    this.maketriangle(selected_fnode.topic);
-    console.log(selected_fnode.topic);
+    // maketriangleを呼び出し、中心座標とconceptIDを渡す
+    this.maketriangle(selected_fnode.topic, conceptID);
+  }
+  // マインドマップの選択ノードの内容を論理ネットワークの選択ノードに反映する
+  applyForestToTriangle() {
+    // 左側（マインドマップ）の選択ノードを取得
+    const leftNode = this.CheckSelectedNode();
+    if (!leftNode || !leftNode.topic) {
+      alert("左側のノードを選択してください");
+      return;
+    }
+
+    // 右側（論理ネットワーク）の選択ノードを取得
+    const rightNodeId = this.ownNetwork.getSelection().nodes[0];
+    if (!rightNodeId) {
+      alert("右側のノードを選択してください");
+      return;
+    }
+
+    // 右側ノードのラベルを左側ノードの内容で更新
+    this.editNode(rightNodeId, leftNode.topic);
+    alert("右側ノードの内容を更新しました");
   }
 
-
+  // 三角ロジックの事実や理由付けを主張として三角ロジックを作成
   createTriangleFromSelectedNode() {
     // 選択されているノードを取得
     const selectedNodeId = this.ownNetwork.getSelection().nodes[0];
@@ -412,9 +350,10 @@ class LogicNetwork {
       return;
     }
   
-    // 基準ノードの座標
+    // 基準ノードの座標とconceptID
     const centerX = baseNode.x;
     const centerY = baseNode.y;
+    const conceptID = baseNode.concept_id || null; // 既存ノードのconceptIDを取得
     const size = 100; // 三角形の辺の長さ
   
     // 三角形の他の2つの頂点の座標を計算
@@ -427,7 +366,7 @@ class LogicNetwork {
     const node2Id = this.generateUniqueNumberText();
     const node3Id = this.generateUniqueNumberText();
   
-    // 新しいノードを追加
+    // 新しいノードを追加（conceptIDは継承しない）
     this.addNode(node2Id, "Node 2", node2X, node2Y);
     this.addNode(node3Id, "Node 3", node3X, node3Y);
   
@@ -436,22 +375,83 @@ class LogicNetwork {
     this.addEdge(node2Id, node3Id);
     this.addEdge(node3Id, selectedNodeId);
   
-    // データベースに記録
-    defaultRecordLogicNetwork.record_LogicNode(node2Id, "Node 2", node2X, node2Y);
-    defaultRecordLogicNetwork.record_LogicNode(node3Id, "Node 3", node3X, node3Y);
-    defaultRecordLogicNetwork.record_LogicEdge(selectedNodeId, node2Id);
-    defaultRecordLogicNetwork.record_LogicEdge(node2Id, node3Id);
-    defaultRecordLogicNetwork.record_LogicEdge(node3Id, selectedNodeId);
-  
-    console.log("三角形を作成しました");
+    console.log("三角形を作成しました - 基準ノードのconceptID:", conceptID);
   }
 
-  
+  // データベースからロジックネットワークをロードする
+  async loadLogicNetworkFromDatabase() {
+    try {
+      const response = await $.ajax({
+        url: "php/logic_maneger.php",
+        type: "POST",
+        data: {
+          purpose: 'load',
+          load_thing: 'all'
+        },
+        dataType: "json"
+      });
 
+      if (response.status === "success") {
+        this.restoreFromData(response.nodes, response.edges);
+        console.log("ロジックネットワークを復元しました");
+      } else {
+        console.error("ロードエラー:", response.message);
+      }
+    } catch (error) {
+      console.error("通信エラー:", error);
+    }
+  }
+
+  // データからノードとエッジを復元する
+  restoreFromData(nodeData, edgeData) {
+    // 既存のノードとエッジをクリア
+    this.nodes.clear();
+    this.edges.clear();
+
+    // ノードを復元
+    if (nodeData && nodeData.length > 0) {
+      // ノードIDでソート（作成順序を保持)
+      nodeData.sort((a, b) => a.node_id.localeCompare(b.node_id));
+      
+      nodeData.forEach(node => {
+        const restoredNode = {
+          id: node.node_id,
+          label: node.label || "Node",
+          x: parseFloat(node.x) || 0,
+          y: parseFloat(node.y) || 0,
+          color: '#fffacd',
+          shape: 'box',
+          concept_id: node.concept_id || null
+        };
+        this.nodes.add(restoredNode);
+      });
+    }
+
+    // エッジを復元
+    if (edgeData && edgeData.length > 0) {
+      edgeData.forEach(edge => {
+        const restoredEdge = {
+          from: edge.edge_start,
+          to: edge.edge_end
+        };
+        this.edges.add(restoredEdge);
+      });
+    }
+  }
+
+  // ネットワークを更新・再描画する
+  async refreshNetwork() {
+    await this.loadLogicNetworkFromDatabase();
+  }
+
+  // 初期化時にデータベースから復元する
+  async initializeFromDatabase() {
+    await this.loadLogicNetworkFromDatabase();
+  }
 }
 
 class RecordLogicNetwork{
-  record_LogicNode (node_id, label, x, y){
+  record_LogicNode (node_id, label, x, y, concept_id){
     $.ajax({
       url: "php/logic_maneger.php",
       type: "POST",
@@ -460,6 +460,7 @@ class RecordLogicNetwork{
         label : label,
         x : x,
         y : y,
+        concept_id : concept_id,
         purpose : 'record',
         record_thing : 'node'
       },
@@ -581,9 +582,15 @@ class RecordLogicNetwork{
 
 }
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
   defaultLogicNetwork = new LogicNetwork("mynetwork", "load");
+  
+  // データベースから復元
+  await defaultLogicNetwork.initializeFromDatabase();
+  
   $('#mynetwork').css('visibility', 'visible');
+  
+  // 既存のイベントリスナー
   $(`#ln_addNode`).on("click", e => {
     defaultLogicNetwork.addNewNode();
   });
@@ -605,7 +612,21 @@ window.addEventListener('load', () => {
   $(`#ln_createtriangle`).on("click", e => {
     defaultLogicNetwork.createTriangleFromSelectedNode();
   });
+  
+  // 更新ボタンのイベントリスナーを追加
+  $(`#ln_refresh`).on("click", async e => {
+    await defaultLogicNetwork.refreshNetwork();
+  });
 });
+
+// グローバル関数として追加（HTMLから呼び出すため）
+async function refreshLogicNetwork() {
+  if (window.defaultLogicNetwork && typeof defaultLogicNetwork.refreshNetwork === "function") {
+    await defaultLogicNetwork.refreshNetwork();
+  } else {
+    alert("ロジックネットワークが初期化されていません");
+  }
+}
 
 
 // document.getElementById("logic_btn").addEventListener("click", () => {

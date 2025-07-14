@@ -18,12 +18,14 @@ if ($purpose === 'record') {
     $record_thing = $_POST['record_thing'];
     if ($record_thing === 'node') {
         $logic_node_id = $_POST["node_id"];
+        $label = $_POST["label"];
+        $concept_id = $_POST["concept_id"];
         $x = $_POST["x"];
         $y = $_POST["y"];
         $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 
-        $sql = "INSERT INTO logic_node (logic_node_id, label, x, y, created_at, updated_at) 
-                VALUES ('$logic_node_id', 'NewNodes', '$x', '$y', '$timestamp', '$timestamp')";
+        $sql = "INSERT INTO logic_node (logic_node_id, label, f_concept_id, x, y, created_at, updated_at) 
+                VALUES ('$logic_node_id', '$label', '$concept_id', '$x', '$y', '$timestamp', '$timestamp')";
 
         if ($mysqli->query($sql)) {
             echo json_encode(["status" => "success", "message" => "ノードが記録されました", "node_id" => $logic_node_id]);
@@ -104,5 +106,126 @@ else if ($purpose === 'delete') {
         }
     }
 
+}
+else if ($purpose === 'load') {
+    $load_thing = $_POST['load_thing'];
+    
+    if ($load_thing === 'all') {
+        try {
+            // ノードを取得
+            $node_sql = "SELECT logic_node_id as node_id, label, f_concept_id as concept_id, x, y 
+                        FROM logic_node 
+                        ORDER BY logic_node_id";
+            $node_result = $mysqli->query($node_sql);
+            
+            $nodes = [];
+            if ($node_result && $node_result->num_rows > 0) {
+                while ($row = $node_result->fetch_assoc()) {
+                    $nodes[] = [
+                        'node_id' => $row['node_id'],
+                        'label' => $row['label'],
+                        'concept_id' => $row['concept_id'],
+                        'x' => floatval($row['x']),
+                        'y' => floatval($row['y'])
+                    ];
+                }
+            }
+
+            // エッジを取得
+            $edge_sql = "SELECT edge_start, edge_end 
+                        FROM logic_edge 
+                        ORDER BY logic_edge_id";
+            $edge_result = $mysqli->query($edge_sql);
+            
+            $edges = [];
+            if ($edge_result && $edge_result->num_rows > 0) {
+                while ($row = $edge_result->fetch_assoc()) {
+                    $edges[] = [
+                        'edge_start' => $row['edge_start'],
+                        'edge_end' => $row['edge_end']
+                    ];
+                }
+            }
+
+            // 成功レスポンス
+            echo json_encode([
+                "status" => "success", 
+                "message" => "データを取得しました",
+                "nodes" => $nodes,
+                "edges" => $edges
+            ]);
+
+        } catch (Exception $e) {
+            echo json_encode([
+                "status" => "error", 
+                "message" => "データベースエラー: " . $e->getMessage()
+            ]);
+        }
+    }
+    else if ($load_thing === 'nodes') {
+        // ノードのみを取得
+        try {
+            $sql = "SELECT logic_node_id as node_id, label, f_concept_id as concept_id, x, y 
+                   FROM logic_node 
+                   ORDER BY logic_node_id";
+            $result = $mysqli->query($sql);
+            
+            $nodes = [];
+            if ($result && $result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $nodes[] = [
+                        'node_id' => $row['node_id'],
+                        'label' => $row['label'],
+                        'concept_id' => $row['concept_id'],
+                        'x' => floatval($row['x']),
+                        'y' => floatval($row['y'])
+                    ];
+                }
+            }
+
+            echo json_encode([
+                "status" => "success", 
+                "message" => "ノードデータを取得しました",
+                "nodes" => $nodes
+            ]);
+
+        } catch (Exception $e) {
+            echo json_encode([
+                "status" => "error", 
+                "message" => "データベースエラー: " . $e->getMessage()
+            ]);
+        }
+    }
+    else if ($load_thing === 'edges') {
+        // エッジのみを取得
+        try {
+            $sql = "SELECT edge_start, edge_end 
+                   FROM logic_edge 
+                   ORDER BY logic_edge_id";
+            $result = $mysqli->query($sql);
+            
+            $edges = [];
+            if ($result && $result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $edges[] = [
+                        'edge_start' => $row['edge_start'],
+                        'edge_end' => $row['edge_end']
+                    ];
+                }
+            }
+
+            echo json_encode([
+                "status" => "success", 
+                "message" => "エッジデータを取得しました",
+                "edges" => $edges
+            ]);
+
+        } catch (Exception $e) {
+            echo json_encode([
+                "status" => "error", 
+                "message" => "データベースエラー: " . $e->getMessage()
+            ]);
+        }
+    }
 }
 ?>

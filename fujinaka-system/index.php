@@ -200,10 +200,6 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                 </button> -->
               </div>
               <div class="menu_css" id="logic_menu">
-                <input type="button" id="ln_addNode" value="ノード追加">
-                <input type="button" id="ln_deleteNode" value="ノード削除">
-                <input type="button" id="ln_startEditEdge" value="エッジ追加">
-                <input type="button" id="ln_deleteEdge" value="エッジ削除">
                 <input type="button" id="ln_maketriangle" value="三角ロジックを作成する">
                 <input type="button" id="ln_createtriangle" value="三角ロジックを追加する">
               </div>
@@ -238,7 +234,8 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
 
               <div id="mindmap_conmenu">
                 <ul>
-                  <li><a href="javascript:void(0);" onClick="defaultLogicNetwork.Settriangle()">論理構造に反映</a></li>
+                  <li><a href="javascript:void(0);" onClick="defaultLogicNetwork.createTriangleFromForest()">三角ロジックを作成</a></li>
+                  <li><a href="javascript:void(0);" onClick="defaultLogicNetwork.applyForestToTriangle()">論理構造に反映</a></li>
                   <li><a href="javascript:void(0);" onClick="SetPurposeonChapter()">章を作成</a></li>
                   <li><a href="javascript:void(0);" onClick="SetPurposeonSection()">節を作成</a></li>
                   <li><a href="javascript:void(0);" onClick="SetPurpose()">パラグラフを作成</a></li>
