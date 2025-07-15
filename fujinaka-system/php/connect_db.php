@@ -1,7 +1,7 @@
 <?php
 
 	//　統合環境
-	$db_host = "10.240.187.201";  // ホスト名
+	$db_host = "10.158.102.169";  // ホスト名
 	$db_port = 8889;  // ポート番号
 	$db_user = "root";
 	$db_password = "your_password";

@@ -158,8 +158,8 @@ function add_annotation(type_fromNode, node_id){
         console.log(start_t_id_str);
         console.log(end_t_id_str);
        
-        let start_t_id = parseInt(start_t_id_str, 10);
-        let end_t_id = parseInt(end_t_id_str, 10);
+        let start_t_id = parseInt(start_t_id_str.match(/\d+/)[0], 10);
+        let end_t_id = parseInt(end_t_id_str.match(/\d+/)[0], 10);
         var paper_content = window.getSelection().toString();
         console.log(start_t_id);
         console.log(end_t_id);

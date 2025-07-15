@@ -1341,7 +1341,7 @@ function CheckClick(){
   // checlboxがチェックされている時の処理
   if(check.checked == true){
     $('#jsmind_area').css('width','60%');
-    $('#jsmind_area').css('border-right','solid #F6D4D8 5px');
+    $('#jsmind_area').css('border-right','solid #B3E0D8 5px');
     $('#jsmind_area').css('box-sizing', 'border-box');
     // $('#mind').hide();
     // $('#mind').toggle('fast');

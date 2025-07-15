@@ -128,7 +128,7 @@ table[type] {
 	width: 99vw;
 	min-width: 765px;
 	height: 60px;
-	background: #F6D4D8;
+	background: #B3E0D8;
 	float: left;
 	margin-right: 10px;
 	overflow:auto;
@@ -222,7 +222,7 @@ table[type] {
 	height:34px;
 	display: inline;
 	font-size: 1em;
-	border-bottom:double 2px #F6D4D8;
+	border-bottom:double 2px #B3E0D8;
 	box-sizing: border-box;
 	overflow-x: auto;
 	overflow-y: visible;
@@ -385,7 +385,7 @@ input:checked+label::after {
 	width: 85vw;
 	height:98vh;
 	margin-bottom:2vh;
- 	border:solid 5px #F6D4D8;
+ 	border:solid 5px #B3E0D8;
 	box-sizing: border-box;
  	background:#fff;
 	float:left;
@@ -409,7 +409,7 @@ input:checked+label::after {
 	width: 100%;
 	height: 85px;
 	display: flex;
-	border-top: solid 5px #F6D4D8;
+	border-top: solid 5px #B3E0D8;
 	padding: 3px;
 	display: none;
 	box-sizing: border-box;
@@ -542,7 +542,7 @@ input:checked+label::after {
 	float: left;
 	background-color:	#e2f8e5; 
 
-    border-left: 3px  #F6D4D8;
+    border-left: 3px  #B3E0D8;
 	overflow: auto;
 	user-select: text;
 
@@ -725,7 +725,7 @@ h3 {
 .inquiry_area {
 	height: 40%;
 	overflow-y: auto;
-	border:solid 5px #F6D4D8;
+	border:solid 5px #B3E0D8;
 	margin-bottom: 30px;
 	font-size: 14px;
 	text-align: left;
@@ -734,7 +734,7 @@ h3 {
 #side_menu .other_annotation {
 	height: 40%;
 	overflow-y: auto;
-	border:solid 5px #F6D4D8;
+	border:solid 5px #B3E0D8;
 	margin-bottom: 30px;
 	font-size: 14px;
 	text-align: left;
@@ -829,7 +829,7 @@ h3 {
 	resize: none;
 	cursor: default;
 	font-size: 20px;
-	border:solid 5px #F6D4D8;
+	border:solid 5px #B3E0D8;
 }
 /* 【選択中のノード】の部分乗せ亭 */
 #selected_node_area{
@@ -839,7 +839,7 @@ h3 {
 	resize: none;
 	cursor: default;
 	font-size: 15px;
-	border:solid 5px #F6D4D8;
+	border:solid 5px #B3E0D8;
 }
 /* 記述推奨の表示ボタン */
 /* 最初は見えないが，法造と結びついて表示させる */
@@ -895,7 +895,7 @@ h3 {
 	height:37px;
 	display: inline;
 	font-size: 1em;
-	border:solid 5px #F6D4D8;
+	border:solid 5px #B3E0D8;
 	margin: 0;
 	overflow-x: auto;
 	overflow-y: visible;
@@ -924,7 +924,7 @@ h3 {
 	float:left;
 	display: none; /* 要素を横並びに配置するために Flexbox を使用 */
     flex-direction: column; /* 要素を縦方向に配置 */
-	border-bottom: solid #F6D4D8 5px;
+	border-bottom: solid #B3E0D8 5px;
 	box-sizing: border-box;
 	}
 
@@ -939,7 +939,7 @@ h3 {
 		height:76vh;
 		min-height: 450px;
 		margin-bottom:2vh;
-		border:solid 5px #F6D4D8;
+		border:solid 5px #B3E0D8;
 		background:#fff;
 		overflow: scroll;
 		float:left;
@@ -956,7 +956,7 @@ h3 {
 	min-height: 450px;
 	margin-bottom:2vh;
 	float: left;
-    border: 3px double #F6D4D8;
+    border: 3px double #B3E0D8;
 	overflow: auto;
 	user-select: text;
 }
@@ -982,8 +982,8 @@ h3 {
     float:left;
 		width: calc(100vw - 350px);
 		height:85%;
-    border:solid 5px #F6D4D8;
-    background:#F6D4D8;
+    border:solid 5px #B3E0D8;
+    background:#B3E0D8;
 		overflow: scroll;
 		text-align:center;
 }
@@ -1144,7 +1144,7 @@ h3 {
     float:left;
 		width: calc(100vw - 350px);
 		height:85%;
-    border:solid 5px #F6D4D8;
+    border:solid 5px #B3E0D8;
 		background-color: #fffafa;
 		overflow: scroll;
 		text-align:center;
@@ -1176,7 +1176,7 @@ h3 {
 
 #record_timestamp_title{
 	background-color: #ffdead;
-	border: solid 1px #F6D4D8;
+	border: solid 1px #B3E0D8;
 	width: 10%;
 	/* color: white; */
 
@@ -1184,33 +1184,33 @@ h3 {
 
 #record_ref_textp_title{
 	background-color: #ffdead;
-	border: solid 1px #F6D4D8;
+	border: solid 1px #B3E0D8;
 	width: 40%;
 
 }
 
 #record_activity_title{
 	background-color: #ffdead;
-	border: solid 1px #F6D4D8;
+	border: solid 1px #B3E0D8;
 	width: 8%;
 
 }
 
 #record_late_act_title{
 	background-color: #ffdead;
-	border: solid 1px #F6D4D8;
+	border: solid 1px #B3E0D8;
 	width: 8%;
 
 }
 
 #record_reason_title{
 	background-color: #ffdead;
-	border: solid 1px #F6D4D8;
+	border: solid 1px #B3E0D8;
 
 }
 
 .record_table_cells{
-	border: solid 1px #F6D4D8;
+	border: solid 1px #B3E0D8;
 	font-size: 12px;
 	background-color: #fffff0;
 }

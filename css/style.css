@@ -641,7 +641,7 @@ input:checked+label::after {
 	display: none;
 	/* float: right; */
 	background-color: #ffffff; 
-    border: 3px double #a8cde0;
+    /* border: 3px double #a8cde0; */
 	overflow: auto;
 	user-select: text;
 	resize: vertical;

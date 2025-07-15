@@ -190,9 +190,10 @@
 
 	}
 	else if ($_POST["update"] == "reflection") {
-		$sql = "UPDATE nodes SET reflection = '".$_POST["text"]."', class = 'other_to_myanswer', type = 'other_to_myanswer' WHERE id = '".$_POST["nodeid"]."'";
-		$result = $mysqli->query($sql);
-		echo $sql;
+		// $sql = "UPDATE nodes SET reflection = '".$_POST["text"]."', class = 'other_to_myanswer', type = 'other_to_myanswer' WHERE id = '".$_POST["nodeid"]."'";
+		// $result = $mysqli->query($sql);
+		// echo $sql;
+		echo "reflection"
 	}
 
 	else if ($_POST["update"] == "summary") {
@@ -202,14 +203,14 @@
 		$result = $mysqli->query($sql);
 		echo $sql;
 	}
-	else if ($_POST["update"] == "annotated") {
+	// else if ($_POST["update"] == "annotated") {
 
-		$sql = "UPDATE nodes SET start_char_id = '".$_POST["start_char_id"]."', end_char_id = '".$_POST["end_char_id"]."'WHERE id = '".$_POST["id"]."'";
-		$result = $mysqli->query($sql);
-		echo $sql;
-	}else if($_POST["update"] == "micro_strat"){
-		$sql = "UPDATE nodes SET type = '".$_POST['type']."', reflection = '".$_POST['content']."', updated_at = '".$updated_at."' WHERE id = '".$_POST['nodeid']."'";
-		$result = $mysqli->query($sql);
-	}
+	// 	$sql = "UPDATE node_histories SET start_char_id = '".$_POST["start_char_id"]."', end_char_id = '".$_POST["end_char_id"]."'WHERE node_id = '".$_POST["id"]."'";
+	// 	$result = $mysqli->query($sql);
+	// 	echo $sql;
+	// }else if($_POST["update"] == "micro_strat"){
+	// 	$sql = "UPDATE node_histories SET type = '".$_POST['type']."', reflection = '".$_POST['content']."', updated_at = '".$updated_at."' WHERE node_id = '".$_POST['nodeid']."'";
+	// 	$result = $mysqli->query($sql);
+	// }
 
 ?>
