@@ -503,6 +503,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                             <li><a href="javascript:void(0);" id="process_conmenu4">キャンセル</a></li>
                                         </ul>
                                     </div>
+                                    <div id="feedbackTooltip" style="position:absolute; display:none; z-index:1000;"></div>
                                     <div id="t_Process_labelselect">
                                         <select id="t_Process_selectionlist" size="3">
                                             <!-- いるやつあれば追加やけど未実装（研究活動オントロジー読み込みかな？） -->

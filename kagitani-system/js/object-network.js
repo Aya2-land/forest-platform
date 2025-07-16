@@ -718,19 +718,19 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
     // 手段終了ボタン
     step_end() {
-        const menu = document.getElementById('t_Process_conmenu');
+        const menu = document.getElementById('contextMenuNodeActions');
         if (menu) menu.style.display = "none";
-
+    
         console.log(`step_end() を呼び出しました。選択中のノードID: ${this.selectId}`);
         if (!this.selectId) {
             console.error("選択されたノードIDが設定されていません。");
             return;
         }
-
+    
         console.log(`ノード ${this.selectId} の作業完了だよ！！`);
         // ステータスを completed に更新
         defaultRecordThinkingProcess.update_Node("status", this.selectId, "completed", "");
-
+    
         // ノードの見た目を更新
         this.nodes.update({
             id: this.selectId,
@@ -744,22 +744,21 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                 borderDashes: false
             }
         });
-
+    
         const updatedNode = this.nodes.get(this.selectId);
         console.log('更新後のノード（完了）:', updatedNode);
-
+    
         // フィードバックの吹き出しを表示
         this.showFeedbackTooltip();
     }
-
     
     showFeedbackTooltip() {
-        const tooltip = document.getElementById("tooltip");
+        const tooltip = document.getElementById("feedbackTooltip");
         if (!tooltip) {
-            console.error("吹き出しの要素が見つかりませんでした。");
+            console.error("フィードバック用ツールチップの要素が見つかりませんでした。");
             return;
         }
-
+    
         // ノードの位置を取得
         const positions = this.ownNetwork.getPositions(this.selectId);
         if (!positions || !positions[this.selectId]) {
@@ -771,46 +770,45 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             x: nodePosition.x,
             y: nodePosition.y
         });
-
+    
         // 吹き出しの内容を設定
         tooltip.style.left = `${canvasPosition.x}px`;
         tooltip.style.top = `${canvasPosition.y + 20}px`; // ノードの下に表示
-        tooltip.style.width = "400px"; // ツールチップの横幅を設定（必要に応じて調整）
-        tooltip.style.minWidth = "300px"; // 最小幅を設定（小さすぎないように）
+        tooltip.style.width = "400px";
+        tooltip.style.minWidth = "300px";
         tooltip.innerHTML = `
-            <div id="tooltipHeader" style="cursor: move; background: #ccc; padding: 5px;">
+            <div id="feedbackTooltipHeader" style="cursor: move; background: #ccc; padding: 5px;">
                 <strong>【行動記録入力】</strong>
             </div>
             <div style="padding: 10px;">
-                <form id="feedbackForm">
+                <form id="formFeedbackInput">
                     <label for="actionReason">行動意図：なぜこの手段を実行しましたか？</label><br>
                     <textarea id="actionReason" name="actionReason" rows="3" placeholder="例：実験対象者を選定するための参考基準を得るため．" style="width: 100%;"></textarea><br><br>
-
+    
                     <label for="completionReason">完了基準：なぜ完了と判断しましたか？</label><br>
                     <textarea id="completionReason" name="completionReason" rows="3" placeholder="例：必要な研究事例（5つ）を確認し，比較表を作成できたから．" style="width: 100%;"></textarea><br><br>
-
+    
                     <label for="challengesAndLearnings">経験の活用：困難や学びはありますか？</label><br>
                     <textarea id="challengesAndLearnings" name="challengesAndLearnings" rows="4" placeholder="例：他の研究事例を調べる過程で混乱が生じた．関連論文を追加調査し共通点を抽出した．" style="width: 100%;"></textarea><br><br>
-
-                    <button type="button" id="saveFeedback">保存</button>
+    
+                    <button type="button" id="btnSaveFeedback">保存</button>
                 </form>
             </div>
         `;
         tooltip.style.display = "block";
-
+    
         // 保存ボタンのイベントリスナーを設定
         this.setupTooltipSaveButton(tooltip);
         this.setupTooltipDrag(tooltip);
     }
-
-    //内省の評価をDBに保存する．
+    
     setupTooltipSaveButton(tooltip) {
-        const saveButton = document.getElementById("saveFeedback");
+        const saveButton = document.getElementById("btnSaveFeedback");
         saveButton.addEventListener("click", () => {
             const actionReason = document.getElementById("actionReason").value.trim();
             const completionReason = document.getElementById("completionReason").value.trim();
             const challengesAndLearnings = document.getElementById("challengesAndLearnings").value.trim();
-
+    
             // サーバーにデータを送信
             $.ajax({
                 url: "php/object_maneger.php",
@@ -820,13 +818,12 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                     completion_reason: completionReason,
                     challenges_learnings: challengesAndLearnings,
                     object_node_id: this.selectId,
-                    object_map_id: object_map_id,
                     purpose: 'record',
                     record_thing: 'reflection'
                 },
                 success: (response) => {
                     console.log("サーバーの応答:", response);
-
+    
                     // ノードの title を更新（入力内容を簡略化して表示）
                     const title = `
                         行動意図: ${actionReason || "未記入"}\n
@@ -838,7 +835,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                         color: 'gray',
                         title: title
                     });
-
+    
                     console.log(`ノード ${this.selectId} のタイトルを更新しました。`);
                     tooltip.style.display = "none"; // 保存後に吹き出しを閉じる
                 },
@@ -849,10 +846,9 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             });
         });
     }
-
     
     setupTooltipDrag(tooltip) {
-        const header = document.getElementById("tooltipHeader");
+        const header = document.getElementById("feedbackTooltipHeader");
         let offsetX = 0, offsetY = 0, isDragging = false;
     
         header.addEventListener("mousedown", (event) => {
@@ -879,7 +875,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     
 
 
-
     //ノードがクリックされたときの処理
     networkClick (params){
         //他のところクリックしたら色直す
@@ -899,9 +894,9 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             })
             this.jmindex.length = 0;
         }
-        console.log(params);
-        console.log(params.pointer.DOM);
-        console.log(params.pointer.DOM.x, params.pointer.DOM.y);
+        // console.log(params);
+        // console.log(params.pointer.DOM);
+        // console.log(params.pointer.DOM.x, params.pointer.DOM.y);
     }
 
     addNewEdge(E_start, E_end){
@@ -1097,7 +1092,7 @@ class RecordThinkingProcess{
     
 
     //ノードの更新(完了)
-    update_Node (select_update, id, node_type, content, x, y, status){
+    update_Node (select_update, id, node_update_thing1, node_update_thing2){
         $.ajax({
             url: "php/object_maneger.php",
             type: "POST",
@@ -1105,11 +1100,8 @@ class RecordThinkingProcess{
                 node_id : id,
                 purpose : 'update',
                 update_thing : 'node',
-                node_type: node_type,
-                content: content,
-                x: x,
-                y: y,
-                status: status},
+                node_update_thing1 : node_update_thing1,
+                node_update_thing2: node_update_thing2},
             success:function(e){
                 if(e){
                     console.log(e);

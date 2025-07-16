@@ -9,10 +9,10 @@
     $map_id = $_SESSION['MAPID'];    //シートID
 	$purpose = $_POST['purpose'];  //記録(record)か，更新(update)か，削除(delete)か
 
+	$object_h_id = uniqid(rand(0,64));
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 	
 	if($purpose === 'record'){
-		$object_h_id = uniqid(rand(0,64));
 		$record_thing = $_POST['record_thing'];  //nodeか，edgeか，ネットワークとマインドマップの繋がり(connection)，オントロジーとのつながり(ontology)，採用不採用(recruit)
 		//ノードの記録
 		if ($record_thing === 'node') {
@@ -61,8 +61,7 @@
 				"mysqli_error" => $mysqli->error
 			]);
 			exit;
-			
-			exit;
+		
 		}else if($record_thing === 'edge'){
 			//エッジの記録
 			$edge_id = $_POST['edge_id'];
@@ -72,61 +71,210 @@
 			$selected_node_id = $_POST["selected_node_id"];
 			$mysqli->query("INSERT INTO process_edges (process_edge_id, edge_start, edge_end, label, created_at, updated_at, deleted)
 			                VALUES ('$edge_id', '$edge_start', '$edge_end', '', '$timestamp', '$timestamp', 0)");
-		}else if($record_thing === 'trigger'){
-			
-			$mysqli->query("INSERT INTO triggers (trigger_id, activity_id, node_version_from, node_version_to, activity_time, activity_type, content, add_time, x, y, deleted)
-				VALUES ('".$_POST["trigger_id"]."', '".$_POST["activity_id"]."', '".$_POST["node_version_from"]."', '".$_POST["node_version_to"]."', '".$_POST["activity_time"]."', '".$_POST["activity_type"]."', '".$_POST["content"]."', '$timestamp', ".$_POST["x"].", ".$_POST["y"].", 0);");
-			if($mysqli->error){
-				echo "Error triggers insert: " . $mysqli->error;
+		}else if($record_thing === 'reflection'){
+			//内省の記録
+			$object_reflection_id = uniqid('reflection_', true); // edge_で始まる一意のIDを生成
+			$object_node_id = $_POST["object_node_id"]; 
+			$action_reason = $_POST["action_reason"];   
+			$completion_reason = $_POST["completion_reason"];     
+			$challenges_learnings = $_POST["challenges_learnings"];                //エッジ終了
+			$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+			$mysqli->query("UPDATE object_nodes SET action_reason = '$action_reason', completion_reason = '$completion_reason',challenges_learnings = '$challenges_learnings',updated_at = '$timestamp' 
+				WHERE  object_node_id = '$object_node_id' ");
+			$h_sql = "INSERT INTO object_nodes_histories
+				(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y,
+				action_reason, completion_reason, challenges_learnings)
+				SELECT
+				'$object_h_id',
+				object_node_id,
+				object_nodes_type,
+				status,
+				'$timestamp',
+				NULL,
+				content,
+				node_x,
+				node_y,
+				'$action_reason',
+				'$completion_reason',
+				'$challenges_learnings'
+				FROM object_nodes
+				WHERE object_node_id = '$object_node_id'";
+			$result = $mysqli->query($h_sql);
+			if ($mysqli->error) {
+				// echo "Error inserting into histories: " . $mysqli->error;
+			} else {
+				// echo "Inserted reflection into histories successfully!";
 			}
-		}
+			
+			}
 	}else if($purpose === 'update'){
 		$update_thing = $_POST['update_thing'];
 		if($update_thing === 'node'){
-			$select_update = $_POST['select_update'];   //ノードの変更するもの(座標(point),内容(label))
-			$node_id = $_POST["node_id"]; //ノードID
+			$select_update = $_POST['select_update'];   //座標(point) or 内容(label)
+			$node_id = $_POST["node_id"];
 			$node_update_thing1 = $_POST['node_update_thing1'];
 			$node_update_thing2 = $_POST['node_update_thing2'];
+	
+			// もし $updated_at を使いたい場合は、$timestamp に置き換えるか、
+			// $updated_at = date("Y-m-d H:i:s"); のように定義してください。
+			// ただ今回は $timestamp を使っているので統一しましょう。
+
+			$sql_update = "UPDATE object_nodes_histories SET disappeared_at = '".$timestamp."' 
+			WHERE object_node_history_id = (
+				SELECT object_node_history_id FROM object_nodes_histories ORDER BY appeared_at DESC LIMIT 1
+			)";
+
+			$result_update = $mysqli->query($sql_update);
+			if ($mysqli->error) {
+			echo "Error update: " . $mysqli->error;
+			}
+
+
 			if($select_update === 'point'){
-				$mysqli->query("UPDATE object_nodes SET node_x = '$node_update_thing1', node_y = '$node_update_thing2', updated_at = '$timestamp' WHERE object_node_id = '$node_id'");
+				$mysqli->query("UPDATE object_nodes 
+								SET node_x = '$node_update_thing1', 
+									node_y = '$node_update_thing2', 
+									updated_at = '$timestamp' 
+								WHERE object_node_id = '$node_id'");
 				if($mysqli->error){
 					echo "Error point update: " . $mysqli->error;
 				}
-				$h_sql = "INSERT INTO object_nodes_histories 
-				(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
-				VALUES ('".$object_h_id."', '".$node_id."','".$node_type."','".$status."', '".$timestamp."', NULL,'".$label."','$x', '$y')";
 
+				$mysqli->query("UPDATE object_nodes SET node_x = '$node_update_thing1', node_y = '$node_update_thing2', updated_at = '$timestamp' WHERE object_node_id = '$node_id'");
+	
+				// INSERT ... SELECT
+				$h_sql = "INSERT INTO object_nodes_histories 
+					(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
+					SELECT 
+						'$object_h_id',
+						object_node_id,
+						object_nodes_type,
+						status,
+						'$timestamp',
+						NULL,
+						content,
+						'$node_update_thing1',
+						'$node_update_thing2'
+					FROM object_nodes
+					WHERE object_node_id = '$node_id'";
+
+	
+				// デバッグ用にSQLを表示
+				// echo "DEBUG INSERT SQL: $h_sql\n";
+	
+				$result = $mysqli->query($h_sql);
+				if($mysqli->error){
+					// echo "Error history insert: " . $mysqli->error;
+				} else {
+					// echo "History insert successful!\n";
+				}
+			
 			}else if($select_update === 'label'){
-				
-				$mysqli->query("UPDATE object_nodes SET content = '$node_update_thing1', updated_at = '$timestamp' WHERE object_node_id = '$node_id'");
+				$mysqli->query("UPDATE object_nodes 
+								SET content = '$node_update_thing1', 
+									updated_at = '$timestamp' 
+								WHERE object_node_id = '$node_id'");
 				if($mysqli->error){
 					echo "Error update content: " . $mysqli->error;
 				}
+			
 				$h_sql = "INSERT INTO object_nodes_histories 
-				(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
-				VALUES ('".$object_h_id."', '".$node_id."','".$node_type."','".$status."', '".$timestamp."', NULL,'".$label."','$x', '$y')";
-
+						  (object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
+						  SELECT 
+							'$object_h_id',
+							object_node_id,
+							object_nodes_type,
+							status,
+							'$timestamp',
+							NULL,
+							content,
+							node_x,
+							node_y
+						  FROM object_nodes
+						  WHERE object_node_id = '$node_id'";
+			
+				// echo "DEBUG INSERT SQL: $h_sql\n";
+			
+				$result = $mysqli->query($h_sql);
+				if($mysqli->error){
+					echo "Error history insert: " . $mysqli->error;
+				} else {
+					echo "History insert successful!\n";
+				}
 			}else if($select_update === 'status'){
-				
-				$mysqli->query("UPDATE object_nodes SET status = '$node_update_thing1', updated_at = '$timestamp' WHERE object_node_id = '$node_id'");
+				$mysqli->query("UPDATE object_nodes 
+								SET status = '$node_update_thing1', 
+									updated_at = '$timestamp' 
+								WHERE object_node_id = '$node_id'");
 				if($mysqli->error){
-					echo "Error update content: " . $mysqli->error;
+					echo "Error update status: " . $mysqli->error;
 				}
+			
 				$h_sql = "INSERT INTO object_nodes_histories 
-				(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
-				VALUES ('".$object_h_id."', '".$node_id."','".$node_type."','".$status."', '".$timestamp."', NULL,'".$label."','$x', '$y')";
+						  (object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
+						  SELECT 
+							'$object_h_id',
+							object_node_id,
+							object_nodes_type,
+							status,
+							'$timestamp',
+							NULL,
+							content,
+							node_x,
+							node_y
+						  FROM object_nodes
+						  WHERE object_node_id = '$node_id'";
+			
+				// echo "DEBUG INSERT SQL: $h_sql\n";
+			
+				$result = $mysqli->query($h_sql);
+				if($mysqli->error){
+					echo "Error history insert: " . $mysqli->error;
+				} else {
+					echo "History insert successful!\n";
 				}
+			}
 		}
-
 	}else if($purpose === 'delete'){
 		$delete_thing = $_POST['delete_thing'];
 		if($delete_thing === 'node'){
 			$node_id = $_POST["node_id"];
+			
+			// 1. object_nodesのdeletedフラグを立てる
 			$result = $mysqli->query("UPDATE object_nodes SET deleted = 1, updated_at = '$timestamp' WHERE object_node_id = '$node_id'");
 			if (!$result) {
 				echo "Error (node delete): " . $mysqli->error;
+				exit;
 			}
-		} else if($delete_thing === 'trigger'){
+	
+			// 2. object_nodes_historiesに履歴を保存
+			// 新しい履歴IDを作成（例としてuniqidを利用）
+			$object_h_id = uniqid('history_', true);
+	
+			// 削除日時をdisappeared_atに入れるための日時（$timestamp）
+			// 既存のノード情報を取得してINSERTする
+			$h_sql = "INSERT INTO object_nodes_histories
+					  (object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
+					  SELECT
+						'$object_h_id',
+						object_node_id,
+						object_nodes_type,
+						status,
+						appeared_at,
+						'$timestamp',  -- 削除日時をdisappeared_atにセット
+						content,
+						node_x,
+						node_y
+					  FROM object_nodes
+					  WHERE object_node_id = '$node_id'";
+	
+			$result_h = $mysqli->query($h_sql);
+			if (!$result_h) {
+				echo "Error inserting delete history: " . $mysqli->error;
+			} else {
+				echo "Delete history recorded successfully.";
+			}
+		}else if($delete_thing === 'trigger'){
 			$trigger_id = $_POST["trigger_id"];
 			$result = $mysqli->query("UPDATE triggers SET deleted = 1 WHERE trigger_id = '$trigger_id'");
 			if (!$result) {
