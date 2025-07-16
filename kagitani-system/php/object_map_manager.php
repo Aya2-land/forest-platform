@@ -75,7 +75,7 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     /*
         * 思考過程表出化マップのノードデータの取得    	
     */
-    $result_object_node = $mysqli->query("SELECT object_node_id, content, object_nodes_type, node_x, node_y FROM object_nodes
+    $result_object_node = $mysqli->query("SELECT object_node_id, content, object_nodes_type, node_x, node_y, status FROM object_nodes
             WHERE node_id = '".$selected_node_id."' AND deleted = 0");
     $object_node = [];
     while ($row = $result_object_node->fetch_assoc()) {

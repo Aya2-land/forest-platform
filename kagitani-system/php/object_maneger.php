@@ -12,6 +12,7 @@
 	$timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
 	
 	if($purpose === 'record'){
+		$object_h_id = uniqid(rand(0,64));
 		$record_thing = $_POST['record_thing'];  //nodeか，edgeか，ネットワークとマインドマップの繋がり(connection)，オントロジーとのつながり(ontology)，採用不採用(recruit)
 		//ノードの記録
 		if ($record_thing === 'node') {
@@ -26,6 +27,11 @@
 			$sql = "INSERT INTO object_nodes 
 				(object_node_id, node_id, content, object_nodes_type, node_x, node_y, status, created_at, updated_at, deleted)
 				VALUES ('$node_id', '$selected_node_id', '$label', '$node_type', '$x', '$y', '$status', '$timestamp', '$timestamp', 0)";
+
+			$h_sql = "INSERT INTO object_nodes_histories 
+			(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
+			VALUES ('".$object_h_id."', '".$node_id."','".$node_type."','".$status."', '".$timestamp."', NULL,'".$label."','$x', '$y')";
+
 		
 			if ($mysqli->query($sql)) {
 				echo json_encode(["success" => true]);
@@ -37,6 +43,25 @@
 					"sql" => $sql
 				]);
 			}
+
+			if ($mysqli->query($h_sql)) {
+				echo json_encode(["success" => true]);
+			} else {
+				// エラーログを返す
+				echo json_encode([
+					"success" => false,
+					"error" => $mysqli->error,
+					"sql" => $h_sql
+				]);
+			}
+			echo json_encode([
+				"success" => false,
+				"step" => "histories insert",
+				"h_sql" => $h_sql,
+				"mysqli_error" => $mysqli->error
+			]);
+			exit;
+			
 			exit;
 		}else if($record_thing === 'edge'){
 			//エッジの記録
@@ -63,58 +88,67 @@
 			$node_update_thing1 = $_POST['node_update_thing1'];
 			$node_update_thing2 = $_POST['node_update_thing2'];
 			if($select_update === 'point'){
-				
 				$mysqli->query("UPDATE object_nodes SET node_x = '$node_update_thing1', node_y = '$node_update_thing2', updated_at = '$timestamp' WHERE object_node_id = '$node_id'");
 				if($mysqli->error){
 					echo "Error point update: " . $mysqli->error;
 				}
+				$h_sql = "INSERT INTO object_nodes_histories 
+				(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
+				VALUES ('".$object_h_id."', '".$node_id."','".$node_type."','".$status."', '".$timestamp."', NULL,'".$label."','$x', '$y')";
+
 			}else if($select_update === 'label'){
 				
 				$mysqli->query("UPDATE object_nodes SET content = '$node_update_thing1', updated_at = '$timestamp' WHERE object_node_id = '$node_id'");
 				if($mysqli->error){
 					echo "Error update content: " . $mysqli->error;
 				}
+				$h_sql = "INSERT INTO object_nodes_histories 
+				(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
+				VALUES ('".$object_h_id."', '".$node_id."','".$node_type."','".$status."', '".$timestamp."', NULL,'".$label."','$x', '$y')";
+
 			}else if($select_update === 'status'){
 				
 				$mysqli->query("UPDATE object_nodes SET status = '$node_update_thing1', updated_at = '$timestamp' WHERE object_node_id = '$node_id'");
 				if($mysqli->error){
 					echo "Error update content: " . $mysqli->error;
 				}
-			}
+				$h_sql = "INSERT INTO object_nodes_histories 
+				(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
+				VALUES ('".$object_h_id."', '".$node_id."','".$node_type."','".$status."', '".$timestamp."', NULL,'".$label."','$x', '$y')";
+				}
 		}
 
 	}else if($purpose === 'delete'){
 		$delete_thing = $_POST['delete_thing'];
 		if($delete_thing === 'node'){
 			$node_id = $_POST["node_id"];
-			$mysqli->query("UPDATE process_nodes SET deleted = 1, updated_at = '$timestamp' WHERE process_node_id = '$node_id'");
-			if (!$mysqli->query($query)) {
+			$result = $mysqli->query("UPDATE object_nodes SET deleted = 1, updated_at = '$timestamp' WHERE object_node_id = '$node_id'");
+			if (!$result) {
 				echo "Error (node delete): " . $mysqli->error;
 			}
-		}else if($delete_thing === 'trigger'){
+		} else if($delete_thing === 'trigger'){
 			$trigger_id = $_POST["trigger_id"];
-			$mysqli->query("UPDATE triggers SET deleted = 1 WHERE trigger_id = '$trigger_id'");
-			if (!$mysqli->query($query)) {
+			$result = $mysqli->query("UPDATE triggers SET deleted = 1 WHERE trigger_id = '$trigger_id'");
+			if (!$result) {
 				echo "Error (trigger delete): " . $mysqli->error;
 			}
-		}else if($delete_thing === 'edge'){
-			$edge_start = $_POST["edge_start"];          //エッジ開始
-			$edge_end = $_POST["edge_end"]; 
+		} else if($delete_thing === 'edge'){
+			$edge_start = $_POST["edge_start"];
+			$edge_end = $_POST["edge_end"];
 			$edge_id = $_POST['edge_id'];
 			if($edge_start === ""){
-				$mysqli->query("UPDATE process_edges SET deleted = 1, updated_at = '$timestamp' WHERE edge_end = '$edge_end'");
-			}else if($edge_end === ""){
-				$mysqli->query("UPDATE process_edges SET deleted = 1, updated_at = '$timestamp' WHERE edge_start = '$edge_start'");
-			}else{
-				$mysqli->query("UPDATE process_edges SET deleted = 1, updated_at = '$timestamp' WHERE process_edge_id = '$edge_id'");
+				$result = $mysqli->query("UPDATE object_edges SET deleted = 1, updated_at = '$timestamp' WHERE edge_end = '$edge_end'");
+			} else if($edge_end === ""){
+				$result = $mysqli->query("UPDATE object_edges SET deleted = 1, updated_at = '$timestamp' WHERE edge_start = '$edge_start'");
+			} else {
+				$result = $mysqli->query("UPDATE object_edges SET deleted = 1, updated_at = '$timestamp' WHERE object_edge_id = '$edge_id'");
 			}
-
-			if (!$mysqli->query($query)) {
+			if (!$result) {
 				echo "Error (edge delete): " . $mysqli->error;
 			}
 		}
 	}
-
+	
 	
 
 	//時間設定はいる

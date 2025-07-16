@@ -488,22 +488,18 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                                 id="process_ZoomIn" value="拡大" />
                                         <input type="button" class="thinkingProcess_network_button"
                                                 id="process_ZoomOut" value="縮小" />
-                                        <!-- <div class="checkbox_process">
-                                            <input type="checkbox" id="checkbox_process" class="checkbox_process" name="check_process" onclick="ShowRelatedProcess('brother')">
-                                            <label for="checkbox_process" data-on-label="On" data-off-label="Off"></label>
-                                            <span class="checkbox_process_text">【兄弟ノード表示】<br></span>
-                                        </div> -->
-                                        <!-- <div class="checkbox_process">
-                                            <input type="checkbox" id="checkbox_process" class="checkbox_process" name="check_process" onclick="ShowRelatedProcess('consistency')">
-                                            <label for="checkbox_process" data-on-label="On" data-off-label="Off"></label>
-                                            <span class="checkbox_process_text">【整合性ノード表示】<br></span>
-                                        </div> -->
                                     </div>
+                                    <!-- シークバー追加 -->
+                                        <div id="timeline_container">
+                                            <input type="range" id="timeline_slider" min="0" max="100" value="0" step="1" />
+                                            <span id="timeline_label">0%</span>
+                                        </div>
+                                        <div id="myProcessnetwork"></div>
                                     <div id="t_Process_conmenu">
                                         <ul>
                                             <li><a href="javascript:void(0);" id="object_conmenu1">開始</a></li>
-                                            <li><a href="javascript:void(0);" id="process_conmenu2">マインドマップと対応付ける</a></li>
-                                            <li><a href="javascript:void(0);" id="process_conmenu3" style="display:none">採用/棄却をつける</a></li>
+                                            <li><a href="javascript:void(0);" id="object_conmenu2">完了</a></li>
+                                            <li><a href="javascript:void(0);" id="object_conmenu3">中断</a></li>
                                             <li><a href="javascript:void(0);" id="process_conmenu4">キャンセル</a></li>
                                         </ul>
                                     </div>

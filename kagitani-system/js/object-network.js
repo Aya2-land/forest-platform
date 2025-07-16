@@ -2,6 +2,7 @@
 let defaultThinkingProcess;
 let defaultRecordThinkingProcess;
 let defaultShowThinkingProcess;
+let globalParams = null; //クリックされたネットワークノード
 
 class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     constructor(container, load) {
@@ -54,8 +55,9 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             this.jmindex = [];
             this.addEventLister();
             // $(`#jsmind_container`).on('click',this.connect_mindmap.bind(this));
-            $(`#object_conmenu1`).on('click',this.show_select.bind(this));
-            // $(`#process_conmenu2`).on('click',this.connect_network.bind(this));
+            $(`#object_conmenu1`).on('click', this.step_start.bind(this));
+            $(`#object_conmenu2`).on('click',this.step_end.bind(this));
+            $(`#object_conmenu3`).on('click',this.step_paused.bind(this));
             // $(`#process_conmenu3`).on('click',this.Recruit_Idea.bind(this));
             $(`#process_conmenu4`).on('click',this.ContentmenuCancel.bind(this));
             // $(`#p_ontology_select`).on('click',this.addontology.bind(this));
@@ -151,7 +153,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         // this.bindconnect_network = this.connect_network.bind(this);
         // this.bindRecruit_Idea = this.Recruit_Idea.bind(this);
         this.bindstep_start = this.step_start.bind(this); //kagitani
-        this.bindstep_break = this.step_break.bind(this); //kagitani
+        this.bindstep_paused = this.step_paused.bind(this); //kagitani
         this.bindstep_end = this.step_end.bind(this); //kagitani
         this.bindContentmenuCancel = this.ContentmenuCancel.bind(this);
         // this.bindaddontology = this.addontology.bind(this);
@@ -160,7 +162,8 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         // this.bindNodeblinking = this.Nodeblinking.bind(this);
         // $(`#jsmind_container`).on('click',this.bindconnect_mindmap);
         $(`#object_conmenu1`).on('click',this.bindstep_start);
-        $(`#net_conmenu01`).on('click', this.bindstep_break);
+        $(`#object_conmenu2`).on('click',this.bindstep_end);
+        $(`#object_conmenu3`).on('click', this.bindstep_paused);
         $(`#net_conmenu02`).on('click', this.bindstep_end);
         // $(`#process_conmenu2`).on('click',this.bindconnect_network);
         // $(`#process_conmenu3`).on('click',this.bindRecruit_Idea);
@@ -174,7 +177,8 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     removeEventLister(){
         // $(`#jsmind_container`).off('click',this.bindconnect_mindmap);
         $(`#object_conmenu1`).off('click',this.bindstep_start);
-        $(`#net_conmenu01`).off('click', this.bindstep_break);
+        $(`#object_conmenu2`).off('click',this.bindstep_end);
+        $(`#object_conmenu3`).off('click', this.bindstep_paused);
         $(`#net_conmenu02`).off('click', this.bindstep_end);
         // $(`#process_conmenu2`).off('click',this.bindconnect_network);
         // $(`#process_conmenu3`).off('click',this.bindRecruit_Idea);
@@ -291,39 +295,85 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         this.latest_selected_node_info.x = node_x;
         this.latest_selected_node_info.y = boundingBoxupdate.bottom+10;
         defaultRecordThinkingProcess.record_Node(node_id, node_label, node_type, node_x, node_y,status);
+        console.log(this.nodes);
         return this.nodes;
     }
+    
 
-    //ノードの追加（リロード用）(完了)
-    addReloadNode(node_id, node_label, node_type, node_x, node_y) {
+    // ノードの追加（リロード用）(完了)
+    addReloadNode(node_id, node_label, node_type, node_x, node_y, status) {
         const existingNode = this.nodes.get(node_id);
         if (existingNode) {
             console.log(`Node with ID ${node_id} already exists. Skipping addition.`);
             return; // 重複がある場合は追加せずにリターン
         }
-        let node_color = '#d6f5d6'; // ノードの背景色
-        let node_shape = 'box';     // ノードの形状
-        let text_color = 'black';   // ノード内文字列の色
-        let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
+
+        let node_color = '#d6f5d6'; // デフォルトの背景色
+        let node_shape = 'box';
+        let text_color = 'black';
+        let position_fixed = false;
+        let border_width = 1;
+        let border_width_selected = 2;
+        let shape_border_dashes = false;
+
+        // ステータスに応じて色や枠線を設定
+        switch (status) {
+            case "inProgress":
+                node_color = 'orange';
+                border_width = 3;
+                border_width_selected = 5;
+                shape_border_dashes = [10, 5];
+                break;
+            case "paused":
+                node_color = 'LightCoral';
+                border_width = 3;
+                border_width_selected = 5;
+                shape_border_dashes = [5, 5];
+                break;
+            case "completed":
+                node_color = 'gray';
+                border_width = 3;
+                border_width_selected = 5;
+                shape_border_dashes = false;
+                break;
+            default:
+                node_color = '#d6f5d6';
+                break;
+        }
+
+        // 改行処理
         let result_label = '';
         for (let i = 0; i < node_label.length; i += 10) {
             result_label += node_label.substr(i, 10) + '\n';
         }
-        result_label = result_label.trim(); // 末尾の不要な改行を除去
+        result_label = result_label.trim();
+
+        // ノード作成
         const newNode = {
-            id: `${node_id}`, label: result_label,
+            id: `${node_id}`,
+            label: result_label,
             group: node_type,
-            color: node_color, shape: node_shape,
+            color: node_color,
+            shape: node_shape,
             font: { color: text_color },
             fixed: position_fixed,
-            x: node_x, y: node_y, 
+            x: node_x, y: node_y,
+            borderWidth: border_width,
+            borderWidthSelected: border_width_selected,
+            shapeProperties: {
+                borderDashes: shape_border_dashes
+            }
         };
+
         defaultThinkingProcess.nodes.add(newNode);
+
         const boundingBox = defaultThinkingProcess.ownNetwork.getBoundingBox(`${node_id}`);
         defaultThinkingProcess.latest_selected_node_info.x = node_x;
-        defaultThinkingProcess.latest_selected_node_info.y = boundingBox.bottom+10;
+        defaultThinkingProcess.latest_selected_node_info.y = boundingBox.bottom + 10;
+
         return defaultThinkingProcess.nodes;
     }
+
 
     addVersionNode(node_id, node_l, node_type, appeared_at, node_x, node_y){
         const existingNode = defaultThinkingProcess.nodes.get(node_id);
@@ -560,10 +610,11 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     // 右クリック時
     onContext(params) {
         this.nodeConnectEnabled = false;
+
         if (params.nodes.length == 1) {
-            $('#jsmind_container').css('height','50%');
             const NetworkMenu = document.getElementById('t_Process_conmenu');
-            this.selectId = params.nodes[0];
+            this.selectId = params.nodes[0]; // ここで選択されたノードIDを設定
+            console.log(`右クリックされたノードID: ${this.selectId}`); // デバッグ用ログ
             const pointerX = params.pointer.DOM.x;
             const pointerY = params.pointer.DOM.y;
             const mynetPosition = document.getElementById("myProcessnetwork2").getBoundingClientRect();
@@ -571,10 +622,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             this.BoxDisplay.y = pointerY + mynetPosition.top + 20;
             NetworkMenu.style.left = this.BoxDisplay.x;
             NetworkMenu.style.top = this.BoxDisplay.y;
-            NetworkMenu.style.display = "block";//ここようわからん未完成かも
-            if(this.OntologyConnectNodeId.indexOf(this.selectId) !== -1){
-                document.getElementById("process_conmenu3").style.display = "block";
-            }
+            NetworkMenu.style.display = "block";
         }
     }
 
@@ -597,116 +645,110 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
     //手段開始ボタン
     step_start() {
-        document.getElementById('t_Process_conmenu').style.display = "none";
-        console.log(`ノード ${this.selectId} の作業開始だよ！！`);  // コンソールにメッセージ表示
-        defaultRecordForestMRN.update_Node("status", this.selectId, "inProgress", "");
-    
-        const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
-        const fromNode = this.nodes.get(fromNodeId); // globalParams.nodes から元のノードを取得
-        console.log("ここ確認する！！！！！！！", fromNode);
-        
-    
-        // ノードを更新
+        const menu = document.getElementById('t_Process_conmenu');
+        if (menu) menu.style.display = "none";
+
+        console.log(`step_start() を呼び出しました。選択中のノードID: ${this.selectId}`); // デバッグ用ログ 
+        if (!this.selectId) {
+            console.error("選択されたノードIDが設定されていません。");
+            return;
+        }
+
+        console.log(`ノード ${this.selectId} の作業開始だよ！！`);
+        defaultRecordThinkingProcess.update_Node("status", this.selectId, "inProgress", "");
+
+        // const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
+        // const fromNode = this.nodes.get(fromNodeId);
+        // console.log("ここ確認する！！！！！！！", fromNode);
+
         this.nodes.update({
             id: this.selectId,
             color: 'orange',
             title: "作業中",
-            size: 50,  // ノードのサイズを大きく変更
-            physics: { enabled: false },  // 物理エンジンを無効にする
+            size: 50,
+            physics: { enabled: false },
             borderWidth: 3,
             borderWidthSelected: 5,
             shapeProperties: {
-                borderDashes: [10, 5] // 点滅線を使用
+                borderDashes: [10, 5]
             }
         });
-    
-        // ノードの更新状態を確認
+
         const updatedNode = this.nodes.get(this.selectId);
         console.log('更新後のノード:', updatedNode);
-  
-    
-        // 「fromNode.label 実行中．．．」を画面に表示
-        const statusMessage = `${fromNode.label} 実行中．．．`;
-    
-        // メッセージを表示するためのdivを作成
-        const messageDiv = document.createElement('div');
-        messageDiv.id = 'statusMessage';
-        messageDiv.style.position = 'fixed';
-        messageDiv.style.top = '20px';  // 画面上部から少し下
-        messageDiv.style.left = '50%';
-        messageDiv.style.transform = 'translateX(-50%)';
-        messageDiv.style.backgroundColor = '#f8d7da';  // 背景色（赤みの強い色）
-        messageDiv.style.color = '#721c24';  // 文字色
-        messageDiv.style.padding = '5px 15px';
-        messageDiv.style.fontSize = '12px';  // 文字サイズを小さく
-        messageDiv.style.fontWeight = 'bold';
-        messageDiv.style.border = '2px solid #f5c6cb';
-        messageDiv.style.borderRadius = '5px';
-        messageDiv.style.zIndex = '9999';  // 他の要素より前面に表示
-        messageDiv.style.display = 'flex';  // 横並びに設定
-        messageDiv.style.alignItems = 'center';  // 中央に整列
-        messageDiv.style.justifyContent = 'center';  // 中央に整列
-    
-        // メッセージ内容を設定
-        messageDiv.innerText = statusMessage;
-    
-        // ボディに追加
-        document.body.appendChild(messageDiv);
-    
-        // 一定時間後にメッセージを非表示にする（例えば5秒後）
-        setTimeout(() => {
-            document.getElementById('statusMessage').remove();
-        }, 5000);
     }
 
-    //手段中断ボタン
-    step_break (){
-        document.getElementById('t_Process_conmenu').style.display = "none";
-        console.log(`ノード ${this.selectId} の作業中断だよ！！`);  // コンソールにメッセージ表示
-        defaultRecordForestMRN.update_NodeStatus("break", this.selectId, "", "");
-        
-        const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
-        const fromNode = this.nodes.get(fromNodeId); 
 
-        // ノードを更新
+    // 手段中断ボタン
+    step_paused() {
+        const menu = document.getElementById('t_Process_conmenu');
+        if (menu) menu.style.display = "none";
+
+        console.log(`step_paused() を呼び出しました。選択中のノードID: ${this.selectId}`);
+        if (!this.selectId) {
+            console.error("選択されたノードIDが設定されていません。");
+            return;
+        }
+
+        console.log(`ノード ${this.selectId} の作業中断だよ！！`);
+        // ステータスを更新
+        defaultRecordThinkingProcess.update_Node("status", this.selectId, "paused", "");
+
+        // ノードの見た目を更新
         this.nodes.update({
             id: this.selectId,
             color: 'LightCoral',
             title: "作業中断",
-            size: 50,  // ノードのサイズを大きく変更
-            
+            size: 50,
+            physics: { enabled: false },
+            borderWidth: 3,
+            borderWidthSelected: 5,
+            shapeProperties: {
+                borderDashes: [5, 5]
+            }
         });
 
-        //DBに保存するのをやめる．
-        autoRecordFlag = false;
-        // カスタムイベントを発火
-        const breakEvent = new CustomEvent("stepBreakEvent", {
-            detail: {
-                object_node_id: this.selectId,
-                autoRecordFlag: autoRecordFlag,
-            },
-        });
+        const updatedNode = this.nodes.get(this.selectId);
+        console.log('更新後のノード（中断）:', updatedNode);
 
-        window.dispatchEvent(breakEvent); // グローバルイベントとして発火
-
-        Record_activities(this.selectId, null, "break",fromNode.label, null, "step", generateUniqueID(),object_map_id);
+        // フィードバック吹き出しを表示するならここで
+        // this.showFeedbackTooltip();
     }
 
-   // 手段完了ボタン
+
+    // 手段終了ボタン
     step_end() {
-        document.getElementById('t_Process_conmenu').style.display = "none";
-        console.log(`step_end() を呼び出しました。選択中のノードID: ${this.selectId}`); // デバッグ用ログ
+        const menu = document.getElementById('t_Process_conmenu');
+        if (menu) menu.style.display = "none";
 
-        // ステータス更新
-        defaultRecordForestMRN.update_NodeStatus("end", this.selectId, "", "");
+        console.log(`step_end() を呼び出しました。選択中のノードID: ${this.selectId}`);
+        if (!this.selectId) {
+            console.error("選択されたノードIDが設定されていません。");
+            return;
+        }
 
-        const fromNodeId = globalParams.nodes[0] || globalParams.nodes;
-        const fromNode = this.nodes.get(fromNodeId);
-        console.log(fromNode);
-        console.log(`step_end() 呼び出し: fromNodeId: ${fromNodeId}`, fromNode);
+        console.log(`ノード ${this.selectId} の作業完了だよ！！`);
+        // ステータスを completed に更新
+        defaultRecordThinkingProcess.update_Node("status", this.selectId, "completed", "");
 
-        Record_activities(this.selectId, null, "end", fromNode.label, null, "step", generateUniqueID(), object_map_id);
-        // フィードバック吹き出しを表示
+        // ノードの見た目を更新
+        this.nodes.update({
+            id: this.selectId,
+            color: 'gray',
+            title: "作業完了",
+            size: 50,
+            physics: { enabled: false },
+            borderWidth: 3,
+            borderWidthSelected: 5,
+            shapeProperties: {
+                borderDashes: false
+            }
+        });
+
+        const updatedNode = this.nodes.get(this.selectId);
+        console.log('更新後のノード（完了）:', updatedNode);
+
+        // フィードバックの吹き出しを表示
         this.showFeedbackTooltip();
     }
 
@@ -857,6 +899,9 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             })
             this.jmindex.length = 0;
         }
+        console.log(params);
+        console.log(params.pointer.DOM);
+        console.log(params.pointer.DOM.x, params.pointer.DOM.y);
     }
 
     addNewEdge(E_start, E_end){
@@ -923,8 +968,11 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                 //次に追加したノードの座標指定
                 this.latest_selected_node_info.x = (nodeBoundingBox.right + nodeBoundingBox.left)/2;
                 this.latest_selected_node_info.y = nodeBoundingBox.bottom + 10;
-                
+                console.log(params.nodes);
+                console.log(`ノード ${movedNodeId} の位置を更新しました。新しい座標: (${this.latest_selected_node_info.x}, ${this.latest_selected_node_info.y})`);
+            
                 defaultRecordThinkingProcess.update_Node("point" ,movedNodeId, (nodeBoundingBox.right + nodeBoundingBox.left)/2, (nodeBoundingBox.bottom + nodeBoundingBox.top)/2)
+                
                 // const ontology_index = this.OntologyConnectNodeId.indexOf(movedNodeId);
                 // if(ontology_index !== -1){
                 //     const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
@@ -958,30 +1006,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             // }
         }
     }
-
-    // Nodeblinking() {
-    //     this.Feedback.map((n) => {
-    //         const feedbacknode = this.nodes.get(n);
-    //         let node_color = '#ffdb4f'; // ノードの背景色
-    //         switch(feedbacknode.group) {
-    //             case "material-content": // 議論資料に書かれた内容に関するノードの場合
-    //                 break;
-    //             case "process": // 自分で考えた要約に関するノードの場合
-    //                 node_color = 'green';
-    //                 break;
-    //             case "utterance": // 議論内での発言ノードの場合
-    //                 node_color = 'pink';
-    //                 break;
-    //             case "topic-tag": // 議論内省マップのノードがどんなトピックに対応しているかを表すタグノードの場合
-    //                 node_color = 'blue';
-    //                 break;
-    //             default: // その他
-    //                 break;
-    //         }
-    //         const borderWidth = feedbacknode.borderWidth === 0 ? 5 : 0;
-    //         this.nodes.update({ id: n, color: { background: node_color, border: "red"}, borderWidth: borderWidth });
-    //     })
-    // }
 
     addMaterialOntology(material_id, concept_id){
         $.ajax({
@@ -1073,7 +1097,7 @@ class RecordThinkingProcess{
     
 
     //ノードの更新(完了)
-    update_Node (select_update, id, node_update_thing1, node_update_thing2){
+    update_Node (select_update, id, node_type, content, x, y, status){
         $.ajax({
             url: "php/object_maneger.php",
             type: "POST",
@@ -1081,8 +1105,11 @@ class RecordThinkingProcess{
                 node_id : id,
                 purpose : 'update',
                 update_thing : 'node',
-                node_update_thing1 : node_update_thing1,
-                node_update_thing2: node_update_thing2},
+                node_type: node_type,
+                content: content,
+                x: x,
+                y: y,
+                status: status},
             success:function(e){
                 if(e){
                     console.log(e);
@@ -1094,7 +1121,7 @@ class RecordThinkingProcess{
     //ノードの削除(完了)
     delete_db_Node (id){
         $.ajax({
-            url: "../php/thinking_edit_processmap_maneger.php",
+            url: "php/object_maneger.php",
             type: "POST",
             data: {node_id : id,
                 purpose : 'delete',
@@ -1121,7 +1148,7 @@ class RecordThinkingProcess{
     //エッジの削除(完了)
     delete_db_Edge (edge_id, edge_start,edge_end){
         $.ajax({
-            url: "../php/thinking_edit_processmap_maneger.php",
+            url: "php/object_maneger.php",
             type: "POST",
             data: {edge_id: edge_id,
                 edge_start : edge_start,
@@ -1352,7 +1379,7 @@ const displayTriggerData = (mode, display_target_area_id) => {
             console.log("pedgeの中身:", trigger_list_info.pedge);
 
             trigger_list_info.onode.map((n) => {
-                defaultThinkingProcess.addReloadNode(n.object_node_id, n.content, n.object_nodes_type, n.node_x, n.node_y);
+                defaultThinkingProcess.addReloadNode(n.object_node_id, n.content, n.object_nodes_type, n.node_x, n.node_y, n.status);
             });
             trigger_list_info.pedge.map((n) => {
                 defaultThinkingProcess.addReloadEdge(n.process_edge_id, n.edge_start, n.edge_end, n.label);
@@ -1697,28 +1724,43 @@ function ShowRelatedProcess(mode){
     
 }
 
-function showThinkingProcessMap(){
-  
+function showThinkingProcessMap() {
     document.getElementById('feedback_area').style.display = "block";
     document.getElementById('xml_upload_area').style.display = "block";
-    $('#process_network_container').css('display','flex');
-    // $('#jsmind_container').css('width','calc(100vw - 350px)');
-    $('#jsmind_container').css('width','100%');
-    $('#jsmind_container').css('height','50%');
-    $('#mind').css('height','90%');
+    $('#process_network_container').css('display', 'flex');
+    $('#jsmind_container').css('width', '100%');
+    $('#jsmind_container').css('height', '50%');
+    $('#mind').css('height', '90%');
     $('#document').hide();
     const frame_dom = document.getElementsByClassName("inquiry_area");
     frame_dom[0].style.border = "solid 5px #ccc";
     $("#myProcessnetwork").css({
-      width: '100%', 
-      height: '400px' // 必要に応じて調整
+        width: '100%',
+        height: '400px' // 必要に応じて調整
     });
-  
+
     defaultThinkingProcess = new ThinkingProcess("myProcessnetwork", "load");
     displayTriggerData("all", "trigger_area_list");
-  
+
+    // シークバーのイベントリスナーを追加
+    const slider = document.getElementById("timeline_slider");
+    const label = document.getElementById("timeline_label");
+
+    slider.addEventListener("input", (event) => {
+        const value = event.target.value;
+        label.textContent = `${value}%`;
+
+        // シークバーの値に応じて表示内容を変更する処理
+        updateThinkingProcessMap(value);
+    });
 }
 
+// シークバーの値に応じてマップを更新する関数
+function updateThinkingProcessMap(value) {
+    //console.log(`シークバーの値: ${value}`);
+    // ここにシークバーの値に応じたマップの更新ロジックを実装
+    // 例: ノードやエッジの表示/非表示を切り替える
+}
 function closeThinkingProcessMap(){
   
     document.getElementById('feedback_area').style.display = "block";
