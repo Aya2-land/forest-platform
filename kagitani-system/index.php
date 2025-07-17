@@ -85,6 +85,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <link rel="stylesheet" type="text/css" href="../css/meeting-reflection-network.css" />
         <script type="text/javascript" src="js/object-network.js"></script>
         <link rel="stylesheet" type="text/css" href="css/object-network.css" />
+        <script type="text/javascript" src="js/timeline_slider.js"></script>
         <script type="text/javascript">
         window.onbeforeunload = function(e) {e.returnValue = "ページを離れようとしています。よろしいですか？";}
         </script>
@@ -490,10 +491,11 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                                 id="process_ZoomOut" value="縮小" />
                                     </div>
                                     <!-- シークバー追加 -->
-                                        <div id="timeline_container">
-                                            <input type="range" id="timeline_slider" min="0" max="100" value="0" step="1" />
-                                            <span id="timeline_label">0%</span>
-                                        </div>
+                                    <div id="timeline_container">
+                                            <input type="range" id="timeline_slider" min="0" max="0" value="0" step="1" />
+                                            <span id="timeline_label">読み込み中...</span>
+                                    </div>
+
                                         <div id="myProcessnetwork"></div>
                                     <div id="t_Process_conmenu">
                                         <ul>

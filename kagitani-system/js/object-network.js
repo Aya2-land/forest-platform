@@ -1369,6 +1369,7 @@ const displayTriggerData = (mode, display_target_area_id) => {
             });
             console.log("onodeの中身:", trigger_list_info.onode);
             console.log("pedgeの中身:", trigger_list_info.pedge);
+            console.log("datesの中身:", trigger_list_info.dates);
 
             trigger_list_info.onode.map((n) => {
                 defaultThinkingProcess.addReloadNode(n.object_node_id, n.content, n.object_nodes_type, n.node_x, n.node_y, n.status);
@@ -1376,6 +1377,37 @@ const displayTriggerData = (mode, display_target_area_id) => {
             trigger_list_info.pedge.map((n) => {
                 defaultThinkingProcess.addReloadEdge(n.process_edge_id, n.edge_start, n.edge_end, n.label);
             });
+
+            // —————————————— ここからシークバー関連の処理 ——————————————
+            const timelineDates = trigger_list_info.dates;  // 日付配列
+
+            const slider = document.getElementById("timeline_slider");
+            const label = document.getElementById("timeline_label");
+            
+            let selectedDate = null;
+            
+            if (timelineDates && timelineDates.length > 0) {
+                slider.max = timelineDates.length - 1;
+                slider.value = timelineDates.length - 1;  // 最後のインデックスに初期設定
+                selectedDate = timelineDates[slider.value];
+                label.textContent = selectedDate;
+                console.log("初期選択日付（最新）:", selectedDate);
+            
+                slider.oninput = () => {
+                    const index = parseInt(slider.value);
+                    selectedDate = timelineDates[index];
+                    label.textContent = selectedDate;
+                    console.log("選択された日付:", selectedDate);
+                };
+            } else {
+                label.textContent = "日付なし";
+                slider.max = 0;
+                slider.value = 0;
+                selectedDate = null;
+                console.log("日付データがありません");
+            }
+            
+            // —————————————— ここまで ——————————————
 
             const nodes = this.nodes;
             const edges = this.edges;

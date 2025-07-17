@@ -73,7 +73,7 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     }
 
     /*
-        * 思考過程表出化マップのノードデータの取得    	
+        * 目標手段階層マップのノードデータの取得    	
     */
     $result_object_node = $mysqli->query("SELECT object_node_id, content, object_nodes_type, node_x, node_y, status FROM object_nodes
             WHERE node_id = '".$selected_node_id."' AND deleted = 0");
@@ -84,9 +84,9 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     $return_data = array_merge($return_data, ['onode' => $object_node]);
 
     /*
-        * 思考過程表出化マップのエッジデータの取得
+        * 目標手段階層マップのエッジデータの取得
         */
-        $result_processmap_edge = $mysqli->query("SELECT object_edge_id, edge_start, edge_end, label FROM object_edges
+    $result_processmap_edge = $mysqli->query("SELECT object_edge_id, edge_start, edge_end, label FROM object_edges
         WHERE (edge_start IN (SELECT object_node_id FROM object_nodes WHERE node_id = '".$selected_node_id."' AND deleted = 0) 
            OR edge_end IN (SELECT object_node_id FROM object_nodes WHERE node_id = '".$selected_node_id."' AND deleted = 0)) 
         AND deleted = 0");
@@ -109,7 +109,33 @@ if($process_mode === "all" || $process_mode === "allRE" ){
         }
         $return_data = array_merge($return_data, ['pedge' => $processmap_edge]);
     }
+
+    /*
+    * 目標手段階層マップの日付データの取得
+    */
+    $selected_node_id = $mysqli->real_escape_string($selected_node_id); // セキュリティのため
+    $date_sql = "
+        SELECT DISTINCT DATE(h.appeared_at) AS appeared_date
+        FROM object_nodes_histories h
+        JOIN object_nodes o ON h.object_node_id = o.object_node_id
+        WHERE o.node_id = '$selected_node_id'
+        ORDER BY appeared_date ASC
+    ";
     
+    $result = $mysqli->query($date_sql);
+    
+    $date_list = [];
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $date_list[] = $row['appeared_date'];
+        }
+    } else {
+        echo "SQL Error: " . $mysqli->error;
+    }
+    
+    // 返却データに含める
+    $return_data = $return_data ?? [];
+    $return_data['dates'] = $date_list;
     
 
     // ノードのバージョン情報を取得

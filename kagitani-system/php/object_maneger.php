@@ -115,36 +115,54 @@
 			$node_update_thing1 = $_POST['node_update_thing1'];
 			$node_update_thing2 = $_POST['node_update_thing2'];
 	
-			// もし $updated_at を使いたい場合は、$timestamp に置き換えるか、
-			// $updated_at = date("Y-m-d H:i:s"); のように定義してください。
-			// ただ今回は $timestamp を使っているので統一しましょう。
-
-			$sql_update = "UPDATE object_nodes_histories SET disappeared_at = '".$timestamp."' 
-			WHERE object_node_history_id = (
-				SELECT object_node_history_id FROM object_nodes_histories ORDER BY appeared_at DESC LIMIT 1
-			)";
-
-			$result_update = $mysqli->query($sql_update);
-			if ($mysqli->error) {
-			echo "Error update: " . $mysqli->error;
+			// 1. 最新の履歴IDを取得
+			$latest_history_id = null;
+			$sql_select_latest_history = "
+				SELECT object_node_history_id
+				FROM object_nodes_histories
+				WHERE object_node_id = '$node_id'
+				ORDER BY appeared_at DESC
+				LIMIT 1
+			";
+			$res = $mysqli->query($sql_select_latest_history);
+			if ($res && $res->num_rows > 0) {
+				$row = $res->fetch_assoc();
+				$latest_history_id = $row['object_node_history_id'];
+		
+				// 2. disappeared_at を更新
+				$sql_update_disappeared = "
+					UPDATE object_nodes_histories
+					SET disappeared_at = '$timestamp'
+					WHERE object_node_history_id = '$latest_history_id'
+				";
+				$mysqli->query($sql_update_disappeared);
+		
+				if ($mysqli->error) {
+					echo "Error updating disappeared_at: " . $mysqli->error;
+				}
 			}
 
 
-			if($select_update === 'point'){
-				$mysqli->query("UPDATE object_nodes 
-								SET node_x = '$node_update_thing1', 
-									node_y = '$node_update_thing2', 
-									updated_at = '$timestamp' 
-								WHERE object_node_id = '$node_id'");
-				if($mysqli->error){
+			if ($select_update === 'point') {
+			
+				// 3. object_nodes の座標を更新
+				$update_node_sql = "
+					UPDATE object_nodes 
+					SET 
+						node_x = '$node_update_thing1',
+						node_y = '$node_update_thing2',
+						updated_at = '$timestamp' 
+					WHERE object_node_id = '$node_id'
+				";
+				$mysqli->query($update_node_sql);
+				if ($mysqli->error) {
 					echo "Error point update: " . $mysqli->error;
 				}
-
-				$mysqli->query("UPDATE object_nodes SET node_x = '$node_update_thing1', node_y = '$node_update_thing2', updated_at = '$timestamp' WHERE object_node_id = '$node_id'");
-	
-				// INSERT ... SELECT
-				$h_sql = "INSERT INTO object_nodes_histories 
-					(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
+			
+				// 4. object_nodes_histories に新規レコードを追加
+				$insert_history_sql = "
+					INSERT INTO object_nodes_histories 
+						(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
 					SELECT 
 						'$object_h_id',
 						object_node_id,
@@ -156,20 +174,14 @@
 						'$node_update_thing1',
 						'$node_update_thing2'
 					FROM object_nodes
-					WHERE object_node_id = '$node_id'";
-
-	
-				// デバッグ用にSQLを表示
-				// echo "DEBUG INSERT SQL: $h_sql\n";
-	
-				$result = $mysqli->query($h_sql);
-				if($mysqli->error){
-					// echo "Error history insert: " . $mysqli->error;
-				} else {
-					// echo "History insert successful!\n";
+					WHERE object_node_id = '$node_id'
+				";
+				$mysqli->query($insert_history_sql);
+				if ($mysqli->error) {
+					echo "Error inserting new history: " . $mysqli->error;
 				}
-			
-			}else if($select_update === 'label'){
+			}
+			else if($select_update === 'label'){
 				$mysqli->query("UPDATE object_nodes 
 								SET content = '$node_update_thing1', 
 									updated_at = '$timestamp' 
@@ -202,6 +214,8 @@
 					echo "History insert successful!\n";
 				}
 			}else if($select_update === 'status'){
+
+				// ① object_nodes テーブルの status を更新
 				$mysqli->query("UPDATE object_nodes 
 								SET status = '$node_update_thing1', 
 									updated_at = '$timestamp' 
@@ -210,13 +224,39 @@
 					echo "Error update status: " . $mysqli->error;
 				}
 			
+				// ② object_nodes_histories テーブルで、同じ object_node_id の中で appeared_at が最新で disappeared_at が NULL の履歴を探す
+				$sub_sql = "
+					SELECT object_node_history_id 
+					FROM object_nodes_histories 
+					WHERE object_node_id = '$node_id' 
+					  AND disappeared_at IS NULL 
+					ORDER BY appeared_at DESC 
+					LIMIT 1
+				";
+				$result = $mysqli->query($sub_sql);
+				if ($result && $row = $result->fetch_assoc()) {
+					$latest_history_id = $row['object_node_history_id'];
+			
+					// ③ 該当履歴の disappeared_at を現在の timestamp で更新
+					$update_sql = "
+						UPDATE object_nodes_histories 
+						SET disappeared_at = '$timestamp' 
+						WHERE object_node_history_id = '$latest_history_id'
+					";
+					$mysqli->query($update_sql);
+					if ($mysqli->error) {
+						echo "Error updating disappeared_at: " . $mysqli->error;
+					}
+				}
+			
+				// ④ object_nodes の内容を元に、新しい履歴を object_nodes_histories に挿入
 				$h_sql = "INSERT INTO object_nodes_histories 
 						  (object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y)
 						  SELECT 
 							'$object_h_id',
 							object_node_id,
 							object_nodes_type,
-							status,
+							'$node_update_thing1',
 							'$timestamp',
 							NULL,
 							content,
@@ -225,21 +265,47 @@
 						  FROM object_nodes
 						  WHERE object_node_id = '$node_id'";
 			
+				// デバッグ用
 				// echo "DEBUG INSERT SQL: $h_sql\n";
 			
 				$result = $mysqli->query($h_sql);
 				if($mysqli->error){
 					echo "Error history insert: " . $mysqli->error;
 				} else {
-					echo "History insert successful!\n";
+					// echo "History insert successful!\n";
 				}
 			}
-		}
+		}			
 	}else if($purpose === 'delete'){
 		$delete_thing = $_POST['delete_thing'];
 		if($delete_thing === 'node'){
 			$node_id = $_POST["node_id"];
-			
+			// 1. 最新の履歴IDを取得
+			$latest_history_id = null;
+			$sql_select_latest_history = "
+				SELECT object_node_history_id
+				FROM object_nodes_histories
+				WHERE object_node_id = '$node_id'
+				ORDER BY appeared_at DESC
+				LIMIT 1
+			";
+			$res = $mysqli->query($sql_select_latest_history);
+			if ($res && $res->num_rows > 0) {
+				$row = $res->fetch_assoc();
+				$latest_history_id = $row['object_node_history_id'];
+		
+				// 2. disappeared_at を更新
+				$sql_update_disappeared = "
+					UPDATE object_nodes_histories
+					SET disappeared_at = '$timestamp'
+					WHERE object_node_history_id = '$latest_history_id'
+				";
+				$mysqli->query($sql_update_disappeared);
+		
+				if ($mysqli->error) {
+					echo "Error updating disappeared_at: " . $mysqli->error;
+				}
+			}
 			// 1. object_nodesのdeletedフラグを立てる
 			$result = $mysqli->query("UPDATE object_nodes SET deleted = 1, updated_at = '$timestamp' WHERE object_node_id = '$node_id'");
 			if (!$result) {
