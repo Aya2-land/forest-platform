@@ -4,6 +4,8 @@ let defaultRecordThinkingProcess;
 let defaultShowThinkingProcess;
 let globalParams = null; //クリックされたネットワークノード
 
+// グローバルスコープに移動
+
 class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     constructor(container, load) {
         // this.ownNetwork = this.generateThinkingProcessNetworkCanvas(container, {}, {}); // デフォルトのマップを表示
@@ -777,7 +779,8 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         tooltip.style.width = "400px";
         tooltip.style.minWidth = "300px";
         tooltip.innerHTML = `
-            <div id="feedbackTooltipHeader" style="cursor: move; background: #ccc; padding: 5px;">
+        <div style="border: 2px solid #888; border-radius: 8px; background: white; box-shadow: 2px 2px 8px rgba(0,0,0,0.3);">
+            <div id="feedbackTooltipHeader" style="cursor: move; background: #ccc; padding: 5px; border-bottom: 1px solid #888;">
                 <strong>【行動記録入力】</strong>
             </div>
             <div style="padding: 10px;">
@@ -794,7 +797,9 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                     <button type="button" id="btnSaveFeedback">保存</button>
                 </form>
             </div>
-        `;
+        </div>
+    `;
+    
         tooltip.style.display = "block";
     
         // 保存ボタンのイベントリスナーを設定
@@ -1277,6 +1282,105 @@ const getProcessMapDataFromDB = (callback) => {
     });
 }
 
+const getPassDataFromDB = (selected_date) => {
+    console.log("呼ばれたぞい");
+    let selected_node_id;
+    let selected_concept_id;
+
+    if (process_mode == "all") {
+        selected_node_id = _jm.get_selected_node().id;
+        selected_concept_id = Get_NodeInfo(selected_node_id, "concept_id");
+    } else {
+        const conceptDisplay = document.getElementById("conceptdisplay");
+        selected_node_id = conceptDisplay.getAttribute('nodeid');
+        selected_concept_id = conceptDisplay.getAttribute('conceptid');
+    }
+
+    choose_trigger_xmlLoad().then(conceptIds => {
+        console.log("今から取得します", selected_node_id);
+
+        const postData = {
+            process_mode: "PassData",
+            selected_node_id: selected_node_id,
+            selected_concept_id: selected_concept_id,
+            concept_ids: conceptIds,
+            selected_date: selected_date
+        };
+
+        console.log("送信データ:", postData);
+
+        $.ajax({
+            url: "php/object_map_manager.php",
+            type: "POST",
+            data: postData,
+            success: function(response) {
+                console.log("レスポンス文字列:", response);
+                try {
+                    const data = JSON.parse(response);
+                    console.log("パース結果:", data);
+
+                    const historyArray = data.hnode || data.data || []; 
+
+                    if (Array.isArray(historyArray) && historyArray.length > 0) {
+                        console.log(`履歴件数: ${historyArray.length}`);
+                        historyArray.forEach((node, i) => {
+                            console.log(`[${i + 1}] object_node_id: ${node.object_node_id}`);
+                            console.log("  content:", node.content);
+                            console.log("  object_node_type:", node.object_node_type);
+                            console.log("  x:", node.x, " y:", node.y);
+                            console.log("  status:", node.status);
+                            console.log("  appeared_at:", node.appeared_at);
+                            console.log("  disappeared_at:", node.disappeared_at);
+                        });
+
+                        // ここで履歴データを渡して画面表示を更新する
+                        displayPassData(historyArray);
+
+                    } else {
+                        console.warn("履歴データが見つかりません");
+                    }
+
+                    if (data.status && data.status !== "success") {
+                        console.warn("正常終了していません:", data.status, data.message);
+                    }
+                } catch (e) {
+                    console.error("JSONパース失敗:", e);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX通信エラー:", status, error);
+            }
+        });
+    });
+};
+
+
+// hnode配列を受け取ってマップに表示する関数例
+const displayPassData = (hnodeArray) => {
+    if (!Array.isArray(hnodeArray) || hnodeArray.length === 0) {
+        console.log("履歴ノードデータが空または不正です");
+        return;
+    }
+
+    // 例えば既存の履歴ノードを一旦クリアする処理があればここで行う
+    // defaultThinkingProcess.clearHistoryNodes(); // あれば
+
+    hnodeArray.forEach((node) => {
+        // ここは既存のノード追加関数に合わせて適宜調整してください
+        defaultThinkingProcess.addReloadNode(
+            node.object_node_id,
+            node.content,
+            node.object_node_type,  // おそらくプロパティ名がobject_node_typeに変わってるはず
+            node.x,
+            node.y,
+            node.status
+        );
+    });
+
+    console.log(`履歴ノード ${hnodeArray.length}件を表示しました`);
+};
+
+
 const makeTriggerInList = (id, activity_type, concept_label, content, timestamp, trigger_on) => {
     // 左側の発話ノードのリストのところのノードのDOMを構成する
     let backColor = "white";
@@ -1392,12 +1496,15 @@ const displayTriggerData = (mode, display_target_area_id) => {
                 selectedDate = timelineDates[slider.value];
                 label.textContent = selectedDate;
                 console.log("初期選択日付（最新）:", selectedDate);
-            
+                
                 slider.oninput = () => {
                     const index = parseInt(slider.value);
                     selectedDate = timelineDates[index];
                     label.textContent = selectedDate;
                     console.log("選択された日付:", selectedDate);
+                    defaultThinkingProcess = new ThinkingProcess("myProcessnetwork", "load");
+                    getPassDataFromDB(selectedDate);
+                    console.log("過去データを取得するぞい！");
                 };
             } else {
                 label.textContent = "日付なし";
@@ -1415,63 +1522,6 @@ const displayTriggerData = (mode, display_target_area_id) => {
             addeventdisplayTriggerData();
             
         });
-    }else if(mode=="AddBrother"){
-        // getProcessMapDataFromDB ((trigger_list_info) => {
-        //     // versionノードの表示
-        //     let bronum = trigger_list_info.brother_num;
-        //     trigger_list_info.node_versions.forEach((v) => {
-        //         console.log(bronum[v.node_id]);
-        //         if(v.broversion){
-        //             node_x = defaultThinkingProcess.nodes.get(v.broversion).x;
-        //             node_y = v.y;
-        //         }else{
-        //             node_x -= 150
-        //         }
-        //         if(!v.y || v.y == '233px'){
-        //             node_y = 100;
-        //         }
-        //         console.log(node_y);
-        //         // versionノードで時間軸が同じになるようにx座標を合わせる
-        //         defaultThinkingProcess.addVersionNode(v.node_version_id, v.content, "versionsBro", v.appeared_at, node_x, node_y);
-        //         if(from_id != ""){
-        //             defaultThinkingProcess.addVersionEdge(from_id, v.node_version_id);
-        //         }
-        //         from_id = v.node_version_id;
-        //         node_x += 150;
-        //     });
-        //     // triggerノードの表示
-        //     trigger_list_info.trigger.forEach((u) => {
-        //         j++;
-        //         if(u){
-        //             let from_node = u.node_version_from;
-        //             let to_node = u.node_version_to;
-        //             let edge_ids = defaultThinkingProcess.ownNetwork.getConnectedEdges(from_node);
-        //             let num = 0;
-        //             for(i = 0; i<edge_ids.length; i++){
-        //                 if(defaultThinkingProcess.edges.get(edge_ids[i]).group == "versionEdges" || defaultThinkingProcess.edges.get(edge_ids[i]).group == "trigger_from"){
-        //                     //(versionEdgesのときなど)自身が指されている(左側のものと繋がっている)edgeを除外
-        //                     if(defaultThinkingProcess.ownNetwork.getConnectedNodes(edge_ids[i])[1] != from_node){
-        //                         num = i;
-        //                     }
-        //                 }
-        //             }
-        //             let edge_id = edge_ids[num];
-        //             node_x = (defaultThinkingProcess.nodes.get(from_node).x + defaultThinkingProcess.nodes.get(to_node).x)/2;
-        //             node_y = defaultThinkingProcess.nodes.get(from_node).y;
-        //             defaultThinkingProcess.addTriggerNode("Reload", u.trigger_id, edge_id, from_node, to_node, u.activity_id, u.content, u.activity_type, u.activity_time, node_x, node_y);
-        //         }
-        //     });
-        //     trigger_list_info.pnode.map((n) => {
-        //         defaultThinkingProcess.addReloadNode(n.process_node_id, n.content, n.process_node_type, n.node_x, n.node_y);
-        //     });
-        //     trigger_list_info.pedge.map((n) => {
-        //         defaultThinkingProcess.addReloadEdge(n.process_edge_id, n.edge_start, n.edge_end, n.label);
-        //     });
-
-        //     const nodes = this.nodes;
-        //     const edges = this.edges;
-        // })
-
     }
     
 }

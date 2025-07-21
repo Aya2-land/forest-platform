@@ -230,7 +230,120 @@ if($process_mode === "all" || $process_mode === "allRE" ){
         echo json_encode($return_data);
         return;
     }
+}else if ($process_mode === "PassData") {
+
+    $selected_node_id = $_POST['selected_node_id'] ?? null;
+    $selectedDate = $_POST['selected_date'] ?? null;
+
+    if (!$selected_node_id || !$selectedDate) {
+        echo json_encode([
+            'status' => 'invalid_input',
+            'message' => 'selected_node_id または selected_date が不足しています',
+            'data' => []
+        ]);
+        exit;
+    }
+
+    $datetime = $selectedDate . ' 23:59:59';
+
+    // 1. object_nodes を取得
+    $sql_object_nodes = "
+        SELECT object_node_id
+        FROM object_nodes
+        WHERE node_id = '".$mysqli->real_escape_string($selected_node_id)."'
+        AND created_at <= '".$mysqli->real_escape_string($datetime)."'
+    ";
+    error_log("SQL object_nodes: $sql_object_nodes");
+
+    $result_object_nodes = $mysqli->query($sql_object_nodes);
+
+    if (!$result_object_nodes) {
+        echo json_encode([
+            'status' => 'sql_error',
+            'message' => 'object_nodes の SQL 実行に失敗: ' . $mysqli->error,
+            'data' => [],
+            'debug' => ['sql_object_nodes' => $sql_object_nodes]
+        ]);
+        exit;
+    }
+
+    $object_node_ids = [];
+    while ($row = $result_object_nodes->fetch_assoc()) {
+        $object_node_ids[] = $row['object_node_id'];
+    }
+
+    if (empty($object_node_ids)) {
+        echo json_encode([
+            'status' => 'empty_object_nodes',
+            'message' => "node_id {$selected_node_id} に該当する object_node_id が存在しません（{$datetime} 以前）",
+            'data' => [],
+            'debug' => [
+                'sql_object_nodes' => $sql_object_nodes,
+                'selected_node_id' => $selected_node_id,
+                'datetime' => $datetime
+            ]
+        ]);
+        exit;
+    }
+
+    // 2. object_nodes_histories 取得
+    $ids_string = implode(",", array_map(function ($id) use ($mysqli) {
+        return "'" . $mysqli->real_escape_string($id) . "'";
+    }, $object_node_ids));
+
+    $sql_histories = "
+        SELECT 
+            object_node_id, content, object_node_type, x, y, status, appeared_at, disappeared_at
+        FROM 
+            object_nodes_histories
+        WHERE 
+            object_node_id IN ($ids_string)
+            AND appeared_at <= '".$mysqli->real_escape_string($datetime)."'
+            AND (disappeared_at IS NULL OR disappeared_at > '".$mysqli->real_escape_string($datetime)."')
+        ORDER BY 
+            object_node_id, appeared_at DESC
+    ";
+    error_log("SQL histories: $sql_histories");
+
+    $result_histories = $mysqli->query($sql_histories);
+
+    if (!$result_histories) {
+        echo json_encode([
+            'status' => 'sql_error',
+            'message' => 'object_nodes_histories の SQL 実行に失敗: ' . $mysqli->error,
+            'data' => [],
+            'debug' => ['sql_histories' => $sql_histories]
+        ]);
+        exit;
+    }
+
+    // 最新履歴だけ取得
+    $object_node_h = [];
+    $seen_ids = [];
+
+    while ($row = $result_histories->fetch_assoc()) {
+        $oid = $row['object_node_id'];
+        if (!in_array($oid, $seen_ids)) {
+            $object_node_h[] = $row;
+            $seen_ids[] = $oid;
+        }
+    }
+
+    echo json_encode([
+        'status' => 'success',
+        'message' => 'データ取得成功',
+        'data' => $object_node_h,
+        'debug' => [
+            'object_node_ids_count' => count($object_node_ids),
+            'histories_found' => count($object_node_h),
+            'sql_object_nodes' => $sql_object_nodes,
+            'sql_histories' => $sql_histories,
+            'selected_node_id' => $selected_node_id,
+            'datetime' => $datetime
+        ]
+    ]);
 }
+
 
 
 

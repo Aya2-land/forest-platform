@@ -33,6 +33,14 @@ jmnode.selected{box-shadow:2px 2px 8px #000;}
 jmnode.root{font-size:12px;}
 jmexpander{border-color:gray;}
 jmexpander:hover{border-color:#000;}
+jmnode a {
+    text-decoration: none;
+}
+
+jmnode img {
+    margin-right: 5px;
+    vertical-align: middle;
+}
 
 @media screen and (max-device-width: 1024px) {
     jmnode{padding:5px;border-radius:3px;font-size:14px;}

@@ -7,6 +7,56 @@
  */
 
  alert_count = 0;
+ 
+ function addIconToNode() {
+    const selectedNode = _jm.get_selected_node();
+    if (!selectedNode) {
+        alert('ノードが選択されていません。');
+        return;
+    }
+
+    const nodeElement = selectedNode._data.view.element;
+
+    if (nodeElement.querySelector('.node-icon')) {
+        alert('このノードには既にアイコンが追加されています。');
+        return;
+    }
+
+    const icon = document.createElement('img');
+    icon.src = 'https://img.icons8.com/ios-filled/50/compass--v1.png'; // 大きめのコンパスアイコン
+    icon.alt = '手段階層マップあり';
+    icon.title = 'このノードには手段階層マップがあります';
+    icon.className = 'node-icon';
+
+    // スタイル調整（大きく、重なって見やすく）
+    icon.style.width = '32px';
+    icon.style.height = '32px';
+    icon.style.position = 'absolute';
+    icon.style.top = '-12px';
+    icon.style.left = '-12px';
+    icon.style.zIndex = '10';
+    icon.style.opacity = '0.9';
+    icon.style.transition = 'all 0.2s ease';
+
+    // ホバー時の動き
+    icon.addEventListener('mouseenter', () => {
+        icon.style.transform = 'scale(1.2)';
+        icon.style.filter = 'brightness(1.2)';
+    });
+    icon.addEventListener('mouseleave', () => {
+        icon.style.transform = 'scale(1)';
+        icon.style.filter = 'brightness(1)';
+    });
+
+    // ノードが position: static だった場合に相対位置を指定
+    const computedStyle = window.getComputedStyle(nodeElement);
+    if (computedStyle.position === 'static') {
+        nodeElement.style.position = 'relative';
+    }
+
+    nodeElement.appendChild(icon);
+}
+
 
  async function get_Typeid(class_name, type_name) {
     return new Promise((resolve, reject) => {
@@ -1315,6 +1365,39 @@
                 //ここまで大槻修正
                 check_edit_reason(thisId);
                 $('#comment_balloon').hide(); //他のノードクリックしたら吹きだしは消す
+
+                // jsMindの初期化コードを挿入
+var mind = {
+    "meta": {
+        "name": "example",
+        "author": "hizzgdev@163.com",
+        "version": "0.2"
+    },
+    "format": "node_tree",
+    "data": {
+        "id": "root",
+        "topic": "Root Node",
+        "children": [
+            {
+                "id": "sub1",
+                "topic": '<img src="https://example.com/icon.png" style="width:16px;height:16px;vertical-align:middle;"> Sub Node 1'
+            },
+            {
+                "id": "sub2",
+                "topic": '<span style="color:blue;">📘</span> Sub Node 2'
+            }
+        ]
+    }
+};
+
+var options = {
+    container: 'jsmind_container',
+    theme: 'primary',
+    editable: true
+};
+
+var jm = jsMind.show(options, mind);
+
 
                 //hatakeyama ノードのversion履歴を取得
                 NodeVersionLog(thisId).then(function (res) {
