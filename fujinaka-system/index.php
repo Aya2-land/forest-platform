@@ -159,6 +159,11 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                 <!-- <label><input type="checkbox" name="Difference" id="Difference" onClick="Difference();">以前のマップとの差分</label> -->
               </div>
 
+              <div class="menu_css" id="logic_menu">
+                <input type="button" id="ln_maketriangle" value="三角ロジックを作成する">
+                <input type="button" id="ln_createtriangle" value="三角ロジックを追加する">
+              </div>
+
               <div class="menu_css" id ="presen_menu">
                 <!-- 【Slide】 -->
                 <button class="button4" onclick="MakeChapter(null);">
@@ -199,10 +204,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                   test
                 </button> -->
               </div>
-              <div class="menu_css" id="logic_menu">
-                <input type="button" id="ln_maketriangle" value="三角ロジックを作成する">
-                <input type="button" id="ln_createtriangle" value="三角ロジックを追加する">
-              </div>
+              
               <div id ="preview_menu">
                   <!-- 【Preview】 -->
                   <button class="button4" onclick="Create_preview();">

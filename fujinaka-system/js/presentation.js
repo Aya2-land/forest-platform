@@ -664,36 +664,32 @@ function SetPurposeonSection(){
 // 引数説明　meta:メタ認知的知識　topic:記述内容 id:選択したノードID
 function CreateThread(topic, id){
 
-  var statement = topic || "";  // テキストボックスに入れる文字列を格納する変数
+  var statement = topic || "";  
   var k = 0;
   var node_id = [];
   let concept_id;
-  // もしノードを選択して作られたスレッドなら
+  
   if(id != null){
     var jmnode = document.getElementsByTagName("jmnode");
     for(var i=0; i<jmnode.length; i++){
       if(jmnode[i].getAttribute('nodeid') == id && k== 0){
         node_id.push(id);
         concept_id = jmnode[i].getAttribute('concept_id');
-        console.log(node_id);
-        console.log(node_id[0]);
         k += 1;
       }
     }
   }
 
-
-
-  var uuid = getUniqueStr(); // Threadのidをランダム生成
+  var uuid = getUniqueStr(); 
   var setid = getUniqueStr();
-  var quot_uuid = "\"" + uuid + "\""; // quotationをつけたuuid　labelを書く時に欲しかった
+  var quot_uuid = "\"" + uuid + "\""; 
   var quot_setid = "\"" + setid + "\"";
-  let selected_node = CheckSelectedNode(); // 現在選択されているノードのチェック
-  console.log(uuid);
-  console.log(quot_uuid);
+  let selected_node = CheckSelectedNode(); 
 
+  // 節があるかチェック
   const section_dom = document.querySelector(".section");
   if (section_dom) {
+    // 節がある場合は節に追加
     const dataElement = document.getElementById(section_dom.id);
     const paragraph_dom = dataElement.getElementsByClassName("thread");
 
@@ -703,14 +699,32 @@ function CreateThread(topic, id){
     } else {
       Insert_paragraph(uuid, section_dom.id, 1);
     }
+    
+    var target_area = $(".paragraph", "#" + section_dom.id + "");
   } else {
-    window.alert("節を追加してください");
-    return;
+    // 節がない場合は章に直接追加
+    const chapter_dom = document.querySelector(".chapter");
+    if (chapter_dom) {
+      const dataElement = document.getElementById(chapter_dom.id);
+      const paragraph_dom = dataElement.getElementsByClassName("thread");
+
+      if (paragraph_dom && paragraph_dom.length > 0) {
+        var paragraph_rank = paragraph_dom.length + 1;
+        Insert_paragraph(uuid, chapter_dom.id, paragraph_rank);
+      } else {
+        Insert_paragraph(uuid, chapter_dom.id, 1);
+      }
+      
+      var target_area = $('.section_area', "#" + chapter_dom.id + "");
+    } else {
+      window.alert("章を追加してください");
+      return;
+    }
   }
 
   let label = "<div class='thread' id='"+uuid+"' value='パラグラフ' data-node_id='"+node_id+"' style='background-color:white; padding:10px; margin-top:10px; margin-bottom:10px; margin-right:10px; margin-left:5px;'>"+
                 "<span class = 'tspan' tabindex='0'>"+topic+"</span>"+
-                "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Update_paragraph_Title(this,"+quot_uuid+");'  placeholder='節タイトル' onkeypress='Keypress(event.keyCode, this);'>"+topic+"</textarea>"+
+                "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Update_paragraph_Title(this,"+quot_uuid+");'  placeholder='パラグラフタイトル' onkeypress='Keypress(event.keyCode, this);'>"+topic+"</textarea>"+
                 "<input class='simple_btn' type='button' value='×' onclick='Removeparagraph("+quot_uuid+", false);Record_paragraphRank();Get_ContentRank();' style='width:25px; height:25px; font-size:10px; float:right;'>"+
                 "<br>"+
                 "<div class='purpose'>"+
@@ -729,11 +743,10 @@ function CreateThread(topic, id){
                 "</div>"+
               "</div>";
 
-  let area = $('.paragraph', "#" + section_dom.id + "");
-  area.append(label);
+  target_area.append(label);
 
   // 追加された thread に Sortable 適用
-  var newThread = area.find('.thread').last();
+  var newThread = target_area.find('.thread').last();
   new Sortable(newThread.parent()[0], {
     handle: '.thread', // ソートハンドルとなる要素を指定
     group: 'paragraphs', // グループ名を共有
@@ -869,15 +882,15 @@ function SetPurpose(){
 function MakeSlide(){
 
     var node_id = [];
-    var uuid = getUniqueStr(); // Threadのidをランダム生成
+    var uuid = getUniqueStr();
     var setid = getUniqueStr();
-    var quot_uuid = "\"" + uuid + "\""; // quotationをつけたuuid　labelを書く時に欲しかった
+    var quot_uuid = "\"" + uuid + "\"";
     var quot_setid = "\"" + setid + "\"";
-    console.log(uuid);
-    console.log(quot_uuid);
 
+    // 節があるかチェック
     const section_dom = document.querySelector(".section");
     if (section_dom) {
+      // 節がある場合は節に追加
       const dataElement = document.getElementById(section_dom.id);
       const paragraph_dom = dataElement.getElementsByClassName("thread");
   
@@ -887,25 +900,44 @@ function MakeSlide(){
       } else {
         Insert_paragraph(uuid, section_dom.id, 1);
       }
+      
+      var target_area = $(".paragraph", "#" + section_dom.id + "");
     } else {
-      window.alert("節を追加してください");
-      return;
+      // 節がない場合は章に直接追加
+      const chapter_dom = document.querySelector(".chapter");
+      if (chapter_dom) {
+        const dataElement = document.getElementById(chapter_dom.id);
+        const paragraph_dom = dataElement.getElementsByClassName("thread");
+
+        if (paragraph_dom && paragraph_dom.length > 0) {
+          var paragraph_rank = paragraph_dom.length + 1;
+          Insert_paragraph(uuid, chapter_dom.id, paragraph_rank);
+        } else {
+          Insert_paragraph(uuid, chapter_dom.id, 1);
+        }
+        
+        var target_area = $('.section_area', "#" + chapter_dom.id + "");
+      } else {
+        window.alert("章を追加してください");
+        return;
+      }
     }
     
+    // HTMLラベル作成と追加
     let label = "<div class='thread' id='"+uuid+"' value='パラグラフ' data-node_id='"+node_id+"' style='background-color:white; padding:10px; margin-top:10px; margin-bottom:10px; margin-right:10px; margin-left:5px;'>"+
-                  "<span class = 'tspan' tabindex='0'>パラグラフタイトル</span>"+
-                  "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Update_paragraph_Title(this,"+quot_uuid+");' placeholder='パラグラフタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
-                  "<input class='simple_btn' type='button' value='×' onclick='Removeparagraph("+quot_uuid+", false);Record_paragraphRank();Get_ContentRank();' style='width:25px; height:25px; font-size:10px; float:right;'>"+
-                  "<br>"+
-                  "<div class='purpose'>"+
-                  "</div>"+
-                  "<br>"+
-                  "<input id='btn_"+uuid+"' type='button' value='テキストを表示' onclick='Toggletext("+quot_uuid+");' style='width:100px; height:25px; font-size:10px; float:right;'>"+
-                  "<br>"+
-                  "<div id='container_"+uuid+"' style='display: none;'>"+
-                    "<div id ='editor_"+uuid+"'></div>"+
-                  "</div>"+
-                "</div>";
+                "<span class = 'tspan' tabindex='0'>パラグラフタイトル</span>"+
+                "<textarea class='title_slide' class='statement' onFocus='TextboxClick()' onblur='Update_paragraph_Title(this,"+quot_uuid+");' placeholder='パラグラフタイトル' onkeypress='Keypress(event.keyCode, this);'></textarea>"+
+                "<input class='simple_btn' type='button' value='×' onclick='Removeparagraph("+quot_uuid+", false);Record_paragraphRank();Get_ContentRank();' style='width:25px; height:25px; font-size:10px; float:right;'>"+
+                "<br>"+
+                "<div class='purpose'>"+
+                "</div>"+
+                "<br>"+
+                "<input id='btn_"+uuid+"' type='button' value='テキストを表示' onclick='Toggletext("+quot_uuid+");' style='width:100px; height:25px; font-size:10px; float:right;'>"+
+                "<br>"+
+                "<div id='container_"+uuid+"' style='display: none;'>"+
+                  "<div id ='editor_"+uuid+"'></div>"+
+                "</div>"+
+              "</div>";
 
     let area = $( ".paragraph", "#" + section_dom.id + "");
     area.append(label);
@@ -1526,7 +1558,7 @@ function Record_sectionRank(){ //節順番保存
 function Record_paragraphRank(){ //パラグラフ順番保存
   var section_dom = document.getElementsByClassName("section");
 
-  
+
   if (section_dom && section_dom.length > 0) {
     for(var i=0; i<section_dom.length; i++){
       const dataElement = document.getElementById(section_dom[i].id);
@@ -1828,6 +1860,7 @@ class Chapter{
                   "</div>"+
                   "<br>"+
                 "</div>";
+
     
     let area = $("#chapter_area");
     area.append(label);
@@ -1864,6 +1897,7 @@ class Section{
                   "</div>"+
                   "<br>"+
                 "</div>";
+
     
     let area = $( ".section_area", "#" + chapter_id + "");
     area.append(label);
@@ -2556,4 +2590,4 @@ const preview_update = (older_text, newer_text, older_html) => {
   });
 
   return newer_html_span_list;
-} 
+}

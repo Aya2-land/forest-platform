@@ -58,17 +58,42 @@ if ($purpose === 'record') {
 else if ($purpose === 'update') {
     $update_thing = $_POST['update_thing'];
     if ($update_thing === 'node') {
-        $movedNodeId = $_POST["movedNodeId"];
-        $x = $_POST["x"];
-        $y = $_POST["y"];
         $timestamp = date("Y-m-d H:i:s") . "." . substr(explode(".", (microtime(true) . ""))[1], 0, 3);
+        
+        // ノードの移動（座標更新）の場合
+        if (isset($_POST["movedNodeId"])) {
+            $movedNodeId = $_POST["movedNodeId"];
+            $x = $_POST["x"];
+            $y = $_POST["y"];
 
-        $sql = "UPDATE logic_node SET x = '$x', y = '$y', updated_at = '$timestamp' WHERE logic_node_id =  '$movedNodeId'";
+            $sql = "UPDATE logic_node SET x = '$x', y = '$y', updated_at = '$timestamp' WHERE logic_node_id = '$movedNodeId'";
 
-        if ($mysqli->query($sql)) {
-            echo json_encode(["status" => "success", "message" => "ノードが更新されました", "edge_id" => $logic_edges_id]);
-        } else {
-            echo json_encode(["status" => "error", "message" => "データベースエラー: " . $mysqli->error]);
+            if ($mysqli->query($sql)) {
+                echo json_encode(["status" => "success", "message" => "ノードの位置が更新されました", "node_id" => $movedNodeId]);
+            } else {
+                echo json_encode(["status" => "error", "message" => "データベースエラー: " . $mysqli->error]);
+            }
+        }
+        // ノードのクリック（ラベル更新など）の場合
+        else if (isset($_POST["clickedNodeId"])) {
+            $clickedNodeId = $_POST["clickedNodeId"];
+            $label = $_POST["new_label"];
+            
+            if ($label !== null) {
+                $sql = "UPDATE logic_node SET label = '$label', updated_at = '$timestamp' WHERE logic_node_id = '$clickedNodeId'";
+            } else {
+                // ラベル以外の更新処理があればここに追加
+                $sql = "UPDATE logic_node SET updated_at = '$timestamp' WHERE logic_node_id = '$clickedNodeId'";
+            }
+
+            if ($mysqli->query($sql)) {
+                echo json_encode(["status" => "success", "message" => "ノードが更新されました", "node_id" => $clickedNodeId]);
+            } else {
+                echo json_encode(["status" => "error", "message" => "データベースエラー: " . $mysqli->error]);
+            }
+        }
+        else {
+            echo json_encode(["status" => "error", "message" => "必要なパラメータが不足しています (movedNodeId または clickedNodeId)"]);
         }
     }
 }
