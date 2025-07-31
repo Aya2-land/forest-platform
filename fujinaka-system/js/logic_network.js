@@ -315,22 +315,23 @@ class LogicNetwork {
   // マインドマップの選択ノードの内容を論理ネットワークの選択ノードに反映する
   applyForestToTriangle() {
     // 左側（マインドマップ）の選択ノードを取得
-    const leftNode = this.CheckSelectedNode();
-    if (!leftNode || !leftNode.topic) {
+    const ForestNode = this.CheckSelectedNode();
+    if (!ForestNode || !ForestNode.topic) {
       alert("左側のノードを選択してください");
       return;
     }
 
     // 右側（論理ネットワーク）の選択ノードを取得
-    const rightNodeId = this.ownNetwork.getSelection().nodes[0];
-    if (!rightNodeId) {
+    const LogicNodeId = this.ownNetwork.getSelection().nodes[0];
+    if (!LogicNodeId) {
       alert("右側のノードを選択してください");
       return;
     }
 
     // 右側ノードのラベルを左側ノードの内容で更新
-    this.editNode(rightNodeId, leftNode.topic);
+    this.editNode(LogicNodeId, ForestNode.topic);
     alert("右側ノードの内容を更新しました");
+    defaultRecordLogicNetwork.update_LogicNodelabel(LogicNodeId, ForestNode.topic);
   }
 
   // 三角ロジックの事実や理由付けを主張として三角ロジックを作成
@@ -503,6 +504,31 @@ class RecordLogicNetwork{
         console.error("通信エラー:", error);
       }
     })
+  }
+
+  update_LogicNodelabel(LogicNodeId, newlabel) {
+    $.ajax({
+    url: "php/logic_maneger.php",
+    type: "POST",
+    data: {
+      updatedNodeId: LogicNodeId,
+      label: newlabel,
+      purpose: 'update',
+      update_thing: 'node'
+    },
+    dataType: "json",
+    success: function(response) {
+      console.log("ラベル更新レスポンス:", response);
+      if (response.status === "success") {
+        console.log("ラベル更新成功:", response.node_id);
+      } else {
+        console.error("ラベル更新エラー:", response.message);
+      }
+    },
+    error: function(xhr, status, error) {
+      console.error("ラベル更新通信エラー:", error);
+    }
+  });
   }
 
   delete_LogicNode (node_id){

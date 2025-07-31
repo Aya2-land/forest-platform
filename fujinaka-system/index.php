@@ -159,6 +159,15 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                 <!-- <label><input type="checkbox" name="Difference" id="Difference" onClick="Difference();">以前のマップとの差分</label> -->
               </div>
 
+              <div class="menu_css" id="logic_menu">
+                <input type="button" id="ln_addNode" value="ノード追加">
+                <input type="button" id="ln_deleteNode" value="ノード削除">
+                <input type="button" id="ln_startEditEdge" value="エッジ追加">
+                <input type="button" id="ln_deleteEdge" value="エッジ削除">
+                <input type="button" id="ln_maketriangle" value="三角ロジックを作成する">
+                <input type="button" id="ln_createtriangle" value="三角ロジックを追加する">
+              </div>
+
               <div class="menu_css" id ="presen_menu">
                 <!-- 【Slide】 -->
                 <button class="button4" onclick="MakeChapter(null);">
@@ -199,10 +208,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                   test
                 </button> -->
               </div>
-              <div class="menu_css" id="logic_menu">
-                <input type="button" id="ln_maketriangle" value="三角ロジックを作成する">
-                <input type="button" id="ln_createtriangle" value="三角ロジックを追加する">
-              </div>
+              
               <div id ="preview_menu">
                   <!-- 【Preview】 -->
                   <button class="button4" onclick="Create_preview();">
@@ -238,8 +244,8 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                   <li><a href="javascript:void(0);" onClick="defaultLogicNetwork.applyForestToTriangle()">論理構造に反映</a></li>
                   <li><a href="javascript:void(0);" onClick="SetPurposeonChapter()">章を作成</a></li>
                   <li><a href="javascript:void(0);" onClick="SetPurposeonSection()">節を作成</a></li>
-                  <li><a href="javascript:void(0);" onClick="SetPurpose()">パラグラフを作成</a></li>
-                  <li><a href="javascript:void(0);" onClick="NodeAppend()">パラグラフに内容を追加</a></li>
+                  <li><a href="javascript:void(0);" onClick="SetPurpose()">トピックセンテンスとしてパラグラフを作成</a></li>
+                  <li><a href="javascript:void(0);" onClick="NodeAppend()">サブセンテンスとしてパラグラフに内容を追加</a></li>
                 </ul>
               </div>
 
