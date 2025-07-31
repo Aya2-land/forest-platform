@@ -133,8 +133,9 @@ class LogicNetwork {
       if (newLabel !== null) {
         this.editNode(clickedNodeId, newLabel);
       }
+      defaultRecordLogicNetwork.update_LogicNode_label(clickedNodeId, newLabel);
     }
-    
+
   }
 
   //ノードを削除する
@@ -480,6 +481,31 @@ class RecordLogicNetwork{
     });
   }
 
+  update_LogicNode_label(clickedNodeId, newLabel){
+    $.ajax({
+      url: "php/logic_maneger.php",
+      type: "POST",
+      data: {
+        clickedNodeId: clickedNodeId,
+        new_label: newLabel,
+        purpose: 'update',
+        update_thing: 'node'
+      },
+      dataType: "json",
+      success: function(response) {
+        console.log(response); // ← ここでレスポンス確認
+        if (response.status === "success") {
+          console.log("記録成功:", response.node_id);
+        } else {
+          console.error("エラー:", response.message);
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error("通信エラー:", error);
+      }
+    });
+  }
+
   update_LogicNodePosition (movedNodeId, x, y){
     $.ajax({
       url: "php/logic_maneger.php",
@@ -671,20 +697,3 @@ async function refreshLogicNetwork() {
 //     defaultLogicNetwork.deleteEdge();
 //   });
 // });
-function addTagToNode(nodeId, tag) {
-  const node = defaultLogicNetwork.nodes.get(nodeId);
-  // 既存のタグ（[主張][事実][理由付け]）を除去してから新しいタグを付与
-  const newLabel = node.label.replace(/\s*\[(主張|事実|理由付け)\]$/, '') + ' [' + tag + ']';
-  defaultLogicNetwork.nodes.update({ id: nodeId, label: newLabel });
-}
-
-// タグボタン生成
-['主張', '事実', '理由付け'].forEach(tag => {
-  const btn = document.createElement('button');
-  btn.textContent = tag;
-  btn.onclick = () => {
-    addTagToNode(nodeId, tag);
-    tagMenu.remove();
-  };
-  tagMenu.appendChild(btn);
-});

@@ -209,6 +209,7 @@ if(isset($_POST["logout"])){ //logoutボタンが押された
                 </button> -->
               </div>
               
+              
               <div id ="preview_menu">
                   <!-- 【Preview】 -->
                   <button class="button4" onclick="Create_preview();">
