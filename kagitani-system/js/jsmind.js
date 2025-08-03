@@ -22,12 +22,27 @@
         return;
     }
 
-    createNodeIcon(nodeElement);
+    createNodeIcon(nodeElement, 'todo'); // デフォルトはtodo状態
     console.log('アイコンコンテナが正常に追加されました');
 }
 
 // アイコンを作成する共通関数
-function createNodeIcon(nodeElement) {
+function createNodeIcon(nodeElement, status = 'todo') {
+    console.log('createNodeIcon called with status:', status); // デバッグ用ログ追加
+    
+    // より厳密なステータス判定
+    const normalizedStatus = (status || '').toString().trim().toLowerCase();
+    console.log('正規化されたステータス:', JSON.stringify(normalizedStatus));
+    
+    // inProgressかどうかを判定
+    const isInProgress = normalizedStatus === 'inprogress' || status === 'inProgress';
+    
+    if (isInProgress) {
+        console.log('🏃 inProgressを検出 - 走るアイコンを作成します');
+    } else {
+        console.log('🧭 その他のステータス - コンパスアイコンを作成します:', status);
+    }
+    
     // アイコンコンテナの作成
     const iconContainer = document.createElement('div');
     iconContainer.className = 'node-icon-container';
@@ -41,12 +56,28 @@ function createNodeIcon(nodeElement) {
 
     // 手段階層マップアイコンを作成
     const iconWrapper = document.createElement('div');
-    iconWrapper.className = 'node-icon-wrapper compass-icon';
+    iconWrapper.className = isInProgress ? 'node-icon-wrapper running-icon' : 'node-icon-wrapper compass-icon';
     iconWrapper.style.position = 'relative';
     iconWrapper.style.width = '28px';
     iconWrapper.style.height = '28px';
     iconWrapper.style.borderRadius = '50%';
-    iconWrapper.style.backgroundColor = '#4CAF50';
+    
+    // ステータスに応じて背景色とアイコンを変更
+    let backgroundColor, iconSrc, title, altText;
+    
+    if (isInProgress) {
+        backgroundColor = '#FF9800'; // オレンジ色
+        iconSrc = 'https://img.icons8.com/fluency/48/running--v1.png';
+        title = 'このノードは作業中です（手段階層マップあり）';
+        altText = '作業中';
+    } else {
+        backgroundColor = '#4CAF50'; // 緑色
+        iconSrc = 'https://img.icons8.com/fluency/48/compass--v1.png';
+        title = 'このノードには手段階層マップがあります';
+        altText = '手段階層マップあり';
+    }
+    
+    iconWrapper.style.backgroundColor = backgroundColor;
     iconWrapper.style.display = 'flex';
     iconWrapper.style.alignItems = 'center';
     iconWrapper.style.justifyContent = 'center';
@@ -55,12 +86,12 @@ function createNodeIcon(nodeElement) {
     iconWrapper.style.cursor = 'pointer';
     iconWrapper.style.pointerEvents = 'auto';
     iconWrapper.style.border = '2px solid white';
-    iconWrapper.title = 'このノードには手段階層マップがあります';
+    iconWrapper.title = title;
     
     // アイコン画像の作成
     const icon = document.createElement('img');
-    icon.src = 'https://img.icons8.com/fluency/48/compass--v1.png';
-    icon.alt = '手段階層マップあり';
+    icon.src = iconSrc;
+    icon.alt = altText;
     icon.style.width = '18px';
     icon.style.height = '18px';
     icon.style.filter = 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))';
@@ -140,7 +171,7 @@ function createNodeIcon(nodeElement) {
     nodeElement.appendChild(iconContainer);
 }
 
-// データベースからobject_nodesテーブルのnode_idを取得してアイコンを付ける関数
+// データベースからobject_nodesテーブルのnode_idとstatusを取得してアイコンを付ける関数
 function addIconsToObjectNodes() {
     $.ajax({
         url: 'php/get_object_nodes.php',
@@ -154,13 +185,42 @@ function addIconsToObjectNodes() {
                 console.log('object_nodes取得成功:', data);
                 
                 if (data.status === 'success' && data.data) {
+                    console.log('取得したデータの詳細:', data.data); // デバッグ用ログ追加
                     data.data.forEach(function(nodeData) {
                         const nodeId = nodeData.node_id;
+                        const rawStatus = nodeData.status;
+                        const status = rawStatus || 'todo'; // statusがない場合はtodoをデフォルト
+                        console.log(`ノード ${nodeId} の生ステータス: "${rawStatus}" (長さ: ${rawStatus ? rawStatus.length : 'null'}) -> 処理ステータス: "${status}"`);
+                        
+                        // 厳密な比較をテスト
+                        console.log(`"${rawStatus}" === "inProgress": ${rawStatus === 'inProgress'}`);
+                        console.log(`"${status}" === "inProgress": ${status === 'inProgress'}`);
+                        
                         const nodeElement = document.querySelector(`jmnode[nodeid="${nodeId}"]`);
                         
-                        if (nodeElement && !nodeElement.querySelector('.node-icon-container')) {
-                            createNodeIcon(nodeElement);
-                            console.log(`ノード ${nodeId} にアイコンを追加しました`);
+                        if (nodeElement) {
+                            // inProgressの場合は、既存のアイコンがあっても削除して走るマークに置き換える
+                            const normalizedStatus = (status || '').toString().trim().toLowerCase();
+                            const isInProgress = normalizedStatus === 'inprogress' || status === 'inProgress';
+                            
+                            if (isInProgress) {
+                                // 既存のアイコンを削除（inProgress優先）
+                                const existingIcon = nodeElement.querySelector('.node-icon-container');
+                                if (existingIcon) {
+                                    existingIcon.remove();
+                                    console.log(`ノード ${nodeId} の既存アイコンを削除してinProgressに置き換え`);
+                                }
+                                createNodeIcon(nodeElement, status);
+                                console.log(`ノード ${nodeId} に走るマークのアイコンを追加しました（inProgress優先）`);
+                            } else if (!nodeElement.querySelector('.node-icon-container')) {
+                                // inProgressでない場合は、アイコンがない場合のみコンパスアイコンを追加
+                                createNodeIcon(nodeElement, status);
+                                console.log(`ノード ${nodeId} にコンパスアイコンを追加しました（ステータス: ${status}）`);
+                            } else {
+                                console.log(`ノード ${nodeId} には既にアイコンが存在します`);
+                            }
+                        } else {
+                            console.log(`ノード ${nodeId} の要素が見つかりません`); // デバッグ用ログ追加
                         }
                     });
                     console.log(`${data.data.length}個のノードにアイコンを追加しました`);
@@ -196,6 +256,87 @@ function autoAddIconsAfterMapLoad() {
     setTimeout(function() {
         addIconsToObjectNodes();
     }, 1000);
+}
+
+// 特定のノードのアイコンを更新する関数
+function updateNodeIcon(nodeId, newStatus) {
+    const nodeElement = document.querySelector(`jmnode[nodeid="${nodeId}"]`);
+    if (nodeElement) {
+        // 既存のアイコンを削除
+        const existingIcon = nodeElement.querySelector('.node-icon-container');
+        if (existingIcon) {
+            existingIcon.remove();
+        }
+        
+        // 新しいstatusでアイコンを作成
+        createNodeIcon(nodeElement, newStatus);
+        
+        const normalizedStatus = (newStatus || '').toString().trim().toLowerCase();
+        const isInProgress = normalizedStatus === 'inprogress' || newStatus === 'inProgress';
+        
+        if (isInProgress) {
+            console.log(`ノード ${nodeId} のアイコンを ${newStatus} 状態（走るマーク）に更新しました`);
+        } else {
+            console.log(`ノード ${nodeId} のアイコンを ${newStatus} 状態（コンパスマーク）に更新しました`);
+        }
+    }
+}
+
+// 全てのobject_nodesのアイコンを再読み込みする関数
+function refreshAllNodeIcons() {
+    // 既存のアイコンを全て削除
+    const existingIcons = document.querySelectorAll('.node-icon-container');
+    existingIcons.forEach(icon => icon.remove());
+    console.log('全ての既存アイコンを削除しました');
+    
+    // 新しいデータでアイコンを再追加（inProgressは走るマーク、その他はコンパスマーク）
+    addIconsToObjectNodes();
+}
+
+// デバッグ用：手動でinProgressアイコンをテストする関数
+function testInProgressIcon() {
+    console.log('=== inProgressアイコンテスト開始 ===');
+    const firstNode = document.querySelector('jmnode');
+    if (firstNode) {
+        // 既存のアイコンを削除
+        const existingIcon = firstNode.querySelector('.node-icon-container');
+        if (existingIcon) {
+            existingIcon.remove();
+            console.log('既存のアイコンを削除しました');
+        }
+        
+        // 複数パターンをテスト
+        console.log('パターン1: "inProgress"');
+        createNodeIcon(firstNode, 'inProgress');
+        
+        setTimeout(() => {
+            const existingIcon2 = firstNode.querySelector('.node-icon-container');
+            if (existingIcon2) existingIcon2.remove();
+            
+            console.log('パターン2: "inprogress"（小文字）');
+            createNodeIcon(firstNode, 'inprogress');
+        }, 2000);
+        
+        console.log('テスト用にinProgressアイコンを作成しました');
+    } else {
+        console.log('ノードが見つかりませんでした');
+    }
+}
+
+// 特定のノードIDでinProgressをテストする関数
+function testSpecificNodeInProgress(nodeId) {
+    console.log(`=== ノード ${nodeId} のinProgressテスト ===`);
+    const nodeElement = document.querySelector(`jmnode[nodeid="${nodeId}"]`);
+    if (nodeElement) {
+        const existingIcon = nodeElement.querySelector('.node-icon-container');
+        if (existingIcon) {
+            existingIcon.remove();
+        }
+        createNodeIcon(nodeElement, 'inProgress');
+        console.log(`ノード ${nodeId} にinProgressアイコンを設定しました`);
+    } else {
+        console.log(`ノード ${nodeId} が見つかりませんでした`);
+    }
 }
 
 

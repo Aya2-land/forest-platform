@@ -26,8 +26,20 @@ try {
         throw new Exception('object_nodesテーブルが存在しません');
     }
     
-    // object_nodesテーブルからnode_idとstatusを取得
-    $sql = "SELECT DISTINCT node_id, status FROM object_nodes WHERE node_id IS NOT NULL AND node_id != ''";
+    // object_nodesテーブルからnode_idと最新のstatusを取得
+    // inProgressを最優先、次にpaused、completed、その他の順で取得
+    $sql = "SELECT node_id, 
+                   CASE 
+                       WHEN MAX(CASE WHEN status = 'inProgress' THEN 1 ELSE 0 END) = 1 THEN 'inProgress'
+                       WHEN MAX(CASE WHEN status = 'paused' THEN 1 ELSE 0 END) = 1 THEN 'paused'
+                       WHEN MAX(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) = 1 THEN 'completed'
+                       ELSE MAX(status)
+                   END as status
+            FROM object_nodes 
+            WHERE node_id IS NOT NULL AND node_id != '' 
+            AND status IS NOT NULL AND status != ''
+            GROUP BY node_id 
+            ORDER BY node_id";
     $result = $mysqli->query($sql);
     
     if (!$result) {
