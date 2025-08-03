@@ -969,6 +969,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                             <li><a href="javascript:void(0);" id="process_conmenu3" style="display:none">採用/棄却をつける</a></li> -->
                                             <li><a href="javascript:void(0);" id="process_conmenu5">理由を記述する</a></li>
                                             <li><a href="javascript:void(0);" id="process_conmenu6">完了予定を設定</a></li>
+                                            <li><a href="javascript:void(0);" id="process_conmenu7">内省を記述する</a></li>
                                             <li><a href="javascript:void(0);" id="process_conmenu4">キャンセル</a></li>
                                         </ul>
                                     </div>
@@ -1023,6 +1024,20 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                         </select><br><br>
                                         <input type="button" value="決定" id="t_p_time_select">
                                         <input type="button" value="キャンセル" id="t_p_time_cancel">
+                                    </div>
+                                    <div id="t_Process_reflectionselect" style="display:none; position:absolute; z-index:1000; background:white; border:1px solid #ccc; padding:10px; width:400px;">
+                                        <h4>内省を記述する</h4>
+                                        <label for="t_Process_actionReason">行動意図：なぜこの手段を実行しましたか？</label><br>
+                                        <textarea id="t_Process_actionReason" rows="3" cols="50" placeholder="例：実験対象者を選定するための参考基準を得るため．"></textarea><br><br>
+                                        
+                                        <label for="t_Process_completionReason">完了基準：なぜ完了と判断しましたか？</label><br>
+                                        <textarea id="t_Process_completionReason" rows="3" cols="50" placeholder="例：必要な研究事例（5つ）を確認し，比較表を作成できたから．"></textarea><br><br>
+                                        
+                                        <label for="t_Process_challengesLearnings">経験の活用：困難や学びはありますか？</label><br>
+                                        <textarea id="t_Process_challengesLearnings" rows="4" cols="50" placeholder="例：他の研究事例を調べる過程で混乱が生じた．関連論文を追加調査し共通点を抽出した．"></textarea><br><br>
+                                        
+                                        <input type="button" value="決定" id="t_p_reflection_select">
+                                        <input type="button" value="キャンセル" id="t_p_reflection_cancel">
                                     </div>
                                     <!-- <div id="myProcessnetwork"></div> -->
                                 </div>
