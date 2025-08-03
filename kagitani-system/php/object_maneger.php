@@ -106,6 +106,96 @@
 				// echo "Inserted reflection into histories successfully!";
 			}
 			
+		}else if($record_thing === 'reason'){
+			//理由の記録
+			$node_id = $_POST["node_id"];
+			$reason_node_id = $_POST["reason_node_id"];
+			$reason_text = $_POST["reason_text"];
+			
+			$sql = "UPDATE object_nodes SET purpose = '$reason_text', updated_at = '$timestamp' WHERE object_node_id = '$node_id'";
+			
+			if ($mysqli->query($sql)) {
+				echo json_encode(["success" => true]);
+			} else {
+				echo json_encode([
+					"success" => false,
+					"error" => $mysqli->error,
+					"sql" => $sql
+				]);
+			}
+			
+			// 履歴テーブルにも記録
+			$h_sql = "INSERT INTO object_nodes_histories 
+				(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y, purpose)
+				SELECT 
+					'$object_h_id',
+					object_node_id,
+					object_nodes_type,
+					status,
+					'$timestamp',
+					NULL,
+					content,
+					node_x,
+					node_y,
+					'$reason_text'
+				FROM object_nodes
+				WHERE object_node_id = '$node_id'";
+			
+			$result = $mysqli->query($h_sql);
+			if ($mysqli->error) {
+				echo json_encode([
+					"success" => false,
+					"error" => "History insert error: " . $mysqli->error,
+					"h_sql" => $h_sql
+				]);
+			}
+			exit;
+			
+		}else if($record_thing === 'estimated_time'){
+			//完了予定の記録
+			$node_id = $_POST["node_id"];
+			$time_node_id = $_POST["time_node_id"];
+			$time_text = $_POST["time_text"];
+			
+			$sql = "UPDATE object_nodes SET estimated_time = '$time_text', updated_at = '$timestamp' WHERE object_node_id = '$node_id'";
+			
+			if ($mysqli->query($sql)) {
+				echo json_encode(["success" => true]);
+			} else {
+				echo json_encode([
+					"success" => false,
+					"error" => $mysqli->error,
+					"sql" => $sql
+				]);
+			}
+			
+			// 履歴テーブルにも記録
+			$h_sql = "INSERT INTO object_nodes_histories 
+				(object_node_history_id, object_node_id, object_node_type, status, appeared_at, disappeared_at, content, x, y, estimated_time)
+				SELECT 
+					'$object_h_id',
+					object_node_id,
+					object_nodes_type,
+					status,
+					'$timestamp',
+					NULL,
+					content,
+					node_x,
+					node_y,
+					'$time_text'
+				FROM object_nodes
+				WHERE object_node_id = '$node_id'";
+			
+			$result = $mysqli->query($h_sql);
+			if ($mysqli->error) {
+				echo json_encode([
+					"success" => false,
+					"error" => "History insert error: " . $mysqli->error,
+					"h_sql" => $h_sql
+				]);
+			}
+			exit;
+			
 			}
 	}else if($purpose === 'update'){
 		$update_thing = $_POST['update_thing'];

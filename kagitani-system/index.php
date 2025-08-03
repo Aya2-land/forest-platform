@@ -507,22 +507,65 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                             <li><a href="javascript:void(0);" id="object_conmenu1">開始</a></li>
                                             <li><a href="javascript:void(0);" id="object_conmenu2">完了</a></li>
                                             <li><a href="javascript:void(0);" id="object_conmenu3">中断</a></li>
+                                            <!-- <li><a href="javascript:void(0);" id="process_conmenu1">概念をつける</a></li>
+                                            <li><a href="javascript:void(0);" id="process_conmenu2">マインドマップと対応付ける</a></li>
+                                            <li><a href="javascript:void(0);" id="process_conmenu3" style="display:none">採用/棄却をつける</a></li> -->
+                                            <li><a href="javascript:void(0);" id="process_conmenu5">理由を記述する</a></li>
+                                            <li><a href="javascript:void(0);" id="process_conmenu6">完了予定を設定</a></li>
                                             <li><a href="javascript:void(0);" id="process_conmenu4">キャンセル</a></li>
                                         </ul>
                                     </div>
                                     <div id="feedbackTooltip" style="position:absolute; display:none; z-index:1000;"></div>
-                                    <div id="t_Process_labelselect">
-                                        <select id="t_Process_selectionlist" size="3">
+                                    <div id="labelselect">
+                                        <select id="selectionlist" size="3">
                                             <!-- いるやつあれば追加やけど未実装（研究活動オントロジー読み込みかな？） -->
                                         </select>
                                         <input type="button" value="選択完了" id="p_ontology_select">
                                     </div>
-                                    <div id="t_Process_recruitselect">
-                                        <select id="t_Process_recruitselectionlist">
+                                    <div id="recruitselect">
+                                        <select id="recruitselectionlist">
                                             <option value="採用">採用</option>
                                             <option value="棄却">棄却</option>
                                         </select>
                                         <input type="button" value="選択完了" id="p_recruit_select">
+                                    </div>
+                                    <div id="t_Process_labelselect" style="display:none; position:absolute; z-index:1000; background:white; border:1px solid #ccc; padding:10px;">
+                                        <select id="t_Process_selectionlist" size="3">
+                                            <!-- いるやつあれば追加やけど未実装（研究活動オントロジー読み込みかな？） -->
+                                        </select>
+                                        <input type="button" value="選択完了" id="t_p_ontology_select">
+                                    </div>
+                                    <div id="t_Process_recruitselect" style="display:none; position:absolute; z-index:1000; background:white; border:1px solid #ccc; padding:10px;">
+                                        <select id="t_Process_recruitselectionlist">
+                                            <option value="採用">採用</option>
+                                            <option value="棄却">棄却</option>
+                                        </select>
+                                        <input type="button" value="選択完了" id="t_p_recruit_select">
+                                    </div>
+                                    <div id="t_Process_reasonselect" style="display:none; position:absolute; z-index:1000; background:white; border:1px solid #ccc; padding:10px; width:300px;">
+                                        <label for="t_Process_reasontext">なぜそれを取り組もうとしたか:</label><br>
+                                        <textarea id="t_Process_reasontext" rows="4" cols="40" placeholder="理由を入力してください..."></textarea><br><br>
+                                        <input type="button" value="決定" id="t_p_reason_select">
+                                        <input type="button" value="キャンセル" id="t_p_reason_cancel">
+                                    </div>
+                                    <div id="t_Process_timeselect" style="display:none; position:absolute; z-index:1000; background:white; border:1px solid #ccc; padding:10px; width:300px;">
+                                        <label for="t_Process_timetext">完了予定:</label><br>
+                                        <select id="t_Process_timetext" style="width: 200px;">
+                                            <option value="">選択してください</option>
+                                            <option value="今日中">今日中</option>
+                                            <option value="明日まで">明日まで</option>
+                                            <option value="3日後">3日後</option>
+                                            <option value="1週間後">1週間後</option>
+                                            <option value="2週間後">2週間後</option>
+                                            <option value="1ヶ月後">1ヶ月後</option>
+                                            <option value="2ヶ月後">2ヶ月後</option>
+                                            <option value="3ヶ月後">3ヶ月後</option>
+                                            <option value="半年後">半年後</option>
+                                            <option value="1年後">1年後</option>
+                                            <option value="未定">未定</option>
+                                        </select><br><br>
+                                        <input type="button" value="決定" id="t_p_time_select">
+                                        <input type="button" value="キャンセル" id="t_p_time_cancel">
                                     </div>
                                     <div id="myProcessnetwork"></div>
                                 </div>

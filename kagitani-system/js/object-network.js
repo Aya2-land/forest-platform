@@ -27,8 +27,21 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             },
             interaction: {
                 multiselect: false,
-                zoomView: false // グラフの拡大縮小を無効にする
+                zoomView: false, // グラフの拡大縮小を無効にする
+                tooltipDelay: 200,
+                hideEdgesOnDrag: false,
+                hideNodesOnDrag: false
             },
+            configure: {
+                enabled: false
+            },
+            // HTMLツールチップを有効にする
+            tooltip: {
+                delay: 200,
+                fontSize: 12,
+                fontColor: 'black',
+                fontBackground: 'white'
+            }
         };
         this.nodeConnectEnabled = false; // マインドマップとの対応づけを可能にする（マインドマップのノードクリックが，議論内省マップノードとの対応を付与するのかそうでないのかを判定するよう）
         this.latest_selected_node_info = {
@@ -42,8 +55,22 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         this.edgeEditMode = false; // リンクを編集できるかどうかのモード（Falseは編集不可）
         this.EdgeStartId = []; //エッジの開始ID
         this.EdgeEndId = []; //エッジの終了ID
+        this.OntologyNodeId = []; //オントロジーノードのノードID
+        this.OntologyConnectNodeId = []; //オントロジーノードと対応づいているノードID
+        this.ReasonNodeId = []; //理由ノードのノードID
+        this.ReasonConnectNodeId = []; //理由ノードと対応づいているノードID
+        this.ReasonContent = []; //理由ノードの内容を保存する配列
+        this.TimeNodeId = []; //完了予定ノードのノードID
+        this.TimeConnectNodeId = []; //完了予定ノードと対応づいているノードID
+        this.TimeContent = []; //完了予定ノードの内容を保存する配列
+        this.ConnectNetworkNodeId = [];
+        this.ConnectMindMapNodeId = [];
+        this.RecruitNodeId = [];//採用or棄却されたノードID
+        this.Recruit = [];//採用or棄却
+        this.Feedback = [];//フィードバック書いたかどうか
+        this.FeedbackNodeId = null; //フィードバック書かれるノードID
         this.selectId = null;//選択されたノードID
-        // this.interval = null; //インターバル抜けるための変数
+        this.interval = null; //インターバル抜けるための変数
         this.material_id = null;
         this.concept_id = null;
         this.scale = 1;
@@ -53,17 +80,26 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         }//右クリックされやメニューの表示場所
         this.ownNetwork = this.generateThinkingProcessNetworkCanvas(container, this.nodes, this.edges); // デフォルトのマップを表示
         this.choose_input_xmlLoad();
+        // カスタムツールチップの設定
+        this.setupCustomTooltip();
         if(load == "load"){
             this.jmindex = [];
             this.addEventLister();
-            // $(`#jsmind_container`).on('click',this.connect_mindmap.bind(this));
+            $(`#jsmind_container`).on('click',this.connect_mindmap.bind(this));
             $(`#object_conmenu1`).on('click', this.step_start.bind(this));
             $(`#object_conmenu2`).on('click',this.step_end.bind(this));
             $(`#object_conmenu3`).on('click',this.step_paused.bind(this));
-            // $(`#process_conmenu3`).on('click',this.Recruit_Idea.bind(this));
+            $(`#process_conmenu1`).on('click',this.show_select.bind(this));
+            $(`#process_conmenu2`).on('click',this.connect_network.bind(this));
+            $(`#process_conmenu3`).on('click',this.Recruit_Idea.bind(this));
             $(`#process_conmenu4`).on('click',this.ContentmenuCancel.bind(this));
-            // $(`#p_ontology_select`).on('click',this.addontology.bind(this));
-            // $(`#p_recruit_select`).on('click',this.Selected_Recruit_Idea.bind(this));
+            $(`#process_conmenu5`).on('click',this.show_reason_input.bind(this));
+            $(`#p_ontology_select`).on('click',this.addontology.bind(this));
+            $(`#p_recruit_select`).on('click',this.Selected_Recruit_Idea.bind(this));
+            $(`#t_p_ontology_select`).on('click',this.addontology.bind(this));
+            $(`#t_p_recruit_select`).on('click',this.Selected_Recruit_Idea.bind(this));
+            $(`#t_p_reason_select`).on('click',this.add_reason.bind(this));
+            $(`#t_p_reason_cancel`).on('click',this.cancel_reason_input.bind(this));
             this.ownNetwork.on('click', this.networkClick.bind(this));
             this.ownNetwork.on('dragStart', this.dragstart.bind(this));
             this.ownNetwork.on('dragEnd', this.dragend.bind(this));
@@ -129,19 +165,33 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                 })
             }
         });
-        // const selectElement = document.getElementById("selectionlist");
-        // while (selectElement.options.length > 0) {
-        //     selectElement.remove(0);
-        // }
-        // this.output_list.map((n) => {
-        //     const optionElement = document.createElement('option');
-        //     optionElement.value = n;
-        //     optionElement.text = n;
-        //     selectElement.appendChild(optionElement);
-        // })
+        const selectElement = document.getElementById("selectionlist");
+        while (selectElement.options.length > 0) {
+            selectElement.remove(0);
+        }
+        this.output_list.map((n) => {
+            const optionElement = document.createElement('option');
+            optionElement.value = n;
+            optionElement.text = n;
+            selectElement.appendChild(optionElement);
+        })
+        
+        // t_Process用の選択リストも同様に更新
+        const tProcessSelectElement = document.getElementById("t_Process_selectionlist");
+        if (tProcessSelectElement) {
+            while (tProcessSelectElement.options.length > 0) {
+                tProcessSelectElement.remove(0);
+            }
+            this.output_list.map((n) => {
+                const optionElement = document.createElement('option');
+                optionElement.value = n;
+                optionElement.text = n;
+                tProcessSelectElement.appendChild(optionElement);
+            })
+        }
     }
 
-    // //オントロジーノードを選択不可に
+    //オントロジーノードを選択不可に
     selectdelete(params) {
         if (this.nodes.get(params.nodes[0]).shape == "ellipse") {
             // 選択を解除
@@ -150,45 +200,64 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     }
 
     addEventLister(){
-        // this.bindconnect_mindmap = this.connect_mindmap.bind(this);
-        // this.bindshow_select = this.show_select.bind(this);
-        // this.bindconnect_network = this.connect_network.bind(this);
-        // this.bindRecruit_Idea = this.Recruit_Idea.bind(this);
+        this.bindconnect_mindmap = this.connect_mindmap.bind(this);
+        this.bindshow_select = this.show_select.bind(this);
+        this.bindconnect_network = this.connect_network.bind(this);
         this.bindstep_start = this.step_start.bind(this); //kagitani
         this.bindstep_paused = this.step_paused.bind(this); //kagitani
         this.bindstep_end = this.step_end.bind(this); //kagitani
         this.bindContentmenuCancel = this.ContentmenuCancel.bind(this);
-        // this.bindaddontology = this.addontology.bind(this);
-        // this.bindSelected_Recruit_Idea = this.Selected_Recruit_Idea.bind(this);
-        // this.bindfeedback = this.feedback.bind(this);
-        // this.bindNodeblinking = this.Nodeblinking.bind(this);
-        // $(`#jsmind_container`).on('click',this.bindconnect_mindmap);
+        this.bindaddontology = this.addontology.bind(this);
+        this.bindshow_reason_input = this.show_reason_input.bind(this);
+        this.bindadd_reason = this.add_reason.bind(this);
+        this.bindcancel_reason_input = this.cancel_reason_input.bind(this);
+        this.bindshow_time_input = this.show_time_input.bind(this);
+        this.bindadd_time = this.add_time.bind(this);
+        this.bindcancel_time_input = this.cancel_time_input.bind(this);
+        this.bindSelected_Recruit_Idea = this.Selected_Recruit_Idea.bind(this);
+        this.bindRecruit_Idea = this.Recruit_Idea.bind(this);
+        $(`#jsmind_container`).on('click',this.bindconnect_mindmap);
         $(`#object_conmenu1`).on('click',this.bindstep_start);
         $(`#object_conmenu2`).on('click',this.bindstep_end);
         $(`#object_conmenu3`).on('click', this.bindstep_paused);
         $(`#net_conmenu02`).on('click', this.bindstep_end);
-        // $(`#process_conmenu2`).on('click',this.bindconnect_network);
-        // $(`#process_conmenu3`).on('click',this.bindRecruit_Idea);
+        $(`#process_conmenu1`).on('click',this.bindshow_select);
+        $(`#process_conmenu2`).on('click',this.bindconnect_network);
+        $(`#process_conmenu3`).on('click',this.bindRecruit_Idea);
         $(`#process_conmenu4`).on('click',this.bindContentmenuCancel);
-        // $(`#p_ontology_select`).on('click',this.bindaddontology);
-        // $(`#p_recruit_select`).on('click',this.bindSelected_Recruit_Idea);
-        // $(`#feedbackrecord`).on('click',this.bindfeedback);
-        // this.interval = setInterval(this.bindNodeblinking, 1000);
+        $(`#process_conmenu5`).on('click',this.bindshow_reason_input);
+        $(`#process_conmenu6`).on('click',this.bindshow_time_input);
+        $(`#p_ontology_select`).on('click',this.bindaddontology);
+        $(`#p_recruit_select`).on('click',this.bindSelected_Recruit_Idea);
+        $(`#t_p_ontology_select`).on('click',this.bindaddontology);
+        $(`#t_p_recruit_select`).on('click',this.bindSelected_Recruit_Idea);
+        $(`#t_p_reason_select`).on('click',this.bindadd_reason);
+        $(`#t_p_reason_cancel`).on('click',this.bindcancel_reason_input);
+        $(`#t_p_time_select`).on('click',this.bindadd_time);
+        $(`#t_p_time_cancel`).on('click',this.bindcancel_time_input);
     }
 
     removeEventLister(){
-        // $(`#jsmind_container`).off('click',this.bindconnect_mindmap);
+        $(`#jsmind_container`).off('click',this.bindconnect_mindmap);
         $(`#object_conmenu1`).off('click',this.bindstep_start);
         $(`#object_conmenu2`).off('click',this.bindstep_end);
         $(`#object_conmenu3`).off('click', this.bindstep_paused);
         $(`#net_conmenu02`).off('click', this.bindstep_end);
-        // $(`#process_conmenu2`).off('click',this.bindconnect_network);
-        // $(`#process_conmenu3`).off('click',this.bindRecruit_Idea);
+        $(`#process_conmenu1`).off('click',this.bindshow_select);
+        $(`#process_conmenu2`).off('click',this.bindconnect_network);
+        $(`#process_conmenu3`).off('click',this.bindRecruit_Idea);
         $(`#process_conmenu4`).off('click',this.bindContentmenuCancel);
-        // $(`#p_ontology_select`).off('click',this.bindaddontology);
-        // $(`#p_recruit_select`).off('click',this.bindSelected_Recruit_Idea);
-        // $(`#feedbackrecord`).off('click',this.bindfeedback);
-        // clearInterval(this.interval);
+        $(`#process_conmenu5`).off('click',this.bindshow_reason_input);
+        $(`#process_conmenu6`).off('click',this.bindshow_time_input);
+        $(`#p_ontology_select`).off('click',this.bindaddontology);
+        $(`#p_recruit_select`).off('click',this.bindSelected_Recruit_Idea);
+        $(`#t_p_ontology_select`).off('click',this.bindaddontology);
+        $(`#t_p_recruit_select`).off('click',this.bindSelected_Recruit_Idea);
+        $(`#t_p_reason_select`).off('click',this.bindadd_reason);
+        $(`#t_p_reason_cancel`).off('click',this.bindcancel_reason_input);
+        $(`#t_p_time_select`).off('click',this.bindadd_time);
+        $(`#t_p_time_cancel`).off('click',this.bindcancel_time_input);
+        clearInterval(this.interval);
     }
     /*
      * マップ編集ユーティリティ
@@ -268,21 +337,43 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         let text_color = 'black';   // ノード内文字列の色
         let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
 
-        let result_label = '';
-        for (let i = 0; i < node_label.length; i += 10) {
-            result_label += node_label.substr(i, 10) + '\n';
+        // 理由タグノードの場合の色設定
+        if (node_type === "reason-tag") {
+            node_color = '#FF8C00'; // オレンジ色（濃いめ）
+            node_shape = 'circularImage'; // アイコン形状
+            text_color = 'white';  // 白い文字（見やすくするため）
+            position_fixed = true;   // 固定位置
         }
-        result_label = result_label.trim(); // 末尾の不要な改行を除去
+
+        let result_label = '';
+        // 理由タグノードの場合はアイコンラベルを使用
+        if (node_type === "reason-tag") {
+            result_label = '?';
+        } else {
+            for (let i = 0; i < node_label.length; i += 10) {
+                result_label += node_label.substr(i, 10) + '\n';
+            }
+            result_label = result_label.trim(); // 末尾の不要な改行を除去
+        }
+        
         const newNode = {
             id: node_id,
             label: result_label,
             group: node_type,
-            color: node_color, shape: node_shape,
+            color: node_color, 
+            shape: node_shape,
             font: { color: text_color },
             fixed: position_fixed,
             x: node_x, y: node_y, 
             status: "todo"
         };
+
+        // 理由タグノードの場合はアイコン画像を追加
+        if (node_type === "reason-tag") {
+            newNode.image = '../image/question_agent.png';
+            newNode.size = 20;
+            newNode.title = `なぜそれを取り組もうとしたか: ${node_label}`;
+        }
         this.nodes.add(newNode);
         const boundingBox = this.ownNetwork.getBoundingBox(node_id);
         node_y += Math.floor(((boundingBox.bottom)-(boundingBox.top))/2);
@@ -303,7 +394,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     
 
     // ノードの追加（リロード用）(完了)
-    addReloadNode(node_id, node_label, node_type, node_x, node_y, status) {
+    addReloadNode(node_id, node_label, node_type, node_x, node_y, status, purpose = null, action_reason = null, completion_reason = null, challenges_learnings = null, estimated_time = null) {
         const existingNode = this.nodes.get(node_id);
         if (existingNode) {
             console.log(`Node with ID ${node_id} already exists. Skipping addition.`);
@@ -350,6 +441,18 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         }
         result_label = result_label.trim();
 
+        // ツールチップの設定（理由と内省情報がある場合）
+        let tooltip = result_label;
+        if (purpose && purpose.trim() !== '') {
+            tooltip += '\n\n理由: ' + purpose;
+        }
+        if (action_reason || completion_reason || challenges_learnings) {
+            tooltip += '\n\n内省情報:';
+            tooltip += '\n行動意図: ' + (action_reason || '未記入');
+            tooltip += '\n完了基準: ' + (completion_reason || '未記入');
+            tooltip += '\n学び: ' + (challenges_learnings || '未記入');
+        }
+
         // ノード作成
         const newNode = {
             id: `${node_id}`,
@@ -364,10 +467,97 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             borderWidthSelected: border_width_selected,
             shapeProperties: {
                 borderDashes: shape_border_dashes
-            }
+            },
+            title: tooltip
         };
 
         defaultThinkingProcess.nodes.add(newNode);
+
+        // 理由がある場合、オレンジ色の理由タグを追加
+        if (purpose && purpose.trim() !== '') {
+            // ノードが追加された後にBoundingBoxを取得して正確な位置を計算
+            setTimeout(() => {
+                const nodeBoundingBox = defaultThinkingProcess.ownNetwork.getBoundingBox(`${node_id}`);
+                const reasonTagId = `reason-tag-${node_id}`;
+                const reasonTag = {
+                    id: reasonTagId,
+                    label: '?',
+                    shape: 'circularImage',
+                    image: '../image/question_agent.png',
+                    size: 20,
+                    color: {
+                        background: 'orange',
+                        border: 'darkorange'
+                    },
+                    x: nodeBoundingBox.left + 8,
+                    y: nodeBoundingBox.top + 8,
+                    fixed: true,
+                    physics: false,
+                    group: 'reason-tag',
+                    title: '理由: ' + purpose
+                };
+                defaultThinkingProcess.nodes.add(reasonTag);
+            }, 100);
+        }
+
+        // 完了予定がある場合、緑色の時間タグを追加（ノードの左下）
+        if (estimated_time && estimated_time.trim() !== '') {
+            setTimeout(() => {
+                const nodeBoundingBox = defaultThinkingProcess.ownNetwork.getBoundingBox(`${node_id}`);
+                const timeTagId = `time-tag-${node_id}`;
+                const timeTag = {
+                    id: timeTagId,
+                    label: '🕒',
+                    shape: 'ellipse',
+                    size: 20,
+                    color: {
+                        background: 'lightgreen',
+                        border: 'green'
+                    },
+                    font: { 
+                        size: 14,
+                        color: 'darkgreen'
+                    },
+                    x: nodeBoundingBox.left + 8,
+                    y: nodeBoundingBox.bottom - 8,
+                    fixed: true,
+                    physics: false,
+                    group: 'time-tag',
+                    title: '完了予定: ' + estimated_time
+                };
+                defaultThinkingProcess.nodes.add(timeTag);
+            }, 100);
+        }
+
+        // 内省情報がある場合、青色の内省タグを右上に追加
+        if (action_reason || completion_reason || challenges_learnings) {
+            setTimeout(() => {
+                const nodeBoundingBox = defaultThinkingProcess.ownNetwork.getBoundingBox(`${node_id}`);
+                const reflectionTagId = `reflection-tag-${node_id}`;
+                const reflectionTitle = `行動意図: ${action_reason || "未記入"}\n完了基準: ${completion_reason || "未記入"}\n学び: ${challenges_learnings || "未記入"}`;
+                const reflectionTag = {
+                    id: reflectionTagId,
+                    label: '💭',
+                    shape: 'ellipse',
+                    size: 20,
+                    color: {
+                        background: 'lightblue',
+                        border: 'blue'
+                    },
+                    font: { 
+                        size: 14,
+                        color: 'darkblue'
+                    },
+                    x: nodeBoundingBox.right - 8,
+                    y: nodeBoundingBox.top + 8,
+                    fixed: true,
+                    physics: false,
+                    group: 'reflection-tag',
+                    title: reflectionTitle
+                };
+                defaultThinkingProcess.nodes.add(reflectionTag);
+            }, 100);
+        }
 
         const boundingBox = defaultThinkingProcess.ownNetwork.getBoundingBox(`${node_id}`);
         defaultThinkingProcess.latest_selected_node_info.x = node_x;
@@ -587,25 +777,58 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
             this.edges.remove(this.ownNetwork.getConnectedEdges(selectNodeId));
             this.nodes.remove({id: selectNodeId});
-            // const ontology_index = this.OntologyConnectNodeId.indexOf(selectNodeId);
-            // if(ontology_index !== -1){
-            //     this.nodes.remove({ id: this.OntologyNodeId[ontology_index]});
-            //     defaultRecordThinkingProcess.delete_db_Node(this.OntologyNodeId[ontology_index]);
-            //     this.OntologyNodeId.splice(ontology_index, 1);
-            //     this.OntologyConnectNodeId.splice(ontology_index, 1);
-            // }
-            // const connect_net_index = [];
-            // this.ConnectNetworkNodeId.map((n_id, index) => {
-            //     if(n_id === selectNodeId){
-            //         connect_net_index.push(index);
-            //     }
-            // });
-            // connect_net_index.sort((a, b) => b - a);
-            // connect_net_index.forEach(index => {
-            //     this.ConnectNetworkNodeId.splice(index, 1);
-            //     this.ConnectMindMapNodeId.splice(index, 1);
-            // });
-            // defaultRecordThinkingProcess.delete_connection(selectNodeId);
+            const ontology_index = this.OntologyConnectNodeId.indexOf(selectNodeId);
+            if(ontology_index !== -1){
+                this.nodes.remove({ id: this.OntologyNodeId[ontology_index]});
+                defaultRecordThinkingProcess.delete_db_Node(this.OntologyNodeId[ontology_index]);
+                this.OntologyNodeId.splice(ontology_index, 1);
+                this.OntologyConnectNodeId.splice(ontology_index, 1);
+            }
+            // 理由の関連付けも削除
+            const reason_index = this.ReasonConnectNodeId.indexOf(selectNodeId);
+            if(reason_index !== -1){
+                // 理由ノードも削除
+                this.nodes.remove({ id: this.ReasonNodeId[reason_index]});
+                defaultRecordThinkingProcess.delete_db_Node(this.ReasonNodeId[reason_index]);
+                this.ReasonNodeId.splice(reason_index, 1);
+                this.ReasonConnectNodeId.splice(reason_index, 1);
+                this.ReasonContent.splice(reason_index, 1); // 理由内容も削除
+            }
+            // 理由タグも削除（リロード時のタグ）
+            const reasonTagId = `reason-tag-${selectNodeId}`;
+            const reasonTagNode = this.nodes.get(reasonTagId);
+            if (reasonTagNode) {
+                this.nodes.remove({ id: reasonTagId });
+            }
+            
+            // 完了予定の関連付けも削除
+            const time_index = this.TimeConnectNodeId.indexOf(selectNodeId);
+            if(time_index !== -1){
+                // 完了予定ノードも削除
+                this.nodes.remove({ id: this.TimeNodeId[time_index]});
+                defaultRecordThinkingProcess.delete_db_Node(this.TimeNodeId[time_index]);
+                this.TimeNodeId.splice(time_index, 1);
+                this.TimeConnectNodeId.splice(time_index, 1);
+                this.TimeContent.splice(time_index, 1); // 完了予定内容も削除
+            }
+            // 時間タグも削除（リロード時のタグ）
+            const timeTagId = `time-tag-${selectNodeId}`;
+            const timeTagNode = this.nodes.get(timeTagId);
+            if (timeTagNode) {
+                this.nodes.remove({ id: timeTagId });
+            }
+            const connect_net_index = [];
+            this.ConnectNetworkNodeId.map((n_id, index) => {
+                if(n_id === selectNodeId){
+                    connect_net_index.push(index);
+                }
+            });
+            connect_net_index.sort((a, b) => b - a);
+            connect_net_index.forEach(index => {
+                this.ConnectNetworkNodeId.splice(index, 1);
+                this.ConnectMindMapNodeId.splice(index, 1);
+            });
+            defaultRecordThinkingProcess.delete_connection(selectNodeId);
         }
     }
 
@@ -625,6 +848,9 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             NetworkMenu.style.left = this.BoxDisplay.x;
             NetworkMenu.style.top = this.BoxDisplay.y;
             NetworkMenu.style.display = "block";
+            if(this.OntologyConnectNodeId.indexOf(this.selectId) !== -1){
+                document.getElementById("process_conmenu3").style.display = "block";
+            }
         }
     }
 
@@ -635,14 +861,378 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             alert('このノードにはすでに概念がつけられているため概念付けできません');
             return;
         }
-        const labelselect = document.getElementById("labelselect");
+        const labelselect = document.getElementById("t_Process_labelselect");
         labelselect.style.display = "block";
-        labelselect.style.left = this.BoxDisplay.x;
-        labelselect.style.top = this.BoxDisplay.y;
+        labelselect.style.left = this.BoxDisplay.x + "px";
+        labelselect.style.top = this.BoxDisplay.y + "px";
+        labelselect.style.position = "absolute";
+        labelselect.style.zIndex = "1000";
     }
 
     ContentmenuCancel(){
         document.getElementById('t_Process_conmenu').style.display = "none";
+    }
+
+    //マインドマップとネットワークつなげる
+    connect_network (){
+        document.getElementById('t_Process_conmenu').style.display = "none";
+        this.nodeConnectEnabled = true;
+    }
+
+    // マインドマップのノードがクリックされたときの処理
+    connect_mindmap (e) {
+        const Jsmind = new jsMind({container:'jsmind_container',
+                                editable: false});
+        if (!this.nodeConnectEnabled) {
+            return;
+        }else{
+            const mm_nodeid = Jsmind.view.get_binded_nodeid(e.target);
+            if(mm_nodeid == null){
+                alert('ノードのクリックがうまくできませんでした．もう一度試してみてください');
+                return;
+            }else{
+                if(this.ConnectNetworkNodeId.indexOf(this.selectId) !== -1 && this.ConnectMindMapNodeId.indexOf(mm_nodeid) !== -1){
+                    alert('このノードはすでに選択されています');
+                    return;
+                }
+                defaultRecordThinkingProcess.record_connection(this.selectId,mm_nodeid);
+                this.ConnectNetworkNodeId.push(this.selectId);
+                this.ConnectMindMapNodeId.push(mm_nodeid);
+                this.nodeConnectEnabled = false;
+            }
+        }
+    }
+
+    //概念をマップに追加（概念選択なし版）
+    addontology (){
+        // 両方の選択ダイアログを非表示にする
+        const labelselect = document.getElementById("labelselect");
+        const tProcessLabelselect = document.getElementById("t_Process_labelselect");
+        if (labelselect) labelselect.style.display = "none";
+        if (tProcessLabelselect) tProcessLabelselect.style.display = "none";
+        
+        // 右クリックメニューを非表示にする
+        document.getElementById('t_Process_conmenu').style.display = "none";
+        
+        // selectIdが設定されているかチェック
+        if (!this.selectId) {
+            console.error('selectIdが設定されていません:', this.selectId);
+            //alert('ノードが選択されていません');
+            return;
+        }
+        
+        // すでに概念がつけられているかチェック
+        if(this.OntologyConnectNodeId.indexOf(this.selectId) !== -1){
+            //alert('このノードにはすでに概念がつけられているため概念付けできません');
+            return;
+        }
+        
+        // ノードが存在するかチェック
+        const selectedNode = this.nodes.get(this.selectId);
+        if (!selectedNode) {
+            console.error('選択されたノードが見つかりません:', this.selectId);
+            //alert('選択されたノードが見つかりません');
+            return;
+        }
+        
+        console.log('選択されたノード:', selectedNode);
+        
+        const nodeBoundingBox = this.ownNetwork.getBoundingBox(this.selectId);
+        if (!nodeBoundingBox) {
+            console.error('ノードの位置情報を取得できませんでした:', this.selectId);
+            //lert('ノードの位置情報を取得できませんでした');
+            return;
+        }
+        
+        console.log('ノードの位置情報:', nodeBoundingBox);
+        
+        const TopicTagId = this.generateUniqueNumberText();
+        
+        // 概念選択機能
+        // どちらの選択リストが使用されているかを判定
+        let selectionlist = document.getElementById('selectionlist');
+        let tProcessSelectionlist = document.getElementById('t_Process_selectionlist');
+        let selectedValue = '';
+        
+        if (selectionlist && selectionlist.value) {
+            selectedValue = selectionlist.value;
+        } else if (tProcessSelectionlist && tProcessSelectionlist.value) {
+            selectedValue = tProcessSelectionlist.value;
+        }
+        
+        if (!selectedValue) {
+            alert('概念を選択してください');
+            return;
+        }
+        
+        this.addNode(TopicTagId, selectedValue, "topic-tag", nodeBoundingBox.left, nodeBoundingBox.top);
+        this.OntologyConnectNodeId.push(this.selectId);
+        this.OntologyNodeId.push('topic-tag_'+TopicTagId);
+        defaultRecordThinkingProcess.record_ontology(this.selectId, 'topic-tag_'+TopicTagId);
+        
+        // 選択をリセット
+        if (selectionlist && selectionlist.options.length > 2) {
+            selectionlist.options[2].selected = true;
+        }
+        if (tProcessSelectionlist && tProcessSelectionlist.options.length > 2) {
+            tProcessSelectionlist.options[2].selected = true;
+        }
+    }
+
+    //理由を記述する機能
+    show_reason_input (){
+        document.getElementById('t_Process_conmenu').style.display = "none";
+        
+        // selectIdが設定されているかチェック
+        if (!this.selectId) {
+            console.error('selectIdが設定されていません:', this.selectId);
+            return;
+        }
+        
+        const reasonselect = document.getElementById("t_Process_reasonselect");
+        if (!reasonselect) {
+            alert('理由入力ダイアログが見つかりません');
+            return;
+        }
+        
+        // テキストエリアをクリア
+        document.getElementById("t_Process_reasontext").value = "";
+        
+        reasonselect.style.display = "block";
+        reasonselect.style.left = this.BoxDisplay.x + "px";
+        reasonselect.style.top = this.BoxDisplay.y + "px";
+        reasonselect.style.position = "absolute";
+        reasonselect.style.zIndex = "1000";
+    }
+
+    //理由を追加する
+    add_reason (){
+        const reasonselect = document.getElementById("t_Process_reasonselect");
+        if (reasonselect) reasonselect.style.display = "none";
+        
+        // selectIdが設定されているかチェック
+        if (!this.selectId) {
+            console.error('selectIdが設定されていません:', this.selectId);
+            // alert('ノードが選択されていません');
+            return;
+        }
+        
+        // すでに理由が記述されているかチェック
+        if(this.ReasonConnectNodeId.indexOf(this.selectId) !== -1){
+            alert('このノードにはすでに理由が記述されているため記述できません');
+            return;
+        }
+        
+        // 理由テキストを取得
+        const reasonText = document.getElementById("t_Process_reasontext").value.trim();
+        if (!reasonText) {
+            alert('理由を入力してください');
+            return;
+        }
+        
+        // ノードが存在するかチェック
+        const selectedNode = this.nodes.get(this.selectId);
+        if (!selectedNode) {
+            console.error('選択されたノードが見つかりません:', this.selectId);
+            alert('選択されたノードが見つかりません');
+            return;
+        }
+        
+        console.log('選択されたノード:', selectedNode);
+        
+        // ノードの位置情報を取得
+        const nodeBoundingBox = this.ownNetwork.getBoundingBox(this.selectId);
+        if (!nodeBoundingBox) {
+            console.error('ノードの位置情報を取得できませんでした:', this.selectId);
+            alert('ノードの位置情報を取得できませんでした');
+            return;
+        }
+        
+        const ReasonTagId = this.generateUniqueNumberText();
+        
+        // 理由タグノードを作成（左上に配置）
+        // reasonTextを渡して、addNodeメソッド内でtitle属性が設定されるようにする
+        //this.addNode(ReasonTagId, reasonText, "reason-tag", nodeBoundingBox.left, nodeBoundingBox.top);
+        
+        // 理由の関連付けを記録
+        this.ReasonConnectNodeId.push(this.selectId);
+        this.ReasonNodeId.push('reason-tag_'+ReasonTagId);
+        this.ReasonContent.push(reasonText); // 理由内容をメモリに保存
+        
+        // 理由ノードの記録（DBに保存）
+        defaultRecordThinkingProcess.record_reason(this.selectId, 'reason-tag_'+ReasonTagId, reasonText);
+        
+        console.log('理由を記録しました:', reasonText);
+        console.log('関連付けノードID:', this.selectId);
+        console.log('理由ID:', 'reason-tag_'+ReasonTagId);
+    }
+
+    //理由入力をキャンセル
+    cancel_reason_input (){
+        document.getElementById("t_Process_reasonselect").style.display = "none";
+    }
+
+    //完了予定を記述する機能
+    show_time_input (){
+        document.getElementById('t_Process_conmenu').style.display = "none";
+        
+        // selectIdが設定されているかチェック
+        if (!this.selectId) {
+            console.error('selectIdが設定されていません:', this.selectId);
+            return;
+        }
+        
+        const timeselect = document.getElementById("t_Process_timeselect");
+        if (!timeselect) {
+            alert('完了予定入力ダイアログが見つかりません');
+            return;
+        }
+        
+        // 選択をリセット
+        document.getElementById("t_Process_timetext").value = "";
+        
+        timeselect.style.display = "block";
+        timeselect.style.left = this.BoxDisplay.x + "px";
+        timeselect.style.top = this.BoxDisplay.y + "px";
+        timeselect.style.position = "absolute";
+        timeselect.style.zIndex = "1000";
+    }
+
+    //完了予定を追加する
+    add_time (){
+        const timeselect = document.getElementById("t_Process_timeselect");
+        if (timeselect) timeselect.style.display = "none";
+        
+        // selectIdが設定されているかチェック
+        if (!this.selectId) {
+            console.error('selectIdが設定されていません:', this.selectId);
+            return;
+        }
+        
+        // すでに完了予定が記述されているかチェック
+        if(this.TimeConnectNodeId.indexOf(this.selectId) !== -1){
+            alert('このノードにはすでに完了予定が記述されているため記述できません');
+            return;
+        }
+        
+        // 完了予定を取得
+        const timeText = document.getElementById("t_Process_timetext").value.trim();
+        if (!timeText) {
+            alert('完了予定を選択してください');
+            return;
+        }
+        
+        // ノードが存在するかチェック
+        const selectedNode = this.nodes.get(this.selectId);
+        if (!selectedNode) {
+            console.error('選択されたノードが見つかりません:', this.selectId);
+            alert('選択されたノードが見つかりません');
+            return;
+        }
+        
+        const TimeTagId = this.generateUniqueNumberText();
+        
+        // 完了予定の関連付けを記録
+        this.TimeConnectNodeId.push(this.selectId);
+        this.TimeNodeId.push('time-tag_'+TimeTagId);
+        this.TimeContent.push(timeText); // 完了予定内容をメモリに保存
+        
+        // 完了予定ノードの記録（DBに保存）
+        defaultRecordThinkingProcess.record_time(this.selectId, 'time-tag_'+TimeTagId, timeText);
+        
+        console.log('完了予定を記録しました:', timeText);
+        console.log('関連付けノードID:', this.selectId);
+        console.log('完了予定ID:', 'time-tag_'+TimeTagId);
+    }
+
+    //完了予定入力をキャンセル
+    cancel_time_input (){
+        document.getElementById("t_Process_timeselect").style.display = "none";
+    }
+
+    Recruit_Idea (){
+        document.getElementById('t_Process_conmenu').style.display = "none";
+        
+        // selectIdが設定されているかチェック
+        if (!this.selectId) {
+            alert('ノードが選択されていません');
+            return;
+        }
+        
+        if(this.RecruitNodeId.indexOf(this.selectId) !== -1){
+            alert('このノードにはすでに採用不採用がつけられています');
+            return;
+        }
+        const recruitselect = document.getElementById("t_Process_recruitselect");
+        if (!recruitselect) {
+            alert('採用/棄却選択ダイアログが見つかりません');
+            return;
+        }
+        recruitselect.style.display = "block";
+        recruitselect.style.left = this.BoxDisplay.x + "px";
+        recruitselect.style.top = this.BoxDisplay.y + "px";
+    }
+
+    Selected_Recruit_Idea (){
+        const FeedBackReflectionText = [];
+        const FeedBackReflection = [];
+        
+        // 両方のダイアログを非表示にする
+        const recruitselect = document.getElementById("recruitselect");
+        const tProcessRecruitselect = document.getElementById("t_Process_recruitselect");
+        if (recruitselect) recruitselect.style.display = "none";
+        if (tProcessRecruitselect) tProcessRecruitselect.style.display = "none";
+        
+        // どちらの選択リストが使用されているかを判定
+        let selectionlist = document.getElementById('recruitselectionlist');
+        let tProcessSelectionlist = document.getElementById('t_Process_recruitselectionlist');
+        let selectedValue = '';
+        
+        if (selectionlist && selectionlist.value) {
+            selectedValue = selectionlist.value;
+        } else if (tProcessSelectionlist && tProcessSelectionlist.value) {
+            selectedValue = tProcessSelectionlist.value;
+        }
+        
+        if (!selectedValue) {
+            alert('採用/棄却を選択してください');
+            return;
+        }
+        
+        const Ontology_Node_Id = this.OntologyNodeId[this.OntologyConnectNodeId.indexOf(this.selectId)];
+        this.RecruitNodeId.push(this.selectId);
+        this.Feedback.push(this.selectId);
+        this.Recruit.push(selectedValue);
+        if (selectedValue === "採用") {
+            this.nodes.update({
+                id : Ontology_Node_Id,
+                borderWidth: 5,
+                color: {
+                    border: "green",
+                },
+            });
+        }else if(selectedValue === "棄却"){
+            this.nodes.update({
+                id : Ontology_Node_Id,
+                borderWidth: 5,
+                color: {
+                    border: "red",
+                },
+            });
+        }
+        const node_info = this.nodes.get(this.selectId);
+        document.getElementById("accordion_discussion").innerHTML += "<div id='"+this.selectId+"' class='accordion-item'><div class='accordion-header' style='font-size:10px'>なぜ「"+node_info.label+"」は"+selectedValue+"されたのですか？</div><div class='accordion-content'><textarea id='text"+ this.selectId +"' class='accordion-input'></textarea></div></div>";
+        const accordionHeaders = document.querySelectorAll('#accordion_discussion .accordion-header');
+        accordionHeaders.forEach(header => {
+          header.addEventListener('click', function () {
+            const accordionItem = this.parentElement;
+            accordionItem.classList.toggle('active');
+          });
+        });
+        for(var i=0; i<this.RecruitNodeId.length-1; i++){
+            document.getElementById("text"+this.RecruitNodeId[i]).innerHTML = FeedBackReflection[FeedBackReflectionText.indexOf("text"+this.RecruitNodeId[i])];
+        }
+        defaultRecordThinkingProcess.record_recruit(this.selectId, Ontology_Node_Id, selectedValue);
     }
 
     //手段開始ボタン
@@ -899,6 +1489,41 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             })
             this.jmindex.length = 0;
         }
+        if(params.nodes.length == 1){
+            if(this.OntologyConnectNodeId.indexOf(params.nodes[0]) !== -1){
+                const node_infomation = this.nodes.get(this.OntologyNodeId[this.OntologyConnectNodeId.indexOf(params.nodes[0])]);
+                document.getElementById("ontology_feedback").innerHTML = "<div class='feedback_message'>この発言は「"+node_infomation.label + "」と「" + this.output_input[node_infomation.label] + "」<br>との合理性を意識して発言されたのかもしれません</div>";
+            }
+            // 理由が記述されたノードの場合、理由を表示
+            if(this.ReasonConnectNodeId.indexOf(params.nodes[0]) !== -1){
+                const reason_index = this.ReasonConnectNodeId.indexOf(params.nodes[0]);
+                const reason_id = this.ReasonNodeId[reason_index];
+                // 理由の詳細をDBから取得して表示する処理を追加可能
+                console.log('理由が記述されたノードがクリックされました:', reason_id);
+                // 必要に応じてここで理由の詳細表示ダイアログを表示
+            }
+        }
+        if(this.RecruitNodeId.indexOf(params.nodes[0]) !== -1){
+            this.FeedbackNodeId = params.nodes[0];
+            document.getElementById(this.FeedbackNodeId).style.display = "block";
+        }
+        if(params.nodes.length == 1){
+            const net_index = this.ConnectNetworkNodeId.map((n_id, index) => {
+                return n_id === params.nodes[0] ? index : null;
+            }).filter(n => n !== null);
+            if(net_index == ""){
+                return;
+            }
+            const jmnode = document.getElementsByTagName("jmnode");
+            net_index.map((m_id) => {
+                this.jmindex.push(this.ConnectMindMapNodeId[m_id]);
+                if(jmnode[this.ConnectMindMapNodeId[m_id]].getAttribute("type") == "answer"){
+                    jmnode[this.ConnectMindMapNodeId[m_id]].style.backgroundColor = "#ffff99";
+                }else{
+                    jmnode[this.ConnectMindMapNodeId[m_id]].style.backgroundColor = "#ffff99";
+                }
+            });
+        }
         // console.log(params);
         // console.log(params.pointer.DOM);
         // console.log(params.pointer.DOM.x, params.pointer.DOM.y);
@@ -973,20 +1598,87 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             
                 defaultRecordThinkingProcess.update_Node("point" ,movedNodeId, (nodeBoundingBox.right + nodeBoundingBox.left)/2, (nodeBoundingBox.bottom + nodeBoundingBox.top)/2)
                 
-                // const ontology_index = this.OntologyConnectNodeId.indexOf(movedNodeId);
-                // if(ontology_index !== -1){
-                //     const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
-                //     const ontology_x = nodeBoundingBox.left;
-                //     const ontology_y = nodeBoundingBox.top;
-                //     console.log(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]);
-                //     if(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]==="採用"){
-                //         border_color = 'green'; 
-                //     }else if(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]==="棄却"){
-                //         border_color = 'red'; 
-                //     }
-                //     this.nodes.update({ id: this.OntologyNodeId[ontology_index], color: { background: 'blue', border: border_color}, x: ontology_x, y: ontology_y });
-                //     defaultRecordThinkingProcess.update_Node("point" ,this.OntologyNodeId[ontology_index], ontology_x, ontology_y);
-                // }
+                const ontology_index = this.OntologyConnectNodeId.indexOf(movedNodeId);
+                if(ontology_index !== -1){
+                    const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
+                    const ontology_x = nodeBoundingBox.left;
+                    const ontology_y = nodeBoundingBox.top;
+                    /*
+                    console.log(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]);
+                    let border_color = '#ffdb4f';
+                    if(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]==="採用"){
+                        border_color = 'green'; 
+                    }else if(this.Recruit[this.RecruitNodeId.indexOf(this.OntologyConnectNodeId[this.OntologyNodeId.indexOf(this.OntologyNodeId[ontology_index])])]==="棄却"){
+                        border_color = 'red'; 
+                    }
+                    this.nodes.update({ id: this.OntologyNodeId[ontology_index], color: { background: 'blue', border: border_color}, x: ontology_x, y: ontology_y });
+                    */
+                    this.nodes.update({ id: this.OntologyNodeId[ontology_index], color: { background: 'blue', border: '#ffdb4f'}, x: ontology_x, y: ontology_y });
+                    defaultRecordThinkingProcess.update_Node("point" ,this.OntologyNodeId[ontology_index], ontology_x, ontology_y);
+                }
+                
+                // 理由タグの位置も更新（リロード時の理由タグにも対応）
+                const reasonTagId = `reason-tag-${movedNodeId}`;
+                const reasonTag = this.nodes.get(reasonTagId);
+                if (reasonTag) {
+                    const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
+                    const tag_x = nodeBoundingBox.left + 8;
+                    const tag_y = nodeBoundingBox.top + 8;
+                    this.nodes.update({ 
+                        id: reasonTagId, 
+                        x: tag_x, 
+                        y: tag_y
+                    });
+                }
+                
+                // 内省タグの位置も更新（リロード時の内省タグにも対応）
+                const reflectionTagId = `reflection-tag-${movedNodeId}`;
+                const reflectionTag = this.nodes.get(reflectionTagId);
+                if (reflectionTag) {
+                    const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
+                    const tag_x = nodeBoundingBox.right - 8;
+                    const tag_y = nodeBoundingBox.top + 8;
+                    this.nodes.update({ 
+                        id: reflectionTagId, 
+                        x: tag_x, 
+                        y: tag_y
+                    });
+                }
+                
+                // 時間タグの位置も更新（リロード時の時間タグにも対応）
+                const timeTagId = `time-tag-${movedNodeId}`;
+                const timeTag = this.nodes.get(timeTagId);
+                if (timeTag) {
+                    const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
+                    const tag_x = nodeBoundingBox.left + 8;
+                    const tag_y = nodeBoundingBox.bottom - 8; // ノードの左下
+                    this.nodes.update({ 
+                        id: timeTagId, 
+                        x: tag_x, 
+                        y: tag_y
+                    });
+                }
+                
+                // 理由ノードの位置も更新（従来のシステム用）
+                const reason_index = this.ReasonConnectNodeId.indexOf(movedNodeId);
+                if(reason_index !== -1){
+                    const nodeBoundingBox = this.ownNetwork.getBoundingBox(movedNodeId);
+                    const reason_x = nodeBoundingBox.left;
+                    const reason_y = nodeBoundingBox.top;
+                    
+                    // 理由ノードの詳細情報をメモリから取得
+                    const reasonNodeId = this.ReasonNodeId[reason_index];
+                    const reasonContent = this.ReasonContent[reason_index]; // メモリから理由内容を取得
+                    
+                    this.nodes.update({ 
+                        id: this.ReasonNodeId[reason_index], 
+                        color: { background: '#FF8C00', border: '#FF6347'}, 
+                        x: reason_x, 
+                        y: reason_y,
+                        title: `なぜそれを取り組もうとしたか: ${reasonContent}`
+                    });
+                    defaultRecordThinkingProcess.update_Node("point" ,this.ReasonNodeId[reason_index], reason_x, reason_y);
+                }
             }
         }
     }
@@ -999,11 +1691,11 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         if(selectEdgeId !== undefined){
             this.edges.remove({id: selectEdgeId});
             defaultRecordThinkingProcess.delete_db_Edge(selectEdgeId, startid, endid);
-            // const Edge_index = this.OntologyConnectNodeId.indexOf(startid);
-            // if(Edge_index !== -1){
-            //     this.EdgeStartId.splice(Edge_index, 1);
-            //     this.EdgeEndId.splice(Edge_index, 1);
-            // }
+            const Edge_index = this.OntologyConnectNodeId.indexOf(startid);
+            if(Edge_index !== -1){
+                this.EdgeStartId.splice(Edge_index, 1);
+                this.EdgeEndId.splice(Edge_index, 1);
+            }
         }
     }
 
@@ -1046,6 +1738,12 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         const scale = this.ownNetwork.getScale() * 0.9; // Decrease scale by 10%
         this.scale = scale;
         this.ownNetwork.moveTo({ scale: scale });
+    }
+
+    // シンプルなツールチップ設定（vis.jsのデフォルトツールチップを使用）
+    setupCustomTooltip() {
+        // vis.jsのデフォルトツールチップを使用するため、特別な設定は不要
+        // ノードのtitle属性が自動的にツールチップとして表示される
     }
 
 }
@@ -1160,52 +1858,80 @@ class RecordThinkingProcess{
         });
     }
 
-    // delete_connection (id){
-    //     $.ajax({
-    //         url: "../php/thinking_edit_processmap_maneger.php",
-    //         type: "POST",
-    //         data: {node_id : id,
-    //             purpose : 'delete',
-    //             delete_thing : 'connection'},
-    //     });
-    // }
+    delete_connection (id){
+        $.ajax({
+            url: "../php/thinking_edit_processmap_maneger.php",
+            type: "POST",
+            data: {node_id : id,
+                purpose : 'delete',
+                delete_thing : 'connection'},
+        });
+    }
 
-    // //繋げたものをDBに記録
-    // record_connection (NetworkNodeId,MindMapNodeId){
-    //     $.ajax({
-    //         url: "../php/thinking_edit_processmap_maneger.php",
-    //         type: "POST",
-    //         data: {networknodeid : NetworkNodeId,
-    //             mindmapnodeid : MindMapNodeId,
-    //             purpose : 'record',
-    //             record_thing : 'connection'},
-    //     });
-    // }
+    //繋げたものをDBに記録
+    record_connection (NetworkNodeId,MindMapNodeId){
+        $.ajax({
+            url: "../php/thinking_edit_processmap_maneger.php",
+            type: "POST",
+            data: {networknodeid : NetworkNodeId,
+                mindmapnodeid : MindMapNodeId,
+                purpose : 'record',
+                record_thing : 'connection'},
+        });
+    }
 
-    // // オントロジーの対応付けの記録
-    // record_ontology (node_id, ontology_node_id){
-    //     $.ajax({
-    //         url: "../php/thinking_edit_processmap_maneger.php",
-    //         type: "POST",
-    //         data: {node_id : node_id,
-    //             ontology_node_id : ontology_node_id,
-    //             purpose : 'record',
-    //             record_thing : 'ontology'},
-    //     });
-    // }
+    // オントロジーの対応付けの記録
+    record_ontology (node_id, ontology_node_id){
+        $.ajax({
+            url: "../php/thinking_edit_processmap_maneger.php",
+            type: "POST",
+            data: {node_id : node_id,
+                ontology_node_id : ontology_node_id,
+                purpose : 'record',
+                record_thing : 'ontology'},
+        });
+    }
 
-    // // オントロジーの対応付けの記録
-    // record_recruit (node_id, ontology_node, result){
-    //     $.ajax({
-    //         url: "../php/thinking_edit_processmap_maneger.php",
-    //         type: "POST",
-    //         data: {node_id : node_id,
-    //             ontology_node : ontology_node,
-    //             result_recruit : result,
-    //             purpose : 'record',
-    //             record_thing : 'recruit'},
-    //     });
-    // }
+    // 理由の記録
+    record_reason (node_id, reason_node_id, reason_text){
+        $.ajax({
+            url: "php/object_maneger.php",
+            type: "POST",
+            data: {node_id : node_id,
+                reason_node_id : reason_node_id,
+                reason_text : reason_text,
+                purpose : 'record',
+                record_thing : 'reason'},
+        });
+    }
+
+    // 完了予定の記録
+    record_time (node_id, time_node_id, time_text){
+        $.ajax({
+            url: "php/object_maneger.php",
+            type: "POST",
+            data: {node_id : node_id,
+                time_node_id : time_node_id,
+                time_text : time_text,
+                purpose : 'record',
+                record_thing : 'estimated_time'},
+        });
+    }
+
+    /*
+    // オントロジーの対応付けの記録
+    record_recruit (node_id, ontology_node, result){
+        $.ajax({
+            url: "../php/thinking_edit_processmap_maneger.php",
+            type: "POST",
+            data: {node_id : node_id,
+                ontology_node : ontology_node,
+                result_recruit : result,
+                purpose : 'record',
+                record_thing : 'recruit'},
+        });
+    }
+    */
 
     record_trigger(trigger_id, activity_id, from, to, time, activity_type, content, x, y){
         
@@ -1373,7 +2099,11 @@ const displayPassData = (hnodeArray) => {
             node.object_node_type,  // おそらくプロパティ名がobject_node_typeに変わってるはず
             node.x,
             node.y,
-            node.status
+            node.status,
+            node.purpose,
+            node.action_reason,
+            node.completion_reason,
+            node.challenges_learnings
         );
     });
 
@@ -1476,7 +2206,7 @@ const displayTriggerData = (mode, display_target_area_id) => {
             console.log("datesの中身:", trigger_list_info.dates);
 
             trigger_list_info.onode.map((n) => {
-                defaultThinkingProcess.addReloadNode(n.object_node_id, n.content, n.object_nodes_type, n.node_x, n.node_y, n.status);
+                defaultThinkingProcess.addReloadNode(n.object_node_id, n.content, n.object_nodes_type, n.node_x, n.node_y, n.status, n.purpose, n.action_reason, n.completion_reason, n.challenges_learnings, n.estimated_time);
             });
             trigger_list_info.pedge.map((n) => {
                 defaultThinkingProcess.addReloadEdge(n.process_edge_id, n.edge_start, n.edge_end, n.label);

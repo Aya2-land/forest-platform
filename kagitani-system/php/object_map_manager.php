@@ -75,7 +75,7 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     /*
         * 目標手段階層マップのノードデータの取得    	
     */
-    $result_object_node = $mysqli->query("SELECT object_node_id, content, object_nodes_type, node_x, node_y, status FROM object_nodes
+    $result_object_node = $mysqli->query("SELECT object_node_id, content, object_nodes_type, node_x, node_y, status, purpose, action_reason, completion_reason, challenges_learnings, estimated_time FROM object_nodes
             WHERE node_id = '".$selected_node_id."' AND deleted = 0");
     $object_node = [];
     while ($row = $result_object_node->fetch_assoc()) {
@@ -293,7 +293,7 @@ if($process_mode === "all" || $process_mode === "allRE" ){
 
     $sql_histories = "
         SELECT 
-            object_node_id, content, object_node_type, x, y, status, appeared_at, disappeared_at
+            object_node_id, content, object_node_type, x, y, status, appeared_at, disappeared_at, purpose, action_reason, completion_reason, challenges_learnings, estimated_time
         FROM 
             object_nodes_histories
         WHERE 
