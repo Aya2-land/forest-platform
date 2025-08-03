@@ -12,8 +12,14 @@ $map_id = $_SESSION['MAPID'];    //マップID
 //brother...選択されているノードの兄弟ノードの変遷を追加
 $process_mode = $_POST['process_mode']; 
 
-$selected_conID = $_POST["selected_concept_id"]; //マインドマップで選択されたノードのconceptID
-$selected_node_id = $_POST["selected_node_id"]; //マインドマップで選択されたノードID
+// PassDataモード以外でのみこれらの変数を取得
+$selected_conID = null;
+$selected_node_id = null;
+
+if ($process_mode !== "PassData") {
+    $selected_conID = $_POST["selected_concept_id"] ?? null; //マインドマップで選択されたノードのconceptID
+    $selected_node_id = $_POST["selected_node_id"] ?? null; //マインドマップで選択されたノードID
+}
 
 $return_data = []; // DBアクセスの結果として返すキー・バリューのペア
 
@@ -111,14 +117,12 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     }
 
     /*
-    * 目標手段階層マップの日付データの取得
+    * 目標手段階層マップの日付データの取得（全ノードを対象）
     */
-    $selected_node_id = $mysqli->real_escape_string($selected_node_id); // セキュリティのため
     $date_sql = "
-        SELECT DISTINCT DATE(h.appeared_at) AS appeared_date
-        FROM object_nodes_histories h
-        JOIN object_nodes o ON h.object_node_id = o.object_node_id
-        WHERE o.node_id = '$selected_node_id'
+        SELECT DISTINCT DATE(appeared_at) AS appeared_date
+        FROM object_nodes_histories
+        WHERE appeared_at IS NOT NULL
         ORDER BY appeared_date ASC
     ";
     
@@ -136,6 +140,11 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     // 返却データに含める
     $return_data = $return_data ?? [];
     $return_data['dates'] = $date_list;
+    
+    // デバッグ用ログ
+    error_log("日付データ生成: SQL = " . $date_sql);
+    error_log("日付データ件数: " . count($date_list));
+    error_log("日付データ内容: " . json_encode($date_list));
     
 
     // ノードのバージョン情報を取得
@@ -230,75 +239,154 @@ if($process_mode === "all" || $process_mode === "allRE" ){
         echo json_encode($return_data);
         return;
     }
+}else if ($process_mode === "getNodeCount") {
+    // ノード数を取得するエンドポイント
+    $selected_node_id = $_POST["selected_node_id"] ?? null;
+    
+    try {
+        // 削除されていないノードの総数を取得
+        $total_count_sql = "SELECT COUNT(*) as total_count FROM object_nodes WHERE deleted = 0";
+        $total_result = $mysqli->query($total_count_sql);
+        $total_count = 0;
+        
+        if ($total_result) {
+            $total_row = $total_result->fetch_assoc();
+            $total_count = (int)$total_row['total_count'];
+        }
+        
+        // 特定のnode_idに関連するノード数を取得（選択されている場合）
+        $related_count = 0;
+        if ($selected_node_id) {
+            $related_count_sql = "SELECT COUNT(*) as related_count FROM object_nodes WHERE node_id = ? AND deleted = 0";
+            $stmt = $mysqli->prepare($related_count_sql);
+            $stmt->bind_param("s", $selected_node_id);
+            $stmt->execute();
+            $related_result = $stmt->get_result();
+            
+            if ($related_result) {
+                $related_row = $related_result->fetch_assoc();
+                $related_count = (int)$related_row['related_count'];
+            }
+            $stmt->close();
+        }
+        
+        // ノードタイプ別の統計も取得
+        $type_stats_sql = "SELECT object_nodes_type, COUNT(*) as count FROM object_nodes WHERE deleted = 0 GROUP BY object_nodes_type";
+        $type_result = $mysqli->query($type_stats_sql);
+        $type_stats = [];
+        
+        if ($type_result) {
+            while ($type_row = $type_result->fetch_assoc()) {
+                $type_stats[$type_row['object_nodes_type']] = (int)$type_row['count'];
+            }
+        }
+        
+        // ステータス別のノード数を取得
+        $status_stats_sql = "SELECT status, COUNT(*) as count FROM object_nodes WHERE deleted = 0 GROUP BY status";
+        $status_result = $mysqli->query($status_stats_sql);
+        $status_stats = [
+            'completed' => 0,      // 完了ノード数
+            'paused' => 0,         // 中断ノード数
+            'inProgress' => 0,     // 実行中ノード数
+            'not_started' => 0     // 未着手ノード数
+        ];
+        
+        if ($status_result) {
+            while ($status_row = $status_result->fetch_assoc()) {
+                $status = $status_row['status'];
+                $count = (int)$status_row['count'];
+                
+                switch ($status) {
+                    case 'completed':
+                        $status_stats['completed'] = $count;
+                        break;
+                    case 'paused':
+                        $status_stats['paused'] = $count;
+                        break;
+                    case 'inProgress':
+                        $status_stats['inProgress'] = $count;
+                        break;
+                    default:
+                        // それ以外のステータス（null, '', 'not_started', その他）は未着手として扱う
+                        $status_stats['not_started'] += $count;
+                        break;
+                }
+            }
+        }
+        
+        // ステータス別の詳細情報も取得（デバッグ用）
+        $detailed_status_sql = "SELECT 
+            CASE 
+                WHEN status = 'completed' THEN '完了'
+                WHEN status = 'paused' THEN '中断'
+                WHEN status = 'inProgress' THEN '実行中'
+                ELSE '未着手'
+            END as status_category,
+            status as original_status,
+            COUNT(*) as count 
+            FROM object_nodes 
+            WHERE deleted = 0 
+            GROUP BY status 
+            ORDER BY count DESC";
+        
+        $detailed_status_result = $mysqli->query($detailed_status_sql);
+        $detailed_status_stats = [];
+        
+        if ($detailed_status_result) {
+            while ($detail_row = $detailed_status_result->fetch_assoc()) {
+                $detailed_status_stats[] = [
+                    'category' => $detail_row['status_category'],
+                    'original_status' => $detail_row['original_status'],
+                    'count' => (int)$detail_row['count']
+                ];
+            }
+        }
+        
+        echo json_encode([
+            'status' => 'success',
+            'total_count' => $total_count,
+            'related_count' => $related_count,
+            'type_stats' => $type_stats,
+            'status_stats' => $status_stats,
+            'detailed_status_stats' => $detailed_status_stats,
+            'timestamp' => date('Y-m-d H:i:s'),
+            'selected_node_id' => $selected_node_id
+        ]);
+        
+    } catch (Exception $e) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'ノード数取得エラー: ' . $e->getMessage(),
+            'total_count' => 0,
+            'related_count' => 0,
+            'type_stats' => []
+        ]);
+    }
+    exit;
+    
 }else if ($process_mode === "PassData") {
 
-    $selected_node_id = $_POST['selected_node_id'] ?? null;
     $selectedDate = $_POST['selected_date'] ?? null;
 
-    if (!$selected_node_id || !$selectedDate) {
+    if (!$selectedDate) {
         echo json_encode([
             'status' => 'invalid_input',
-            'message' => 'selected_node_id または selected_date が不足しています',
-            'data' => []
+            'message' => 'selected_date が不足しています',
+            'hnode' => []
         ]);
         exit;
     }
 
     $datetime = $selectedDate . ' 23:59:59';
 
-    // 1. object_nodes を取得
-    $sql_object_nodes = "
-        SELECT object_node_id
-        FROM object_nodes
-        WHERE node_id = '".$mysqli->real_escape_string($selected_node_id)."'
-        AND created_at <= '".$mysqli->real_escape_string($datetime)."'
-    ";
-    error_log("SQL object_nodes: $sql_object_nodes");
-
-    $result_object_nodes = $mysqli->query($sql_object_nodes);
-
-    if (!$result_object_nodes) {
-        echo json_encode([
-            'status' => 'sql_error',
-            'message' => 'object_nodes の SQL 実行に失敗: ' . $mysqli->error,
-            'data' => [],
-            'debug' => ['sql_object_nodes' => $sql_object_nodes]
-        ]);
-        exit;
-    }
-
-    $object_node_ids = [];
-    while ($row = $result_object_nodes->fetch_assoc()) {
-        $object_node_ids[] = $row['object_node_id'];
-    }
-
-    if (empty($object_node_ids)) {
-        echo json_encode([
-            'status' => 'empty_object_nodes',
-            'message' => "node_id {$selected_node_id} に該当する object_node_id が存在しません（{$datetime} 以前）",
-            'data' => [],
-            'debug' => [
-                'sql_object_nodes' => $sql_object_nodes,
-                'selected_node_id' => $selected_node_id,
-                'datetime' => $datetime
-            ]
-        ]);
-        exit;
-    }
-
-    // 2. object_nodes_histories 取得
-    $ids_string = implode(",", array_map(function ($id) use ($mysqli) {
-        return "'" . $mysqli->real_escape_string($id) . "'";
-    }, $object_node_ids));
-
+    // 指定された日付に存在していた全ノードの履歴を取得
     $sql_histories = "
         SELECT 
             object_node_id, content, object_node_type, x, y, status, appeared_at, disappeared_at, purpose, action_reason, completion_reason, challenges_learnings, estimated_time
         FROM 
             object_nodes_histories
         WHERE 
-            object_node_id IN ($ids_string)
-            AND appeared_at <= '".$mysqli->real_escape_string($datetime)."'
+            appeared_at <= '".$mysqli->real_escape_string($datetime)."'
             AND (disappeared_at IS NULL OR disappeared_at > '".$mysqli->real_escape_string($datetime)."')
         ORDER BY 
             object_node_id, appeared_at DESC
@@ -311,13 +399,13 @@ if($process_mode === "all" || $process_mode === "allRE" ){
         echo json_encode([
             'status' => 'sql_error',
             'message' => 'object_nodes_histories の SQL 実行に失敗: ' . $mysqli->error,
-            'data' => [],
+            'hnode' => [],
             'debug' => ['sql_histories' => $sql_histories]
         ]);
         exit;
     }
 
-    // 最新履歴だけ取得
+    // 各ノードの最新履歴だけ取得
     $object_node_h = [];
     $seen_ids = [];
 
@@ -329,16 +417,47 @@ if($process_mode === "all" || $process_mode === "allRE" ){
         }
     }
 
+    // 指定された日時に存在していたエッジの履歴を取得
+    $sql_edges = "
+        SELECT 
+            object_edge_id, edge_start, edge_end, label, appeared_at, disappeared_at
+        FROM 
+            object_edges_histories
+        WHERE 
+            appeared_at <= '".$mysqli->real_escape_string($datetime)."'
+            AND (disappeared_at IS NULL OR disappeared_at > '".$mysqli->real_escape_string($datetime)."')
+        ORDER BY 
+            object_edge_id, appeared_at DESC
+    ";
+    error_log("SQL edges: $sql_edges");
+
+    $result_edges = $mysqli->query($sql_edges);
+
+    $object_edge_h = [];
+    if ($result_edges) {
+        $seen_edge_ids = [];
+        while ($row = $result_edges->fetch_assoc()) {
+            $edge_id = $row['object_edge_id'];
+            // 各エッジの最新履歴のみを取得（重複排除）
+            if (!in_array($edge_id, $seen_edge_ids)) {
+                $object_edge_h[] = $row;
+                $seen_edge_ids[] = $edge_id;
+            }
+        }
+    } else {
+        error_log("エッジ履歴取得エラー: " . $mysqli->error);
+    }
+
     echo json_encode([
         'status' => 'success',
         'message' => 'データ取得成功',
-        'data' => $object_node_h,
+        'hnode' => $object_node_h,
+        'hedge' => $object_edge_h,
         'debug' => [
-            'object_node_ids_count' => count($object_node_ids),
             'histories_found' => count($object_node_h),
-            'sql_object_nodes' => $sql_object_nodes,
+            'edges_found' => count($object_edge_h),
             'sql_histories' => $sql_histories,
-            'selected_node_id' => $selected_node_id,
+            'sql_edges' => $sql_edges,
             'datetime' => $datetime
         ]
     ]);

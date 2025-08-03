@@ -20,6 +20,20 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                 widthConstraint: {
                     maximum: 150
                 },
+                // ホバー時の影効果設定
+                shadow: {
+                    enabled: false,  // デフォルトでは無効
+                    color: 'rgba(0,0,0,0.5)',
+                    size: 10,
+                    x: 2,
+                    y: 2
+                },
+                // 選択時の効果設定
+                chosen: {
+                    node: function(values, id, selected, hovering) {
+                        // ホバー時の影効果はイベントリスナーで処理
+                    }
+                }
             },
 	        edges: {
 		        arrows: 'to', // エッジに矢印を付けて有向グラフにする
@@ -27,10 +41,16 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             },
             interaction: {
                 multiselect: false,
-                zoomView: false, // グラフの拡大縮小を無効にする
+                zoomView: false, // ピンチズームを無効にする
+                dragView: true, // パン（ドラッグによる移動）を有効にする
+                navigationButtons: false, // ナビゲーションボタンを無効化
+                keyboard: {
+                    enabled: false // キーボードナビゲーションを無効化
+                },
                 tooltipDelay: 200,
                 hideEdgesOnDrag: false,
-                hideNodesOnDrag: false
+                hideNodesOnDrag: false,
+                hover: true  // ホバーを明示的に有効化
             },
             configure: {
                 enabled: false
@@ -106,6 +126,43 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             this.ownNetwork.on('doubleClick', this.doubleclick.bind(this));
             this.ownNetwork.on("oncontext", this.onContext.bind(this));
             this.ownNetwork.on('select', this.selectdelete.bind(this));
+            
+            // ホバー時の影効果イベント
+            this.ownNetwork.on("hoverNode", (params) => {
+                // console.log("hoverNode event triggered for node:", params.node);
+                // 現在のノードの状態を取得して保持
+                const currentNode = this.nodes.get(params.node);
+                if (currentNode) {
+                    // 既存のプロパティを保持しながら影のみを追加
+                    this.nodes.update({ 
+                        id: params.node,
+                        color: currentNode.color, // 既存の色を保持
+                        shadow: { 
+                            enabled: true, 
+                            size: 15, 
+                            color: 'rgba(0,0,0,0.5)',
+                            x: 3,
+                            y: 3
+                        }
+                    });
+                }
+            });
+
+            this.ownNetwork.on("blurNode", (params) => {
+                // console.log("blurNode event triggered for node:", params.node);
+                // 現在のノードの状態を取得して保持
+                const currentNode = this.nodes.get(params.node);
+                if (currentNode) {
+                    // 既存のプロパティを保持しながら影のみを無効化
+                    this.nodes.update({ 
+                        id: params.node,
+                        color: currentNode.color, // 既存の色を保持
+                        shadow: { 
+                            enabled: false 
+                        }
+                    });
+                }
+            });
         }
         this.choose_input_xmlLoad();
     }
@@ -314,7 +371,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         this.setNodes(nodes);
         this.setEdges(edges);
 
-        return new vis.Network(
+        const network = new vis.Network(
             document.getElementById(canvas_dom_id),
             {
                 nodes: nodes,
@@ -322,6 +379,31 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             },
             this.options
         );
+
+        // トラックパッドスクロールをパンに割り当て
+        const canvas = document.getElementById(canvas_dom_id);
+        canvas.addEventListener('wheel', (event) => {
+            event.preventDefault(); // デフォルトのスクロール動作を無効化
+            
+            // スクロール量を取得（マップを押して動かす感覚にする）
+            const deltaX = event.deltaX;
+            const deltaY = event.deltaY;
+            
+            // 現在のビューポジションを取得
+            const moveOptions = network.getViewPosition();
+            
+            // スクロール量に基づいてパン（マップを押して動かす感覚）
+            const panSensitivity = 2; // パンの感度調整
+            network.moveTo({
+                position: {
+                    x: moveOptions.x - deltaX * panSensitivity,
+                    y: moveOptions.y - deltaY * panSensitivity
+                },
+                animation: false // スムーズな移動のためアニメーションを無効化
+            });
+        }, { passive: false });
+
+        return network;
 
         // this.setCanvasOptions(load);
         // return network;
@@ -365,7 +447,14 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             font: { color: text_color },
             fixed: position_fixed,
             x: node_x, y: node_y, 
-            status: "todo"
+            status: "todo",
+            shadow: {
+                enabled: false,  // 初期状態では影を無効
+                color: 'rgba(0,0,0,0.5)',
+                size: 15,
+                x: 3,
+                y: 3
+            }
         };
 
         // 理由タグノードの場合はアイコン画像を追加
@@ -545,7 +634,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                         border: 'blue'
                     },
                     font: { 
-                        size: 14,
+                        size: 18,
                         color: 'darkblue'
                     },
                     x: nodeBoundingBox.right - 8,
@@ -1774,23 +1863,24 @@ class RecordThinkingProcess{
     //エッジの記録(完了)
     record_Edge(edge_id, edge_start, edge_end) {
         $.ajax({
-            url: "php/edit_object_map_maneger.php",
-            type: "POST",
-            data: {
-                edge_id: edge_id,
-                edge_start: edge_start,
-                edge_end: edge_end,
-                purpose: 'record',
-                record_thing: 'edge'
-            },
-            success: function (response) {
-                console.log("✅ edge記録成功:", response);
-            },
-            error: function (xhr, status, error) {
-                console.error("❌ edge記録エラー:", status, error);
-                console.warn("📄 レスポンステキスト:", xhr.responseText);
-            }
-        });
+    url: "php/edit_object_map_maneger.php",
+    type: "POST",
+    dataType: "json",   // ここを追加
+    data: {
+        edge_id: edge_id,
+        edge_start: edge_start,
+        edge_end: edge_end,
+        purpose: 'record',
+        record_thing: 'edge'
+    },
+    success: function(res) {
+        console.log("✅ edge記録成功:", res);
+    },
+    error: function(xhr, status, error) {
+        console.error("❌ edge記録エラー:", status, error);
+        console.warn("📄 レスポンステキスト:", xhr.responseText);
+    }
+});
     }
     
 
@@ -2009,105 +2099,105 @@ const getProcessMapDataFromDB = (callback) => {
 }
 
 const getPassDataFromDB = (selected_date) => {
-    console.log("呼ばれたぞい");
-    let selected_node_id;
-    let selected_concept_id;
+    console.log("過去データ取得開始:", selected_date);
+    
+    const postData = {
+        process_mode: "PassData",
+        selected_date: selected_date
+    };
 
-    if (process_mode == "all") {
-        selected_node_id = _jm.get_selected_node().id;
-        selected_concept_id = Get_NodeInfo(selected_node_id, "concept_id");
-    } else {
-        const conceptDisplay = document.getElementById("conceptdisplay");
-        selected_node_id = conceptDisplay.getAttribute('nodeid');
-        selected_concept_id = conceptDisplay.getAttribute('conceptid');
-    }
+    console.log("送信データ:", postData);
 
-    choose_trigger_xmlLoad().then(conceptIds => {
-        console.log("今から取得します", selected_node_id);
+    $.ajax({
+        url: "php/object_map_manager.php",
+        type: "POST",
+        data: postData,
+        success: function(response) {
+            console.log("レスポンス文字列:", response);
+            try {
+                const data = JSON.parse(response);
+                console.log("パース結果:", data);
 
-        const postData = {
-            process_mode: "PassData",
-            selected_node_id: selected_node_id,
-            selected_concept_id: selected_concept_id,
-            concept_ids: conceptIds,
-            selected_date: selected_date
-        };
+                const historyArray = data.hnode || [];
+                const edgeArray = data.hedge || [];
 
-        console.log("送信データ:", postData);
+                if (Array.isArray(historyArray) && historyArray.length > 0) {
+                    console.log(`履歴件数: ${historyArray.length}`);
+                    console.log(`エッジ件数: ${edgeArray.length}`);
+                    
+                    // 既存のノードをクリア
+                    defaultThinkingProcess.nodes.clear();
+                    defaultThinkingProcess.edges.clear();
+                    
+                    // 履歴データからノードを復元
+                    historyArray.forEach((node, i) => {
+                        console.log(`[${i + 1}] object_node_id: ${node.object_node_id}`);
+                        console.log("  content:", node.content);
+                        console.log("  object_node_type:", node.object_node_type);
+                        console.log("  x:", node.x, " y:", node.y);
+                        console.log("  status:", node.status);
+                        console.log("  appeared_at:", node.appeared_at);
+                        console.log("  disappeared_at:", node.disappeared_at);
+                        
+                        // ノードを追加
+                        defaultThinkingProcess.addReloadNode(
+                            node.object_node_id,
+                            node.content,
+                            node.object_node_type,
+                            node.x,
+                            node.y,
+                            node.status,
+                            node.purpose,
+                            node.action_reason,
+                            node.completion_reason,
+                            node.challenges_learnings,
+                            node.estimated_time
+                        );
+                    });
 
-        $.ajax({
-            url: "php/object_map_manager.php",
-            type: "POST",
-            data: postData,
-            success: function(response) {
-                console.log("レスポンス文字列:", response);
-                try {
-                    const data = JSON.parse(response);
-                    console.log("パース結果:", data);
-
-                    const historyArray = data.hnode || data.data || []; 
-
-                    if (Array.isArray(historyArray) && historyArray.length > 0) {
-                        console.log(`履歴件数: ${historyArray.length}`);
-                        historyArray.forEach((node, i) => {
-                            console.log(`[${i + 1}] object_node_id: ${node.object_node_id}`);
-                            console.log("  content:", node.content);
-                            console.log("  object_node_type:", node.object_node_type);
-                            console.log("  x:", node.x, " y:", node.y);
-                            console.log("  status:", node.status);
-                            console.log("  appeared_at:", node.appeared_at);
-                            console.log("  disappeared_at:", node.disappeared_at);
+                    // エッジデータからエッジを復元
+                    if (Array.isArray(edgeArray) && edgeArray.length > 0) {
+                        edgeArray.forEach((edge, i) => {
+                            console.log(`[エッジ${i + 1}] object_edge_id: ${edge.object_edge_id}`);
+                            console.log("  edge_start:", edge.edge_start);
+                            console.log("  edge_end:", edge.edge_end);
+                            console.log("  label:", edge.label);
+                            console.log("  appeared_at:", edge.appeared_at);
+                            console.log("  disappeared_at:", edge.disappeared_at);
+                            
+                            // エッジを追加（vis.jsのエッジ形式で）
+                            const edgeData = {
+                                id: edge.object_edge_id,
+                                from: edge.edge_start,
+                                to: edge.edge_end,
+                                label: edge.label || ""
+                            };
+                            defaultThinkingProcess.edges.add(edgeData);
                         });
-
-                        // ここで履歴データを渡して画面表示を更新する
-                        displayPassData(historyArray);
-
-                    } else {
-                        console.warn("履歴データが見つかりません");
                     }
 
-                    if (data.status && data.status !== "success") {
-                        console.warn("正常終了していません:", data.status, data.message);
-                    }
-                } catch (e) {
-                    console.error("JSONパース失敗:", e);
+                    console.log(`${selected_date}の過去データ表示完了`);
+
+                } else {
+                    console.warn("履歴データが見つかりません");
+                    // データがない場合はマップをクリア
+                    defaultThinkingProcess.nodes.clear();
+                    defaultThinkingProcess.edges.clear();
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX通信エラー:", status, error);
+
+                if (data.status && data.status !== "success") {
+                    console.warn("正常終了していません:", data.status, data.message);
+                }
+            } catch (e) {
+                console.error("JSONパース失敗:", e);
+                console.error("レスポンス内容:", response);
             }
-        });
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX通信エラー:", status, error);
+            console.error("レスポンス:", xhr.responseText);
+        }
     });
-};
-
-
-// hnode配列を受け取ってマップに表示する関数例
-const displayPassData = (hnodeArray) => {
-    if (!Array.isArray(hnodeArray) || hnodeArray.length === 0) {
-        console.log("履歴ノードデータが空または不正です");
-        return;
-    }
-
-    // 例えば既存の履歴ノードを一旦クリアする処理があればここで行う
-    // defaultThinkingProcess.clearHistoryNodes(); // あれば
-
-    hnodeArray.forEach((node) => {
-        // ここは既存のノード追加関数に合わせて適宜調整してください
-        defaultThinkingProcess.addReloadNode(
-            node.object_node_id,
-            node.content,
-            node.object_node_type,  // おそらくプロパティ名がobject_node_typeに変わってるはず
-            node.x,
-            node.y,
-            node.status,
-            node.purpose,
-            node.action_reason,
-            node.completion_reason,
-            node.challenges_learnings
-        );
-    });
-
-    console.log(`履歴ノード ${hnodeArray.length}件を表示しました`);
 };
 
 
@@ -2532,19 +2622,42 @@ function showThinkingProcessMap() {
     document.getElementById('feedback_area').style.display = "block";
     document.getElementById('xml_upload_area').style.display = "block";
     $('#process_network_container').css('display', 'flex');
-    $('#jsmind_container').css('width', '100%');
-    $('#jsmind_container').css('height', '50%');
+    $('#process_network_container').css('width', 'calc(-350px + 100vw)');
+    $('#process_network_container').css('height', '80vh'); // 明示的に高さを設定
+    $('#jsmind_container').css('width', 'calc(-350px + 100vw)');
+    $('#jsmind_container').css('min-width', '300px');
+    $('#jsmind_container').css('height', '40%');
+    $('#jsmind_container').css('float', 'left');
+    $('#mind').css('width', '280px');
     $('#mind').css('height', '90%');
+    $('#mind').css('float', 'right');
+    $('#mind').css('display', 'block');
     $('#document').hide();
     const frame_dom = document.getElementsByClassName("inquiry_area");
     frame_dom[0].style.border = "solid 5px #ccc";
+    $('#side_menu .inquiry_area').css('height', '45%');
     $("#myProcessnetwork").css({
         width: '100%',
-        height: '400px' // 必要に応じて調整
+        height: '100%' // myProcessnetworkの全領域を使用
     });
+
+    // trigger_areaを非表示にする
+    $('#trigger_area').css('display', 'none');
 
     defaultThinkingProcess = new ThinkingProcess("myProcessnetwork", "load");
     displayTriggerData("all", "trigger_area_list");
+    
+    // vis.jsに明示的にリサイズを通知（複数回実行して確実にリサイズ）
+    setTimeout(() => {
+        if (defaultThinkingProcess && defaultThinkingProcess.ownNetwork) {
+            defaultThinkingProcess.ownNetwork.redraw();
+            defaultThinkingProcess.ownNetwork.fit();
+            // 追加のリサイズ処理
+            setTimeout(() => {
+                defaultThinkingProcess.ownNetwork.redraw();
+            }, 100);
+        }
+    }, 200);
 
     // シークバーのイベントリスナーを追加
     const slider = document.getElementById("timeline_slider");
@@ -2570,9 +2683,14 @@ function closeThinkingProcessMap(){
     document.getElementById('feedback_area').style.display = "block";
     document.getElementById('xml_upload_area').style.display = "block";
     $('#process_network_container').css('display','none');
-    // $('#jsmind_container').css('width','calc(100vw - 350px)');
+    $('#jsmind_container').css('width','calc(100vw - 350px)');
+    $('#jsmind_container').css('min-width', '300px');
     $('#jsmind_container').css('height','100%');
-    $('#mind').css('height','90%');
+    $('#jsmind_container').css('float', 'left');
+    $('#mind').css('width', '280px');
+    $('#mind').css('height','100%');
+    $('#mind').css('float', 'right');
+    $('#mind').css('display', 'block');
 }
 
 // nodeIDをidにもつノードのtypeがラベルの時，思考過程表出化マップを開く

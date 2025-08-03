@@ -62,11 +62,139 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <title>自己内対話活性化支援システム</title>
         <link type="text/css" rel="stylesheet" href="../css/jsmind.css" />
         <link rel="stylesheet" type="text/css" href="../css/item.css">
-        <link rel="stylesheet" type="text/css" href="../css/font.css">
-        <link rel="stylesheet" type="text/css" href="../css/jquery.cleditor.css">
-        <link rel="stylesheet" type="text/css" href="../css/ui.css">
-        <link rel="stylesheet" type="text/css" href="../css/style.css">
+        <link rel="stylesheet" type="text/css" href="css/font.css">
+        <link rel="stylesheet" type="text/css" href="css/jquery.cleditor.css">
+        <link rel="stylesheet" type="text/css" href="css/ui.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
         <!-- <link rel="stylesheet" type="text/css" href="../css/thinking-process-network.css" /> -->
+        
+        <style>
+        /* 問い一覧のスタイリング - 最高優先度 */
+        #testxml ul {
+            list-style: none !important;
+            margin: 0 0 8px 0 !important;
+            padding: 8px 12px !important;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+            border: 1px solid #dee2e6 !important;
+            border-radius: 6px !important;
+            transition: all 0.2s ease !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+
+        #testxml ul:hover {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%) !important;
+            border-color: #2196f3 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15) !important;
+        }
+
+        #testxml ul img {
+            width: 16px !important;
+            height: 16px !important;
+            opacity: 0.7 !important;
+            transition: opacity 0.2s ease !important;
+            flex-shrink: 0 !important;
+        }
+
+        #testxml ul:hover img {
+            opacity: 1 !important;
+        }
+
+        #testxml ul a {
+            color: #495057 !important;
+            text-decoration: none !important;
+            font-weight: 500 !important;
+            font-size: 13px !important;
+            line-height: 1.4 !important;
+            flex: 1 !important;
+            transition: color 0.2s ease !important;
+        }
+
+        #testxml ul:hover a {
+            color: #1976d2 !important;
+        }
+
+        #intention ul, #rationality ul {
+            list-style: none !important;
+            margin: 0 0 8px 0 !important;
+            padding: 8px 12px !important;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+            border: 1px solid #dee2e6 !important;
+            border-radius: 6px !important;
+            transition: all 0.2s ease !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+
+        #intention ul:hover, #rationality ul:hover {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%) !important;
+            border-color: #2196f3 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15) !important;
+        }
+
+        #intention ul img, #rationality ul img {
+            width: 16px !important;
+            height: 16px !important;
+            opacity: 0.7 !important;
+            transition: opacity 0.2s ease !important;
+            flex-shrink: 0 !important;
+        }
+
+        #intention ul:hover img, #rationality ul:hover img {
+            opacity: 1 !important;
+        }
+
+        #intention ul a, #rationality ul a {
+            color: #495057 !important;
+            text-decoration: none !important;
+            font-weight: 500 !important;
+            font-size: 13px !important;
+            line-height: 1.4 !important;
+            flex: 1 !important;
+            transition: color 0.2s ease !important;
+        }
+
+        #intention ul:hover a, #rationality ul:hover a {
+            color: #1976d2 !important;
+        }
+        
+        /* ハンバーガーメニューのタブナビゲーション */
+        .tab-navigation {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .dropdown-tab-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+        }
+        
+        .dropdown-tab-item:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+        
+        .dropdown-tab-item.active {
+            background: #405dca;
+            color: white;
+            border-color: #405dca;
+        }
+        </style>
 
         <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui.min.js"></script>
@@ -88,6 +216,319 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/timeline_slider.js"></script>
         <script type="text/javascript">
         window.onbeforeunload = function(e) {e.returnValue = "ページを離れようとしています。よろしいですか？";}
+        
+        // タブ切り替え機能
+        function switchTab(tabId) {
+            // 全てのタブコンテンツを非表示
+            const tabContents = document.querySelectorAll('.tabcontent > div');
+            tabContents.forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // 選択されたタブを表示
+            const selectedTab = document.getElementById(tabId);
+            if (selectedTab) {
+                selectedTab.style.display = 'block';
+            }
+            
+            // ハンバーガーメニューのタブボタンの状態を更新
+            const tabButtons = document.querySelectorAll('.dropdown-tab-item');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // クリックされたボタンをアクティブに
+            event.target.classList.add('active');
+            
+            // メニューを閉じる
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            const overlay = document.querySelector('.menu-overlay');
+            
+            hamburgerMenu.classList.remove('active');
+            dropdownMenu.style.opacity = '0';
+            dropdownMenu.style.visibility = 'hidden';
+            dropdownMenu.style.transform = 'translateX(-100%)';
+            overlay.classList.remove('active');
+        }
+        
+        // ノード数を更新する関数（非同期対応）
+        async function updateNodeCount() {
+            try {
+                console.log('ノード数更新開始...');
+                const timestamp = new Date().toLocaleString('ja-JP');
+                
+                // PHPエンドポイントからノード数を取得
+                const result = await getNodeCountFromObjectManager();
+                const totalNodes = result.count || 0;
+                const dataSource = result.source || 'unknown';
+                
+                // ノード数表示を更新
+                const nodeCountElement = document.getElementById('current_node_count');
+                if (nodeCountElement) {
+                    nodeCountElement.textContent = totalNodes;
+                }
+                
+                // ステータス別ノード数を更新
+                if (result.details && result.details.status_stats) {
+                    const statusStats = result.details.status_stats;
+                    
+                    // 各ステータスの表示を更新
+                    const completedElement = document.getElementById('completed_count');
+                    const inProgressElement = document.getElementById('inProgress_count');
+                    const pausedElement = document.getElementById('paused_count');
+                    const notStartedElement = document.getElementById('not_started_count');
+                    
+                    if (completedElement) completedElement.textContent = statusStats.completed || 0;
+                    if (inProgressElement) inProgressElement.textContent = statusStats.inProgress || 0;
+                    if (pausedElement) pausedElement.textContent = statusStats.paused || 0;
+                    if (notStartedElement) notStartedElement.textContent = statusStats.not_started || 0;
+                }
+                
+                // データソース情報を更新
+                const debugElement = document.getElementById('node_count_debug');
+                if (debugElement) {
+                    let debugInfo = `最終更新: ${new Date().toLocaleTimeString()}`;
+                    
+                    // 詳細情報があれば追加
+                    if (result.details) {
+                        const details = result.details;
+                        debugInfo += ` | 総数: ${details.total}`;
+                        if (details.related > 0) {
+                            debugInfo += `, 関連: ${details.related}`;
+                        }
+                        if (details.selectedNodeId) {
+                            debugInfo += `, 選択ID: ${details.selectedNodeId}`;
+                        }
+                        
+                        // ステータス別統計があれば追加
+                        if (details.status_stats) {
+                            const stats = details.status_stats;
+                            // debugInfo += ` | ✅${stats.completed} 🔄${stats.inProgress} ⏸️${stats.paused} 📝${stats.not_started}`;
+                        }
+                    }
+                    
+                    // debugElement.textContent = debugInfo;
+                }
+                
+                console.log(`ノード数更新完了: ${totalNodes} (source: ${dataSource})`, result);
+                
+                // 詳細な統計情報をログ出力
+                if (result.details && result.details.typeStats) {
+                    console.log('ノードタイプ別統計:', result.details.typeStats);
+                }
+                
+                // ステータス別統計をログ出力
+                if (result.details && result.details.status_stats) {
+                    console.log('ステータス別統計:', result.details.status_stats);
+                }
+                
+                // 詳細ステータス統計をログ出力
+                if (result.details && result.details.detailed_status_stats) {
+                    console.log('詳細ステータス統計:', result.details.detailed_status_stats);
+                }
+                
+            } catch (error) {
+                console.error('ノード数更新エラー:', error);
+                const nodeCountElement = document.getElementById('current_node_count');
+                if (nodeCountElement) {
+                    nodeCountElement.textContent = 'エラー';
+                }
+                
+                const debugElement = document.getElementById('node_count_debug');
+                if (debugElement) {
+                    debugElement.textContent = `エラー: ${error.message}`;
+                }
+            }
+        }
+        
+        // object_map_managerからノード数を取得する関数（PHPエンドポイント使用）
+        function getNodeCountFromObjectManager() {
+            return new Promise((resolve, reject) => {
+                try {
+                    // 選択されているノードIDを取得（グローバル変数から）
+                    const selectedNodeId = typeof selected_node_id !== 'undefined' ? selected_node_id : null;
+                    
+                    // PHPエンドポイントにAJAXリクエストを送信
+                    $.ajax({
+                        url: 'php/object_map_manager.php',
+                        type: 'POST',
+                        data: {
+                            process_mode: 'getNodeCount',
+                            selected_node_id: selectedNodeId
+                        },
+                        dataType: 'json',
+                        timeout: 5000,
+                        success: function(response) {
+                            console.log('object_map_manager PHP response:', response);
+                            if (response.status === 'success') {
+                                resolve({
+                                    count: response.total_count,
+                                    source: 'object_map_manager_php',
+                                    details: {
+                                        total: response.total_count,
+                                        related: response.related_count,
+                                        typeStats: response.type_stats,
+                                        status_stats: response.status_stats,
+                                        detailed_status_stats: response.detailed_status_stats,
+                                        selectedNodeId: response.selected_node_id,
+                                        timestamp: response.timestamp
+                                    }
+                                });
+                            } else {
+                                console.warn('object_map_manager returned error:', response.message);
+                                resolve({ count: 0, source: 'php_error', error: response.message });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX error:', { xhr, status, error });
+                            // フォールバック: JavaScript版を試す
+                            const fallbackResult = getNodeCountFromObjectManagerFallback();
+                            resolve({ 
+                                count: fallbackResult, 
+                                source: 'javascript_fallback',
+                                error: error
+                            });
+                        }
+                    });
+                } catch (error) {
+                    console.error('getNodeCountFromObjectManager exception:', error);
+                    resolve({ count: 0, source: 'exception', error: error.message });
+                }
+            });
+        }
+        
+        // JavaScript版のフォールバック関数
+        function getNodeCountFromObjectManagerFallback() {
+            try {
+                let nodeCount = 0;
+                
+                // object_map_managerのnodesプロパティを確認
+                if (object_map_manager && object_map_manager.nodes) {
+                    if (typeof object_map_manager.nodes.length !== 'undefined') {
+                        // nodesが配列の場合
+                        nodeCount = object_map_manager.nodes.length;
+                    } else if (typeof object_map_manager.nodes.get !== 'undefined') {
+                        // nodesがvis.DataSetの場合
+                        nodeCount = object_map_manager.nodes.get().length;
+                    }
+                }
+                
+                // 別のプロパティ名の可能性もチェック
+                if (nodeCount === 0 && object_map_manager) {
+                    // networkオブジェクトからノード数を取得
+                    if (object_map_manager.network && object_map_manager.network.body && object_map_manager.network.body.data && object_map_manager.network.body.data.nodes) {
+                        const nodes = object_map_manager.network.body.data.nodes;
+                        if (typeof nodes.get !== 'undefined') {
+                            nodeCount = nodes.get().length;
+                        }
+                    }
+                    
+                    // 思考過程ネットワークからノード数を取得
+                    if (nodeCount === 0 && object_map_manager.thinkingProcess && object_map_manager.thinkingProcess.nodes) {
+                        if (typeof object_map_manager.thinkingProcess.nodes.length !== 'undefined') {
+                            nodeCount = object_map_manager.thinkingProcess.nodes.length;
+                        } else if (typeof object_map_manager.thinkingProcess.nodes.get !== 'undefined') {
+                            nodeCount = object_map_manager.thinkingProcess.nodes.get().length;
+                        }
+                    }
+                }
+                
+                return nodeCount;
+            } catch (error) {
+                console.log('JavaScript fallbackでのノード数取得エラー:', error);
+                return 0;
+            }
+        }
+        
+        // ノード数を定期的に更新
+        function startNodeCountUpdater() {
+            // 初回更新
+            updateNodeCount();
+            
+            // 2秒ごとに更新（より頻繁に）
+            setInterval(updateNodeCount, 2000);
+            
+            // object_map_managerの状態をログ出力
+            console.log('object_map_manager の状態:', typeof object_map_manager !== 'undefined' ? object_map_manager : 'undefined');
+        }
+        
+        // マニュアルでノード数を更新するグローバル関数
+        window.refreshNodeCount = function() {
+            updateNodeCount();
+        };
+        
+        // ハンバーガーメニューのクリックイベント
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            let isMenuOpen = false;
+            
+            // オーバーレイ要素を作成
+            const overlay = document.createElement('div');
+            overlay.className = 'menu-overlay';
+            document.body.appendChild(overlay);
+            
+            hamburgerMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+                isMenuOpen = !isMenuOpen;
+                
+                if (isMenuOpen) {
+                    hamburgerMenu.classList.add('active');
+                    dropdownMenu.style.opacity = '1';
+                    dropdownMenu.style.visibility = 'visible';
+                    dropdownMenu.style.transform = 'translateX(0)';
+                    overlay.classList.add('active');
+                } else {
+                    hamburgerMenu.classList.remove('active');
+                    dropdownMenu.style.opacity = '0';
+                    dropdownMenu.style.visibility = 'hidden';
+                    dropdownMenu.style.transform = 'translateX(-100%)';
+                    overlay.classList.remove('active');
+                }
+            });
+            
+            // メニュー外をクリックしたら閉じる
+            document.addEventListener('click', function() {
+                if (isMenuOpen) {
+                    isMenuOpen = false;
+                    hamburgerMenu.classList.remove('active');
+                    dropdownMenu.style.opacity = '0';
+                    dropdownMenu.style.visibility = 'hidden';
+                    dropdownMenu.style.transform = 'translateX(-100%)';
+                    overlay.classList.remove('active');
+                }
+            });
+            
+            // オーバーレイをクリックしたら閉じる
+            overlay.addEventListener('click', function() {
+                if (isMenuOpen) {
+                    isMenuOpen = false;
+                    hamburgerMenu.classList.remove('active');
+                    dropdownMenu.style.opacity = '0';
+                    dropdownMenu.style.visibility = 'hidden';
+                    dropdownMenu.style.transform = 'translateX(-100%)';
+                    overlay.classList.remove('active');
+                }
+            });
+            
+            // ドロップダウンメニュー内のクリックでは閉じない
+            dropdownMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // 初期タブ表示設定
+            switchTab('tab01');
+            
+            // フィードバックエリアを表示
+            const feedbackArea = document.getElementById('feedback_area');
+            if (feedbackArea) {
+                feedbackArea.style.display = 'block';
+            }
+            
+            // ノード数更新を開始
+            startNodeCountUpdater();
+        });
         </script>
 
         <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -97,11 +538,43 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
     <body id="all">
         <!---        タイトルメニューStart                 -->
         <div id="main_title">
-            <form name="return" method="POST">
+            <div class="header-container">
+                <div class="hamburger-menu">
+                    <div class="hamburger-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="dropdown-menu">
+                        <form name="return" method="POST">
+                            <input class="dropdown-item" type="submit" name="sheetbtn" value="シート選択画面に戻る">
+                            <input class="dropdown-item logout-btn" type="submit" name="logout" value="ログアウト">
+                        </form>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-section">
+                            <span class="dropdown-section-title">画面切り替え</span>
+                            <div class="tab-navigation">
+                                <button class="dropdown-tab-item active" onclick="switchTab('tab01')">思考整理支援システム</button>
+                                <button class="dropdown-tab-item" onclick="switchTab('tab04')">過去のマインドマップ</button>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-section">
+                            <span class="dropdown-section-title">モード選択</span>
+                            <form name="target_mode" action="">
+                                <select class="dropdown-select" name="Select1">
+                                    <option>自己内対話モード</option>
+                                    <option>資料構成作成モード</option>
+                                    <option>資料作成モード</option>
+                                    <option>議論内省マップモード</option>
+                                </select>
+                                <input type="button" class="dropdown-button" value="実行" onclick="ModeChangeButtonClick();" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <span class="title_name">Forest</span>
-                <span><input class="button2" type="submit" name="logout" value="ログアウト"></span>
-                <span><input class="button1" type="submit" name="sheetbtn" value="シート選択画面に戻る"></span>
-            </form>
+            </div>
         </div>
         <!-- <form name="return" method="POST">
              <div id="session">
@@ -119,32 +592,13 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
              </form> -->
         <!---          タイトルメニューFinish              -->
 
-        <!--      タブメニュー Start        -->
-        <ul div class="tabnav">
+        <!--      タブメニュー Start (ハンバーガーメニューに移動済み) -->
+        <ul div class="tabnav" style="display: none;">
             <li class="active"><a href="#tab01">思考整理支援システム</a></li>
             <!-- <li><a href="#tab02">過去のマインドマップ</a></li>
                  <li class="active"><a href="#tab03" >リフレクション</a></li>
                  <li class="active"><a href="#record_tab" >履歴</a></li> -->
             <li class="active"><a href="#tab04">過去のマインドマップ</a></li>  <!--hatakeyama-->
-
-            <div class="checkbox_mode">
-                <!-- <input type="checkbox" id="checkbox" class="checkbox" name="check" onclick="CheckClick()"> -->
-                <!-- <input type="checkbox" id="checkbox" class="checkbox" name="check" onclick=""> -->
-                <!-- onclick="CheckClick()" -->
-                <!-- <label for="checkbox" data-on-label="" data-off-label=""></label> -->
-                <!-- <span class="checkbox_text">【資料作成】</span> -->
-                <form name="target_mode" action="">
-                    <select class="cp_ipselect2 cp_sl02"name="Select1">
-                        <option>自己内対話モード</option>
-                        <option>資料構成作成モード</option>
-                        <option>資料作成モード</option>
-                        <option>議論内省マップモード</option>
-                    </select>
-                    <input type="button" class="button3" value="実行" onclick="ModeChangeButtonClick();" />
-                </form>
-                            
-            </div>
-
         </ul>
 
         
@@ -479,26 +933,29 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             <!-- 思考過程表出化マップ　By川 -->
                             <div id="process_network_container" oncontextmenu="return false;" >
                                 <div id="myProcessnetwork2">
-                                    <div id="buttoncluster">
-                                        <input type="button" class="process_close" onclick="closeThinkingProcessMap()"
-                                                id="process_close" value="×" />
-                                        <input type="button" class="thinkingProcess_network_button"
-                                                id="process_addNode" value="手段ノード追加" />
-                                        <input type="button" class="thinkingProcess_network_button"
-                                                id="process_removeNode" value="ノード削除" />
-                                        <input type="button" class="thinkingProcess_network_button"
-                                                id="process_startEditEdge" value="エッジ追加" />
-                                        <input type="button" class="thinkingProcess_network_button"
-                                                id="process_removeEdge" value="エッジ削除" />
-                                        <input type="button" class="thinkingProcess_network_button"
-                                                id="process_ZoomIn" value="拡大" />
-                                        <input type="button" class="thinkingProcess_network_button"
-                                                id="process_ZoomOut" value="縮小" />
-                                    </div>
-                                    <!-- シークバー追加 -->
-                                    <div id="timeline_container">
+                                    <!-- ボタンとシークバーを横並びに配置 -->
+                                    <div class="control-panel">
+                                        <div id="buttoncluster">
+                                            <button type="button" class="process_close" onclick="closeThinkingProcessMap()"
+                                                    id="process_close" title="閉じる"></button>
+                                            <button type="button" class="thinkingProcess_network_button"
+                                                    id="process_addNode" title="ノード追加"></button>
+                                            <button type="button" class="thinkingProcess_network_button"
+                                                    id="process_removeNode" title="ノード削除"></button>
+                                            <button type="button" class="thinkingProcess_network_button"
+                                                    id="process_startEditEdge" title="エッジ追加"></button>
+                                            <button type="button" class="thinkingProcess_network_button"
+                                                    id="process_removeEdge" title="エッジ削除"></button>
+                                            <button type="button" class="thinkingProcess_network_button"
+                                                    id="process_ZoomIn" title="拡大"></button>
+                                            <button type="button" class="thinkingProcess_network_button"
+                                                    id="process_ZoomOut" title="縮小"></button>
+                                        </div>
+                                        <!-- シークバーを隣に配置（横幅いっぱい使用） -->
+                                        <div id="timeline_container">
                                             <input type="range" id="timeline_slider" min="0" max="0" value="0" step="1" />
                                             <span id="timeline_label">読み込み中...</span>
+                                        </div>
                                     </div>
 
                                         <div id="myProcessnetwork"></div>
@@ -567,7 +1024,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                         <input type="button" value="決定" id="t_p_time_select">
                                         <input type="button" value="キャンセル" id="t_p_time_cancel">
                                     </div>
-                                    <div id="myProcessnetwork"></div>
+                                    <!-- <div id="myProcessnetwork"></div> -->
                                 </div>
                                 <div id="trigger_area">
                                     <div id="trigger_area_display">
@@ -619,8 +1076,6 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                  <!--サイドメニュー　start-->
                 <div id="side_menu">
                     
-                    <div class="Menu">Menu</div>
-
                     <!-- マインドマップ編集のサイドメニュー -->
                     
                     <div id="mind">
@@ -628,8 +1083,57 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <!--チェックメニュー　Start  -->
                         
 
+                        <div class="toi_list" style="text-align: center;">
+                            <div id="mind_all">
+                                <input class="button5" type="button" onclick="showGeneration();" value="問い一覧">
+                                <!-- <b>マインドマップモード</b> -->
+                            </div>
+                            <!-- <div id="presen_all" hidden>
+                                <input class="button5" type="button" onclick="P_showGeneration();" value="問い一覧">
+                                <b>資料作成モード</b>
+                            </div> -->
+                        </div>
+
+                        <div id="mind" class="side">
+                            <div class="inquiry_area">
+                                <div style="background-color: #69a7ff; color: white; padding: 8px; text-align: center; font-weight: bold; margin-bottom: 10px; border-radius: 4px;">【情報の表出化】</div>
+                                <div id="testxml"></div>
+                                <div id="ont"></div>
+                                <div style="background-color: #69a7ff; color: white; padding: 8px; text-align: center; font-weight: bold; margin-bottom: 10px; margin-top: 15px; border-radius: 4px;">【理由・目的】</div>
+                                <div id="intention"></div>
+                                <div style="background-color: #69a7ff; color: white; padding: 8px; text-align: center; font-weight: bold; margin-bottom: 10px; margin-top: 15px; border-radius: 4px;">【合理性】</div>
+                                <div id="rationality"></div>
+                            </div>
+
                         <!--ここから大槻修正-->
                         <div id = "feedback_area" style="display: none">
+                            <!-- ノード数表示エリア -->
+                            <div id="node_count_display" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 8px; margin-bottom: 10px; font-weight: bold; color: #495057;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <span>📊 現在のノード数: </span>
+                                        <span id="current_node_count" style="color: #007bff; font-size: 16px;">0</span>
+                                        <span> 個</span>
+                                    </div>
+                                    <button onclick="refreshNodeCount()" style="background: #007bff; color: white; border: none; border-radius: 3px; padding: 4px 8px; font-size: 12px; cursor: pointer;" title="ノード数を更新">
+                                        🔄
+                                    </button>
+                                </div>
+                                
+                                <!-- ステータス別ノード数表示エリア -->
+                                <div id="status_stats_display" style="margin-top: 8px; font-size: 12px; border-top: 1px solid #dee2e6; padding-top: 6px;">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px;">
+                                        <div style="color: #28a745;">✅ 完了: <span id="completed_count">0</span></div>
+                                        <div style="color: #17a2b8;">🔄 実行中: <span id="inProgress_count">0</span></div>
+                                        <div style="color: #ffc107;">⏸️ 中断: <span id="paused_count">0</span></div>
+                                        <div style="color: #6c757d;">📝 未着手: <span id="not_started_count">0</span></div>
+                                    </div>
+                                </div>
+                                
+                                <div id="node_count_debug" style="font-size: 10px; color: #6c757d; margin-top: 4px;">
+                               
+                                </div>
+                            </div>
                             <div id = "ontology_feedback"></div>
                             <!-- <div id = "accordion_discussion"></div>
                             <input id = "feedbackrecord" type="button" value="記録"> -->
@@ -658,28 +1162,6 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <div class="correct_reason">ノードバージョン履歴</div>
                         <div id="node_version_log" class="node_version_log"></div> -->
                         <!--  hatakeyama  -->
-
-                        <div class="toi_list">
-                            <div id="mind_all">
-                                <input class="button5" type="button" onclick="showGeneration();" value="問い一覧">
-                                <b>マインドマップモード</b>
-                            </div>
-                            <div id="presen_all" hidden>
-                                <input class="button5" type="button" onclick="P_showGeneration();" value="問い一覧">
-                                <b>資料作成モード</b>
-                            </div>
-                        </div>
-
-                        <div id="mind" class="side">
-                            <div class="inquiry_area">
-                                <div>【情報の表出化】</div>
-                                <div id="testxml"></div>
-                                <div id="ont"></div>
-                                <div>【理由・目的】</div>
-                                <div id="intention"></div>
-                                <div>【合理性】</div>
-                                <div id="rationality"></div>
-                            </div>
                             <div id="ImageAddContent">
                                 <!-- <form id="ImageForm" method="POST" enctype="multipart/form-data"> -->
                                 <div class="deco-file">

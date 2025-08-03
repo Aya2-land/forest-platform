@@ -6,7 +6,7 @@ html {
 	background-color: #F0F0F0;
 	-webkit-user-select: none;
 	overflow-x : hidden;
-	overflow-y : auto;
+	overflow-y : hidden;
 }
 
 /* 表示画面全体の大きさ */
@@ -20,7 +20,7 @@ body{
 	min-width: 765px;
 	background-color: #F0F0F0;
 	overflow-x : hidden;
-	overflow-y : auto;
+	overflow-y : hidden;
 }
 body::-webkit-scrollbar{
 	display: none;
@@ -40,31 +40,35 @@ table[type] {
 
 /* -------------------- タイトルの設定 ---------------------- */
 /* 画面上部のタイトル全体の設定 */
-#main_title {
-	width: 99vw;
-	min-width: 765px;
-	height: 80px;
-	color: #fff;
-	background-color: #1B4383; /* forestgreen */
-
-	margin-right: 10px;
-	margin-left: 0;
-	overflow: hidden;
+body #main_title {
+	width: 99vw !important;
+	min-width: 765px !important;
+	height: 35px !important;
+	color: #fff !important;
+	background-color: #00473E !important;
+	margin-right: 10px !important;
+	margin-left: 0 !important;
+	overflow: visible !important;
+	display: flex !important;
+	align-items: center !important;
+	padding: 0 15px !important;
+	position: relative !important;
+	z-index: 9998 !important;
+	box-sizing: border-box !important;
 }
 
 /* タイトル文字の設定 */
 #main_title .title_name {
-	height:60px;
+	height: auto;
 	text-align: left;
-	font-style: oblique; /* 斜体に */
-	font-family:cursive; /* フォント変更 */
-	font-size: 50px;
-	margin-left:10px;
-	margin-top: 0;
-	margin-bottom: 0;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-size: 18px;
+	font-weight: 700;
+	margin: 0;
 	padding: 0;
-	color: #EFE7C3;
-
+	color: #ffffff;
+	letter-spacing: 1px;
+	transition: all 0.3s ease;
 }
 
 .popup {
@@ -160,9 +164,10 @@ table[type] {
     display: inline-block;
     background: #ddd;
 		color: #333;
-    padding: 10px;
+    padding: 5px;
     border-radius: 5px 5px 0 0;
     text-decoration: none;
+    font-size: 15px; /* フォントサイズを小さく設定 */
 }
 
 .tabnav li a:hover {
@@ -196,8 +201,8 @@ table[type] {
 .tabcontent{
 	width:100vw;
 	/* min-width: 765px; */
-	height:calc(100vh - 200px);
-	/* (タイトルメニューの高さの分引く)　*/
+	height:calc(100vh - 80px);
+	/* (タイトルメニューとタブメニューの高さの分引く)　*/
 
 }
 
@@ -371,10 +376,10 @@ input:checked+label::after {
 	width: calc(100vw - 350px);
 	min-width: 300px;
 	/* height:75vh; */
-	height:100%;
+	height: calc(100vh - 139px); /* 画面の一番下まで */
 	/* 元は75 */
-	min-height: 450px;
-	margin-bottom:2vh;
+	/* min-height: 450px; */
+	margin-bottom: 0;
 	border:solid 5px #ccc;
 	background:#F0F0F0;
 	overflow: scroll;
@@ -644,13 +649,13 @@ h3 {
 /*　サイドメニュー全体の設定　*/
 #side_menu{
 	width: 280px;
-	/* height: 75vh; */
-	height: 100%;
+	height: calc(100vh - 5px); /* 画面の一番下まで（タイトルバーのみ除く） */
 	min-height: 450px;
-	float:right;
   background: #F0F0F0;
+	position: fixed;
+	right: 1vw;
+	top: 35px; /* title(35px)の直下 */
 	z-index: 1000;
-	/* margin-right: 1vw; */
 }
 
 /* 修正理由の見出し */
@@ -690,11 +695,13 @@ h3 {
 
 #feedback_area{
 	background-color: #f0f0f0;
-	height: 200px;
+	height: calc(100vh - 400px); /* 画面の一番下まで伸ばす（上部要素分を除く） */
+	min-height: 200px; /* 最小高さを確保 */
 	padding: 10px;
 	overflow-y: scroll;
     border: 1px solid #ccc;
-    margin-bottom: 10px;
+    margin-bottom: 0; /* 下のマージンを削除 */
+    position: relative;
 }
 
   /* アコーディオンメニューのスタイル */
@@ -811,6 +818,7 @@ h3 {
 #testxml{
 	font-size: 14px;
 	margin: auto;
+	padding: 5px 0;
 }
 
 /* 文書化モードの要素につけるID */
@@ -1107,6 +1115,8 @@ select[name="mttime_list"] {
 	overflow: hidden;
 	float:left;
 	display: none;
+	position: relative;
+	z-index: 100;
 }
 #mynetwork2{
 	width: calc((100vw - 350px)*0.45);
@@ -1158,6 +1168,7 @@ select[name="mttime_list"] {
 	border:solid 0.5px #000000;
 	background:#fff;
 	overflow: auto;
+	z-index: 100;
 }
 
 /*ここまで大槻修正*/
