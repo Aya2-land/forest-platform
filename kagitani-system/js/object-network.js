@@ -83,9 +83,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         this.TimeNodeId = []; //完了予定ノードのノードID
         this.TimeConnectNodeId = []; //完了予定ノードと対応づいているノードID
         this.TimeContent = []; //完了予定ノードの内容を保存する配列
-        this.ReflectionNodeId = []; //内省ノードのノードID
-        this.ReflectionConnectNodeId = []; //内省ノードと対応づいているノードID
-        this.ReflectionContent = []; //内省ノードの内容を保存する配列
         this.ConnectNetworkNodeId = [];
         this.ConnectMindMapNodeId = [];
         this.RecruitNodeId = [];//採用or棄却されたノードID
@@ -118,7 +115,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             $(`#process_conmenu4`).on('click',this.ContentmenuCancel.bind(this));
             $(`#process_conmenu5`).on('click',this.show_reason_input.bind(this));
             $(`#process_conmenu6`).on('click',this.show_time_input.bind(this));
-            $(`#process_conmenu7`).on('click',this.show_reflection_input.bind(this));
             $(`#p_ontology_select`).on('click',this.addontology.bind(this));
             $(`#p_recruit_select`).on('click',this.Selected_Recruit_Idea.bind(this));
             $(`#t_p_ontology_select`).on('click',this.addontology.bind(this));
@@ -127,8 +123,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             $(`#t_p_reason_cancel`).on('click',this.cancel_reason_input.bind(this));
             $(`#t_p_time_select`).on('click',this.add_time.bind(this));
             $(`#t_p_time_cancel`).on('click',this.cancel_time_input.bind(this));
-            $(`#t_p_reflection_select`).on('click',this.add_reflection.bind(this));
-            $(`#t_p_reflection_cancel`).on('click',this.cancel_reflection_input.bind(this));
             this.ownNetwork.on('click', this.networkClick.bind(this));
             this.ownNetwork.on('dragStart', this.dragstart.bind(this));
             this.ownNetwork.on('dragEnd', this.dragend.bind(this));
@@ -281,9 +275,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         this.bindshow_time_input = this.show_time_input.bind(this);
         this.bindadd_time = this.add_time.bind(this);
         this.bindcancel_time_input = this.cancel_time_input.bind(this);
-        this.bindshow_reflection_input = this.show_reflection_input.bind(this);
-        this.bindadd_reflection = this.add_reflection.bind(this);
-        this.bindcancel_reflection_input = this.cancel_reflection_input.bind(this);
         this.bindSelected_Recruit_Idea = this.Selected_Recruit_Idea.bind(this);
         this.bindRecruit_Idea = this.Recruit_Idea.bind(this);
         $(`#jsmind_container`).on('click',this.bindconnect_mindmap);
@@ -300,7 +291,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         });
         $(`#process_conmenu5`).on('click',this.bindshow_reason_input);
         $(`#process_conmenu6`).on('click',this.bindshow_time_input);
-        $(`#process_conmenu7`).on('click',this.bindshow_reflection_input);
         $(`#p_ontology_select`).on('click',this.bindaddontology);
         $(`#p_recruit_select`).on('click',this.bindSelected_Recruit_Idea);
         $(`#t_p_ontology_select`).on('click',this.bindaddontology);
@@ -309,8 +299,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         $(`#t_p_reason_cancel`).on('click',this.bindcancel_reason_input);
         $(`#t_p_time_select`).on('click',this.bindadd_time);
         $(`#t_p_time_cancel`).on('click',this.bindcancel_time_input);
-        $(`#t_p_reflection_select`).on('click',this.bindadd_reflection);
-        $(`#t_p_reflection_cancel`).on('click',this.bindcancel_reflection_input);
     }
 
     removeEventLister(){
@@ -325,7 +313,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         $(`#process_conmenu4`).off('click',this.bindContentmenuCancel);
         $(`#process_conmenu5`).off('click',this.bindshow_reason_input);
         $(`#process_conmenu6`).off('click',this.bindshow_time_input);
-        $(`#process_conmenu7`).off('click',this.bindshow_reflection_input);
         $(`#p_ontology_select`).off('click',this.bindaddontology);
         $(`#p_recruit_select`).off('click',this.bindSelected_Recruit_Idea);
         $(`#t_p_ontology_select`).off('click',this.bindaddontology);
@@ -334,8 +321,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         $(`#t_p_reason_cancel`).off('click',this.bindcancel_reason_input);
         $(`#t_p_time_select`).off('click',this.bindadd_time);
         $(`#t_p_time_cancel`).off('click',this.bindcancel_time_input);
-        $(`#t_p_reflection_select`).off('click',this.bindadd_reflection);
-        $(`#t_p_reflection_cancel`).off('click',this.bindcancel_reflection_input);
         clearInterval(this.interval);
     }
     /*
@@ -928,24 +913,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             if (timeTagNode) {
                 this.nodes.remove({ id: timeTagId });
             }
-            
-            // 内省の関連付けも削除
-            const reflection_index = this.ReflectionConnectNodeId.indexOf(selectNodeId);
-            if(reflection_index !== -1){
-                // 内省ノードも削除
-                this.nodes.remove({ id: this.ReflectionNodeId[reflection_index]});
-                // defaultRecordThinkingProcess.delete_db_Node(this.ReflectionNodeId[reflection_index]);
-                this.ReflectionNodeId.splice(reflection_index, 1);
-                this.ReflectionConnectNodeId.splice(reflection_index, 1);
-                this.ReflectionContent.splice(reflection_index, 1); // 内省内容も削除
-            }
-            // 内省タグも削除（リロード時のタグ）
-            const reflectionTagId = `reflection-tag-${selectNodeId}`;
-            const reflectionTagNode = this.nodes.get(reflectionTagId);
-            if (reflectionTagNode) {
-                this.nodes.remove({ id: reflectionTagId });
-            }
-            
             const connect_net_index = [];
             this.ConnectNetworkNodeId.map((n_id, index) => {
                 if(n_id === selectNodeId){
@@ -1417,164 +1384,6 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     //完了予定入力をキャンセル
     cancel_time_input (){
         document.getElementById("t_Process_timeselect").style.display = "none";
-    }
-
-    //内省を記述する機能
-    show_reflection_input (){
-        console.log('show_reflection_input関数が呼ばれました');
-        document.getElementById('t_Process_conmenu').style.display = "none";
-        
-        // selectIdが設定されているかチェック
-        if (!this.selectId) {
-            // セッションストレージからバックアップを取得
-            const backupSelectId = sessionStorage.getItem('currentSelectId');
-            if (backupSelectId) {
-                this.selectId = backupSelectId;
-                console.log('セッションストレージからselectIdを復元:', this.selectId);
-            } else {
-                console.error('selectIdが設定されていません:', this.selectId);
-                alert('ノードが選択されていません。先にノードを右クリックして選択してください。');
-                return;
-            }
-        }
-        
-        const reflectionselect = document.getElementById("t_Process_reflectionselect");
-        if (!reflectionselect) {
-            alert('内省入力ダイアログが見つかりません');
-            return;
-        }
-        
-        // テキストエリアをクリア
-        document.getElementById("t_Process_actionReason").value = "";
-        document.getElementById("t_Process_completionReason").value = "";
-        document.getElementById("t_Process_challengesLearnings").value = "";
-        
-        // 画面の中央に表示
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-        const dialogWidth = 400;
-        const dialogHeight = 400;
-        
-        const centerX = (windowWidth - dialogWidth) / 2;
-        const centerY = (windowHeight - dialogHeight) / 2;
-        
-        reflectionselect.style.display = "block";
-        reflectionselect.style.left = centerX + "px";
-        reflectionselect.style.top = centerY + "px";
-        reflectionselect.style.position = "fixed";
-        reflectionselect.style.zIndex = "9999";
-        reflectionselect.style.backgroundColor = "white";
-        reflectionselect.style.border = "3px solid purple";
-        reflectionselect.style.boxShadow = "0 0 20px rgba(0,0,0,0.8)";
-    }
-
-    //内省を追加する
-    add_reflection (){
-        console.log('add_reflection関数が呼ばれました');
-        const reflectionselect = document.getElementById("t_Process_reflectionselect");
-        if (reflectionselect) reflectionselect.style.display = "none";
-        
-        // selectIdが設定されているかチェック
-        if (!this.selectId) {
-            console.error('selectIdが設定されていません:', this.selectId);
-            return;
-        }
-        
-        console.log('selectId:', this.selectId);
-        
-        // すでに内省が記述されているかチェック
-        if(this.ReflectionConnectNodeId.indexOf(this.selectId) !== -1){
-            alert('このノードにはすでに内省が記述されているため記述できません');
-            return;
-        }
-        
-        // 内省データを取得
-        const actionReason = document.getElementById("t_Process_actionReason").value.trim();
-        const completionReason = document.getElementById("t_Process_completionReason").value.trim();
-        const challengesLearnings = document.getElementById("t_Process_challengesLearnings").value.trim();
-        
-        console.log('内省データ:', {actionReason, completionReason, challengesLearnings});
-        
-        if (!actionReason && !completionReason && !challengesLearnings) {
-            alert('内省内容を入力してください');
-            return;
-        }
-        
-        // ノードが存在するかチェック
-        const selectedNode = this.nodes.get(this.selectId);
-        if (!selectedNode) {
-            console.error('選択されたノードが見つかりません:', this.selectId);
-            return;
-        }
-        
-        console.log('選択されたノード:', selectedNode);
-        
-        // ノードの位置情報を取得
-        const nodeBoundingBox = this.ownNetwork.getBoundingBox(this.selectId);
-        if (!nodeBoundingBox) {
-            console.error('ノードの位置情報を取得できませんでした:', this.selectId);
-            return;
-        }
-        
-        console.log('ノードの位置情報:', nodeBoundingBox);
-        
-        const ReflectionTagId = this.generateUniqueNumberText();
-        
-        // 内省タグノードを作成（右上に配置）
-        const reflectionTitle = `行動意図: ${actionReason || "未記入"}\n完了基準: ${completionReason || "未記入"}\n学び: ${challengesLearnings || "未記入"}`;
-        const reflectionTag = {
-            id: `reflection-tag-${this.selectId}`,
-            label: '💭',
-            shape: 'ellipse',
-            size: 20,
-            color: {
-                background: 'lightblue',
-                border: 'blue'
-            },
-            font: { 
-                size: 18,
-                color: 'darkblue'
-            },
-            x: nodeBoundingBox.right - 8,
-            y: nodeBoundingBox.top + 8,
-            fixed: true,
-            physics: false,
-            group: 'reflection-tag',
-            title: reflectionTitle
-        };
-        
-        console.log('作成する内省タグ:', reflectionTag);
-        
-        // 内省タグをネットワークに追加
-        this.nodes.add(reflectionTag);
-        console.log('内省タグを追加しました');
-        
-        // 内省データの関連付けを記録
-        this.ReflectionConnectNodeId.push(this.selectId);
-        this.ReflectionNodeId.push('reflection-tag_'+ReflectionTagId);
-        this.ReflectionContent.push({
-            actionReason: actionReason,
-            completionReason: completionReason,
-            challengesLearnings: challengesLearnings
-        });
-        
-        // 内省ノードの記録（DBに保存）
-        // defaultRecordThinkingProcess.record_reflection(this.selectId, 'reflection-tag_'+ReflectionTagId, actionReason, completionReason, challengesLearnings);
-        
-        console.log('内省を記録しました:', {actionReason, completionReason, challengesLearnings});
-        console.log('関連付けノードID:', this.selectId);
-        console.log('内省ID:', 'reflection-tag_'+ReflectionTagId);
-        
-        // 処理完了後にセッションストレージをクリア
-        sessionStorage.removeItem('currentSelectId');
-        
-        // 内省入力ダイアログを閉じる
-        document.getElementById("t_Process_reflectionselect").style.display = "none";
-    }
-
-    //内省入力をキャンセル
-    cancel_reflection_input (){
-        document.getElementById("t_Process_reflectionselect").style.display = "none";
     }
 
     Recruit_Idea (){

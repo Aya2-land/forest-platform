@@ -785,11 +785,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                                 目標手段階層マップ
                                             </button>
                                         </li>
-                                        <li>
-                                            <button class="button4" onclick="addIconToNode();">
-                                                アイコンを追加
-                                            </button>
-                                        </li>
+                                       
                                         <!-- <li>
                                             ノードを資料へ追加
                                         </li> 

@@ -17,36 +17,116 @@
 
     const nodeElement = selectedNode._data.view.element;
 
-    if (nodeElement.querySelector('.node-icon')) {
+    if (nodeElement.querySelector('.node-icon-container')) {
         alert('このノードには既にアイコンが追加されています。');
         return;
     }
 
+    createNodeIcon(nodeElement);
+    console.log('アイコンコンテナが正常に追加されました');
+}
+
+// アイコンを作成する共通関数
+function createNodeIcon(nodeElement) {
+    // アイコンコンテナの作成
+    const iconContainer = document.createElement('div');
+    iconContainer.className = 'node-icon-container';
+    iconContainer.style.position = 'absolute';
+    iconContainer.style.top = '-20px';
+    iconContainer.style.right = '-20px';
+    iconContainer.style.display = 'flex';
+    iconContainer.style.gap = '4px';
+    iconContainer.style.zIndex = '1000';
+    iconContainer.style.pointerEvents = 'none'; // クリック無効化でノード選択を邪魔しない
+
+    // 手段階層マップアイコンを作成
+    const iconWrapper = document.createElement('div');
+    iconWrapper.className = 'node-icon-wrapper compass-icon';
+    iconWrapper.style.position = 'relative';
+    iconWrapper.style.width = '28px';
+    iconWrapper.style.height = '28px';
+    iconWrapper.style.borderRadius = '50%';
+    iconWrapper.style.backgroundColor = '#4CAF50';
+    iconWrapper.style.display = 'flex';
+    iconWrapper.style.alignItems = 'center';
+    iconWrapper.style.justifyContent = 'center';
+    iconWrapper.style.boxShadow = '0 2px 6px rgba(0,0,0,0.25)';
+    iconWrapper.style.transition = 'all 0.3s ease';
+    iconWrapper.style.cursor = 'pointer';
+    iconWrapper.style.pointerEvents = 'auto';
+    iconWrapper.style.border = '2px solid white';
+    iconWrapper.title = 'このノードには手段階層マップがあります';
+    
+    // アイコン画像の作成
     const icon = document.createElement('img');
-    icon.src = 'https://img.icons8.com/ios-filled/50/compass--v1.png'; // 大きめのコンパスアイコン
+    icon.src = 'https://img.icons8.com/fluency/48/compass--v1.png';
     icon.alt = '手段階層マップあり';
-    icon.title = 'このノードには手段階層マップがあります';
-    icon.className = 'node-icon';
+    icon.style.width = '18px';
+    icon.style.height = '18px';
+    icon.style.filter = 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))';
+    icon.style.pointerEvents = 'none';
 
-    // スタイル調整（大きく、重なって見やすく）
-    icon.style.width = '32px';
-    icon.style.height = '32px';
-    icon.style.position = 'absolute';
-    icon.style.top = '-12px';
-    icon.style.left = '-12px';
-    icon.style.zIndex = '10';
-    icon.style.opacity = '0.9';
-    icon.style.transition = 'all 0.2s ease';
+    // ホバー効果
+    iconWrapper.addEventListener('mouseenter', () => {
+        iconWrapper.style.transform = 'scale(1.15) translateY(-2px)';
+        iconWrapper.style.boxShadow = '0 4px 12px rgba(0,0,0,0.4)';
+        iconWrapper.style.filter = 'brightness(1.1)';
+    });
+    
+    iconWrapper.addEventListener('mouseleave', () => {
+        iconWrapper.style.transform = 'scale(1) translateY(0)';
+        iconWrapper.style.boxShadow = '0 2px 6px rgba(0,0,0,0.25)';
+        iconWrapper.style.filter = 'brightness(1)';
+    });
 
-    // ホバー時の動き
-    icon.addEventListener('mouseenter', () => {
-        icon.style.transform = 'scale(1.2)';
-        icon.style.filter = 'brightness(1.2)';
+    // クリック効果
+    iconWrapper.addEventListener('click', (e) => {
+        e.stopPropagation();
+        iconWrapper.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            iconWrapper.style.transform = 'scale(1.15) translateY(-2px)';
+        }, 100);
+        
+        console.log('手段階層マップあり がクリックされました');
+        
+        // 目標手段階層マップを開く
+        if (typeof showThinkingProcessMap === 'function') {
+            showThinkingProcessMap();
+        } else {
+            console.error('showThinkingProcessMap関数が見つかりません');
+        }
     });
-    icon.addEventListener('mouseleave', () => {
-        icon.style.transform = 'scale(1)';
-        icon.style.filter = 'brightness(1)';
-    });
+
+    iconWrapper.appendChild(icon);
+    iconContainer.appendChild(iconWrapper);
+
+    // CSSアニメーションを追加
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes iconSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+        
+        .node-icon-wrapper {
+            animation: iconSlideIn 0.4s ease-out forwards;
+        }
+        
+        .node-icon-container:hover .node-icon-wrapper {
+            transform: scale(1.05);
+        }
+    `;
+    
+    if (!document.querySelector('#node-icon-styles')) {
+        style.id = 'node-icon-styles';
+        document.head.appendChild(style);
+    }
 
     // ノードが position: static だった場合に相対位置を指定
     const computedStyle = window.getComputedStyle(nodeElement);
@@ -54,7 +134,68 @@
         nodeElement.style.position = 'relative';
     }
 
-    nodeElement.appendChild(icon);
+    // オーバーフロー設定を調整してアイコンが見えるようにする
+    nodeElement.style.overflow = 'visible';
+    
+    nodeElement.appendChild(iconContainer);
+}
+
+// データベースからobject_nodesテーブルのnode_idを取得してアイコンを付ける関数
+function addIconsToObjectNodes() {
+    $.ajax({
+        url: 'php/get_object_nodes.php',
+        type: 'POST',
+        dataType: 'text', // JSONではなくtextで受け取って手動でパース
+        success: function(response) {
+            console.log('object_nodes生レスポンス:', response);
+            
+            try {
+                const data = JSON.parse(response);
+                console.log('object_nodes取得成功:', data);
+                
+                if (data.status === 'success' && data.data) {
+                    data.data.forEach(function(nodeData) {
+                        const nodeId = nodeData.node_id;
+                        const nodeElement = document.querySelector(`jmnode[nodeid="${nodeId}"]`);
+                        
+                        if (nodeElement && !nodeElement.querySelector('.node-icon-container')) {
+                            createNodeIcon(nodeElement);
+                            console.log(`ノード ${nodeId} にアイコンを追加しました`);
+                        }
+                    });
+                    console.log(`${data.data.length}個のノードにアイコンを追加しました`);
+                } else if (data.status === 'error') {
+                    console.error('サーバーエラー:', data);
+                }
+            } catch (parseError) {
+                console.error('JSON解析エラー:', parseError);
+                console.error('レスポンス内容:', response);
+                
+                // HTMLエラーの場合、一部だけ表示
+                if (response.includes('<br />') || response.includes('<b>')) {
+                    console.error('PHPエラーが発生しています。レスポンスの最初の500文字:', 
+                                response.substring(0, 500));
+                }
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Ajax通信エラー:', {
+                status: status,
+                error: error,
+                responseText: xhr.responseText,
+                readyState: xhr.readyState,
+                statusCode: xhr.status
+            });
+        }
+    });
+}
+
+// jsMindマップの読み込み完了後にアイコンを自動追加
+function autoAddIconsAfterMapLoad() {
+    // マップが完全に読み込まれるまで少し待機
+    setTimeout(function() {
+        addIconsToObjectNodes();
+    }, 1000);
 }
 
 
@@ -1551,6 +1692,9 @@ var jm = jsMind.show(options, mind);
             /*logger.debug('view.show ok');*/
 
             this.invoke_event_handle(jm.event_type.show,{data:[mind]});
+            
+            // マップ表示完了後にobject_nodesのノードにアイコンを自動追加
+            autoAddIconsAfterMapLoad();
         },
 
         show : function(mind){
@@ -1590,6 +1734,34 @@ var jm = jsMind.show(options, mind);
                     this.expand_node(parent_node);
                     this.invoke_event_handle(jm.event_type.edit,{evt:'add_node',data:[parent_node.id,nodeid,topic,data],node:nodeid});
                     this.select_clear();
+                    
+                    // 新しいノードがobject_nodesに存在するかチェックしてアイコンを追加
+                    setTimeout(function() {
+                        const nodeElement = document.querySelector(`jmnode[nodeid="${nodeid}"]`);
+                        if (nodeElement) {
+                            $.ajax({
+                                url: 'php/check_object_node.php',
+                                type: 'POST',
+                                data: { node_id: nodeid },
+                                dataType: 'text',
+                                success: function(response) {
+                                    try {
+                                        const data = JSON.parse(response);
+                                        if (data.status === 'success' && data.exists && !nodeElement.querySelector('.node-icon-container')) {
+                                            createNodeIcon(nodeElement);
+                                            console.log(`新規ノード ${nodeid} にアイコンを追加しました`);
+                                        }
+                                    } catch (parseError) {
+                                        console.error('check_object_node JSON解析エラー:', parseError);
+                                        console.error('レスポンス:', response);
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error('check_object_node通信エラー:', error);
+                                }
+                            });
+                        }
+                    }, 500);
                 }
                 return node;
             // }else{
