@@ -1,6 +1,6 @@
 <?php
 
-	
+	//develop local環境
 	$db_host = "10.158.102.169";  // ホスト名のみ
 	$db_port = 8889;  // ポート番号
 	$db_user = "root";
@@ -14,8 +14,15 @@
 	// $db_password = "kslabkslab";
 	// $db_dbname = "forest_platform";
 
-	// mysqlへの接続
+	//organizational-system
+	// $db_host = "localhost:8889"; 
+	// $db_user = "root";
+	// $db_password = "your_password";
+	// $db_dbname = "forest_platform";
+
+	// // mysqlへの接続
 	$mysqli = new mysqli($db_host, $db_user, $db_password, $db_dbname, $db_port);
+	// $mysqli = new mysqli($db_host, $db_user, $db_password, $db_dbname);
 	if ($mysqli->connect_error) {
 	  print('<p>データベースへの接続に失敗しました。</p>' . $mysqli->connect_error);
 	  exit();
