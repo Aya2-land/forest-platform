@@ -484,6 +484,12 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         this.latest_selected_node_info.x = node_x;
         this.latest_selected_node_info.y = boundingBoxupdate.bottom+10;
         defaultRecordThinkingProcess.record_Node(node_id, node_label, node_type, node_x, node_y,status);
+        
+        // ナビゲーターのトリガーを実行（理由タグ以外のノード追加時）
+        if (node_type !== "reason-tag" && typeof executeNavigatorTrigger === 'function') {
+            executeNavigatorTrigger('node_created');
+        }
+        
         console.log(this.nodes);
         return this.nodes;
     }
@@ -913,6 +919,15 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             if (timeTagNode) {
                 this.nodes.remove({ id: timeTagId });
             }
+            
+            // 内省タグも削除（完了時に生成されたタグ）
+            const reflectionTagId = `reflection-tag-${selectNodeId}`;
+            const reflectionTagNode = this.nodes.get(reflectionTagId);
+            if (reflectionTagNode) {
+                this.nodes.remove({ id: reflectionTagId });
+                console.log('内省タグを削除しました:', reflectionTagId);
+            }
+            
             const connect_net_index = [];
             this.ConnectNetworkNodeId.map((n_id, index) => {
                 if(n_id === selectNodeId){
@@ -943,15 +958,102 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             const pointerX = params.pointer.DOM.x;
             const pointerY = params.pointer.DOM.y;
             const mynetPosition = document.getElementById("myProcessnetwork2").getBoundingClientRect();
-            this.BoxDisplay.x = pointerX + mynetPosition.left + 20;
-            this.BoxDisplay.y = pointerY + mynetPosition.top + 20;
-            NetworkMenu.style.left = this.BoxDisplay.x;
-            NetworkMenu.style.top = this.BoxDisplay.y;
+            
+            // 画面端での位置調整
+            const menuWidth = 320;
+            const menuHeight = 280;
+            let menuX = pointerX + mynetPosition.left + 20;
+            let menuY = pointerY + mynetPosition.top + 20;
+            
+            // 右端チェック
+            if (menuX + menuWidth > window.innerWidth) {
+                menuX = pointerX + mynetPosition.left - menuWidth - 20;
+            }
+            
+            // 下端チェック
+            if (menuY + menuHeight > window.innerHeight) {
+                menuY = pointerY + mynetPosition.top - menuHeight - 20;
+            }
+            
+            this.BoxDisplay.x = menuX;
+            this.BoxDisplay.y = menuY;
+            
+            NetworkMenu.style.left = this.BoxDisplay.x + 'px';
+            NetworkMenu.style.top = this.BoxDisplay.y + 'px';
             NetworkMenu.style.display = "block";
+            
+            // アクセシビリティ：最初のメニュー項目にフォーカス
+            setTimeout(() => {
+                const firstMenuItem = NetworkMenu.querySelector('.context-menu-link');
+                if (firstMenuItem) {
+                    firstMenuItem.focus();
+                }
+            }, 10);
+            
+            // キーボードナビゲーションの設定
+            this.setupContextMenuKeyboardNavigation(NetworkMenu);
+            
             if(this.OntologyConnectNodeId.indexOf(this.selectId) !== -1){
                 document.getElementById("process_conmenu3").style.display = "block";
             }
+            
+            // ESCキーでメニューを閉じる
+            const closeMenuOnEsc = (e) => {
+                if (e.key === 'Escape') {
+                    NetworkMenu.style.display = 'none';
+                    document.removeEventListener('keydown', closeMenuOnEsc);
+                }
+            };
+            document.addEventListener('keydown', closeMenuOnEsc);
+            
+            // メニュー外クリックで閉じる
+            const closeMenuOnOutsideClick = (e) => {
+                if (!NetworkMenu.contains(e.target)) {
+                    NetworkMenu.style.display = 'none';
+                    document.removeEventListener('click', closeMenuOnOutsideClick);
+                }
+            };
+            setTimeout(() => {
+                document.addEventListener('click', closeMenuOnOutsideClick);
+            }, 10);
         }
+    }
+
+    // キーボードナビゲーション設定
+    setupContextMenuKeyboardNavigation(menu) {
+        const menuItems = menu.querySelectorAll('.context-menu-link');
+        let currentIndex = 0;
+        
+        const handleKeyDown = (e) => {
+            switch(e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    currentIndex = (currentIndex + 1) % menuItems.length;
+                    menuItems[currentIndex].focus();
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    currentIndex = currentIndex === 0 ? menuItems.length - 1 : currentIndex - 1;
+                    menuItems[currentIndex].focus();
+                    break;
+                case 'Enter':
+                case ' ':
+                    e.preventDefault();
+                    menuItems[currentIndex].click();
+                    break;
+                case 'Escape':
+                    menu.style.display = 'none';
+                    break;
+            }
+        };
+        
+        menuItems.forEach((item, index) => {
+            item.setAttribute('tabindex', '0');
+            item.addEventListener('focus', () => {
+                currentIndex = index;
+            });
+            item.addEventListener('keydown', handleKeyDown);
+        });
     }
 
     //ラベルの選択（完了）
@@ -985,12 +1087,23 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     }
 
     ContentmenuCancel(){
-        document.getElementById('t_Process_conmenu').style.display = "none";
+        const menu = document.getElementById('t_Process_conmenu');
+        menu.style.display = "none";
+        
+        // フェードアウトアニメーションを追加
+        menu.style.animation = 'contextMenuFadeOut 0.15s ease-in';
+        setTimeout(() => {
+            menu.style.animation = '';
+        }, 150);
         
         // セッションストレージもクリア
         sessionStorage.removeItem('currentSelectId');
         this.selectId = null;
         console.log('メニューキャンセル: selectIdをクリアしました');
+        
+        // イベントリスナーを削除
+        document.removeEventListener('keydown', this.escKeyListener);
+        document.removeEventListener('click', this.outsideClickListener);
     }
 
     //マインドマップとネットワークつなげる
@@ -1562,7 +1675,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
     // 手段終了ボタン
     step_end() {
-        const menu = document.getElementById('contextMenuNodeActions');
+        const menu = document.getElementById('t_Process_conmenu');
         if (menu) menu.style.display = "none";
     
         console.log(`step_end() を呼び出しました。選択中のノードID: ${this.selectId}`);
@@ -1690,6 +1803,48 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                         color: 'gray',
                         title: title
                     });
+
+                    // 内省情報がある場合、青色の内省タグを右上に追加
+                    if (actionReason || completionReason || challengesAndLearnings) {
+                        const nodeBoundingBox = this.ownNetwork.getBoundingBox(this.selectId);
+                        const reflectionTagId = `reflection-tag-${this.selectId}`;
+                        const reflectionTitle = `行動意図: ${actionReason || "未記入"}\n完了基準: ${completionReason || "未記入"}\n学び: ${challengesAndLearnings || "未記入"}`;
+                        
+                        // 既存の内省タグがあるかチェック
+                        const existingReflectionTag = this.nodes.get(reflectionTagId);
+                        if (existingReflectionTag) {
+                            // 既存のタグのタイトルを更新
+                            this.nodes.update({
+                                id: reflectionTagId,
+                                title: reflectionTitle
+                            });
+                            console.log('既存の内省タグを更新しました:', reflectionTagId);
+                        } else {
+                            // 新しい内省タグを追加
+                            const reflectionTag = {
+                                id: reflectionTagId,
+                                label: '💭',
+                                shape: 'ellipse',
+                                size: 20,
+                                color: {
+                                    background: 'lightblue',
+                                    border: 'blue'
+                                },
+                                font: { 
+                                    size: 18,
+                                    color: 'darkblue'
+                                },
+                                x: nodeBoundingBox.right - 8,
+                                y: nodeBoundingBox.top + 8,
+                                fixed: true,
+                                physics: false,
+                                group: 'reflection-tag',
+                                title: reflectionTitle
+                            };
+                            this.nodes.add(reflectionTag);
+                            console.log('新しい内省タグを追加しました:', reflectionTagId);
+                        }
+                    }
     
                     console.log(`ノード ${this.selectId} のタイトルを更新しました。`);
                     tooltip.style.display = "none"; // 保存後に吹き出しを閉じる

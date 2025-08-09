@@ -120,6 +120,9 @@ function createNodeIcon(nodeElement, status = 'todo') {
         
         console.log('手段階層マップあり がクリックされました');
         
+        // ナビゲーターの挨拶を表示
+        showNavigatorGreeting();
+        
         // 目標手段階層マップを開く
         if (typeof showThinkingProcessMap === 'function') {
             showThinkingProcessMap();
@@ -170,6 +173,8 @@ function createNodeIcon(nodeElement, status = 'todo') {
     
     nodeElement.appendChild(iconContainer);
 }
+
+// ナビゲーターの挨拶表示は navigator.js で管理されています
 
 // データベースからobject_nodesテーブルのnode_idとstatusを取得してアイコンを付ける関数
 function addIconsToObjectNodes() {

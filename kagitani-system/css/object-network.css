@@ -350,58 +350,67 @@ input[type="checkbox"][name="check_process"]{
     display: flex;
     gap: 8px;
     padding: 8px;
-    background: var(--background-light);
+    background: #f8f9fa;
     border-radius: 8px;
-    border: 1px solid var(--border-light);
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-/* 基本的なボタンスタイル */
+/* 統一された基本ボタンスタイル */
 .process_close,
 .thinkingProcess_network_button {
-    width: 36px;
-    height: 36px;
-    border: none;
-    border-radius: var(--border-radius);
-    background: var(--background-white);
-    border: 1px solid var(--border-light);
-    cursor: pointer;
-    position: relative;
-    transition: all 0.2s ease;
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    font-size: 0;
-    color: var(--text-primary);
-    overflow: visible;
+    gap: 6px;
+    padding: 6px 12px;
+    min-width: 80px;
+    height: 36px;
+    border: none;
+    border-radius: 6px;
+    background: #4a90e2;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
 }
 
-/* ホバー時の基本効果 */
+/* ボタン内のアイコンスタイル */
+.button-icon {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    display: block;
+}
+
+/* ボタン内のテキストスタイル */
+.button-text {
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+    opacity: 0.95;
+}
+
+/* 統一されたホバー効果 */
 .process_close:hover,
 .thinkingProcess_network_button:hover {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
-    color: white;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px var(--shadow-medium);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    filter: brightness(1.1);
 }
 
-/* 閉じるボタン（特別なスタイル） */
-.process_close {
-    background: var(--danger-color) !important;
-    border-color: var(--danger-color) !important;
-    color: white !important;
-}
-
-.process_close::before {
-    content: "✕";
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-}
-
-.process_close:hover {
-    background: var(--danger-hover) !important;
-    border-color: var(--danger-hover) !important;
+.process_close:active,
+.thinkingProcess_network_button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* タイムラインコンテナ */
@@ -474,246 +483,87 @@ input[type="checkbox"][name="check_process"]{
 
 /* ツールチップスタイル */
 
-/* 疑似要素の共通設定 */
-.process_close::before,
-.thinkingProcess_network_button::before {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    line-height: 1;
-    pointer-events: none;
+/* レスポンシブデザイン対応 */
+@media (max-width: 768px) {
+    #buttoncluster {
+        gap: 8px;
+        padding: 8px;
+    }
+    
+    .process_close,
+    .thinkingProcess_network_button {
+        min-width: 60px;
+        height: 50px;
+        padding: 6px 8px;
+    }
+    
+    .button-icon {
+        font-size: 16px;
+    }
+    
+    .button-text {
+        font-size: 9px;
+    }
 }
 
-/* 各ボタンのアイコン - 統一デザイン */
+/* 各ボタンの個別カラー設定 - 統一された色調 */
+.process_close {
+    background: #e74c3c !important;
+}
+
+.process_close:hover {
+    background: #c0392b !important;
+}
+
 #process_addNode {
-    background: var(--success-color) !important;
-}
-
-#process_addNode::before {
-    content: "＋";
-    font-size: 18px;
-    font-weight: 600;
-    color: white;
+    background: #27ae60 !important;
 }
 
 #process_addNode:hover {
-    background: var(--success-hover) !important;
-    transform: scale(1.05);
+    background: #229954 !important;
 }
 
 #process_removeNode {
-    background: var(--danger-color) !important;
-}
-
-#process_removeNode::before {
-    content: "－";
-    font-size: 18px;
-    font-weight: 600;
-    color: white;
+    background: #e67e22 !important;
 }
 
 #process_removeNode:hover {
-    background: var(--danger-hover) !important;
-    transform: scale(1.05);
+    background: #d68910 !important;
 }
 
 #process_startEditEdge {
-    background: var(--primary-color) !important;
-}
-
-#process_startEditEdge::before {
-    content: "⟷";
-    font-size: 16px;
-    font-weight: 600;
-    color: white;
+    background: #3498db !important;
 }
 
 #process_startEditEdge:hover {
-    background: var(--primary-hover) !important;
-    transform: scale(1.05);
+    background: #2980b9 !important;
 }
 
 #process_removeEdge {
-    background: var(--warning-color) !important;
-}
-
-#process_removeEdge::before {
-    content: "✂";
-    font-size: 16px;
-    font-weight: 600;
-    color: white;
+    background: #9b59b6 !important;
 }
 
 #process_removeEdge:hover {
-    background: var(--warning-hover) !important;
-    transform: scale(1.05);
+    background: #8e44ad !important;
 }
 
 #process_ZoomIn {
-    background: var(--info-color) !important;
-}
-
-#process_ZoomIn::before {
-    content: "🔍";
-    font-size: 16px;
+    background: #17a2b8 !important;
 }
 
 #process_ZoomIn:hover {
-    background: var(--info-hover) !important;
-    transform: scale(1.05);
+    background: #138496 !important;
 }
 
 #process_ZoomOut {
-    background: var(--secondary-color) !important;
-}
-
-#process_ZoomOut::before {
-    content: "🔎";
-    font-size: 16px;
+    background: #6c757d !important;
 }
 
 #process_ZoomOut:hover {
-    background: var(--secondary-hover) !important;
-    transform: scale(1.05);
+    background: #5a6268 !important;
 }
 
-/* ツールチップスタイル - 統一デザイン */
-.process_close:hover::after {
-    content: "マップを閉じる";
-    position: absolute;
-    top: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--dark-overlay);
-    color: white;
-    padding: 6px 10px;
-    border-radius: var(--border-radius);
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-    z-index: 9999;
-    pointer-events: none;
-    box-shadow: var(--shadow-medium);
-}
-
-#process_addNode:hover::after {
-    content: "手段ノードを追加";
-    position: absolute;
-    top: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--dark-overlay);
-    color: white;
-    padding: 6px 10px;
-    border-radius: var(--border-radius);
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-    z-index: 9999;
-    pointer-events: none;
-    box-shadow: var(--shadow-medium);
-}
-
-#process_removeNode:hover::after {
-    content: "ノードを削除";
-    position: absolute;
-    top: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--dark-overlay);
-    color: white;
-    padding: 6px 10px;
-    border-radius: var(--border-radius);
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-    z-index: 9999;
-    pointer-events: none;
-    box-shadow: var(--shadow-medium);
-}
-
-#process_startEditEdge:hover::after {
-    content: "エッジを追加";
-    position: absolute;
-    top: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--dark-overlay);
-    color: white;
-    padding: 6px 10px;
-    border-radius: var(--border-radius);
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-    z-index: 9999;
-    pointer-events: none;
-    box-shadow: var(--shadow-medium);
-}
-
-#process_removeEdge:hover::after {
-    content: "エッジを削除";
-    position: absolute;
-    top: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--dark-overlay);
-    color: white;
-    padding: 6px 10px;
-    border-radius: var(--border-radius);
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-    z-index: 9999;
-    pointer-events: none;
-    box-shadow: var(--shadow-medium);
-}
-
-#process_ZoomIn:hover::after {
-    content: "ズームイン";
-    position: absolute;
-    top: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--dark-overlay);
-    color: white;
-    padding: 6px 10px;
-    border-radius: var(--border-radius);
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-    z-index: 9999;
-    pointer-events: none;
-    box-shadow: var(--shadow-medium);
-}
-
-#process_ZoomOut:hover::after {
-    content: "ズームアウト";
-    position: absolute;
-    top: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--dark-overlay);
-    color: white;
-    padding: 6px 10px;
-    border-radius: var(--border-radius);
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-    z-index: 9999;
-    pointer-events: none;
-    box-shadow: var(--shadow-medium);
-}
-
-/* アクティブ状態 */
-.process_close:active,
-.thinkingProcess_network_button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* レスポンシブ対応 */
+/* レスポンシブデザイン対応 */
 @media (max-width: 768px) {
     #buttoncluster {
         gap: 6px;
@@ -722,37 +572,186 @@ input[type="checkbox"][name="check_process"]{
     
     .process_close,
     .thinkingProcess_network_button {
-        width: 36px;
-        height: 36px;
+        min-width: 70px;
+        height: 32px;
+        padding: 4px 8px;
+        gap: 4px;
     }
     
-    .process_close::after,
-    .thinkingProcess_network_button::after {
-        font-size: 11px;
-        padding: 4px 8px;
+    .button-icon {
+        font-size: 14px;
+    }
+    
+    .button-text {
+        font-size: 10px;
     }
 }
 
 /* -------------------- conmenu類の設定 ---------------------- */
 
-#t_Process_conmenu{
-	width:350px;
-	background: var(--background-white);
-	border: 2px solid var(--border-light);
-	border-radius: var(--border-radius);
-	display:none;
-	position:fixed;
-	z-index: 1000;
-	text-align: center;
-	box-shadow: var(--shadow-medium);
+/* -------------------- モダンなコンテキストメニュー ---------------------- */
+
+.context-menu {
+    min-width: 240px;
+    max-width: 280px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow: hidden;
 }
-#t_Process_conmenu ul{
-list-style:none;
-margin:0px;
-padding:7px;
+
+.context-menu-header {
+    background: #f8f9fa;
+    color: #333;
+    padding: 10px 12px;
+    font-weight: 500;
+    font-size: 13px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
 }
-#t_Process_conmenu li:hover{
-background: var(--background-light);
+
+.context-menu-title {
+    display: block;
+}
+
+.context-menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+}
+
+.context-menu-item {
+    margin: 0;
+    padding: 0;
+}
+
+.context-menu-link {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    color: #333;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 400;
+    transition: background-color 0.15s ease;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.context-menu-icon {
+    font-size: 14px;
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+}
+
+.context-menu-text {
+    flex: 1;
+    text-align: left;
+}
+
+/* ステータス操作系のアイテム */
+.context-menu-item.status-action .context-menu-link:hover {
+    background: #f0f8ff;
+    color: #0066cc;
+}
+
+/* アノテーション操作系のアイテム */
+.context-menu-item.annotation-action .context-menu-link:hover {
+    background: #fff8f0;
+    color: #cc6600;
+}
+
+/* キャンセル操作 */
+.context-menu-item.cancel-action .context-menu-link:hover {
+    background: #fff0f0;
+    color: #cc0000;
+}
+
+/* セパレーター */
+.context-menu-separator {
+    height: 1px;
+    background: #eee;
+    margin: 4px 0;
+}
+
+/* アクティブ状態のフィードバック */
+.context-menu-link:active {
+    background: #e9ecef;
+}
+
+/* アクセシビリティ改善 */
+.context-menu-link:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: -2px;
+    background: #f0f8ff;
+    color: #0066cc;
+}
+
+/* キーボードナビゲーション時のみアウトラインを表示 */
+.context-menu:focus-within .context-menu-link {
+    outline: none;
+}
+
+.context-menu-link[tabindex="0"]:focus-visible {
+    outline: 2px solid #667eea;
+    outline-offset: -2px;
+}
+
+/* ツールチップスタイル（コンテキストメニュー用） */
+.context-menu-link[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 8px;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 3000;
+    pointer-events: none;
+    opacity: 0;
+    animation: tooltipFadeIn 0.3s ease 0.5s forwards;
+}
+
+@keyframes tooltipFadeIn {
+    to { opacity: 1; }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .context-menu {
+        min-width: 240px;
+        max-width: 280px;
+        border-radius: 8px;
+    }
+    
+    .context-menu-link {
+        padding: 14px 16px;
+        font-size: 16px;
+    }
+    
+    .context-menu-icon {
+        font-size: 18px;
+        margin-right: 14px;
+    }
+    
+    /* モバイルではツールチップを無効化 */
+    .context-menu-link[title]:hover::after {
+        display: none;
+    }
 }
 #t_Process_labelselect{
 	width:200px;

@@ -211,6 +211,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="js/change_tab.js"></script>
         <script type="text/javascript" src="../js/meeting-reflection-network.js"></script>
         <link rel="stylesheet" type="text/css" href="../css/meeting-reflection-network.css" />
+        <script type="text/javascript" src="js/navigator.js"></script>
         <script type="text/javascript" src="js/object-network.js"></script>
         <link rel="stylesheet" type="text/css" href="css/object-network.css" />
         <script type="text/javascript" src="js/timeline_slider.js"></script>
@@ -933,19 +934,40 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <div class="control-panel">
                                         <div id="buttoncluster">
                                             <button type="button" class="process_close" onclick="closeThinkingProcessMap()"
-                                                    id="process_close" title="閉じる"></button>
+                                                    id="process_close" title="閉じる">
+                                                <span class="button-icon">✕</span>
+                                                <span class="button-text">閉じる</span>
+                                            </button>
                                             <button type="button" class="thinkingProcess_network_button"
-                                                    id="process_addNode" title="ノード追加"></button>
+                                                    id="process_addNode" title="ノード追加">
+                                                <span class="button-icon">＋</span>
+                                                <span class="button-text">ノード追加</span>
+                                            </button>
                                             <button type="button" class="thinkingProcess_network_button"
-                                                    id="process_removeNode" title="ノード削除"></button>
+                                                    id="process_removeNode" title="ノード削除">
+                                                <span class="button-icon">－</span>
+                                                <span class="button-text">ノード削除</span>
+                                            </button>
                                             <button type="button" class="thinkingProcess_network_button"
-                                                    id="process_startEditEdge" title="エッジ追加"></button>
+                                                    id="process_startEditEdge" title="エッジ追加">
+                                                <span class="button-icon">⟷</span>
+                                                <span class="button-text">エッジ追加</span>
+                                            </button>
                                             <button type="button" class="thinkingProcess_network_button"
-                                                    id="process_removeEdge" title="エッジ削除"></button>
+                                                    id="process_removeEdge" title="エッジ削除">
+                                                <span class="button-icon">✂</span>
+                                                <span class="button-text">エッジ削除</span>
+                                            </button>
                                             <button type="button" class="thinkingProcess_network_button"
-                                                    id="process_ZoomIn" title="拡大"></button>
+                                                    id="process_ZoomIn" title="拡大">
+                                                <span class="button-icon">🔍</span>
+                                                <span class="button-text">拡大</span>
+                                            </button>
                                             <button type="button" class="thinkingProcess_network_button"
-                                                    id="process_ZoomOut" title="縮小"></button>
+                                                    id="process_ZoomOut" title="縮小">
+                                                <span class="button-icon">🔎</span>
+                                                <span class="button-text">縮小</span>
+                                            </button>
                                         </div>
                                         <!-- シークバーを隣に配置（横幅いっぱい使用） -->
                                         <div id="timeline_container">
@@ -955,18 +977,55 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     </div>
 
                                         <div id="myProcessnetwork"></div>
-                                    <div id="t_Process_conmenu">
-                                        <ul>
-                                            <li><a href="javascript:void(0);" id="object_conmenu1">開始</a></li>
-                                            <li><a href="javascript:void(0);" id="object_conmenu2">完了</a></li>
-                                            <li><a href="javascript:void(0);" id="object_conmenu3">中断</a></li>
-                                            <!-- <li><a href="javascript:void(0);" id="process_conmenu1">概念をつける</a></li>
-                                            <li><a href="javascript:void(0);" id="process_conmenu2">マインドマップと対応付ける</a></li>
-                                            <li><a href="javascript:void(0);" id="process_conmenu3" style="display:none">採用/棄却をつける</a></li> -->
-                                            <li><a href="javascript:void(0);" id="process_conmenu5">理由を記述する</a></li>
-                                            <li><a href="javascript:void(0);" id="process_conmenu6">完了予定を設定</a></li>
-                                            <li><a href="javascript:void(0);" id="process_conmenu7">内省を記述する</a></li>
-                                            <li><a href="javascript:void(0);" id="process_conmenu4">キャンセル</a></li>
+                                    <div id="t_Process_conmenu" class="context-menu" role="menu" aria-label="ノード操作メニュー">
+                                        <div class="context-menu-header">
+                                            <span class="context-menu-title">ノード操作</span>
+                                        </div>
+                                        <ul class="context-menu-list" role="none">
+                                            <li class="context-menu-item status-action" role="none">
+                                                <a href="javascript:void(0);" id="object_conmenu1" class="context-menu-link" role="menuitem" 
+                                                   title="ノードの作業を開始状態にします" aria-label="作業開始">
+                                                    <span class="context-menu-icon" aria-hidden="true">▶️</span>
+                                                    <span class="context-menu-text">開始</span>
+                                                </a>
+                                            </li>
+                                            <li class="context-menu-item status-action" role="none">
+                                                <a href="javascript:void(0);" id="object_conmenu2" class="context-menu-link" role="menuitem"
+                                                   title="ノードの作業を完了し、内省記録を入力します" aria-label="作業完了">
+                                                    <span class="context-menu-icon" aria-hidden="true">✅</span>
+                                                    <span class="context-menu-text">完了</span>
+                                                </a>
+                                            </li>
+                                            <li class="context-menu-item status-action" role="none">
+                                                <a href="javascript:void(0);" id="object_conmenu3" class="context-menu-link" role="menuitem"
+                                                   title="ノードの作業を一時中断状態にします" aria-label="作業中断">
+                                                    <span class="context-menu-icon" aria-hidden="true">⏸️</span>
+                                                    <span class="context-menu-text">中断</span>
+                                                </a>
+                                            </li>
+                                            <li class="context-menu-separator" role="separator" aria-hidden="true"></li>
+                                            <li class="context-menu-item annotation-action" role="none">
+                                                <a href="javascript:void(0);" id="process_conmenu5" class="context-menu-link" role="menuitem"
+                                                   title="このノードに取り組む理由を記述します" aria-label="理由記述">
+                                                    <span class="context-menu-icon" aria-hidden="true">❓</span>
+                                                    <span class="context-menu-text">理由を記述する</span>
+                                                </a>
+                                            </li>
+                                            <li class="context-menu-item annotation-action" role="none">
+                                                <a href="javascript:void(0);" id="process_conmenu6" class="context-menu-link" role="menuitem"
+                                                   title="このノードの完了予定日時を設定します" aria-label="完了予定設定">
+                                                    <span class="context-menu-icon" aria-hidden="true">⏰</span>
+                                                    <span class="context-menu-text">完了予定を設定</span>
+                                                </a>
+                                            </li>
+                                            <li class="context-menu-separator" role="separator" aria-hidden="true"></li>
+                                            <li class="context-menu-item cancel-action" role="none">
+                                                <a href="javascript:void(0);" id="process_conmenu4" class="context-menu-link" role="menuitem"
+                                                   title="メニューを閉じます (ESCキーでも可能)" aria-label="キャンセル">
+                                                    <span class="context-menu-icon" aria-hidden="true">❌</span>
+                                                    <span class="context-menu-text">キャンセル</span>
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                     <div id="feedbackTooltip" style="position:absolute; display:none; z-index:1000;"></div>
