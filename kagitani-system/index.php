@@ -973,6 +973,8 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                         <div id="timeline_container">
                                             <input type="range" id="timeline_slider" min="0" max="0" value="0" step="1" />
                                             <span id="timeline_label">読み込み中...</span>
+                                            <button id="return_to_current" style="margin-left: 10px; padding: 5px 10px; font-size: 12px; background: #007cba; color: white; border: none; border-radius: 3px; cursor: pointer;">現在に戻る</button>
+                                            <span id="history_indicator" style="display: none; margin-left: 10px; color: #ff6b6b; font-weight: bold; font-size: 12px;">📅 過去の表示</span>
                                         </div>
                                     </div>
 

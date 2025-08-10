@@ -1,5 +1,37 @@
 /* -------------------- エリア類の設定 ---------------------- */
 
+/* エッジにホバーした時のプラスボタン */
+.edge-plus-button {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background-color: #4CAF50;
+    color: white;
+    border: 2px solid #45a049;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.edge-plus-button:hover {
+    background-color: #45a049;
+    transform: scale(1.1);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+}
+
+.edge-plus-button:active {
+    transform: scale(0.95);
+    background-color: #3d8b40;
+}
+
 /*ネットワーク*/
 #process_network_container{
 	/* width: calc(100vw - 350px); */

@@ -16,7 +16,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         this.options = {
 	        physics: false,
             nodes: {
-                margin: 10,
+                margin: 15,  // マージンを増やしてホバー範囲を拡張
                 widthConstraint: {
                     maximum: 150
                 },
@@ -33,6 +33,11 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                     node: function(values, id, selected, hovering) {
                         // ホバー時の影効果はイベントリスナーで処理
                     }
+                },
+                // ホバー範囲を広げるための追加設定
+                scaling: {
+                    min: 10,
+                    max: 30
                 }
             },
 	        edges: {
@@ -83,6 +88,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         this.TimeNodeId = []; //完了予定ノードのノードID
         this.TimeConnectNodeId = []; //完了予定ノードと対応づいているノードID
         this.TimeContent = []; //完了予定ノードの内容を保存する配列
+        this.EdgeLabels = {}; //エッジのラベル情報を保存するオブジェクト {edgeId: label}
         this.ConnectNetworkNodeId = [];
         this.ConnectMindMapNodeId = [];
         this.RecruitNodeId = [];//採用or棄却されたノードID
@@ -94,10 +100,12 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         this.material_id = null;
         this.concept_id = null;
         this.scale = 1;
+        this.isViewingPastData = false; // 過去データ表示状態フラグ
         this.BoxDisplay = {
             x: 0,
             y: 0
         }//右クリックされやメニューの表示場所
+        this.jmindex = []; // マインドマップとの連携用インデックス配列
         this.ownNetwork = this.generateThinkingProcessNetworkCanvas(container, this.nodes, this.edges); // デフォルトのマップを表示
         this.choose_input_xmlLoad();
         // カスタムツールチップの設定
@@ -130,7 +138,7 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             this.ownNetwork.on("oncontext", this.onContext.bind(this));
             this.ownNetwork.on('select', this.selectdelete.bind(this));
             
-            // ホバー時の影効果イベント
+            // マウス移動による拡張ホバー検出
             this.ownNetwork.on("hoverNode", (params) => {
                 // console.log("hoverNode event triggered for node:", params.node);
                 // 現在のノードの状態を取得して保持
@@ -148,6 +156,11 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                             y: 3
                         }
                     });
+
+                    // 手段ノード（step）またはversionノードの場合、追加ボタンを表示
+                    if (currentNode.group === "step" || currentNode.group === "versions" || currentNode.group === "versionsBro") {
+                        this.showAddNodeButton(params.node, params);
+                    }
                 }
             });
 
@@ -165,7 +178,48 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
                         }
                     });
                 }
+
+                // ホバーが外れた時にボタンを非表示
+                this.hideAddNodeButton();
             });
+
+            // エッジのホバーイベント
+            this.ownNetwork.on("hoverEdge", (params) => {
+                console.log("hoverEdge event triggered for edge:", params.edge);
+                this.showAddEdgeButton(params.edge);
+            });
+
+            this.ownNetwork.on("blurEdge", (params) => {
+                console.log("blurEdge event triggered for edge:", params.edge);
+                this.hideAddEdgeButton();
+            });
+
+            // 拡張ホバー検出を追加
+            const networkContainer = document.getElementById('mynetworkid');
+            if (networkContainer) {
+                networkContainer.addEventListener('mousemove', (event) => {
+                    const position = this.ownNetwork.DOMtoCanvas({x: event.offsetX, y: event.offsetY});
+                    const nodeId = this.ownNetwork.getNodeAt(position);
+                    
+                    if (nodeId) {
+                        const nodePositions = this.ownNetwork.getPositions([nodeId]);
+                        const nodePos = nodePositions[nodeId];
+                        const distance = Math.sqrt(Math.pow(position.x - nodePos.x, 2) + Math.pow(position.y - nodePos.y, 2));
+                        
+                        // ノードから25ピクセル以内でホバー扱い（拡張範囲）
+                        if (distance <= 25) {
+                            const currentNode = this.nodes.get(nodeId);
+                            if (currentNode && (currentNode.group === "step" || currentNode.group === "versions" || currentNode.group === "versionsBro")) {
+                                // 既にボタンが表示されていない場合のみ表示
+                                const existingButton = document.querySelector('.add-node-button');
+                                if (!existingButton) {
+                                    this.showAddNodeButton(nodeId, {node: nodeId});
+                                }
+                            }
+                        }
+                    }
+                });
+            }
         }
         this.choose_input_xmlLoad();
     }
@@ -410,6 +464,16 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             });
         }, { passive: false });
 
+        // ノードクリックイベントを追加
+        network.on("click", (params) => {
+            this.networkClick(params);
+        });
+
+        // 右クリックイベントを追加
+        network.on("oncontext", (params) => {
+            this.onContext(params);
+        });
+
         return network;
 
         // this.setCanvasOptions(load);
@@ -569,9 +633,13 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             borderWidthSelected: border_width_selected,
             shapeProperties: {
                 borderDashes: shape_border_dashes
-            },
-            title: tooltip
+            }
         };
+
+        // 手段ノード以外の場合はtitleを追加
+        if (node_type !== "step") {
+            newNode.title = tooltip;
+        }
 
         defaultThinkingProcess.nodes.add(newNode);
 
@@ -824,7 +892,27 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     }
 
     addReloadEdge(edge_id, edge_start, edge_end, edge_label) {
-        this.edges.add({id: edge_id, from: edge_start, to: edge_end ,label: edge_label});
+        const edgeData = {
+            id: edge_id, 
+            from: edge_start, 
+            to: edge_end
+        };
+        
+        // ラベルが存在する場合は追加
+        if (edge_label && edge_label.trim() !== '') {
+            edgeData.label = edge_label;
+            edgeData.font = {
+                size: 12,
+                color: '#333333',
+                background: 'rgba(255, 255, 255, 0.8)',
+                strokeWidth: 1,
+                strokeColor: '#ffffff'
+            };
+            // 内部管理オブジェクトにも保存
+            this.EdgeLabels[edge_id] = edge_label;
+        }
+        
+        this.edges.add(edgeData);
     }
 
     //未完成　ノード追加
@@ -849,8 +937,51 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         }
     }
 
+    //エッジのラベル編集
+    editEdgeLabel(edge_id, label_content) {
+        console.log(`エッジ ${edge_id} のラベルを "${label_content}" に編集中...`);
+        
+        // エッジが存在するかチェック
+        const edge = this.edges.get(edge_id);
+        if (edge) {
+            // エッジラベルを内部管理オブジェクトに保存
+            this.EdgeLabels[edge_id] = label_content;
+            
+            // エッジを更新（ラベルを追加）
+            const updatedEdge = {
+                ...edge,
+                label: label_content,
+                font: {
+                    size: 12,
+                    color: '#333333',
+                    background: 'rgba(255, 255, 255, 0.8)',
+                    strokeWidth: 1,
+                    strokeColor: '#ffffff'
+                }
+            };
+            
+            this.edges.update(updatedEdge);
+            
+            // データベースに保存（RecordThinkingProcessを使用）
+            if (typeof defaultRecordThinkingProcess !== 'undefined' && defaultRecordThinkingProcess.update_Edge) {
+                defaultRecordThinkingProcess.update_Edge(edge_id, "label", label_content);
+            }
+            
+            console.log(`エッジ ${edge_id} のラベルが正常に更新されました`);
+        } else {
+            console.error(`エッジ ${edge_id} が見つかりません`);
+        }
+    }
+
     //ダブルクリック時編集(完了)
     doubleclick (params) {
+        // 過去データ表示時は操作を無効化
+        if (this.isViewingPastData) {
+            console.log('過去データ表示中のため、ノード編集が無効化されています');
+            return;
+        }
+        
+        // ノードがダブルクリックされた場合
         const clickedNodeId = params.nodes[0];
         if (clickedNodeId !== undefined) {
             // ユーザーに新しいラベルを尋ね、それをノードの中身に設定
@@ -858,6 +989,24 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             // 編集したラベルを反映
             if (newLabel !== null) {
                 this.editNode(clickedNodeId, newLabel);
+            }
+        }
+        
+        // エッジがダブルクリックされた場合
+        const clickedEdgeId = params.edges[0];
+        if (clickedEdgeId !== undefined) {
+            console.log('エッジがダブルクリックされました:', clickedEdgeId);
+            
+            // 現在のエッジラベルを取得（存在する場合）
+            const currentEdge = this.edges.get(clickedEdgeId);
+            const currentLabel = currentEdge ? (currentEdge.label || '') : '';
+            
+            // ユーザーに新しいラベルを尋ねる
+            const newLabel = prompt('エッジに表示する文字を入力してください:', currentLabel);
+            
+            // 編集したラベルを反映
+            if (newLabel !== null) {
+                this.editEdgeLabel(clickedEdgeId, newLabel);
             }
         }
     }
@@ -876,6 +1025,15 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             }
             defaultRecordThinkingProcess.delete_db_Edge(null, selectNodeId, "");
             defaultRecordThinkingProcess.delete_db_Edge(null, "", selectNodeId);
+
+            // 関連するエッジのラベル情報をクリア
+            const connectedEdges = this.ownNetwork.getConnectedEdges(selectNodeId);
+            connectedEdges.forEach(edgeId => {
+                if (this.EdgeLabels[edgeId]) {
+                    delete this.EdgeLabels[edgeId];
+                    console.log(`エッジ ${edgeId} のラベル情報を削除しました`);
+                }
+            });
 
             this.edges.remove(this.ownNetwork.getConnectedEdges(selectNodeId));
             this.nodes.remove({id: selectNodeId});
@@ -945,6 +1103,12 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
     // 右クリック時
     onContext(params) {
+        // 過去データ表示時は右クリック操作を無効化
+        if (this.isViewingPastData) {
+            console.log('過去データ表示中のため、右クリック操作が無効化されています');
+            return;
+        }
+        
         this.nodeConnectEnabled = false;
 
         if (params.nodes.length == 1) {
@@ -1887,6 +2051,12 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
     //ノードがクリックされたときの処理
     networkClick (params){
+        // 過去データ表示時は操作を無効化（ホバーは除く）
+        if (this.isViewingPastData) {
+            console.log('過去データ表示中のため、ノード操作が無効化されています');
+            return;
+        }
+        
         //他のところクリックしたら色直す
         document.getElementById("ontology_feedback").innerHTML = "";
         const feedbackarea = document.getElementsByClassName("accordion-item");
@@ -1904,7 +2074,12 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             })
             this.jmindex.length = 0;
         }
+        
+        // ノードがクリックされた場合の処理
         if(params.nodes.length == 1){
+            const clickedNodeId = params.nodes[0];
+            const clickedNode = this.nodes.get(clickedNodeId);
+            
             if(this.OntologyConnectNodeId.indexOf(params.nodes[0]) !== -1){
                 const node_infomation = this.nodes.get(this.OntologyNodeId[this.OntologyConnectNodeId.indexOf(params.nodes[0])]);
                 document.getElementById("ontology_feedback").innerHTML = "<div class='feedback_message'>この発言は「"+node_infomation.label + "」と「" + this.output_input[node_infomation.label] + "」<br>との合理性を意識して発言されたのかもしれません</div>";
@@ -1944,6 +2119,298 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         // console.log(params.pointer.DOM.x, params.pointer.DOM.y);
     }
 
+    // 手段ノード下に追加ボタンを表示
+    showAddNodeButton(nodeId, params) {
+        const node = this.nodes.get(nodeId);
+        if (!node) return;
+
+        // 既存のボタンがあれば削除
+        this.hideAddNodeButton();
+
+        // ノードの位置を取得
+        const nodeBoundingBox = this.ownNetwork.getBoundingBox(nodeId);
+        if (!nodeBoundingBox) return;
+
+        // ネットワークキャンバスのDOM要素とその位置を取得
+        const networkCanvas = document.getElementById("myProcessnetwork2");
+        const canvasRect = networkCanvas.getBoundingClientRect();
+
+        // ノードの実際の座標を取得して画面座標に変換
+        const nodePosition = this.ownNetwork.getPositions(nodeId)[nodeId];
+        const nodeScreenPos = this.ownNetwork.canvasToDOM({
+            x: nodePosition.x,
+            y: nodePosition.y
+        });
+
+        // プラスアイコンをノードの中央付近に配置（ノードに大きく被る）
+        const nodeHeight = nodeBoundingBox.bottom - nodeBoundingBox.top;
+        const nodeWidth = nodeBoundingBox.right - nodeBoundingBox.left;
+        const buttonX = canvasRect.left + nodeScreenPos.x;
+        const buttonY = canvasRect.top + nodeScreenPos.y + 5;
+
+        // 追加ボタンを作成（小さなプラスアイコン）
+        const addButton = document.createElement('button');
+        addButton.id = 'addNodeButton';
+        addButton.innerHTML = '＋';
+        addButton.title = '手段を追加';
+        addButton.style.cssText = `
+            position: fixed;
+            left: ${buttonX}px;
+            top: ${buttonY}px;
+            z-index: 1000;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        `;
+
+        // ホバー効果
+        addButton.addEventListener('mouseenter', () => {
+            addButton.style.background = '#45a049';
+            addButton.style.transform = 'scale(1.1)';
+            addButton.style.boxShadow = '0 3px 6px rgba(0,0,0,0.4)';
+        });
+
+        addButton.addEventListener('mouseleave', () => {
+            addButton.style.background = '#4CAF50';
+            addButton.style.transform = 'scale(1)';
+            addButton.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+            // ボタンからマウスが離れた時は少し遅らせて非表示
+            setTimeout(() => {
+                this.hideAddNodeButton();
+            }, 200);
+        });
+
+        // クリックイベント
+        addButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.addChildNode(nodeId);
+            this.hideAddNodeButton();
+        });
+
+        // ドキュメントに追加
+        document.body.appendChild(addButton);
+    }
+
+    // 追加ボタンを非表示
+    hideAddNodeButton() {
+        const existingButton = document.getElementById('addNodeButton');
+        if (existingButton) {
+            existingButton.remove();
+        }
+    }
+
+    // エッジ用プラスボタンを表示
+    showAddEdgeButton(edgeId) {
+        // 既存のエッジボタンを削除
+        this.hideAddEdgeButton();
+        
+        // エッジの位置を取得
+        const edgeData = this.edges.get(edgeId);
+        if (!edgeData) return;
+
+        // エッジの中点を計算
+        const fromPos = this.ownNetwork.getPositions([edgeData.from])[edgeData.from];
+        const toPos = this.ownNetwork.getPositions([edgeData.to])[edgeData.to];
+        
+        if (!fromPos || !toPos) return;
+
+        const midPoint = {
+            x: (fromPos.x + toPos.x) / 2,
+            y: (fromPos.y + toPos.y) / 2
+        };
+
+        // キャンバス座標をDOM座標に変換
+        const canvasPosition = this.ownNetwork.canvasToDOM(midPoint);
+
+        // プラスボタンを作成
+        const button = document.createElement('button');
+        button.id = 'addEdgeButton';
+        button.innerHTML = '+';
+        button.style.position = 'absolute';
+        button.style.left = (canvasPosition.x - 10) + 'px';
+        button.style.top = (canvasPosition.y - 10) + 'px';
+        button.style.width = '20px';
+        button.style.height = '20px';
+        button.style.borderRadius = '50%';
+        button.style.border = '1px solid #ccc';
+        button.style.backgroundColor = '#fff';
+        button.style.color = '#666';
+        button.style.fontSize = '12px';
+        button.style.cursor = 'pointer';
+        button.style.zIndex = '1000';
+        button.style.display = 'flex';
+        button.style.alignItems = 'center';
+        button.style.justifyContent = 'center';
+
+        // コンテナに追加
+        const container = this.ownNetwork.body.container;
+        container.appendChild(button);
+
+        // 今後の処理のためにエッジIDを保存
+        button.setAttribute('data-edge-id', edgeId);
+        
+        // クリックイベントリスナーを追加
+        button.addEventListener('click', (event) => {
+            event.stopPropagation(); // イベントの伝播を防止
+            this.addNodeBetweenEdge(edgeId);
+        });
+        
+        console.log('Edge plus button displayed for edge:', edgeId);
+    }
+
+    // エッジ用プラスボタンを非表示
+    hideAddEdgeButton() {
+        const existingButton = document.getElementById('addEdgeButton');
+        if (existingButton) {
+            existingButton.remove();
+        }
+    }
+
+    // エッジの間にノードを追加
+    addNodeBetweenEdge(edgeId) {
+        console.log(`エッジ ${edgeId} の間にノードを追加中...`);
+        
+        // エッジが存在するかチェック
+        const edge = this.edges.get(edgeId);
+        if (!edge) {
+            console.error(`エッジ ${edgeId} が見つかりません`);
+            return;
+        }
+        
+        // プラスボタンを非表示
+        this.hideAddEdgeButton();
+        
+        // エッジの開始・終了ノード位置を取得
+        const fromPos = this.ownNetwork.getPositions([edge.from])[edge.from];
+        const toPos = this.ownNetwork.getPositions([edge.to])[edge.to];
+        
+        if (!fromPos || !toPos) {
+            console.error('ノード位置を取得できませんでした');
+            return;
+        }
+        
+        // 中間点を計算
+        const midPoint = {
+            x: (fromPos.x + toPos.x) / 2,
+            y: (fromPos.y + toPos.y) / 2
+        };
+        
+        // 新しいノードのIDを生成
+        const newNodeId = this.generateUniqueNumberText();
+        
+        // ユーザーに新しいノードのラベルを入力してもらう
+        const newLabel = prompt('新しいノードのラベルを入力してください:', '新しいノード');
+        
+        if (newLabel === null) {
+            console.log('ノード追加がキャンセルされました');
+            return;
+        }
+        
+        const actualLabel = newLabel.trim() || '新しいノード';
+        
+        // 元のエッジのラベルを保存
+        const originalEdgeLabel = this.EdgeLabels[edgeId] || edge.label || '';
+        
+        // 元のエッジを削除
+        this.edges.remove(edgeId);
+        
+        // エッジラベル管理からも削除
+        if (this.EdgeLabels[edgeId]) {
+            delete this.EdgeLabels[edgeId];
+        }
+        
+        // データベースからも削除
+        if (typeof defaultRecordThinkingProcess !== 'undefined' && defaultRecordThinkingProcess.delete_db_Edge) {
+            defaultRecordThinkingProcess.delete_db_Edge(edgeId, "", "");
+        }
+        
+        // 新しいノードを追加
+        this.addNode(newNodeId, actualLabel, "step", midPoint.x, midPoint.y);
+        
+        // 新しいエッジを作成（from -> 新しいノード）
+        const newEdgeId1 = this.generateUniqueNumberText();
+        const newEdgeData1 = {
+            id: newEdgeId1,
+            from: edge.from,
+            to: newNodeId
+        };
+        
+        // 元のエッジにラベルがあった場合、最初のエッジに引き継ぐ
+        if (originalEdgeLabel) {
+            newEdgeData1.label = originalEdgeLabel;
+            newEdgeData1.font = {
+                size: 12,
+                color: '#333333',
+                background: 'rgba(255, 255, 255, 0.8)',
+                strokeWidth: 1,
+                strokeColor: '#ffffff'
+            };
+            this.EdgeLabels[newEdgeId1] = originalEdgeLabel;
+        }
+        
+        this.edges.add(newEdgeData1);
+        
+        // 新しいエッジを作成（新しいノード -> to）
+        const newEdgeId2 = this.generateUniqueNumberText();
+        const newEdgeData2 = {
+            id: newEdgeId2,
+            from: newNodeId,
+            to: edge.to
+        };
+        
+        this.edges.add(newEdgeData2);
+        
+        // データベースに新しいエッジを記録
+        if (typeof defaultRecordThinkingProcess !== 'undefined' && defaultRecordThinkingProcess.record_Edge) {
+            defaultRecordThinkingProcess.record_Edge(newEdgeId1, edge.from, newNodeId, originalEdgeLabel || '');
+            defaultRecordThinkingProcess.record_Edge(newEdgeId2, newNodeId, edge.to, '');
+        }
+        
+        console.log(`エッジ ${edgeId} の間に新しいノード ${newNodeId} (${actualLabel}) を追加しました`);
+        console.log(`新しいエッジ: ${newEdgeId1} (${edge.from} -> ${newNodeId}), ${newEdgeId2} (${newNodeId} -> ${edge.to})`);
+        
+        // ナビゲーターのトリガーを実行
+        if (typeof executeNavigatorTrigger === 'function') {
+            executeNavigatorTrigger('node_created');
+        }
+    }
+
+    // 子ノードを追加
+    addChildNode(parentNodeId) {
+        const parentNode = this.nodes.get(parentNodeId);
+        if (!parentNode) return;
+
+        // 親ノードの下の位置を計算
+        const parentBoundingBox = this.ownNetwork.getBoundingBox(parentNodeId);
+        const newNodeX = parentNode.x;
+        const newNodeY = parentBoundingBox.bottom + 80;
+
+        // 新しいノードのラベルを取得
+        const newLabel = prompt('新しい手段の名前を入力してください:', '新しい手段');
+        if (!newLabel || newLabel.trim() === '') return;
+
+        // 新しいノードを追加
+        const newNodeId = this.generateUniqueNumberText();
+        this.addNode(newNodeId, newLabel.trim(), "step", newNodeX, newNodeY);
+
+        // 親ノードから子ノードへのエッジを作成
+        this.addNewEdge(parentNodeId, newNodeId);
+
+        console.log(`親ノード ${parentNodeId} の下に新しいノード ${newNodeId} を追加しました`);
+    }
+
     addNewEdge(E_start, E_end){
         let edge_id = this.generateUniqueNumberText();
         this.edges.add({ id: edge_id ,from: E_start, to: E_end });
@@ -1952,6 +2419,13 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
     //ドラッグ開始(完成)
     dragstart (params) {
+        // 過去データ表示時はドラッグ操作を無効化
+        if (this.isViewingPastData) {
+            console.log('過去データ表示中のため、ドラッグ操作が無効化されています');
+            params.event.preventDefault();
+            return;
+        }
+        
         if(!this.edgeEditMode){
             params.event.preventDefault();
         }else{
@@ -1961,6 +2435,12 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
     //ドラッグ終了(完成)
     dragend (params) {
+        // 過去データ表示時はドラッグ操作を無効化
+        if (this.isViewingPastData) {
+            console.log('過去データ表示中のため、ドラッグ操作が無効化されています');
+            return;
+        }
+        
         if(this.edgeEditMode){
             this.dragEndNodeId = this.ownNetwork.getNodeAt(params.pointer.DOM);
             if(this.dragStartNodeId !== null && this.dragEndNodeId !== null && this.dragEndNodeId !== this.dragStartNodeId && this.dragEndNodeId !== undefined && this.nodes.get(this.dragStartNodeId).shape != "ellipse" && this.nodes.get(this.dragEndNodeId).shape != "ellipse"){
@@ -2427,9 +2907,17 @@ const getProcessMapDataFromDB = (callback) => {
 const getPassDataFromDB = (selected_date) => {
     console.log("過去データ取得開始:", selected_date);
     
+    // 選択されているノードIDを取得
+    let selected_node_id = null;
+    const conceptDisplay = document.getElementById("conceptdisplay");
+    if (conceptDisplay) {
+        selected_node_id = conceptDisplay.getAttribute('nodeid');
+    }
+    
     const postData = {
         process_mode: "PassData",
-        selected_date: selected_date
+        selected_date: selected_date,
+        selected_node_id: selected_node_id  // ノードIDを送信
     };
 
     console.log("送信データ:", postData);
@@ -2451,9 +2939,11 @@ const getPassDataFromDB = (selected_date) => {
                     console.log(`履歴件数: ${historyArray.length}`);
                     console.log(`エッジ件数: ${edgeArray.length}`);
                     
-                    // 既存のノードをクリア
-                    defaultThinkingProcess.nodes.clear();
-                    defaultThinkingProcess.edges.clear();
+                    // 既存のノードとエッジをクリア
+                    if (typeof defaultThinkingProcess !== 'undefined') {
+                        defaultThinkingProcess.nodes.clear();
+                        defaultThinkingProcess.edges.clear();
+                    }
                     
                     // 履歴データからノードを復元
                     historyArray.forEach((node, i) => {
@@ -2466,19 +2956,21 @@ const getPassDataFromDB = (selected_date) => {
                         console.log("  disappeared_at:", node.disappeared_at);
                         
                         // ノードを追加
-                        defaultThinkingProcess.addReloadNode(
-                            node.object_node_id,
-                            node.content,
-                            node.object_node_type,
-                            node.x,
-                            node.y,
-                            node.status,
-                            node.purpose,
-                            node.action_reason,
-                            node.completion_reason,
-                            node.challenges_learnings,
-                            node.estimated_time
-                        );
+                        if (typeof defaultThinkingProcess !== 'undefined' && defaultThinkingProcess.addReloadNode) {
+                            defaultThinkingProcess.addReloadNode(
+                                node.object_node_id,
+                                node.content,
+                                node.object_node_type,
+                                node.x,
+                                node.y,
+                                node.status,
+                                node.purpose,
+                                node.action_reason,
+                                node.completion_reason,
+                                node.challenges_learnings,
+                                node.estimated_time
+                            );
+                        }
                     });
 
                     // エッジデータからエッジを復元
@@ -2491,24 +2983,40 @@ const getPassDataFromDB = (selected_date) => {
                             console.log("  appeared_at:", edge.appeared_at);
                             console.log("  disappeared_at:", edge.disappeared_at);
                             
-                            // エッジを追加（vis.jsのエッジ形式で）
-                            const edgeData = {
-                                id: edge.object_edge_id,
-                                from: edge.edge_start,
-                                to: edge.edge_end,
-                                label: edge.label || ""
-                            };
-                            defaultThinkingProcess.edges.add(edgeData);
+                            // エッジを追加
+                            if (typeof defaultThinkingProcess !== 'undefined' && defaultThinkingProcess.addReloadEdge) {
+                                defaultThinkingProcess.addReloadEdge(
+                                    edge.object_edge_id,
+                                    edge.edge_start,
+                                    edge.edge_end,
+                                    edge.label
+                                );
+                            }
                         });
                     }
 
                     console.log(`${selected_date}の過去データ表示完了`);
+                    
+                    // 過去データ表示フラグを設定
+                    if (typeof defaultThinkingProcess !== 'undefined') {
+                        defaultThinkingProcess.isViewingPastData = true;
+                        console.log("過去データ表示モードを有効化しました");
+                    }
+                    
+                    // 過去データ表示の視覚的フィードバック
+                    const networkContainer = document.getElementById("myProcessnetwork2") || document.getElementById("myProcessnetwork");
+                    if (networkContainer) {
+                        networkContainer.style.border = "3px solid #ff6b6b";
+                        networkContainer.style.backgroundColor = "rgba(255, 107, 107, 0.1)";
+                    }
 
                 } else {
                     console.warn("履歴データが見つかりません");
                     // データがない場合はマップをクリア
-                    defaultThinkingProcess.nodes.clear();
-                    defaultThinkingProcess.edges.clear();
+                    if (typeof defaultThinkingProcess !== 'undefined') {
+                        defaultThinkingProcess.nodes.clear();
+                        defaultThinkingProcess.edges.clear();
+                    }
                 }
 
                 if (data.status && data.status !== "success") {
@@ -2524,6 +3032,158 @@ const getPassDataFromDB = (selected_date) => {
             console.error("レスポンス:", xhr.responseText);
         }
     });
+};
+
+// 日付シークバーを作成・表示する関数
+const createDateSeekBar = (dates) => {
+    if (!Array.isArray(dates) || dates.length === 0) {
+        console.log("日付データがありません");
+        return;
+    }
+
+    // 既存のシークバーがあれば削除
+    const existingSeekBar = document.getElementById('dateSeekBarContainer');
+    if (existingSeekBar) {
+        existingSeekBar.remove();
+    }
+
+    // シークバーコンテナを作成
+    const seekBarContainer = document.createElement('div');
+    seekBarContainer.id = 'dateSeekBarContainer';
+    seekBarContainer.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.95);
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 1000;
+        min-width: 400px;
+        text-align: center;
+    `;
+
+    // タイトル
+    const title = document.createElement('div');
+    title.textContent = 'マップの履歴を表示';
+    title.style.cssText = `
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+    `;
+
+    // 日付表示
+    const dateDisplay = document.createElement('div');
+    dateDisplay.id = 'currentDateDisplay';
+    dateDisplay.style.cssText = `
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 10px;
+    `;
+
+    // スライダー
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.id = 'dateSeekBar';
+    slider.min = 0;
+    slider.max = dates.length - 1;
+    slider.value = dates.length - 1; // 最新の日付を初期値とする
+    slider.style.cssText = `
+        width: 100%;
+        margin: 10px 0;
+        cursor: pointer;
+    `;
+
+    // 日付ラベル（最初と最後）
+    const dateLabels = document.createElement('div');
+    dateLabels.style.cssText = `
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #999;
+        margin-top: 5px;
+    `;
+
+    const firstDate = document.createElement('span');
+    firstDate.textContent = dates[0];
+    const lastDate = document.createElement('span');
+    lastDate.textContent = dates[dates.length - 1];
+
+    dateLabels.appendChild(firstDate);
+    dateLabels.appendChild(lastDate);
+
+    // 現在表示ボタン
+    const showCurrentButton = document.createElement('button');
+    showCurrentButton.textContent = '現在のマップに戻る';
+    showCurrentButton.style.cssText = `
+        background: #007cba;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 5px;
+        font-size: 12px;
+    `;
+
+    // 閉じるボタン
+    const closeButton = document.createElement('button');
+    closeButton.textContent = '×';
+    closeButton.style.cssText = `
+        background: #dc3545;
+        color: white;
+        border: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        cursor: pointer;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        font-size: 16px;
+        line-height: 1;
+    `;
+
+    // 初期表示の日付を設定
+    const updateDateDisplay = (index) => {
+        dateDisplay.textContent = `選択中: ${dates[index]} (${index + 1}/${dates.length})`;
+    };
+    updateDateDisplay(slider.value);
+
+    // スライダーの変更イベント
+    slider.addEventListener('input', (e) => {
+        const selectedIndex = parseInt(e.target.value);
+        updateDateDisplay(selectedIndex);
+        const selectedDate = dates[selectedIndex];
+        
+        // 選択された日付のマップデータを取得
+        getPassDataFromDB(selectedDate);
+    });
+
+    // 現在のマップに戻るボタンのイベント
+    showCurrentButton.addEventListener('click', () => {
+        // 現在のマップデータを再表示
+        displayTriggerData("allRE", "trigger_area");
+    });
+
+    // 閉じるボタンのイベント
+    closeButton.addEventListener('click', () => {
+        seekBarContainer.remove();
+    });
+
+    // 要素を組み立て
+    seekBarContainer.appendChild(closeButton);
+    seekBarContainer.appendChild(title);
+    seekBarContainer.appendChild(dateDisplay);
+    seekBarContainer.appendChild(slider);
+    seekBarContainer.appendChild(dateLabels);
+    seekBarContainer.appendChild(showCurrentButton);
+
+    // ドキュメントに追加
+    document.body.appendChild(seekBarContainer);
+
+    console.log("シークバーを作成しました。日付数:", dates.length);
 };
 
 
@@ -2548,6 +3208,19 @@ const makeTriggerInList = (id, activity_type, concept_label, content, timestamp,
 
 // 思考過程表出化マップを表示
 const displayTriggerData = (mode, display_target_area_id) => {
+    // 現在データ表示時は過去データフラグを解除
+    if (typeof defaultThinkingProcess !== 'undefined') {
+        defaultThinkingProcess.isViewingPastData = false;
+        console.log("現在データ表示により過去データモードを無効化");
+        
+        // 過去データ表示の視覚的要素をリセット
+        const networkContainer = document.getElementById("myProcessnetwork2") || document.getElementById("myProcessnetwork");
+        if (networkContainer) {
+            networkContainer.style.border = "";
+            networkContainer.style.backgroundColor = "";
+        }
+    }
+    
     process_mode = mode;
     let node_x = 0;
     let node_y = 0;
@@ -2628,42 +3301,128 @@ const displayTriggerData = (mode, display_target_area_id) => {
                 defaultThinkingProcess.addReloadEdge(n.process_edge_id, n.edge_start, n.edge_end, n.label);
             });
 
-            // —————————————— ここからシークバー関連の処理 ——————————————
+            // —————————————— 既存のシークバーに日付データを設定 ——————————————
             const timelineDates = trigger_list_info.dates;  // 日付配列
-
             const slider = document.getElementById("timeline_slider");
             const label = document.getElementById("timeline_label");
+            const returnButton = document.getElementById("return_to_current");
+            const historyIndicator = document.getElementById("history_indicator");
             
-            let selectedDate = null;
-            
-            if (timelineDates && timelineDates.length > 0) {
+            if (timelineDates && timelineDates.length > 0 && slider && label) {
+                console.log("日付データが取得されました:", timelineDates);
+                
+                // スライダーの設定
                 slider.max = timelineDates.length - 1;
-                slider.value = timelineDates.length - 1;  // 最後のインデックスに初期設定
-                selectedDate = timelineDates[slider.value];
-                label.textContent = selectedDate;
+                slider.value = timelineDates.length - 1; // 最新の日付を初期値
+                
+                // 現在選択されている日付を表示
+                const currentIndex = parseInt(slider.value);
+                const selectedDate = timelineDates[currentIndex];
+                label.textContent = `${selectedDate} (${currentIndex + 1}/${timelineDates.length})`;
+                
                 console.log("初期選択日付（最新）:", selectedDate);
                 
-                slider.oninput = () => {
-                    const index = parseInt(slider.value);
-                    selectedDate = timelineDates[index];
-                    label.textContent = selectedDate;
+                // 既存のイベントリスナーを削除（重複を防ぐため）
+                const newSlider = slider.cloneNode(true);
+                slider.parentNode.replaceChild(newSlider, slider);
+                
+                // スライダーのinputイベント（リアルタイム更新）
+                newSlider.addEventListener('input', function() {
+                    const index = parseInt(this.value);
+                    const selectedDate = timelineDates[index];
+                    label.textContent = `${selectedDate} (${index + 1}/${timelineDates.length})`;
                     console.log("選択された日付:", selectedDate);
-                    defaultThinkingProcess = new ThinkingProcess("myProcessnetwork", "load");
-                    getPassDataFromDB(selectedDate);
-                    console.log("過去データを取得するぞい！");
-                };
+                });
+                
+                // スライダーのchangeイベント（ドラッグ終了時に過去データ取得）
+                newSlider.addEventListener('change', function() {
+                    const index = parseInt(this.value);
+                    const selectedDate = timelineDates[index];
+                    console.log("選択確定日付:", selectedDate);
+                    
+                    // 最新の日付が選択されていない場合のみ過去データを取得
+                    if (index < timelineDates.length - 1) {
+                        console.log("過去データを取得します:", selectedDate);
+                        getPassDataFromDB(selectedDate);
+                        
+                        // 過去表示インジケーターを表示
+                        if (historyIndicator) {
+                            historyIndicator.style.display = "inline";
+                        }
+                    } else {
+                        console.log("最新データが選択されているため、現在のマップを表示");
+                        // 現在のマップを再表示
+                        displayTriggerData("allRE", "trigger_area");
+                        
+                        // 過去データ表示フラグを解除
+                        if (typeof defaultThinkingProcess !== 'undefined') {
+                            defaultThinkingProcess.isViewingPastData = false;
+                            console.log("過去データ表示モードを無効化しました（最新データ選択）");
+                        }
+                        
+                        // 過去表示インジケーターを非表示
+                        if (historyIndicator) {
+                            historyIndicator.style.display = "none";
+                        }
+                    }
+                });
+                
+                // 「現在に戻る」ボタンのイベント
+                if (returnButton) {
+                    // 既存のイベントリスナーを削除
+                    const newReturnButton = returnButton.cloneNode(true);
+                    returnButton.parentNode.replaceChild(newReturnButton, returnButton);
+                    
+                    newReturnButton.addEventListener('click', function() {
+                        console.log("現在のマップに戻ります");
+                        
+                        // スライダーを最新位置に戻す
+                        newSlider.value = timelineDates.length - 1;
+                        const latestDate = timelineDates[timelineDates.length - 1];
+                        label.textContent = `${latestDate} (${timelineDates.length}/${timelineDates.length})`;
+                        
+                        // 過去表示インジケーターを非表示
+                        if (historyIndicator) {
+                            historyIndicator.style.display = "none";
+                        }
+                        
+                        // 現在のマップを再表示
+                        displayTriggerData("allRE", "trigger_area");
+                        
+                        // 過去データ表示フラグを解除
+                        if (typeof defaultThinkingProcess !== 'undefined') {
+                            defaultThinkingProcess.isViewingPastData = false;
+                            console.log("過去データ表示モードを無効化しました");
+                        }
+                        
+                        // 現在表示に戻った時の視覚的フィードバック
+                        const networkContainer = document.getElementById("myProcessnetwork2") || document.getElementById("myProcessnetwork");
+                        if (networkContainer) {
+                            networkContainer.style.border = "3px solid #4CAF50";
+                            networkContainer.style.backgroundColor = "#f5fff5";
+                            
+                            // 2秒後に通常の表示に戻す
+                            setTimeout(() => {
+                                networkContainer.style.border = "";
+                                networkContainer.style.backgroundColor = "";
+                            }, 2000);
+                        }
+                    });
+                }
+                
             } else {
-                label.textContent = "日付なし";
-                slider.max = 0;
-                slider.value = 0;
-                selectedDate = null;
                 console.log("日付データがありません");
+                if (label) {
+                    label.textContent = "日付データなし";
+                }
+                if (slider) {
+                    slider.max = 0;
+                    slider.value = 0;
+                }
+                if (returnButton) {
+                    returnButton.style.display = "none";
+                }
             }
-            
-            // —————————————— ここまで ——————————————
-
-            const nodes = this.nodes;
-            const edges = this.edges;
 
             addeventdisplayTriggerData();
             

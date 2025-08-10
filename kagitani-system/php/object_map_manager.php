@@ -117,12 +117,15 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     }
 
     /*
-    * 目標手段階層マップの日付データの取得（全ノードを対象）
+    * 目標手段階層マップの日付データの取得（選択されたノードに紐づくobject_nodesから関連するobject_nodes_historiesの日付を取得）
     */
     $date_sql = "
-        SELECT DISTINCT DATE(appeared_at) AS appeared_date
-        FROM object_nodes_histories
-        WHERE appeared_at IS NOT NULL
+        SELECT DISTINCT DATE(onh.appeared_at) AS appeared_date
+        FROM object_nodes_histories onh
+        INNER JOIN object_nodes o_nodes ON onh.object_node_id = o_nodes.object_node_id
+        WHERE o_nodes.node_id = '".$mysqli->real_escape_string($selected_node_id)."'
+        AND o_nodes.deleted = 0
+        AND onh.appeared_at IS NOT NULL
         ORDER BY appeared_date ASC
     ";
     
@@ -145,6 +148,7 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     error_log("日付データ生成: SQL = " . $date_sql);
     error_log("日付データ件数: " . count($date_list));
     error_log("日付データ内容: " . json_encode($date_list));
+    error_log("対象node_id: " . $selected_node_id);
     
 
     // ノードのバージョン情報を取得
@@ -367,6 +371,7 @@ if($process_mode === "all" || $process_mode === "allRE" ){
 }else if ($process_mode === "PassData") {
 
     $selectedDate = $_POST['selected_date'] ?? null;
+    $selected_node_id = $_POST['selected_node_id'] ?? null; // ノードIDを取得
 
     if (!$selectedDate) {
         echo json_encode([
@@ -379,17 +384,28 @@ if($process_mode === "all" || $process_mode === "allRE" ){
 
     $datetime = $selectedDate . ' 23:59:59';
 
-    // 指定された日付に存在していた全ノードの履歴を取得
+    // 指定された日付とnode_idに存在していたノードの履歴を取得
     $sql_histories = "
         SELECT 
-            object_node_id, content, object_node_type, x, y, status, appeared_at, disappeared_at, purpose, action_reason, completion_reason, challenges_learnings, estimated_time
+            onh.object_node_id, onh.content, onh.object_node_type, onh.x, onh.y, onh.status, 
+            onh.appeared_at, onh.disappeared_at, onh.purpose, onh.action_reason, 
+            onh.completion_reason, onh.challenges_learnings, onh.estimated_time
         FROM 
-            object_nodes_histories
+            object_nodes_histories onh
+        INNER JOIN 
+            object_nodes o_nodes ON onh.object_node_id = o_nodes.object_node_id
         WHERE 
-            appeared_at <= '".$mysqli->real_escape_string($datetime)."'
-            AND (disappeared_at IS NULL OR disappeared_at > '".$mysqli->real_escape_string($datetime)."')
+            onh.appeared_at <= '".$mysqli->real_escape_string($datetime)."'
+            AND (onh.disappeared_at IS NULL OR onh.disappeared_at > '".$mysqli->real_escape_string($datetime)."')";
+    
+    // selected_node_idが指定されている場合はそのノードに関連するデータのみ取得
+    if ($selected_node_id) {
+        $sql_histories .= " AND o_nodes.node_id = '".$mysqli->real_escape_string($selected_node_id)."'";
+    }
+    
+    $sql_histories .= " AND o_nodes.deleted = 0
         ORDER BY 
-            object_node_id, appeared_at DESC
+            onh.object_node_id, onh.appeared_at DESC
     ";
     error_log("SQL histories: $sql_histories");
 
@@ -420,15 +436,28 @@ if($process_mode === "all" || $process_mode === "allRE" ){
     // 指定された日時に存在していたエッジの履歴を取得
     $sql_edges = "
         SELECT 
-            object_edge_id, edge_start, edge_end, label, appeared_at, disappeared_at
+            oeh.object_edge_id, oeh.edge_start, oeh.edge_end, oeh.label, oeh.appeared_at, oeh.disappeared_at
         FROM 
-            object_edges_histories
+            object_edges_histories oeh
         WHERE 
-            appeared_at <= '".$mysqli->real_escape_string($datetime)."'
-            AND (disappeared_at IS NULL OR disappeared_at > '".$mysqli->real_escape_string($datetime)."')
-        ORDER BY 
-            object_edge_id, appeared_at DESC
-    ";
+            oeh.appeared_at <= '".$mysqli->real_escape_string($datetime)."'
+            AND (oeh.disappeared_at IS NULL OR oeh.disappeared_at > '".$mysqli->real_escape_string($datetime)."')";
+    
+    // selected_node_idが指定されている場合は、そのノードに関連するエッジのみ取得
+    if ($selected_node_id) {
+        $sql_edges .= " AND (
+            oeh.edge_start IN (
+                SELECT object_node_id FROM object_nodes 
+                WHERE node_id = '".$mysqli->real_escape_string($selected_node_id)."' AND deleted = 0
+            ) 
+            OR oeh.edge_end IN (
+                SELECT object_node_id FROM object_nodes 
+                WHERE node_id = '".$mysqli->real_escape_string($selected_node_id)."' AND deleted = 0
+            )
+        )";
+    }
+    
+    $sql_edges .= " ORDER BY oeh.object_edge_id, oeh.appeared_at DESC";
     error_log("SQL edges: $sql_edges");
 
     $result_edges = $mysqli->query($sql_edges);
