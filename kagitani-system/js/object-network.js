@@ -12,7 +12,10 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
         defaultRecordThinkingProcess = new RecordThinkingProcess();
         this.nodes = new vis.DataSet();
-        this.edges = new vis.DataSet();
+        // エッジDataSetの初期化時にIDフィールドを明示
+        this.edges = new vis.DataSet([], { 
+            idField: 'id'  // IDフィールドを明示的に指定
+        });
         this.options = {
 	        physics: false,
             nodes: {
@@ -185,7 +188,34 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
             // エッジのホバーイベント
             this.ownNetwork.on("hoverEdge", (params) => {
-                console.log("hoverEdge event triggered for edge:", params.edge);
+                console.log("🔍 hoverEdge event triggered for edge:", params.edge);
+                
+                // エッジの詳細情報を取得して表示
+                const edgeData = this.edges.get(params.edge);
+                if (edgeData) {
+                    console.log("📊 エッジの詳細情報:", {
+                        "エッジID (object_edge_id)": edgeData.id,
+                        "開始ノード (edge_start)": edgeData.from,
+                        "終了ノード (edge_end)": edgeData.to,
+                        "グループ": edgeData.group,
+                        "ラベル": edgeData.label || "なし"
+                    });
+                    
+                    // ブラウザの画面上にも表示
+                    const message = `エッジID: ${edgeData.id}\n開始: ${edgeData.from} → 終了: ${edgeData.to}`;
+                    console.log(`💡 ${message}`);
+                } else {
+                    console.warn("⚠️ エッジデータが見つかりません:", params.edge);
+                    // 全エッジを確認
+                    const allEdges = this.edges.get();
+                    console.log("📋 現在のすべてのエッジ:", allEdges.map(e => ({
+                        id: e.id,
+                        from: e.from,
+                        to: e.to,
+                        group: e.group
+                    })));
+                }
+                
                 this.showAddEdgeButton(params.edge);
             });
 
@@ -780,12 +810,19 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         // let node_color = 'orange'; // ノードの背景色
         // let node_shape = 'box';     // ノードの形状
         // let text_color = 'black';   // ノード内文字列の色
+        
+        // 一意のエッジIDを生成
+        const edgeId = this.generateUniqueNumberText();
+        
         const newEdge = {
-            from: from_node_id,
-            to: to_node_id,
+            id: String(edgeId),  // IDを明示的に設定
+            from: String(from_node_id),
+            to: String(to_node_id),
             group: "versionEdges",
             fixed: true,
         };
+        
+        console.log("🔧 addVersionEdge: バージョンエッジを追加中", newEdge);
         defaultThinkingProcess.edges.add(newEdge);
         return defaultThinkingProcess.edges;
 
@@ -892,10 +929,24 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     }
 
     addReloadEdge(edge_id, edge_start, edge_end, edge_label) {
+        console.log("🔧 addReloadEdge called with:", {
+            edge_id: edge_id,
+            edge_start: edge_start,
+            edge_end: edge_end,
+            edge_label: edge_label
+        });
+
+        // 重複チェック
+        const existingEdge = this.edges.get(edge_id);
+        if (existingEdge) {
+            console.log(`⚠️ エッジ ${edge_id} は既に存在します。スキップします。`);
+            return;
+        }
+
         const edgeData = {
-            id: edge_id, 
-            from: edge_start, 
-            to: edge_end
+            id: String(edge_id), // IDを文字列として明示的に設定
+            from: String(edge_start), 
+            to: String(edge_end)
         };
         
         // ラベルが存在する場合は追加
@@ -912,7 +963,12 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             this.EdgeLabels[edge_id] = edge_label;
         }
         
+        console.log("➕ エッジを追加中:", edgeData);
         this.edges.add(edgeData);
+        
+        // 追加後のデータを確認
+        const addedEdge = this.edges.get(edge_id);
+        console.log("✅ 追加されたエッジの確認:", addedEdge);
     }
 
     //未完成　ノード追加
@@ -2323,28 +2379,79 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         // 元のエッジのラベルを保存
         const originalEdgeLabel = this.EdgeLabels[edgeId] || edge.label || '';
         
-        // 元のエッジを削除
-        this.edges.remove(edgeId);
+        console.log(`🗑️ 元のエッジを削除中: ${edgeId} (${edge.from} -> ${edge.to})`);
+        
+        // 元のエッジを削除（複数の方法で確実に削除）
+        try {
+            this.edges.remove(edgeId);
+            console.log(`DataSetからエッジ ${edgeId} を削除しました`);
+        } catch (error) {
+            console.warn(`DataSetからの削除に失敗:`, error);
+            // オブジェクト形式で再試行
+            try {
+                this.edges.remove({id: edgeId});
+                console.log(`オブジェクト形式でエッジ ${edgeId} を削除しました`);
+            } catch (error2) {
+                console.error(`エッジ削除に完全に失敗:`, error2);
+            }
+        }
         
         // エッジラベル管理からも削除
         if (this.EdgeLabels[edgeId]) {
             delete this.EdgeLabels[edgeId];
         }
         
-        // データベースからも削除
+        // データベースからも削除（正しいパラメータで呼び出し）
         if (typeof defaultRecordThinkingProcess !== 'undefined' && defaultRecordThinkingProcess.delete_db_Edge) {
-            defaultRecordThinkingProcess.delete_db_Edge(edgeId, "", "");
+            defaultRecordThinkingProcess.delete_db_Edge(edgeId, edge.from, edge.to);
         }
         
+        console.log(`✅ 元のエッジ ${edgeId} を完全に削除しました`);
+        
+        // エッジが確実に削除されたかを確認
+        const deletedEdgeCheck = this.edges.get(edgeId);
+        if (deletedEdgeCheck) {
+            console.warn(`⚠️ エッジ ${edgeId} がまだ存在しています:`, deletedEdgeCheck);
+            // 強制的に削除を試行
+            this.edges.remove({id: edgeId});
+            // 再度確認
+            const doubleCheck = this.edges.get(edgeId);
+            if (doubleCheck) {
+                console.error(`❌ エッジ ${edgeId} の削除に失敗しました`);
+                return; // 削除に失敗した場合は処理を中断
+            }
+        } else {
+            console.log(`✓ エッジ ${edgeId} の削除を確認しました`);
+        }
+        
+        // 全エッジの状況をログ出力（デバッグ用）
+        const allEdges = this.edges.get();
+        console.log(`📋 現在のエッジ数: ${allEdges.length}`);
+        
         // 新しいノードを追加
+        console.log(`➕ 新しいノード ${newNodeId} を追加中...`);
         this.addNode(newNodeId, actualLabel, "step", midPoint.x, midPoint.y);
         
+        // 元のエッジが完全に削除されたことを最終確認
+        const finalCheck = this.edges.get(edgeId);
+        if (finalCheck) {
+            console.error(`❌ 致命的エラー: エッジ ${edgeId} がまだ存在しています`);
+            // 最後の手段として、IDを使って強制削除
+            const allEdges = this.edges.get();
+            const targetEdge = allEdges.find(e => e.id === edgeId);
+            if (targetEdge) {
+                console.log(`🔧 最後の手段でエッジを削除中...`);
+                this.edges.remove([edgeId]);
+            }
+        }
+        
         // 新しいエッジを作成（from -> 新しいノード）
+        console.log(`🔗 新しいエッジ1を作成中: ${edge.from} -> ${newNodeId}`);
         const newEdgeId1 = this.generateUniqueNumberText();
         const newEdgeData1 = {
-            id: newEdgeId1,
-            from: edge.from,
-            to: newNodeId
+            id: String(newEdgeId1),  // IDを文字列として設定
+            from: String(edge.from),
+            to: String(newNodeId)
         };
         
         // 元のエッジにラベルがあった場合、最初のエッジに引き継ぐ
@@ -2360,16 +2467,19 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             this.EdgeLabels[newEdgeId1] = originalEdgeLabel;
         }
         
+        console.log(`➕ エッジ1を追加中:`, newEdgeData1);
         this.edges.add(newEdgeData1);
         
         // 新しいエッジを作成（新しいノード -> to）
+        console.log(`🔗 新しいエッジ2を作成中: ${newNodeId} -> ${edge.to}`);
         const newEdgeId2 = this.generateUniqueNumberText();
         const newEdgeData2 = {
-            id: newEdgeId2,
-            from: newNodeId,
-            to: edge.to
+            id: String(newEdgeId2),  // IDを文字列として設定
+            from: String(newNodeId),
+            to: String(edge.to)
         };
         
+        console.log(`➕ エッジ2を追加中:`, newEdgeData2);
         this.edges.add(newEdgeData2);
         
         // データベースに新しいエッジを記録
@@ -2378,8 +2488,13 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             defaultRecordThinkingProcess.record_Edge(newEdgeId2, newNodeId, edge.to, '');
         }
         
-        console.log(`エッジ ${edgeId} の間に新しいノード ${newNodeId} (${actualLabel}) を追加しました`);
-        console.log(`新しいエッジ: ${newEdgeId1} (${edge.from} -> ${newNodeId}), ${newEdgeId2} (${newNodeId} -> ${edge.to})`);
+        console.log(`✅ エッジ ${edgeId} の間に新しいノード ${newNodeId} (${actualLabel}) を追加しました`);
+        console.log(`🔗 新しいエッジ: ${newEdgeId1} (${edge.from} -> ${newNodeId}), ${newEdgeId2} (${newNodeId} -> ${edge.to})`);
+        
+        // 処理完了後のエッジ状況を確認
+        const finalEdgeCount = this.edges.get().length;
+        console.log(`📊 処理完了後のエッジ数: ${finalEdgeCount}`);
+        console.log(`🎯 元のエッジ ${edgeId} が存在するか最終確認:`, !!this.edges.get(edgeId));
         
         // ナビゲーターのトリガーを実行
         if (typeof executeNavigatorTrigger === 'function') {
@@ -2413,8 +2528,21 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
     addNewEdge(E_start, E_end){
         let edge_id = this.generateUniqueNumberText();
-        this.edges.add({ id: edge_id ,from: E_start, to: E_end });
+        console.log("🔧 addNewEdge: 新しいエッジを作成中 ID =", edge_id);
+        
+        const edgeData = { 
+            id: String(edge_id),  // IDを文字列として明示的に設定
+            from: String(E_start), 
+            to: String(E_end) 
+        };
+        
+        console.log("➕ 新しいエッジデータ:", edgeData);
+        this.edges.add(edgeData);
         defaultRecordThinkingProcess.record_Edge(edge_id, E_start, E_end);
+        
+        // 追加後の確認
+        const addedEdge = this.edges.get(edge_id);
+        console.log("✅ 新しく追加されたエッジの確認:", addedEdge);
     }
 
     //ドラッグ開始(完成)
@@ -3298,7 +3426,14 @@ const displayTriggerData = (mode, display_target_area_id) => {
                 defaultThinkingProcess.addReloadNode(n.object_node_id, n.content, n.object_nodes_type, n.node_x, n.node_y, n.status, n.purpose, n.action_reason, n.completion_reason, n.challenges_learnings, n.estimated_time);
             });
             trigger_list_info.pedge.map((n) => {
-                defaultThinkingProcess.addReloadEdge(n.process_edge_id, n.edge_start, n.edge_end, n.label);
+                console.log("🔍 エッジデータ確認:", n);
+                // object_edge_idが正しいフィールド名
+                const edgeId = n.object_edge_id || n.process_edge_id;
+                if (edgeId) {
+                    defaultThinkingProcess.addReloadEdge(edgeId, n.edge_start, n.edge_end, n.label);
+                } else {
+                    console.warn("⚠️ エッジIDが見つかりません:", n);
+                }
             });
 
             // —————————————— 既存のシークバーに日付データを設定 ——————————————
