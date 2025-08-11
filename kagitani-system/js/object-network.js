@@ -437,7 +437,16 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
     //エッジ編集できる場合の処理
     enableEditEdge() {
         // エッジを編集するときは，ノードの動きを止める
-        document.getElementById("process_startEditEdge").value="エッジ追加終了";
+        const button = document.getElementById("process_startEditEdge");
+        const buttonText = button.querySelector(".button-text");
+        if (buttonText) {
+            buttonText.textContent = "エッジ追加終了";
+        } else {
+            // フォールバック: value属性も設定（古いHTMLの場合）
+            button.value = "エッジ追加終了";
+        }
+        button.title = "エッジ追加終了";
+        
         this.nodes.update(this.nodes.map(n => {
             return { ...n, fixed: true };
         }));     
@@ -445,7 +454,16 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
 
     //エッジ編集できない場合の処理
     disableEditEdge() {
-        document.getElementById("process_startEditEdge").value="エッジ追加";
+        const button = document.getElementById("process_startEditEdge");
+        const buttonText = button.querySelector(".button-text");
+        if (buttonText) {
+            buttonText.textContent = "エッジ追加";
+        } else {
+            // フォールバック: value属性も設定（古いHTMLの場合）
+            button.value = "エッジ追加";
+        }
+        button.title = "エッジ追加";
+        
         // エッジの編集モードを抜けたときは，ノードの動きを再度始める（ただし，タグノードはFixedにしておく）
         this.edgeEditMode = false;
         this.nodes.update(this.nodes.map(n => {
@@ -943,6 +961,19 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
             return;
         }
 
+        // ノードの存在チェック
+        const fromNode = this.nodes.get(edge_start);
+        const toNode = this.nodes.get(edge_end);
+        
+        if (!fromNode) {
+            console.error(`❌ 参照元ノード ${edge_start} が存在しません。エッジ ${edge_id} を追加できません。`);
+            return;
+        }
+        if (!toNode) {
+            console.error(`❌ 参照先ノード ${edge_end} が存在しません。エッジ ${edge_id} を追加できません。`);
+            return;
+        }
+
         const edgeData = {
             id: String(edge_id), // IDを文字列として明示的に設定
             from: String(edge_start), 
@@ -964,11 +995,21 @@ class ThinkingProcess { // forestMRN: forest Meeting Reflection Network
         }
         
         console.log("➕ エッジを追加中:", edgeData);
-        this.edges.add(edgeData);
+        try {
+            this.edges.add(edgeData);
+            console.log(`✅ エッジ ${edge_id} を正常に追加しました`);
+        } catch (error) {
+            console.error(`❌ エッジ ${edge_id} の追加に失敗:`, error);
+            return;
+        }
         
         // 追加後のデータを確認
         const addedEdge = this.edges.get(edge_id);
-        console.log("✅ 追加されたエッジの確認:", addedEdge);
+        if (addedEdge) {
+            console.log("✅ 追加されたエッジの確認:", addedEdge);
+        } else {
+            console.error(`❌ エッジ ${edge_id} の追加後確認に失敗`);
+        }
     }
 
     //未完成　ノード追加
@@ -3059,13 +3100,22 @@ const getPassDataFromDB = (selected_date) => {
             try {
                 const data = JSON.parse(response);
                 console.log("パース結果:", data);
+                console.log("データ構造確認 - 利用可能なキー:", Object.keys(data));
 
-                const historyArray = data.hnode || [];
-                const edgeArray = data.hedge || [];
+                // ノード履歴データ（object_nodes_historiesから）
+                const historyArray = data.hnode || data.node_histories || data.nodes || [];
+                // エッジ履歴データ（object_edges_historiesから）  
+                const edgeArray = data.hedge || data.edge_histories || data.edges || [];
+                
+                console.log("🔍 ノードデータ配列:", historyArray);
+                console.log("🔍 エッジデータ配列:", edgeArray);
 
                 if (Array.isArray(historyArray) && historyArray.length > 0) {
-                    console.log(`履歴件数: ${historyArray.length}`);
-                    console.log(`エッジ件数: ${edgeArray.length}`);
+                    console.log(`📊 履歴データ: ノード=${historyArray.length}個, エッジ=${edgeArray.length}個`);
+                    console.log(`🔧 履歴ノードの最初の要素:`, historyArray[0]);
+                    if (edgeArray.length > 0) {
+                        console.log(`🔧 履歴エッジの最初の要素:`, edgeArray[0]);
+                    }
                     
                     // 既存のノードとエッジをクリア
                     if (typeof defaultThinkingProcess !== 'undefined') {
@@ -3101,29 +3151,77 @@ const getPassDataFromDB = (selected_date) => {
                         }
                     });
 
-                    // エッジデータからエッジを復元
+                    // エッジデータからエッジを復元（ノード復元後に実行）
                     if (Array.isArray(edgeArray) && edgeArray.length > 0) {
-                        edgeArray.forEach((edge, i) => {
-                            console.log(`[エッジ${i + 1}] object_edge_id: ${edge.object_edge_id}`);
-                            console.log("  edge_start:", edge.edge_start);
-                            console.log("  edge_end:", edge.edge_end);
-                            console.log("  label:", edge.label);
-                            console.log("  appeared_at:", edge.appeared_at);
-                            console.log("  disappeared_at:", edge.disappeared_at);
+                        console.log(`🔗 ${edgeArray.length}個のエッジを復元開始`);
+                        // 少し遅延させてノードが確実に作成された後にエッジを追加
+                        setTimeout(() => {
+                            let successCount = 0;
+                            let skipCount = 0;
                             
-                            // エッジを追加
-                            if (typeof defaultThinkingProcess !== 'undefined' && defaultThinkingProcess.addReloadEdge) {
-                                defaultThinkingProcess.addReloadEdge(
-                                    edge.object_edge_id,
-                                    edge.edge_start,
-                                    edge.edge_end,
-                                    edge.label
-                                );
-                            }
-                        });
+                            edgeArray.forEach((edge, i) => {
+                                console.log(`[エッジ${i + 1}/${edgeArray.length}] 復元処理開始`);
+                                console.log(`  📋 edge_id: ${edge.object_edge_id || edge.id}`);
+                                console.log(`  📋 edge_start: ${edge.edge_start || edge.from}`);
+                                console.log(`  📋 edge_end: ${edge.edge_end || edge.to}`);
+                                console.log(`  📋 label: ${edge.label || ''}`);
+                                console.log(`  📋 appeared_at: ${edge.appeared_at || ''}`);
+                                console.log(`  📋 disappeared_at: ${edge.disappeared_at || ''}`);
+                                
+                                // フィールド名の標準化（PHPから来るデータ構造に対応）
+                                const edgeId = edge.object_edge_id || edge.id;
+                                const edgeStart = edge.edge_start || edge.from;
+                                const edgeEnd = edge.edge_end || edge.to;
+                                const edgeLabel = edge.label || '';
+                                
+                                // 参照元・参照先のノードが存在するかチェック
+                                const fromNode = defaultThinkingProcess.nodes.get(edgeStart);
+                                const toNode = defaultThinkingProcess.nodes.get(edgeEnd);
+                                
+                                if (!fromNode) {
+                                    console.warn(`⚠️ エッジ ${edgeId} の参照元ノード ${edgeStart} が存在しません`);
+                                    skipCount++;
+                                    return;
+                                }
+                                if (!toNode) {
+                                    console.warn(`⚠️ エッジ ${edgeId} の参照先ノード ${edgeEnd} が存在しません`);
+                                    skipCount++;
+                                    return;
+                                }
+                                
+                                // エッジを追加
+                                if (typeof defaultThinkingProcess !== 'undefined' && defaultThinkingProcess.addReloadEdge) {
+                                    defaultThinkingProcess.addReloadEdge(
+                                        edgeId,
+                                        edgeStart,
+                                        edgeEnd,
+                                        edgeLabel
+                                    );
+                                    successCount++;
+                                    console.log(`✅ エッジ ${edgeId} の復元が完了しました (${i + 1}/${edgeArray.length})`);
+                                } else {
+                                    console.error("❌ defaultThinkingProcessまたはaddReloadEdgeメソッドが見つかりません");
+                                    skipCount++;
+                                }
+                            });
+                            
+                            console.log(`🎯 エッジ復元完了: 成功=${successCount}個, スキップ=${skipCount}個`);
+                        }, 100); // 100ms遅延
+                    } else {
+                        console.log("⚠️ エッジデータが存在しないか、配列でありません");
+                        console.log("📊 edgeArray:", edgeArray);
+                        console.log("📊 edgeArray type:", typeof edgeArray);
+                        console.log("📊 edgeArray isArray:", Array.isArray(edgeArray));
                     }
 
                     console.log(`${selected_date}の過去データ表示完了`);
+                    
+                    // 復元完了状況を遅延して確認（エッジ復元処理完了後）
+                    setTimeout(() => {
+                        const finalNodeCount = defaultThinkingProcess ? defaultThinkingProcess.nodes.length : 0;
+                        const finalEdgeCount = defaultThinkingProcess ? defaultThinkingProcess.edges.length : 0;
+                        console.log(`📊 最終復元状況: ノード数=${finalNodeCount}, エッジ数=${finalEdgeCount}`);
+                    }, 200);
                     
                     // 過去データ表示フラグを設定
                     if (typeof defaultThinkingProcess !== 'undefined') {

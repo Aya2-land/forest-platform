@@ -1206,7 +1206,26 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                
                                 </div>
                             </div>
+                            
+                            <!-- ✨ メモ機能エリア -->
+                            <div id="memo_section" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 10px; margin: 10px 0;">
+                                <div style="font-weight: bold; color: #495057; font-size: 14px; margin-bottom: 8px;">
+                                    📝 メモ
+                                </div>
+                                
+                                <textarea id="memo-textarea" placeholder="ここにメモを入力してください..." style="width: 100%; min-height: 80px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; line-height: 1.4; resize: vertical; box-sizing: border-box; transition: all 0.2s ease;"></textarea>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; flex-wrap: wrap; gap: 8px;">
+                                    <div style="display: flex; gap: 6px;">
+                                        <button id="memo-save-btn" onclick="saveMemo()" style="padding: 4px 12px; background-color: #28a745; color: white; border: none; border-radius: 3px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;">保存</button>
+                                        <button id="memo-clear-btn" onclick="clearMemo()" style="padding: 4px 12px; background-color: #dc3545; color: white; border: none; border-radius: 3px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;">クリア</button>
+                                    </div>
+                                    <div id="memo-status" style="font-size: 11px; color: #6c757d; font-weight: 500; opacity: 0.8;"></div>
+                                </div>
+                            </div>
+                            
                             <div id = "ontology_feedback"></div>
+                            
                             <!-- <div id = "accordion_discussion"></div>
                             <input id = "feedbackrecord" type="button" value="記録"> -->
                         </div>
@@ -1414,5 +1433,118 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
         <script type="text/javascript" src="./js/readxmldata.js"></script>  
         
         <!--  ここまで大槻修正　-->
+        
+        <!-- メモ機能のJavaScript -->
+        <script type="text/javascript">
+        // メモを保存
+        function saveMemo() {
+            const textarea = document.getElementById('memo-textarea');
+            const statusDiv = document.getElementById('memo-status');
+            const content = textarea.value.trim();
+            
+            if (content === '') {
+                showMemoStatus('メモが空です', '#ffc107');
+                return;
+            }
+            
+            // LocalStorageに保存
+            try {
+                const timestamp = new Date().toLocaleString('ja-JP');
+                const memoData = {
+                    content: content,
+                    savedAt: timestamp
+                };
+                localStorage.setItem('userMemo', JSON.stringify(memoData));
+                showMemoStatus('保存しました ✓', '#28a745');
+            } catch (error) {
+                console.error('メモの保存に失敗:', error);
+                showMemoStatus('保存に失敗しました', '#dc3545');
+            }
+        }
+
+        // メモをクリア
+        function clearMemo() {
+            if (confirm('メモの内容をクリアしますか？この操作は元に戻せません。')) {
+                const textarea = document.getElementById('memo-textarea');
+                textarea.value = '';
+                
+                // LocalStorageからも削除
+                try {
+                    localStorage.removeItem('userMemo');
+                    showMemoStatus('クリアしました', '#17a2b8');
+                } catch (error) {
+                    console.error('メモのクリアに失敗:', error);
+                    showMemoStatus('クリアに失敗しました', '#dc3545');
+                }
+            }
+        }
+
+        // メモをロード
+        function loadMemo() {
+            const textarea = document.getElementById('memo-textarea');
+            
+            try {
+                const savedData = localStorage.getItem('userMemo');
+                if (savedData) {
+                    const memoData = JSON.parse(savedData);
+                    textarea.value = memoData.content;
+                    showMemoStatus('最終保存: ' + memoData.savedAt, '#6c757d');
+                } else {
+                    showMemoStatus('新しいメモ', '#6c757d');
+                }
+            } catch (error) {
+                console.error('メモの読み込みに失敗:', error);
+                showMemoStatus('読み込みに失敗しました', '#dc3545');
+            }
+        }
+
+        // ステータスメッセージを表示
+        function showMemoStatus(message, color) {
+            const statusDiv = document.getElementById('memo-status');
+            statusDiv.textContent = message;
+            statusDiv.style.color = color;
+            
+            // 3秒後にフェードアウト
+            setTimeout(() => {
+                if (statusDiv.textContent === message) {
+                    statusDiv.style.transition = 'opacity 0.5s ease';
+                    statusDiv.style.opacity = '0.5';
+                }
+            }, 3000);
+            
+            // 5秒後に通常の透明度に戻す
+            setTimeout(() => {
+                if (statusDiv.textContent === message) {
+                    statusDiv.style.opacity = '0.8';
+                }
+            }, 8000);
+        }
+
+        // ページ読み込み時にメモを自動ロード
+        document.addEventListener('DOMContentLoaded', function() {
+            // CSSアニメーションを動的に追加
+            const style = document.createElement('style');
+            style.textContent = `
+                #memo-save-btn:hover {
+                    background-color: #218838 !important;
+                    transform: translateY(-1px);
+                }
+                
+                #memo-clear-btn:hover {
+                    background-color: #c82333 !important;
+                    transform: translateY(-1px);
+                }
+                
+                #memo-textarea:focus {
+                    border-color: #007bff !important;
+                    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25) !important;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // メモを自動ロード
+            setTimeout(loadMemo, 100);
+        });
+        </script>
     </body>
 </html>
