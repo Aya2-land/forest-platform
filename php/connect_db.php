@@ -7,6 +7,8 @@
 	$db_password = "your_password";
 	$db_dbname = "forest_platform";
 
+	
+
 	//アプリケーションサーバーにアップロードするとき．
 	// $db_host = "localhost";  // DBサーバのurl
 	// $db_port = 3306;
