@@ -11,7 +11,7 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
         this.nodes = new vis.DataSet();
         this.edges = new vis.DataSet();
         this.options = {
-	        physics: false,
+	        physics: true,
             nodes: {
                 margin: 10,
                 widthConstraint: {
@@ -330,22 +330,24 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
             console.log(`Node with ID ${user_id} already exists. Skipping addition.`);
             return; // 重複がある場合は追加せずにリターン
         }
-        let node_color = '#ffbaa1'; // ノードの背景色
-        let node_shape = 'box';     // ノードの形状
-        let text_color = 'black';   // ノード内文字列の色
+        let node_shape = 'image';     // ノードの形状
+        var DIR_img = "../image/organizational/"; //ノードのアイコンとなる画像のパス
+        let image = "user-solid-full.svg"; 
 
         const newNode = {
             id: user_id,
             label: user_name,
             group: node_type,
-            color: node_color,
             shape: node_shape,
-            font: { color: text_color },
+            image: DIR_img + image,
+            imagePadding: 7,
+            fixed: false,
         };
         console.log(newNode);
         
         defaultOrganizational.nodes.add(newNode);
         return defaultOrganizational.nodes;
+
     }
 
     addTriggerNode(flag, trigger_id, edge_id, from_node, to_node, activity_id, t_label, t_type, t_time, node_x, node_y){

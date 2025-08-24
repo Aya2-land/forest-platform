@@ -6,7 +6,7 @@
 	/* width: 100%; */
 	min-width: 300px;
 	height:100%;
-	min-height: 450px;
+	min-height: 100%;
 	/* margin-bottom:2vh; */
 	/* border-bottom:solid 5px #fbd393; */
 	border:solid 5px #fbd393;
@@ -20,8 +20,8 @@
 	position: relative;
 	width: calc(100vw - 350px);
 	min-width: 300px;
-	height:50%;
-	min-height: 450px;
+	height:100%;
+	min-height: 100%;
 	margin-bottom:2vh;
 	border-top:solid 1px #fbd393;
 	background:#fff;
@@ -30,8 +30,8 @@
 #myOrganizationalnetwork2{
 	width: calc(100vw - 350px);
 	min-width: 300px;
-	/* height:50%; */
-	min-height: 450px;
+	height:100%;
+	min-height: 100%;
 	/* margin-bottom:2vh; */
 	/* border-top:solid 5px #fbd393; */
 	background:#fff;
