@@ -94,15 +94,17 @@ if (!empty($user_ids_in_latest_group)) {
     }
     $return_data['users'] = $users;
 
-    // ユーザーごとのprocessノードの取得
+    // ユーザーごとのprocessノードの取得（user_idも含める）
     $user_ids_escaped = array_map(function($id) use ($mysqli) {
         return $mysqli->real_escape_string($id);
     }, $user_ids_in_latest_group);
     $user_ids_in_sql = implode(",", $user_ids_escaped);
-    $sql_nodes = "SELECT process_node_id, node_id, content FROM process_nodes
-            WHERE node_id IN (
-                SELECT node_id FROM map_node_links WHERE map_id IN (SELECT map_id FROM maps WHERE user_id IN ($user_ids_in_sql))
-            ) AND deleted = 0 ORDER BY created_at DESC";
+    $sql_nodes = "SELECT pn.process_node_id, pn.node_id, pn.content, m.user_id
+        FROM process_nodes pn
+        INNER JOIN map_node_links mn ON pn.node_id = mn.node_id
+        INNER JOIN maps m ON mn.map_id = m.map_id
+        WHERE m.user_id IN ($user_ids_in_sql) AND pn.deleted = 0
+        ORDER BY pn.created_at DESC";
     $result_organi_map_node = $mysqli->query($sql_nodes);
     $organi_map_node = [];
     if ($result_organi_map_node) {

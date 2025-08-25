@@ -257,7 +257,7 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
      * ノードの操作
      */
     //ノード追加(完了)
-    addNode(node_id, node_label, node_type, node_x, node_y) {
+    addNode(node_id, node_label, node_type) {
         let node_color = '#f8e58c'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
@@ -275,7 +275,6 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
             color: node_color, shape: node_shape,
             font: { color: text_color },
             fixed: position_fixed,
-            x: node_x, y: node_y, 
         };
         this.nodes.add(newNode);
         const boundingBox = this.ownNetwork.getBoundingBox(node_id);
@@ -285,7 +284,6 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
             color: node_color,
             shape: node_shape,
             font: { color: text_color },
-            y : node_y
         });
         const boundingBoxupdate = this.ownNetwork.getBoundingBox(node_id);
         this.latest_selected_node_info.x = node_x;
@@ -294,7 +292,7 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
         return this.nodes;
     }
 
-    addReloadNode(node_id, node_label, node_type, node_x, node_y) {
+    addReloadProcessNode(user_id, node_id, node_label, node_type) {
         const existingNode = this.nodes.get(node_id);
         if (existingNode) {
             console.log(`Node with ID ${node_id} already exists. Skipping addition.`);
@@ -303,25 +301,27 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
         let node_color = '#ffdb4f'; // ノードの背景色
         let node_shape = 'box';     // ノードの形状
         let text_color = 'black';   // ノード内文字列の色
-        let position_fixed = false;   // ノードを動かせるかどうか（Falseなら動かせる）
-        let result_label = '';
-        for (let i = 0; i < node_label.length; i += 10) {
-            result_label += node_label.substr(i, 10) + '\n';
-        }
-        result_label = result_label.trim(); // 末尾の不要な改行を除去
+        
         const newNode = {
-            id: `${node_id}`, label: result_label,
+            id: `${node_id}`, label: node_label,
             group: node_type,
             color: node_color, shape: node_shape,
             font: { color: text_color },
-            fixed: position_fixed,
-            x: node_x, y: node_y, 
+            fixed: false,
         };
         defaultOrganizational.nodes.add(newNode);
-        const boundingBox = defaultOrganizational.ownNetwork.getBoundingBox(`${node_id}`);
-        defaultOrganizational.latest_selected_node_info.x = node_x;
-        defaultOrganizational.latest_selected_node_info.y = boundingBox.bottom+10;
-        return defaultOrganizational.nodes;
+
+        //　trigger_toの設定
+        const newEdge = {
+            from: user_id,
+            to: node_id,
+            arrows: 'dynamic',
+            group: "shared_process",
+            smooth: true,
+        };
+        defaultOrganizational.edges.add(newEdge);
+
+        return defaultOrganizational.nodes, defaultOrganizational.edges;
     }
 
     addUserNode(user_id, user_name, node_type){
@@ -346,11 +346,12 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
         console.log(newNode);
         
         defaultOrganizational.nodes.add(newNode);
+
         return defaultOrganizational.nodes;
 
     }
 
-    addTriggerNode(flag, trigger_id, edge_id, from_node, to_node, activity_id, t_label, t_type, t_time, node_x, node_y){
+    addReloadTriggerNode(flag, trigger_id, edge_id, from_node, to_node, activity_id, t_label, t_type, t_time, node_x, node_y){
         let color = '#82ae46'; // ノードの背景色
         let node_shape = 'circularImage';     // ノードの形状
         var DIR_img = "../image/triggers/"; //ノードのアイコンとなる画像のパス
@@ -1108,9 +1109,9 @@ const getOrganizationalMapDataFromDB = (callback) => {
 const displayOrganizationalData = (mode, selected_group_id) => {
     organizational_mode = mode;
     organizational_group_id = selected_group_id;
-    if(mode=="all" || mode == "allRE"){
+
+    if(mode=="all"){
         getOrganizationalMapDataFromDB ((organizational_list_info) => {
-            let j = 0;
             // group_selectのoptionを動的に生成
             const groupSelect = document.getElementById('group_select');
             if (groupSelect && organizational_list_info.groups) {
@@ -1122,38 +1123,28 @@ const displayOrganizationalData = (mode, selected_group_id) => {
                     groupSelect.appendChild(option);
                 });
             }
-            // ユーザーのアイコンを表示
-            organizational_list_info.users.forEach((v) => {
-                defaultOrganizational.addUserNode(v.user_id, v.name, "users");
-            });
-            // ユーザーごとのノードを表示
-            organizational_list_info.pnode.map((n) => {
-                defaultOrganizational.addReloadNode(n.organizational_node_id, n.content, n.organizational_node_type, n.node_x, n.node_y);
-            });
-
-            const nodes = this.nodes;
-            const edges = this.edges;
-
-            addeventdisplayOrganizationalData();
-        });
-    }else if(mode == "group"){
-        let j = 0;
-        getOrganizationalMapDataFromDB ((organizational_list_info) => {
-            // ユーザーのアイコンを表示
-            organizational_list_info.users.forEach((v) => {
-                defaultOrganizational.addUserNode(v.user_id, v.name, "users");
-            });
-            // ユーザーごとのノードを表示
-            organizational_list_info.pnode.map((n) => {
-                defaultOrganizational.addReloadNode(n.organizational_node_id, n.content, n.organizational_node_type, n.node_x, n.node_y);
-            });
-
-            const nodes = this.nodes;
-            const edges = this.edges;
-
-            addeventdisplayOrganizationalData();
         });
     }
+    let j = 0;
+    // ユーザーのアイコンを表示
+    organizational_list_info.users.forEach((v) => {
+        defaultOrganizational.addUserNode(v.user_id, v.name, "users");
+    });
+    // ユーザーごとの思考過程ノードを表示
+    organizational_list_info.pnode.map((n) => {
+        defaultOrganizational.addReloadProcessNode(n.user_id, n.process_node_id, n.content, n.process_node_type);
+    });
+    // ユーザーごとのTriggerノードを表示
+    // organizational_list_info.tnode.map((t) => {
+    //     defaultOrganizational.addReloadTriggerNode(t.user_id, t.trigger_node_id, t.content, t.trigger_node_type);
+    // });
+
+    const nodes = this.nodes;
+    const edges = this.edges;
+
+    addeventdisplayOrganizationalData();
+       
+    
 }
 
 // group_selectのchangeイベントでgroupごとにマップを再表示
@@ -1165,7 +1156,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const selectedGroupId = this.value;
             // 初期化
             defaultOrganizational = new Organizational("myOrganizationalnetwork", "load");
-            displayOrganizationalData("group", selectedGroupId);
+            displayOrganizationalData("all", selectedGroupId);
         });
     }
 });
