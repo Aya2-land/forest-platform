@@ -1075,7 +1075,7 @@ const getOrganizationalMapDataFromDB = (callback) => {
                     group_id: organizational_group_id,
                 },
             }).success((r) => {
-                // console.log(r);
+                console.log(r);
                 organizational_list = JSON.parse(r);
                 console.log(organizational_list);
                 callback(organizational_list);
@@ -1123,21 +1123,22 @@ const displayOrganizationalData = (mode, selected_group_id) => {
                     groupSelect.appendChild(option);
                 });
             }
+            let j = 0;
+            // ユーザーのアイコンを表示
+            organizational_list_info.users.forEach((v) => {
+                defaultOrganizational.addUserNode(v.user_id, v.name, "users");
+            });
+            // ユーザーごとの思考過程ノードを表示
+            organizational_list_info.pnode.map((n) => {
+                defaultOrganizational.addReloadProcessNode(n.user_id, n.process_node_id, n.content, n.process_node_type);
+            });
+            // ユーザーごとのTriggerノードを表示
+            // organizational_list_info.tnode.map((t) => {
+            //     defaultOrganizational.addReloadTriggerNode(t.user_id, t.trigger_node_id, t.content, t.trigger_node_type);
+            // });
         });
     }
-    let j = 0;
-    // ユーザーのアイコンを表示
-    organizational_list_info.users.forEach((v) => {
-        defaultOrganizational.addUserNode(v.user_id, v.name, "users");
-    });
-    // ユーザーごとの思考過程ノードを表示
-    organizational_list_info.pnode.map((n) => {
-        defaultOrganizational.addReloadProcessNode(n.user_id, n.process_node_id, n.content, n.process_node_type);
-    });
-    // ユーザーごとのTriggerノードを表示
-    // organizational_list_info.tnode.map((t) => {
-    //     defaultOrganizational.addReloadTriggerNode(t.user_id, t.trigger_node_id, t.content, t.trigger_node_type);
-    // });
+    
 
     const nodes = this.nodes;
     const edges = this.edges;
