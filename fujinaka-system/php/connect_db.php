@@ -1,10 +1,10 @@
 <?php
 
 	//　統合環境
-	$db_host = "10.240.186.80";  // ホスト名
+	$db_host = "localhost";  // ホスト名
 	$db_port = 8889;  // ポート番号
 	$db_user = "root";
-	$db_password = "your_password";
+	$db_password = "root";
 	$db_dbname = "forest_platform";
 
 	//アプリケーションサーバーにアップロードするとき．

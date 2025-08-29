@@ -9,9 +9,10 @@ document.getElementById("selectmodebutton").addEventListener('click', function()
           }else if(selectmodeoption[i].value === "2"){
             console.log("2")
             window.location.href = "kii-system/select_sheet.php";
-          }else if(selectmodeoption[i].value === "3"){
-            // ここ変える必要あり
-            window.location.href = "fujinaka-system/select_sheet.php";
+          } else if (selectmodeoption[i].value === "3") {
+              window.location.href = "fujinaka-system/select_sheet.php";
+          } else if (selectmodeoption[i].value === "4") {
+              window.location.href = "fukushima-system/select_sheet.php";
           }
           return;
         }
