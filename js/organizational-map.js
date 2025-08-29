@@ -62,7 +62,7 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
             this.jmindex = [];
             this.addEventLister();
             // $(`#jsmind_container`).on('click',this.connect_mindmap.bind(this));
-            // $(`#organizational_conmenu1`).on('click',this.show_select.bind(this));
+            $(`#organizational_conmenu1`).on('click',this.view_otherprocessmap.bind(this));
             // $(`#organizational_conmenu2`).on('click',this.connect_network.bind(this));
             // $(`#organizational_conmenu3`).on('click',this.Recruit_Idea.bind(this));
             $(`#organizational_conmenu4`).on('click',this.ContentmenuCancel.bind(this));
@@ -155,7 +155,7 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
 
     addEventLister(){
         // this.bindconnect_mindmap = this.connect_mindmap.bind(this);
-        // this.bindshow_select = this.show_select.bind(this);
+        this.bindview_otherprocessmap = this.view_otherprocessmap.bind(this);
         // this.bindconnect_network = this.connect_network.bind(this);
         // this.bindRecruit_Idea = this.Recruit_Idea.bind(this);
         this.bindContentmenuCancel = this.ContentmenuCancel.bind(this);
@@ -164,7 +164,7 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
         // this.bindfeedback = this.feedback.bind(this);
         // this.bindNodeblinking = this.Nodeblinking.bind(this);
         // $(`#jsmind_container`).on('click',this.bindconnect_mindmap);
-        // $(`#organizational_conmenu1`).on('click',this.bindshow_select);
+        $(`#organizational_conmenu1`).on('click',this.bindview_otherprocessmap);
         // $(`#organizational_conmenu2`).on('click',this.bindconnect_network);
         // $(`#organizational_conmenu3`).on('click',this.bindRecruit_Idea);
         $(`#organizational_conmenu4`).on('click',this.bindContentmenuCancel);
@@ -176,7 +176,7 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
 
     removeEventLister(){
         // $(`#jsmind_container`).off('click',this.bindconnect_mindmap);
-        // $(`#organizational_conmenu1`).off('click',this.bindshow_select);
+        $(`#organizational_conmenu1`).off('click',this.bindview_otherprocessmap);
         // $(`#organizational_conmenu2`).off('click',this.bindconnect_network);
         // $(`#organizational_conmenu3`).off('click',this.bindRecruit_Idea);
         $(`#organizational_conmenu4`).off('click',this.bindContentmenuCancel);
@@ -292,7 +292,7 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
         return this.nodes;
     }
 
-    addReloadProcessNode(user_id, node_id, node_label, node_type) {
+    addReloadProcessNode(user_id, node_id, node_label, node_type, concept_id) {
         const existingNode = this.nodes.get(node_id);
         if (existingNode) {
             console.log(`Node with ID ${node_id} already exists. Skipping addition.`);
@@ -305,6 +305,8 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
         const newNode = {
             id: `${node_id}`, label: node_label,
             group: node_type,
+            concept_id: concept_id,
+            user_id: user_id,
             color: node_color, shape: node_shape,
             font: { color: text_color },
             fixed: false,
@@ -343,7 +345,6 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
             imagePadding: 7,
             fixed: false,
         };
-        console.log(newNode);
         
         defaultOrganizational.nodes.add(newNode);
 
@@ -544,9 +545,6 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
             NetworkMenu.style.left = this.BoxDisplay.x;
             NetworkMenu.style.top = this.BoxDisplay.y;
             NetworkMenu.style.display = "block";//ここようわからん未完成かも
-            if(this.OntologyConnectNodeId.indexOf(this.selectId) !== -1){
-                document.getElementById("organizational_conmenu3").style.display = "block";
-            }
         }
     }
 
@@ -564,17 +562,13 @@ class Organizational { // forestMRN: forest Meeting Reflection Network
     }
 
     //概念をマップに追加（完了）
-    // addontology (){
-    //     document.getElementById("labelselect").style.display = "none";
-    //     const nodeBoundingBox = this.ownNetwork.getBoundingBox(this.selectId);
-    //     const TopicTagId = this.generateUniqueNumberText();
-    //     const selectionlist = document.getElementById('selectionlist');
-    //     this.addNode(TopicTagId, selectionlist.value, "topic-tag", nodeBoundingBox.left, nodeBoundingBox.top);
-    //     this.OntologyConnectNodeId.push(this.selectId);
-    //     this.OntologyNodeId.push('topic-tag_'+TopicTagId);
-    //     defaultRecordOrganizational.record_ontology(this.selectId, 'topic-tag_'+TopicTagId);
-    //     selectionlist.options[2].selected = true;
-    // }
+    view_otherprocessmap (){
+        document.getElementById('t_Organizational_conmenu').style.display = "none";
+        const selectNodeId = this.ownNetwork.getSelection().nodes[0];
+        const who = defaultOrganizational.nodes.get(selectNodeId).user_id;
+        console.log(who);
+        showThinkingProcessMap(who);
+    }
 
     // Recruit_Idea (){
     //     document.getElementById('t_Organizational_conmenu').style.display = "none";
@@ -1075,7 +1069,7 @@ const getOrganizationalMapDataFromDB = (callback) => {
                     group_id: organizational_group_id,
                 },
             }).success((r) => {
-                console.log(r);
+                // console.log(r);
                 organizational_list = JSON.parse(r);
                 console.log(organizational_list);
                 callback(organizational_list);
@@ -1130,7 +1124,7 @@ const displayOrganizationalData = (mode, selected_group_id) => {
             });
             // ユーザーごとの思考過程ノードを表示
             organizational_list_info.pnode.map((n) => {
-                defaultOrganizational.addReloadProcessNode(n.user_id, n.process_node_id, n.content, n.process_node_type);
+                defaultOrganizational.addReloadProcessNode(n.user_id, n.process_node_id, n.content, n.process_node_type, n.concept_id);
             });
             // ユーザーごとのTriggerノードを表示
             // organizational_list_info.tnode.map((t) => {

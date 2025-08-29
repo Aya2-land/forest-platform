@@ -859,9 +859,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                             </div>
                             <div id="t_Organizational_conmenu">
                                 <ul>
-                                    <li><a href="javascript:void(0);" id="organizational_conmenu1">概念をつける</a></li>
-                                    <li><a href="javascript:void(0);" id="organizational_conmenu2">マインドマップと対応付ける</a></li>
-                                    <li><a href="javascript:void(0);" id="organizational_conmenu3" style="display:none">採用/棄却をつける</a></li>
+                                    <li><a href="javascript:void(0);" id="organizational_conmenu1">思考過程表出化マップを表示</a></li>
+                                    <!-- <li><a href="javascript:void(0);" id="organizational_conmenu2">マインドマップと対応付ける</a></li> -->
+                                    <!-- <li><a href="javascript:void(0);" id="organizational_conmenu3" style="display:none">採用/棄却をつける</a></li> -->
                                     <li><a href="javascript:void(0);" id="organizational_conmenu4">キャンセル</a></li>
                                 </ul>
                             </div>

@@ -210,27 +210,27 @@ input[type="checkbox"][name="check_organizational"]{
 /* -------------------- conmenu類の設定 ---------------------- */
 
 #t_Organizational_conmenu{
-	width:350px;
-	background-color:#f0f0f0;
-	border:2px solid #999999;
-	  border-radius: 10px;
+	width:300px;
+	background-color:#fff9ee;
+	border:3px solid #FBC362;
+	border-radius: 10px;
 	display:none;
 	position:fixed;
-	  z-index: 1000;
-	  text-align: center;
+	z-index: 1000;
+	text-align: center;
 }
 #t_Organizational_conmenu ul{
-list-style:none;
-margin:0px;
-padding:7px;
+	list-style:none;
+	margin:0px;
+	padding:7px;
 }
 #t_Organizational_conmenu li:hover{
-background-color: #fad694;
+	background-color: #fad694;
 }
 #t_Organizational_labelselect{
 	width:200px;
-	background-color:#f0f0f0;
-	border:2px solid #999999;
+	background-color:#FAF6F1;
+	border:2px solid #FBC362;
 	border-radius: 10px;
 	display:none;
 	position:fixed;
@@ -238,12 +238,19 @@ background-color: #fad694;
 	text-align: center;
 }
 #t_Organizational_recruitselect{
-width:200px;
-background-color:#f0f0f0;
-border:2px solid #999999;
-border-radius: 10px;
-display:none;
-position:fixed;
-z-index: 1000;
-text-align: center;
+	width:200px;
+	background-color:#FAF6F1;
+	border:2px solid #FBC362;
+	border-radius: 10px;
+	display:none;
+	position:fixed;
+	z-index: 1000;
+	text-align: center;
+}
+#organizational_conmenu1, #organizational_conmenu2, #organizational_conmenu3, #organizational_conmenu4{
+	display:block;
+	padding:5px;
+	border-bottom:1px solid #FBC362;
+	color:#412b05;
+	text-decoration:none;
 }

@@ -17,7 +17,7 @@ $selected_node_id = $_POST["selected_node_id"]; //マインドマップで選択
 
 $return_data = []; // DBアクセスの結果として返すキー・バリューのペア
 
-if($process_mode === "all" || $process_mode === "allRE" ){
+if($process_mode === "all" || $process_mode === "allRE" || $process_mode === "who"){
     if (isset($_POST['concept_ids'])) {
         $conIDs_base = $_POST['concept_ids'];
 
