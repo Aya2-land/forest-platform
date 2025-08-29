@@ -27,9 +27,10 @@
 	$db_user = "root";
 	$db_password = "root";
 <<<<<<< Updated upstream
-	$db_dbname = "forest";
+	$db_dbname = "forest_platform";
+	$db_port = 8889;
 =======
-	$db_dbname = "Kawa_experiment_2";
+	// $db_dbname = "Kawa_experiment_2";
 
 >>>>>>> Stashed changes
 
@@ -40,7 +41,7 @@
 	// $db_dbname = "nishida2";
 
 	// mysqlへの接続
-	$mysqli = new mysqli($db_host, $db_user, $db_password, $db_dbname);
+	$mysqli = new mysqli($db_host, $db_user, $db_password, $db_dbname, $db_port);
 	if ($mysqli->connect_error) {
 	  print('<p>データベースへの接続に失敗しました。</p>' . $mysqli->connect_error);
 	  exit();
