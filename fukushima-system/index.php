@@ -118,11 +118,12 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
 
         <!--      タブメニュー Start        -->
         <ul div class="tabnav">
-            <li class="active"><a href="#tab01">思考整理支援システム</a></li>
-            <!-- <li><a href="#tab02">過去のマインドマップ</a></li>
-                 <li class="active"><a href="#tab03" >リフレクション</a></li>
-                 <li class="active"><a href="#record_tab" >履歴</a></li> -->
-            <li class="active"><a href="#tab04">過去のマインドマップ</a></li>  <!--hatakeyama-->
+          <li class="active"><a href="#tab01">思考整理支援システム</a></li>
+          <!-- <li><a href="#tab02">過去のマインドマップ</a></li>
+              <li class="active"><a href="#tab03" >リフレクション</a></li>
+              <li class="active"><a href="#record_tab" >履歴</a></li> -->
+          <li class="active"><a href="#tab04">過去のマインドマップ</a></li>  <!--hatakeyama-->
+          <li class="active"><a href="#tab05">組織知モード</a></li>
 
             <div class="checkbox_mode">
                 <!-- <input type="checkbox" id="checkbox" class="checkbox" name="check" onclick="CheckClick()"> -->
@@ -136,6 +137,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <option>資料構成作成モード</option>
                         <option>資料作成モード</option>
                         <option>議論内省マップモード</option>
+                        <option>組織知モード</option>
                     </select>
                     <input type="button" class="button3" value="実行" onclick="ModeChangeButtonClick();" />
                 </form>
@@ -157,6 +159,26 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                 <div id="layout">
                     <div id ="system">
                         <div id="area">
+            <!-- 組織知モード -->
+            <div id="tab05" style="display:none;">
+                <div id="layout">
+                    <div id="reflection_container">
+                        <form id ="ref_peri" class="ref_peri" method = "post" acion="">
+                            <p>リフクション期間を設定してください</p>
+                            <label><input id="ref_c2" type="radio" name="ref_per" value="today" onclick="riflection_period2();" checked/>本日分のリフレクション</label>
+                            <br>
+                            <br>
+                            <label><input id="ref_c" type="radio" name="ref_per" value="select" onclick="riflection_period();"/>リフレクション期間を指定する</label>
+                            <br>
+                            <input id="reflection_period" name="start_date" type="date" disabled="disabled"/>から<input id="reflection_period2" name="finish_date" type="date" disabled="disabled"/>
+                            <br>
+                            <br>
+                            <span><input id="reflection_btn" type="button" onclick="activity_reflection();" value="リフレクション開始" /></span>
+                        </form>
+                        <form id ="reflection_form" class="ref_form" method = "post" action = "php/record_reflection.php" ></form>
+                    </div>
+                </div>
+            </div>
 
                             <div id="jsmind_nav">
                                 <div style="text-align: left">
