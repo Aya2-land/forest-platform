@@ -9,9 +9,9 @@
 	//jsmind.js
 	if($_POST["insert"] == "node"){
 
-		$id = $_SESSION["MAPID"];
 		$created_at = date("Y-m-d H:i:s");
 		$deleted = 0;
+		$id = $_SESSION["MAPID"];
 
 		$node_v_id = uniqid(rand(0,64));
 		$node_h_id = uniqid(rand(0,64));
@@ -39,10 +39,6 @@
 					$node_a_sql = "INSERT INTO node_actions (node_action_id, node_history_id, time, act	)
 						VALUES ('".$node_a_id."', '".$node_h_id."', '".$created_at."','add')";
 	
-					echo $node_sql;
-					echo $node_v_sql;
-					echo $node_h_sql;
-					echo $node_a_sql;
 	
 					$n_result = $mysqli->query($node_sql);
 					if(!$n_result){
@@ -67,12 +63,18 @@
 					if(!$n_m_link_result){
 						echo "error_link";
 					}
+
 				}
+
 			}
+
+			
+
 		}else{
 			
 			$created_at = date("Y-m-d H:i:s");
 			$deleted = 0;
+
 
 			$node_sql = "INSERT INTO nodes (node_id, user_id, node_type_id, from_mode, deleted )
 					VALUES ('".$_POST['id']."','".$_SESSION['USERID']."','".$_POST['type']."', '".$_POST['from_mode']."', '".$deleted."')";
@@ -107,7 +109,8 @@
 				VALUES (".$map_node_id.",".$_SESSION['MAPID'].",'".$_POST['id']."', '".$created_at."', NULL)";
 			$n_m_link_result = $mysqli->query($node_m_link_sql);
 			if(!$n_m_link_result){
-				echo "error_link";
+				echo "error_link, ";
+				echo $node_m_link_sql;
 			}
 
 		}
