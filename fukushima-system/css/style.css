@@ -1,3 +1,36 @@
+/* 組織知モード用タブ（jsmind_nav右端） */
+.knowledge-tabs {
+	display: inline-flex;
+	flex-direction: row;
+	align-items: flex-end;
+	background: none;
+	border-bottom: 3px solid #bcd;
+	padding: 0;
+	height: 40px;
+	margin-left: 16px;
+}
+.knowledge-tab {
+	background: #e6edf8;
+	color: #222;
+	border: none;
+	border-radius: 8px 8px 0 0;
+	margin-right: 2px;
+	width: 100px;
+	height: 38px;
+	font-weight: bold;
+	font-size: 16px;
+	cursor: pointer;
+}
+.knowledge-tab.active {
+	background: #bcd;
+	color: #222;
+}
+.knowledge_tab_content {
+	display: none;
+}
+.knowledge_tab_content.active {
+	display: block !important;
+}
 /* -------------------- 全体の設定 ---------------------- */
 html {
 	margin: 0;
