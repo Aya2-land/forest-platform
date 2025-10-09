@@ -1420,29 +1420,41 @@ const getXMLTagInfo = () => {
 
 // アップロードされたXMLを一旦別の場所においておく
 const setUploadedXMLData = (file_input_btn_id, xml_area_id) => {
-  // 読み込んだXMLファイルの中身を一度，HTML上にDisplayする（要素とかを取得する処理をしやすくするため）
-  const btn = document.getElementById(file_input_btn_id);
-  btn.addEventListener("click", () => {
-      btn.addEventListener("change", (evt) => {
-          const file = evt.target.files;
-          const reader = new FileReader();
-          reader.readAsText(file[0]);
+    // file_input_btn_id は input[type=file] の id
+    const input = document.getElementById(file_input_btn_id);
+    if(!input) return;
 
-          reader.onload = () => {
-              const new_span = document.createElement('span');
-              new_span.setAttribute('id', 'meeting_utterance_xml');
-              new_span.innerHTML = reader.result;
+    // 以前の実装は click の中で change を登録しておりタイミング依存で読み込みが発生しない
+    // ここでは input の change に直接ハンドラを登録する
+    input.addEventListener('change', (evt) => {
+        const files = evt.target.files;
+        if(!files || files.length === 0) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            // 既に #meeting_utterance_xml がある場合は上書き、なければ作成
+            let span = document.getElementById('meeting_utterance_xml');
+            if(!span){
+                span = document.createElement('span');
+                span.id = 'meeting_utterance_xml';
+            }
+            // 生のXMLを格納（getXMLTagInfo が .html()/innerHTML を読む実装を想定）
+            span.innerHTML = reader.result;
 
-              const area = $('#'+xml_area_id);
-              area.append(new_span);
-                           
-              new Promise(() => {
-                  $("#uploaded_meeting_utterance_xml_concent_display_area").html(area.html());
-              });
-          }
-      }, false);
-  });
-  $(file_input_btn_id).off();
+            const area = document.getElementById(xml_area_id);
+            if(area){
+                // 既存表示をクリアしてから追加
+                area.innerHTML = '';
+                area.appendChild(span);
+            } else {
+                // フォールバック：jQuery を使って書き込む
+                $('#' + xml_area_id).html(span.outerHTML);
+            }
+        };
+        reader.readAsText(files[0], 'UTF-8');
+    }, false);
+
+    // もし既存で jQuery のイベントがバインドされていれば解除（安全対策）
+    try{ $('#' + file_input_btn_id).off('change'); }catch(e){}
 }
 
 // 発言をアップロードする関数

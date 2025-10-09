@@ -1,36 +1,3 @@
-/* 組織知モード用タブ（jsmind_nav右端） */
-.knowledge-tabs {
-	display: inline-flex;
-	flex-direction: row;
-	align-items: flex-end;
-	background: none;
-	border-bottom: 3px solid #bcd;
-	padding: 0;
-	height: 40px;
-	margin-left: 16px;
-}
-.knowledge-tab {
-	background: #e6edf8;
-	color: #222;
-	border: none;
-	border-radius: 8px 8px 0 0;
-	margin-right: 2px;
-	width: 100px;
-	height: 38px;
-	font-weight: bold;
-	font-size: 16px;
-	cursor: pointer;
-}
-.knowledge-tab.active {
-	background: #bcd;
-	color: #222;
-}
-.knowledge_tab_content {
-	display: none;
-}
-.knowledge_tab_content.active {
-	display: block !important;
-}
 /* -------------------- 全体の設定 ---------------------- */
 html {
 	margin: 0;
@@ -268,6 +235,46 @@ table[type] {
 	margin-top:15px;
 	margin-bottom:0px;
 }
+
+/* 表出化フォームスタイル */
+.externalization-card{
+	background: #fff;
+	padding: 12px;
+	border-radius: 6px;
+	box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+	max-width: 720px;
+}
+.externalization-title{
+	background:#2E86C1; /* 青 */
+	color:#fff;
+	padding:8px 12px;
+	margin:0 0 8px 0;
+	border-radius:4px;
+	font-size:16px;
+}
+.externalization-label{
+	display:block;
+	background:#2E86C1;
+	color:#fff;
+	padding:6px 8px;
+	margin:6px 0 4px 0;
+	border-radius:4px;
+}
+.externalization-main{
+	width:100%;
+	min-height:120px;
+	background: #F8EAF6; /* 薄いピンク/薄紫 */
+	border:2px solid #E8BFE6;
+	padding:8px;
+	box-sizing:border-box;
+	resize:vertical;
+}
+.qa-pairs{ display:flex; flex-direction:column; gap:14px; margin-top:10px; }
+.qa{ display:block; background: #0F6B8A; padding:12px; border-radius:12px; box-shadow: 0 6px 0 rgba(0,0,0,0.06); }
+.qa-question{ background:transparent; color:#003049; font-weight:700; padding:6px 8px; border-radius:6px; margin-bottom:8px; font-size:16px; }
+.qa-answer{ width:100%; min-height:68px; resize:vertical; padding:12px; box-sizing:border-box; background:#ffffff; border-radius:8px; border:1px solid #e6eef2; box-shadow: inset 0 1px 0 rgba(0,0,0,0.03); }
+.externalization-footer{ margin-top:12px; }
+.externalization-subhead{ font-weight:bold; margin-top:8px; }
 
 
 
@@ -1545,6 +1552,7 @@ select[name="mttime_list"] {
 	background-color: #ff8c00;
 }
 
+/*
 .button5 {
 	background-color: #999;
 	color: #fff;
@@ -1566,7 +1574,7 @@ select[name="mttime_list"] {
 .button6:hover {
 	background-color: #ff8c00;
 }
-
+*/
 
 /* DBの接続確認ボタン */
 .button7 {

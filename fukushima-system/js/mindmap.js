@@ -1,11 +1,5 @@
-// 組織知モード用タブ切り替え処理（jsmind_nav右端）
-$(document).on('click', '.knowledge-tab', function() {
-  $('.knowledge-tab').removeClass('active');
-  $(this).addClass('active');
-  var tab = $(this).data('tab');
-  $('.knowledge_tab_content').hide().removeClass('active');
-  $('.knowledge_tab_content[data-tab-content="' + tab + '"]').show().addClass('active');
-});
+// Ensure the global flag exists immediately for DevTools console access
+window.SharedModeActive = false;
 //
 // jmnodeについて
 //
@@ -26,6 +20,7 @@ $(document).on('click', '.knowledge-tab', function() {
 var _jm = null; // jsmind_container
 var _jm2 = null; // jsmind_container2
 var _jm3 = null; // jsmind_container3
+var _jm_shared = null; // shared/組織知モード用プレースホルダ
 var mind = null; // jsmind_containerの中身
 
 var thisId;
@@ -37,6 +32,15 @@ var $sub_goal = [];//学習者が選択した聴衆の観点（その他）の�
 var $add_goal = [];//学習者が自由記述で追加した聴衆の観点のテキスト
 
 var BeforeSelectModeNumber = 0;
+var SharedModeActive = false; // フラグ：共有（組織知）モードが有効か
+// ブラウザのコンソールから参照できるようにグローバルにも設定
+window.SharedModeActive = SharedModeActive;
+
+// 将来用：共有モード専用の初期化（現状は未使用のスタブ）
+function initSharedMode(){
+  // ここに_shared用の初期化処理を実装予定
+  // 例: _jm_shared = new jsMind({container:'jsmind_container_shared', editable:true});
+}
 
 function open_empty(){
 
@@ -1285,7 +1289,7 @@ function CheckClick(){
   check = document.getElementById("checkbox");
   // checkboxがチェックされている時の処理 → 資料作成モードへの変更
   if(check.checked == true){
-    $('#jsmind_container').css('width','50%');//横幅を全体の40％で表示？
+    $('#jsmind_container').css('width','20%');//横幅を全体の40％で表示？
     $('#document').show(); //Menu下の目標設定箇所
     $('#mind').css('height','50%');　//問い一覧箇所
     // $('#mind').toggle('fast');
@@ -1324,67 +1328,247 @@ function CheckClick(){
 function ModeChangeButtonClick() {
   const selindex = document.target_mode.Select1;
   const num = selindex.selectedIndex;
-  var ModeLabel = ["自己内対話モード","資料構成作成モード","資料作成モード","議論内省マップモード","組織知モード"]
+  var ModeLabel = ["自己内対話モード","資料構成作成モード","資料作成モード","議論内省マップモード"]
 
   console.log(num);
   console.log(ModeLabel);
   target = document.getElementById("output");
 
-
-  // まず全ての関連エリアを非表示に
-  $('#jsmind_container').hide();
-  $('#document').hide();
-  $('#network_container').hide();
-  $('#document_area').hide();
-  $('#node_slide').hide();
-  $('#ImageAddContent').hide();
-  $('#presen_menu').hide();
-  $('#document_slide').hide();
-  $('#mind').hide();
-  document.getElementById('feedback_area').style.display = "none";
-  document.getElementById('xml_upload_area').style.display = "none";
-  // 組織知モード用タブを一度非表示に
-  $('#knowledge_tabs').hide();
-
   if (num == 0 ){
-    $('#jsmind_container').show().css('width','100%');
-    $('#mind').show().css('height','90%');
+
+    $('#jsmind_container').show();
+    // $('#jsmind_container').css('width','calc(100vw - 350px)');
+    $('#jsmind_container').css('width','100%');
+    $('#mind').css('height','90%');
+    $('#document').hide();
+    // $('#mind').show();
+    if(BeforeSelectModeNumber == 1){
+      $('#document_area').toggle('fast');
+      $('#node_slide').toggle('fast');
+      $('#ImageAddContent').toggle('fast');
+      $('#presen_menu').toggle('fast');
+      // $('#node_slide').toggle('fast');  
+    }else if(BeforeSelectModeNumber == 2){
+      $('#document_area').toggle('fast');
+      $('#node_slide').toggle('fast');
+      $('#ImageAddContent').toggle('fast');
+      $('#presen_menu').toggle('fast');
+      $('#document_slide').toggle('fast');
+      //ここから大槻変更
+    }else if(BeforeSelectModeNumber == 3){
+      $('#network_container').toggle('fast');
+      document.getElementById('feedback_area').style.display = "none";
+      document.getElementById('xml_upload_area').style.display = "none";
+    }
+    //ここまで大槻変更
+   
+    // $('.changemode_button').toggle('fast');
+    const frame_dom = document.getElementsByClassName("inquiry_area");
+    frame_dom[0].style.border = "solid 5px #ccc";
+    showGeneration();
+    BeforeSelectModeNumber = 0;
+
   }else if(num == 1){
-    $('#jsmind_container').show().css('width','50%');
-    $('#document').show();
-    $('#mind').show().css('height','50%');
-    $('#document_area').show().css({'width':'(50%-3px)','height':'100%','overflow':'scroll'});
-    $('#node_slide').show();
-    $('#ImageAddContent').show();
-    $('#presen_menu').show();
-    $('#scenario_title').css({'margin-left':'15px','width':'100%','border':'Black'});
+
+    $('.content_delete').css('visibility', 'visible');
+    $('.simple_btn').css('visibility', 'visible');
+    $('.cspan').css('font-size', '15');
+    $('.cspan').css('border', 'White');
+    $('.cspan').css('margin-bottom', '5');
+    $('.tspan').css('font-size', '20');
+  
+    $('.inquiry_area').css('height', '25vw');
+    $('#jsmind_container').css('width','40%');//横幅を全体の40％で表示？
+    $('#document').show(); //Menu下の目標設定箇所
+    $('#mind').css('height','50%');　//問い一覧箇所
+
+
+    $('#scenario_title').css('margin-left','15px');
+    $('#scenario_title').css('width','100%');
+
+    $('#scenario_title').css('border','Black');
+    $('#document_area').css('width','(50%-3px)');　//資料作成箇所
+    $('#document_area').css('height','100%');
+    $('#document_area').css('overflow','scroll');
+    // height:84vh;overflow: scroll;
+
+    // $('#document_area').css('width','620px');
+    console.log(BeforeSelectModeNumber);
+    if(BeforeSelectModeNumber == 0){
+      $('#document_area').toggle('fast'); //資料作成箇所を表示
+      $('#node_slide').toggle('fast');  //
+      $('#ImageAddContent').toggle('fast');
+      $('#presen_menu').toggle('fast'); //資料作成用のボタン
+    }else if(BeforeSelectModeNumber == 2){
+      $('#document_slide').toggle('fast');
+      //ここから大槻変更
+    }else if(BeforeSelectModeNumber == 3){
+      $('#document_area').toggle('fast'); //資料作成箇所を表示
+      $('#node_slide').toggle('fast');  //
+      $('#ImageAddContent').toggle('fast');
+      $('#network_container').toggle('fast');
+      document.getElementById('feedback_area').style.display = "none";
+      document.getElementById('xml_upload_area').style.display = "none";
+    }
+    //ここまで大槻変更
+
+    $('.thread').css('border', 'solid 0.7px #000000');
+    
+    $("select[name='Logic_options_contents']").css('font-size', '15');
+    $("select[name='Logic_options_contents']").css('visibility', 'visible');
+    $("select[name='Logic_options_contents']").css('height', '20px');
+
+    $("select[name='Logic_options_title']").css('font-size', '15');
+    $("select[name='Logic_options_title']").css('visibility', 'visible');
+    $("select[name='Logic_options_title']").css('height', '20px');
+    // $('.changemode_button').toggle('fast');
+
+    $('.badge').css('visibility', 'visible');
+    $('.badge').css('height', '20px');
+    $('.badge').css('padding','0.125rem 0.3rem');
+    BeforeSelectModeNumber = 1;
+    // AddAOI_on_ImageArea();
+    MoveAndExpensionImageArea();
   }else if(num == 2 ){
-    $('#jsmind_container').show().css('width','30vw');
-    $('#document_area').show();
-    $('#node_slide').show();
-    $('#ImageAddContent').show();
-    $('#document_slide').show();
-    $('#scenario_title').css({'border':'White','margin-left':'0','width':'100%'});
+    var text2 = document.getElementsByClassName("cspan");
+    // console.log(text2);
+    for (var i = 0; i < text2.length; i++){
+      // console.log(text2[i].nodeType);
+    }
+    // $('#document_area').css('width','49%');//資料作成箇所
+    // $('#document_area').css('height','100%'); //統合前はauto
+    
+    $('.content_delete').css('visibility', 'hidden');
+    $('.simple_btn').css('visibility', 'hidden');
+    $('.thread').css('border','White');
+    $('.thread').css('padding','0');
+    $('.cspan').css('font-size', '20');
+    $('.cspan').css('border', 'White');
+    $('.cspan').css('margin-bottom', '0');
+    $('.tspan').css('margin-bottom', '0');
+    $('.tspan').css('font-size', '20');
+    if(BeforeSelectModeNumber == 1){
+      $('#document_slide').toggle('fast');
+    }else if(BeforeSelectModeNumber == 0){
+      $('#document_area').toggle('fast'); //資料作成箇所を表示
+      $('#node_slide').toggle('fast');  //
+      $('#ImageAddContent').toggle('fast');
+      //ここから大槻変更
+    }else if(BeforeSelectModeNumber == 3){
+      $('#document_area').toggle('fast'); //資料作成箇所を表示
+      $('#node_slide').toggle('fast');  //
+      $('#ImageAddContent').toggle('fast');
+      $('#network_container').toggle('fast');
+      document.getElementById('feedback_area').style.display = "none";
+      document.getElementById('xml_upload_area').style.display = "none";
+    }
+    //ここまで大槻変更
+
+    // $('#scenario_title').css('font-size', '30');
+    $('#scenario_title').css('border','White');
+    $('#scenario_title').css('margin-left','0');
+    $('#scenario_title').css('width','100%');
+    //$('#jsmind_container').hide();//横幅を無くす
+    $('#jsmind_container').css('width','30vw');//横幅を全体の20％で表示？
+
+    $("select[name='Logic_options_contents']").css('font-size', '0.01');
+    $("select[name='Logic_options_contents']").css('visibility', 'hidden');
+    $("select[name='Logic_options_contents']").css('height', '1px');
+
+    $("select[name='Logic_options_title']").css('font-size', '0.01');
+    $("select[name='Logic_options_title']").css('visibility', 'hidden');
+    $("select[name='Logic_options_title']").css('height', '2px');
+    
+    $('.badge').css('visibility', 'hidden');
+    $('.badge').css('height', '1px');
+    $('.badge').css('padding','0');
+
+    BeforeSelectModeNumber = 2;
+    MoveAndExpensionImageArea();
   }else if(num == 3){
-    $('#jsmind_container').show().css('width','50%');
-    $('#network_container').show().css('display','flex');
-    $('#mind').show().css('height','90%');
     document.getElementById('feedback_area').style.display = "block";
     document.getElementById('xml_upload_area').style.display = "block";
-  }else if(num == 4){
-    $('#jsmind_container').show().css('width','50%');
-    $('#network_container').show().css('display','flex');
-    $('#mind').show().css('height','90%');
-    document.getElementById('feedback_area').style.display = "block";
-    document.getElementById('xml_upload_area').style.display = "block";
-    // 組織知モードのときだけタブを表示
-    $('#knowledge_tabs').show();
+    $('#network_container').toggle('fast');
+    $('#network_container').css('display','flex');
+    $('#jsmind_container').css('width','50%');
+    $('#mind').css('height','90%');
+    $('#document').hide();
+    // $('#mind').show();
+    if(BeforeSelectModeNumber == 1){
+      $('#document_area').toggle('fast');
+      $('#node_slide').toggle('fast');
+      $('#ImageAddContent').toggle('fast');
+      $('#presen_menu').toggle('fast');
+      // $('#node_slide').toggle('fast');  
+    }else if(BeforeSelectModeNumber == 2){
+      $('#document_area').toggle('fast');
+      $('#node_slide').toggle('fast');
+      $('#ImageAddContent').toggle('fast');
+      $('#presen_menu').toggle('fast');
+      $('#document_slide').toggle('fast');
+    }
+    const frame_dom = document.getElementsByClassName("inquiry_area");
+    frame_dom[0].style.border = "solid 5px #ccc";
+    showGeneration();
+    BeforeSelectModeNumber = 3;
   }
-  // その他の処理
-  const frame_dom = document.getElementsByClassName("inquiry_area");
-  if(frame_dom.length > 0) frame_dom[0].style.border = "solid 5px #ccc";
-  showGeneration();
-  BeforeSelectModeNumber = num;
+  else if(num == 4){
+    // 共有知（組織知）モードは現状議論内省マップモードと同じ表示にする
+  SharedModeActive = true;
+  // グローバル同期
+  window.SharedModeActive = SharedModeActive;
+    // 表出化フォームを可視領域（mynetwork2）に移動して表示
+    try{
+      var $ext = $('#externalization_form_section');
+      if($ext.length){
+        if(!$ext.data('origParent')){ $ext.data('origParent', $ext.parent()); }
+        $('#mynetwork').append($ext);
+        $ext.show();
+        console.log('Shared mode: externalization form shown and moved to #mynetwork');
+      }
+    }catch(e){ console.log('error moving ext form', e); }
+    document.getElementById('feedback_area').style.display = "block";
+    document.getElementById('xml_upload_area').style.display = "block";
+    // show shared containers for future separation
+    $('#jsmind_container_shared').show();
+    $('#network_container_shared').show();
+    // Mirror num==3 layout
+    $('#network_container').show().css('display','flex');
+    $('#jsmind_container').css('width','40%');
+    $('#mind').css('height','90%');
+    $('#document').hide();
+    if(BeforeSelectModeNumber == 1){
+      $('#document_area').toggle('fast');
+      $('#node_slide').toggle('fast');
+      $('#ImageAddContent').toggle('fast');
+      $('#presen_menu').toggle('fast');
+    }else if(BeforeSelectModeNumber == 2){
+      $('#document_area').toggle('fast');
+      $('#node_slide').toggle('fast');
+      $('#ImageAddContent').toggle('fast');
+      $('#presen_menu').toggle('fast');
+      $('#document_slide').toggle('fast');
+    }
+    const frame_dom2 = document.getElementsByClassName("inquiry_area");
+    if(frame_dom2.length > 0) frame_dom2[0].style.border = "solid 5px #ccc";
+    showGeneration();
+    BeforeSelectModeNumber = 4;
+  }
+  else {
+    // それ以外のモードでは共有フラグを落とし、表出化フォームを隠す
+    SharedModeActive = false;
+    window.SharedModeActive = SharedModeActive;
+    // 表出化フォームを元の場所へ戻し非表示に
+    try{
+      var $ext = $('#externalization_form_section');
+      if($ext.length){
+        var $orig = $ext.data('origParent');
+        if($orig && $orig.length){ $orig.append($ext); }
+        $ext.hide();
+        console.log('Shared mode: externalization form hidden and restored');
+      }
+    }catch(e){ console.log('error restoring ext form', e); }
+  }
   jump_node("root");
 }
 
@@ -1399,6 +1583,63 @@ function jump_node(nodeid) {
     element.scrollIntoView({ block: "center", inline: "center"});
   });
 }
+
+// --- 共有知タブ切替処理 (表出化/連結化/内面化) ---
+function activateSharedTab(tabId){
+  // タブボタン一覧
+  var tabs = ['tab-externalization','tab-combination','tab-internalization'];
+  var contents = {
+    'tab-externalization': 'externalization-content',
+    'tab-combination': 'combination-content',
+    'tab-internalization': 'internalization-content'
+  };
+
+  tabs.forEach(function(t){
+    var btn = document.getElementById(t);
+    if(!btn) return;
+    if(t === tabId){
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  // コンテンツ表示切替
+  Object.keys(contents).forEach(function(k){
+    var cid = contents[k];
+    var el = document.getElementById(cid);
+    if(!el) return;
+    if(k === tabId){
+      el.style.display = '';
+    } else {
+      el.style.display = 'none';
+    }
+  });
+
+  // 外部化フォームの表示切替（mynetwork2 内のフォーム）
+  var extForm = document.getElementById('externalization_form_section');
+  if(extForm){
+    if(tabId === 'tab-externalization'){
+      extForm.style.display = '';
+    } else {
+      extForm.style.display = 'none';
+    }
+  }
+}
+
+// 初期化：DOMが使えるようになったらイベントをバインド
+document.addEventListener('DOMContentLoaded', function(){
+  var tabIds = ['tab-externalization','tab-combination','tab-internalization'];
+  tabIds.forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('click', function(e){
+      activateSharedTab(id);
+    });
+  });
+  // 初期表示は 表出化
+  activateSharedTab('tab-externalization');
+});
 
 
 function show_mindmap(){

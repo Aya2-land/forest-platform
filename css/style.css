@@ -1414,12 +1414,13 @@ select[name="user_list"] {
 #mynetwork2{
 	width: 100%;
 	min-width: 300px;
+	height: 100%;
 	/* height:70vh; */
 	min-height: 450px;
 	/* margin-bottom:2vh; */
 	border-left:solid 2px #9bb7ba;
 	background:#fff;
-	/* overflow: auto; */
+	overflow: auto;
 	resize: auto;
 }
 #timedisplay{
@@ -1434,7 +1435,7 @@ select[name="user_list"] {
 }
 #utterance_area{
 	width: calc((100vw - 350px)*0.15);
-	min-width: 100px;
+	min-width: 270px;
 	/* height:70vh; */
 	min-height: 450px;
 	/* margin-bottom:2vh; */
@@ -1466,8 +1467,83 @@ select[name="user_list"] {
 	/* resize: auto; */
 }
 
-/* only mrn */
+/* 表出化メイン入力セクション */
+.externalization-main-section{
+	display:block;
+	background: #ffb6c1;
+	border-radius:12px;
+	padding:10px 10px; 
+	margin: 15px 10px 12px 10px;
+}
+.externalization-main-section .externalization-label{
+	display:block;
+	margin-bottom:6px;
+	color:#003049;
+	font-weight:700;
+}
+.externalization-main{
+	width:100%;
+	min-height:100px;
+	resize:vertical; 
+	/*linear-gradient(180deg, #FFF6FB 0%, #F8EAF6 100%); /* pale pink */
+	/*border:2px solid #E8BFE6;*/
+	padding:12px;
+	background:#ffffff; 
+	border-radius:8px; 
+	border:1px solid #e6eef2; 
+	box-shadow: inset 0 1px 0 rgba(0,0,0,0.03);
+	/*margin: 0px 10px;*/
+	box-sizing:border-box;
+	font-size:14px;
+	resize:vertical;
+}
 
+.qa-pairs{ 
+	display:flex; 
+	flex-direction:column; 
+	gap:12px; 
+	margin-top:15px; 
+}
+.qa{ display:block; 
+	margin-left: 10px; 
+	margin-right: 10px; 
+	background: #a8cde0; 
+	padding:12px; 
+	border-radius:12px; 
+	box-shadow: 0 6px 0 rgba(0,0,0,0.06);
+}
+.qa-question{ 
+	background:transparent; 
+	color:#003049; 
+	font-weight:700; 
+	/*padding:10px 10px;*/ 
+	border-radius:6px; 
+	margin-bottom:8px; 
+	font-size:16px; 
+}
+.qa-answer{ 
+	width: 100%; 
+	min-height:68px; 
+	resize:vertical; 
+	padding:8px; 
+	box-sizing:border-box; 
+	background:#ffffff; 
+	border-radius:8px; 
+	border:1px solid #e6eef2; 
+	box-shadow: inset 0 1px 0 rgba(0,0,0,0.03); 
+}
+.externalization-footer{ margin-top:12px; }
+.externalization-subhead{ font-weight:bold; margin-top:8px; }
+.externalization-own-answer{ 
+	margin: 15px 10px 10px 10px;
+	background: #c1c1ff; 
+	padding:12px; 
+	border-radius:12px; 
+	box-shadow: 0 6px 0 rgba(0,0,0,0.06);
+}
+
+
+/* only mrn */
 
 /********************* リフレクションタブ関係 **********************/
 /*リフレクション関係　yoshioka*/
@@ -1826,6 +1902,36 @@ select[name="user_list"] {
 	background-color: #B3E0D8;
 }
 
+.button-container {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.button5 {
+    background-color: #90B1AB; /* デフォルトの背景色 */
+    color: #fff;
+    height: 25px;
+    font-size: 12px;
+    margin-left: 1px;
+	margin-right: 1px;
+	margin-top: 5px;
+    align-items: center; /* 垂直方向の中央寄せ */
+    justify-content: center; /* 水平方向の中央寄せ */
+}
+
+/* アクティブなタブのスタイル */
+.button5.active {
+    background-color: #99cccc; /* アクティブ時の背景色を少し薄く */
+	transform: scale(1.15);     /* 1.15倍に拡大 */ 
+	transform-origin: center bottom;
+    transition: transform 0.15s ease;
+}
+
+/* ホバー時のスタイル */
+.button5:hover {
+    background-color: #a0c1bc; /* ホバー時に色が明るくなるように */
+}
+
 /*他者の問いノード表示*/
 .button_q {
 	display: flex;
@@ -1877,7 +1983,7 @@ select[name="user_list"] {
 	background-color: #88A47C;
 }
 
-.button5 {
+/*.button5 {
 	background-color: #FBC362;
 	color: #fff;
 	width: 70px;
@@ -1888,7 +1994,7 @@ select[name="user_list"] {
 .button5:hover {
 	background-color: #ffa200;
 }
-
+*/
 .button6 {
 	background-color: #90B1AB;
 	color: #fff;

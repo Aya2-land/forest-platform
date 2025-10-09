@@ -123,8 +123,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
               <li class="active"><a href="#tab03" >リフレクション</a></li>
               <li class="active"><a href="#record_tab" >履歴</a></li> -->
           <li class="active"><a href="#tab04">過去のマインドマップ</a></li>  <!--hatakeyama-->
-          <li class="active"><a href="#tab05">共有知モード</a></li>
-
+         <!-- <li class="active"><a href="#tab05">共有知モード</a></li> -->
+          
+    
             <div class="checkbox_mode">
                 <!-- <input type="checkbox" id="checkbox" class="checkbox" name="check" onclick="CheckClick()"> -->
                 <!-- <input type="checkbox" id="checkbox" class="checkbox" name="check" onclick=""> -->
@@ -137,9 +138,10 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                         <option>資料構成作成モード</option>
                         <option>資料作成モード</option>
                         <option>議論内省マップモード</option>
-                        <option>組織知モード</option>
+                        <option>共有知モード</option>
                     </select>
                     <input type="button" class="button3" value="実行" onclick="ModeChangeButtonClick();" />
+                    <!-- shared tabs removed from here and moved to center of the workspace -->
                 </form>
                             
             </div>
@@ -159,7 +161,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                 <div id="layout">
                     <div id ="system">
                         <div id="area">
-            <!-- 組織知モード -->
+            <!-- 共有知モード -->
             <div id="tab05" style="display:none;">
                 <div id="layout">
                     <div id="reflection_container">
@@ -180,7 +182,32 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                 </div>
             </div>
 
-                            <div id="jsmind_nav">
+           <!-- <div id="jsmind_nav">
+    <div style="text-align: left">
+        <div class="group-left">
+            <button class="button4" onclick="add_Qnode();">問いノード追加</button>
+            <button class="button4" onclick="add_Anode();">答えノード追加</button>
+            <button class="button4" onclick="add_Label('primary_label');">ラベル追加</button>
+            <button class="button4" onclick="remove_node();">ノードの削除</button>
+
+            <button class="button3" id="zoom-in-button" onclick="zoomIn();">拡大</button>
+            <button class="button3" id="zoom-out-button" onclick="zoomOut();">縮小</button>
+            <button class="button4" id="map-snapshot-button" onclick="MapSnapShot();RecordRelation();">マップver更新</button>
+
+            <button class="button4" style="width:80px" onclick="screen_shot();">screenshot</button>
+        </div>
+
+        <div class="group-right">
+            <div class="button-container">
+                <button id="tab-externalization" class="button5">表出化</button>
+                <button id="tab-combination" class="button5">連結化</button>
+                <button id="tab-internalization" class="button5">内面化</button>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+                             <div id="jsmind_nav">
                                 <div style="text-align: left">
                                     <!-- 【Edit】 -->
                                     <button class="button4" onclick="add_Qnode();">
@@ -216,6 +243,17 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <button class="button4" style="width:80px" onclick="screen_shot();">
                                         screenshot
                                     </button>
+
+                                    <!-- presen_menu fin -->
+                                <!-- center-aligned shared tabs (表出化/連結化/内面化) -->
+                                <!-- <div id="shared_mode_tabs_center" style="display:flex; justify-content:center; gap:8px; margin:8px 0;"> -->
+                                    <div class="button-container">
+                                    <button id="tab-externalization" class="button5">表出化</button>
+                                    <button id="tab-combination" class="button5">連結化</button>
+                                    <button id="tab-internalization" class="button5">内面化</button>
+                                    </div>
+                            
+
                                     <!-- 【Reason】
                                         <button class="button4" onclick="add_edit_reason();">
                                         修正理由の追加
@@ -229,17 +267,12 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <div id="comment_balloon2"class="comment two" hidden><!--hatakeyama -->
                                         <p>緑にハイライトされたノードは合理性を考えるべきノードです．<br/>このノードの考えを変えた際には，関連したノードも考え直す必要はないか考えてみましょう！</p>
                                     </div>
-                                                                        <div id="comment_balloon3"class="comment three" hidden><!--hatakeyama-->
-                                                                                <p>何度もバージョン更新を行っている重要なノードです．<br/>定期的に考えを確認しましょう！</p>
-                                                                        </div>
-                                                                        <!-- 組織知モード用タブ（Screenshotボタン群の右端） -->
-                                                                                                            <div id="knowledge_tabs" class="knowledge-tabs" style="display:inline-flex; margin-left: 16px; vertical-align: bottom;">
-                                                                                                                <button class="knowledge-tab active" data-tab="externalization">表出化</button>
-                                                                                                                <button class="knowledge-tab" data-tab="connection">連結化</button>
-                                                                                                                <button class="knowledge-tab" data-tab="internalization">内面化</button>
-                                                                                                            </div>
-                                                                        <!-- ここから清水さん１ -->
-                                                                        <div id ="presen_menu">
+                                    <div id="comment_balloon3"class="comment three" hidden><!--hatakeyama-->
+                                        <p>何度もバージョン更新を行っている重要なノードです．<br/>定期的に考えを確認しましょう！</p>
+                                    </div>
+                                    
+                                    <!-- ここから清水さん１ -->
+                                    <div id ="presen_menu">
                                         <!-- 【Slide】 -->
                                         <!-- <button class="button4" onclick="MakeSlide();">スライド追加</button> -->
                                         <!-- <button class="button4" onclick="MakeNewPage();">ページ追加</button> -->
@@ -269,9 +302,16 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                             test
                                             </button> -->
                                     </div>
+                                    
                                 </div>
                                     
                                 <!-- presen_menu fin -->
+                                <!-- center-aligned shared tabs (表出化/連結化/内面化) -->
+                                <!-- <div id="shared_mode_tabs_center" style="display:flex; justify-content:center; gap:8px; margin:8px 0;">
+                                    <button id="tab-externalization" class="button4">表出化</button>
+                                    <button id="tab-combination" class="button4">連結化</button>
+                                    <button id="tab-internalization" class="button4">内面化</button>
+                                </div> -->
 
                                 <!--  <div id ="presen_menu"> -->
                                 <!-- 【Slide】 -->
@@ -443,33 +483,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                 <input id="DecideLogicRelationButton" type="button" value="キャンセル" onclick="CancelButton_Click('document_area_conmenu4')">
                             </div>
                             <!--  ここから大槻修正　-->
-                                                                                    <div id="knowledge_tab_panels" style="width:100%;">
-    <!-- === 表出化タブ用パネル === -->
-    <div id="panel_externalization" class="knowledge_tab_panel active" style="width:100%;">
-        <!-- ▼将来ここに表出化タブ専用のUIや機能を実装してください -->
-        <div id="network_container" style="display:block;" oncontextmenu="return false;">
-            <!-- 例：表出化用ネットワークやUI部品をここに追加 -->
-            <!-- ...existing code... -->
-        </div>
-    </div>
-    <!-- === 連結化タブ用パネル === -->
-    <div id="panel_connection" class="knowledge_tab_panel" style="display:none;width:100%;">
-        <!-- ▼将来ここに連結化タブ専用のUIや機能を実装してください -->
-        <div id="network_container_clone1" style="width:100%;height:100%;background:#fff;min-height:400px;border:solid 5px #c5c3c3;border-radius:0 0 8px 8px;">
-            <!-- 例：連結化用ネットワークやUI部品をここに追加 -->
-            <span style="color:#888;padding:40px;">（連結化タブの内容：今は表出化と同じ画面）</span>
-        </div>
-    </div>
-    <!-- === 内面化タブ用パネル === -->
-    <div id="panel_internalization" class="knowledge_tab_panel" style="display:none;width:100%;">
-        <!-- ▼将来ここに内面化タブ専用のUIや機能を実装してください -->
-        <div id="network_container_clone2" style="width:100%;height:100%;background:#fff;min-height:400px;border:solid 5px #c5c3c3;border-radius:0 0 8px 8px;">
-            <!-- 例：内面化用ネットワークやUI部品をここに追加 -->
-            <span style="color:#888;padding:40px;">（内面化タブの内容：今は表出化と同じ画面）</span>
-        </div>
-    </div>
-                                                                                    </div>
-                                                        <!-- 連結化・内面化用のダミー画面は削除（どのタブでもnetwork_containerを表示） -->
+                            <div id="network_container" oncontextmenu="return false;" >
                                 <div id="utterance_area">
                                     <div id="rclick2">
                                         <div id="timedisplay"></div>
@@ -479,7 +493,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     </div>
                                 </div>
                                 <div id="mynetwork2">
-                                    <div id="buttoncluster">
+                                    <!-- <div id="buttoncluster">
                                         <input type="button" class="meeting_reflectin_network_button"
                                             id="mrnb_addNode" value="要約ノード追加" />
                                         <input type="button" class="meeting_reflectin_network_button"
@@ -492,7 +506,7 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                             id="mrnb_ZoomIn" value="拡大" />
                                         <input type="button" class="meeting_reflectin_network_button"
                                             id="mrnb_ZoomOut" value="縮小" />
-                                    </div>
+                                    </div> -->
                                     <div id="network_conmenu">
                                         <ul>
                                             <li><a href="javascript:void(0);" id="net_conmenu1">概念をつける</a></li>
@@ -517,6 +531,9 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                     <div id="mynetwork"></div>
                                 </div>
                             </div>
+                            <!-- Placeholder containers for shared/共有知モード (hidden by default) -->
+                            <div id="jsmind_container_shared" style="display:none;" oncontextmenu="return false;"></div>
+                            <div id="network_container_shared" style="display:none;" oncontextmenu="return false;"></div>
                             <!--  ここから大槻修正　-->
                             
                             <!--  ここまで大槻修正　-->
@@ -801,6 +818,39 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                 </select>
                                 <input id="past_time_select_button" type="button" value="選択完了">
                             </div>
+                                    <!-- 表出化フォーム（mynetwork 内） -->
+                                    <div id="externalization_form_section" style="display:none; margin-top:10px;">
+                                        <div class="externalization-card">
+                                            <h3 class="externalization-title">選択された発言についての思考整理</h3>
+                                            <div class="externalization-main-section">
+                                            <label class="externalization-label">あなたが選択した発言：</label>
+                                            <textarea id="externalization-main" class="externalization-main" placeholder="ここに選択した発言を記入"></textarea>
+                                            </div>
+
+                                            <div class="qa-pairs">
+                                                <div class="qa">
+                                                    <div class="qa-question">なぜこの発言が印象に残りましたか？</div>
+                                                    <textarea class="qa-answer" placeholder="ここに記入"></textarea>
+                                                </div>
+                                                <div class="qa">
+                                                    <div class="qa-question">その発言には、どんな前提や背景がありますか？</div>
+                                                    <textarea class="qa-answer" placeholder="ここに記入"></textarea>
+                                                </div>
+                                                <div class="qa">
+                                                    <div class="qa-question">この発言には、他の場面でも使える考え方の指針はありますか？</div>
+                                                    <textarea class="qa-answer" placeholder="ここに記入"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <!-- <div class="externalization-footer">
+                                                <div class="externalization-subhead"> ■ 他のユーザーの回答：</div>
+                                                <div class="externalization-own-answer">
+                                                   <div class="qa-question"> ■ あなたの導いた考え：</div>
+                                                   <textarea class="qa-answer" placeholder="ここに記入"></textarea>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
                             
                             <!-- <form id ="reco_peri" class="ref_peri" method="post" acion="">
                                 <input id="od" name="start_date" type="datetime-local"/>
