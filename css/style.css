@@ -1542,6 +1542,16 @@ select[name="user_list"] {
 	box-shadow: 0 6px 0 rgba(0,0,0,0.06);
 }
 
+.externalization-actions {
+  /* Flexコンテナにする */
+  display: flex;
+
+  /* 子要素を右端に寄せる */
+  justify-content: flex-end;
+
+  /* 親要素に右側の余白 (padding) を10px設定 */
+  padding-right: 10px;
+}
 
 /* only mrn */
 

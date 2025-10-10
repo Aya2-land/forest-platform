@@ -842,6 +842,10 @@ if(isset($_POST["myFileImage"])){ //imageFileImage
                                                 </div>
                                             </div>
 
+                                            <div class="externalization-actions" style="margin-top:10px;">
+                                                <input id="externalization_register" type="button" class="button3" value="登録" onclick="handleExternalizationRegister();" />
+                                            </div>
+
                                             <!-- <div class="externalization-footer">
                                                 <div class="externalization-subhead"> ■ 他のユーザーの回答：</div>
                                                 <div class="externalization-own-answer">
